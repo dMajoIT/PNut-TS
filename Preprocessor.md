@@ -10,9 +10,9 @@
 
 [![GitHub issues][Issues-shield]](https://github.com/ironsheep/PNut-TS/issues)
 
-## PNut-TS Preprocessor Comamnd line options
+## PNut-TS Preprocessor Command line options
 
-A couple of command line options affect the proprocessing:
+A couple of command line options affect the preprocessing:
 
 | Option | Effect |
 | --- | --- |
@@ -22,7 +22,7 @@ A couple of command line options affect the proprocessing:
 | -- **Diagnostic Use** -- |
 | <PRE>-i, --intermediate | Generate *-pre.spin2 after preprocessing - so you can review what preprocessed source was fed to the compiler
 
-**NOTE:** these directives apply to all .spin2 files processed in the compile effort, not just the top-level file.  This means that the compilation of all #included files and all files specified in the OBJ block of each object will be affected by these -D and -U options.
+**NOTE:** These directives apply to all .spin2 files processed in the compile effort, not just the top-level file.  This means that the compilation of all #included files and all files specified in the OBJ block of each object will be affected by these -D and -U options.
 
 ## Preprocessor Directives
 
@@ -37,7 +37,7 @@ PNut-TS has a pre-processor that understands a few primitive directives:
 
 Here's more detail on each of the supported directives
 
-If you are seeing the similarity to FlexSpin directive set you are correct! This capabilty was patterned after the directives supported by FlexSpin so that there will be less compatibility issues with utilizing spin2 code with either compiler.
+If you see the similarity to the FlexSpin directive set, you are correct! This capability was patterned after the directives supported by FlexSpin so that there will be fewer compatibility issues when utilizing spin2 code with either compiler.
 
 ### Directives
 
@@ -49,7 +49,7 @@ If you are seeing the similarity to FlexSpin directive set you are correct! This
 
 Defines a new symbol `FOO` with the value `hello`. Whenever the symbol `FOO` appears in the text, the preprocessor will substitute `hello`.
 
-Note that unlike the traditional preprocessors, **this preprocessor** does not accept arguments. Only simple defines are permitted.
+Note that, unlike the traditional preprocessors, **this preprocessor** does not accept arguments. Only simple defines are permitted.
 
 Also note that this preprocessor is case insensitive, just like spin.
 
@@ -59,7 +59,7 @@ If no value is given, e.g.:
 #define BAR
 ```
 
-then the symbol `BAR` is defined as the string `1`. This is generally useful when symbol presence is being used, not the value. That is to say that the symbol is being tested by following preprocessor directives and is not exptected to be replacing text within the containing file.
+then the symbol `BAR` is defined as the string `1`. This is generally useful when symbol presence is being used, not the value. That is to say that the symbol is being tested by following preprocessor directives and is not expected to be replacing text within the containing file.
 
 #### \#ifdef {symbol}
 
@@ -89,7 +89,7 @@ Introduces a conditional compilation section, which is only compiled if the symb
 
 #### \#else
 
-Switches the meaning of conditional compilation. Must be preceeded by a `#ifdef` or a `#ifndef`.
+Switches the meaning of conditional compilation. Must be preceded by a `#ifdef` or a `#ifndef`.
 
 #### \#endif
 
@@ -97,11 +97,11 @@ Ends the conditional compilation `#ifdef` or `#ifndef` clause.
 
 #### \#elseifdef {symbol}
 
-A combination of `#else` and `#ifdef`. Must be preceeded by a `#ifdef` or a `#ifndef`.
+A combination of `#else` and `#ifdef`. Must be preceded by a `#ifdef` or a `#ifndef`.
 
 #### \#elseifndef {symbol}
 
-A combination of `#else` and `#ifndef`. Must be preceeded by a `#ifdef` or a `#ifndef`.
+A combination of `#else` and `#ifndef`. Must be preceded by a `#ifdef` or a `#ifndef`.
 
 #### \#error {msg}
 
@@ -122,7 +122,7 @@ Includes a file. The contents of the file are placed in the compilation just as 
 #include "bar"
 ```
 
-Included files are searched for in the same directory as the file that contains the `#include`. Or, alternatively, in an include directory provided by the compilation `-I <dir>` clause on the command line. If one or more include directories are specified then they will be searched first.
+Included files are searched for in the same directory as the file that contains the `#include`. Or, alternatively, in an include directory provided by the compilation `-I <dir>` clause on the command line. If one or more include directories are specified, then they will be searched first.
 
 NOTE: if the .spin2 suffix is not present on the filename provide in the include statement it will be appended to the name given before opening the file.  Meaning all included files will only be .spin2 files.  If any suffix is provided that is not .spin2 this will generate an error and stop the compile.
 
@@ -132,7 +132,7 @@ NOTE: if the .spin2 suffix is not present on the filename provide in the include
 
 #### \#undef {symbol}
 
-Removes a prior definition of a symbol, e.g. to undefine `FOO` do:
+Removes a prior definition of a symbol, e.g., to undefine `FOO` do:
 
 ```c++
 #undef FOO
@@ -153,12 +153,12 @@ There are several predefined symbols:
 | `__propeller__`    | defined as 2 (for Propeller 2)
 | `__P2__`           | defined as 1 (compiling for Propeller 2)
 | `__propeller2__`   | defined as 1 (compiling for Propeller 2)
-| `__PNUTTS__`       | defined as 1 indicating that the `PNut-TS` compiler is used
+| `__PNUTTS__`       | defined as 1, indicating that the `PNut-TS` compiler is used
 | `__DATE__`         | a string containing the date when compilation was begun
 | `__FILE__`         | a string giving the current file being compiled
 | `__TIME__`         | a string containing the time when compilation was begun
 | `__VERSION__`      | a string containing the full version of PNut-TS in use (e.g., 'v1.43.0')
-| `__DEBUG__`        | defined as 1 only if copmpiling debug() statements is enabled (-d given)
+| `__DEBUG__`        | defined as 1 only if compiling debug() statements is enabled (-d given)
 
 ---
 
