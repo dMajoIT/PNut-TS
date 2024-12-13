@@ -1,3 +1,15 @@
+DEBUG_ notes from 240919 zoom:
+- FlexSpin DEBUG_DISABLE = 0 or 1
+- DEBUG_OBJECT_MASK = $FFFF
+- DEBUG_OBJECT_BIT = $0100
+- DEBUG_DISABLE = (DEBUG_OBJECT_MASK & DEBUG_OBJECT_BIT)
+- Also debug[0-15]()
+
+PREP for CMD-LINE Repair Release (v1.43.3):
+	- Fix behavior of -o (#4) @done(2024-12-12)
+	- Awaken download via PropPlug (packaging issue) (#5) @done(2024-12-12)
+	- Fix compiling of empty VAR section
+	
 PREP for CMD-LINE Repair Release (v1.43.2):
 	- Fix unplanned execution of `pnut_ts -v` after compile @done(2024-09-22)
 	- Repair SpinDocument PreProcessor changes! (Regression test fail after PreProc adjustment, fix this!) @done(2024-09-21)
@@ -6,9 +18,14 @@ LIMITATION OF PNUT-TS:
 	- NOTE: floating point constants: The mantissa (bits 22:0) can be +/- 1 ls-bit off in value
 
 RE-PACKAGING PNut-TS (Self-contained):
+	Preparation:
 	- in vscode run:    npm run bld-dist
 	- copy pkgs/ content to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs
+	- copy out/pnut_ts.js to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
+	- copy prebuilds/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
+	- copy out/ext/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
 	- ensure content of /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_dist is current (has latest stuff)
+	Packaging:
 	- run     cs_pack.sh  # to fill _unzipped with correctly shaped folders with signed macos exe's
 	- run     cs_zip.sh    # to put initial .zip files in _UPLOAD
 	- run manually DropDMG to build dmg's for each of two macOS arch's

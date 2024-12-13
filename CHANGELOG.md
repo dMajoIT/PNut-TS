@@ -8,7 +8,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for reminders on how to str
 
 Work to appear in upcoming releases:
 
-- adding STRUCT support as in PNut_v45.exe
+- adding revised STRUCT support as in PNut_v45.exe
+- adding enhanced DEBUG support as in PNut_v46.exe
+- adding TASK support as in PNut_v47.exe
+
+## [1.43.3] 2024-12-12
+
+- Repair command-line -0 option parsing ([#4](https://github.com/ironsheep/PNut-TS/issues/4))
+- Awaken USB Serial communication and downloading ([#5](https://github.com/ironsheep/PNut-TS/issues/5))
+- Compatible with PNut_v43.exe
 
 ## [1.43.2] 2024-09-22
 
@@ -16,7 +24,7 @@ Work to appear in upcoming releases:
 - BUGFIX fixed elementizer issues caused by preprocessor changes
 - Compatible with PNut_v43.exe
 
-### know issues v1.43.2
+### known issues v1.43.2
 
 - Compiler occasionally produces duplicate error messages
 
@@ -26,7 +34,7 @@ Work to appear in upcoming releases:
 - Clean up output under error conditions
 - Compatible with PNut_v43.exe
 
-### know issues v1.43.1
+### known issues v1.43.1
 
 - Compiler occasionally produces duplicate error messages
 

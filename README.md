@@ -15,11 +15,10 @@ Reimplementation Pnut for Windows in a platform agnostic language.
 
 ## We are inviting testing help
 
-v1.43.0 is an early release inviting testing of the v43 compaitbility. The hope is that our community can help us expand our initial testing beyond what we've been able to do to help us
+v1.43.0 is an early release inviting testing of the v43 compatibility. The hope is that our community can help us expand our initial testing beyond what we've been able to do to help us
 find any compilation issues we may not have found.
 
-The page [Testing PNut-TS v1.43.0](Testing.md) will help you learn how to test and identify what to report when you find an issue. 
-
+The page [Testing PNut-TS v1.43.0](Testing.md) will help you learn how to test and identify what to report when you find an issue.
 
 ## Table of Contents
 
@@ -44,7 +43,7 @@ Additional pages:
 The features of this new implementation are:
 
 - A full P2 Compiler (equivalent to PNut on Windows) for all platforms
-- Written in a language which is relatively easy to maintain 
+- Written in a language which is relatively easy to maintain
 - A command line tool with standard option processing
 - Has a full featured light-weight [preprocessor](Preprocessor.md)
 - Listing, object, and binary compatible with PNut of same version.<BR>(PNut v43, initially (at testing release), upgraded to PNut v45 before formal release.)
@@ -54,14 +53,14 @@ The features of this new implementation are:
 
 Install .zip files available for each release:
 
-| Archive Name | Operating System | Architecture | Unpack Leaves
+| Archive Name | Operating System | Architecture | Unpack Leaves |
 | --- | --- | --- | --- |
-| linux-arm64.zip | Linux, RPi | Arm 64 bit | pnut_ts/
-| linux-x64.zip| Linux | Intel x86-64 bit | pnut_ts/
-| macos-arm64.zip| MacOS | Arm 64 bit | macos-arm64.dmg
-| macos-x64.zip| MacOS | Intel x86-64 bit | macos-x64.dmg
-| win-arm64.zip| Windows | Arm 64 bit | pnut_ts/
-| win-x64.zip| Windows | Intel x86-64 bit | pnut_ts/
+| linux-arm64.zip | Linux, RPi | Arm 64 bit | pnut_ts/ |
+| linux-x64.zip| Linux | Intel x86-64 bit | pnut_ts/ |
+| macos-arm64.zip| MacOS | Arm 64 bit | macos-arm64.dmg |
+| macos-x64.zip| MacOS | Intel x86-64 bit | macos-x64.dmg |
+| win-arm64.zip| Windows | Arm 64 bit | pnut_ts/ |
+| win-x64.zip| Windows | Intel x86-64 bit | pnut_ts/ |
 
 Installation is pretty easy for PNut-TS.
 
@@ -71,7 +70,7 @@ Installation is pretty easy for PNut-TS.
 - Setup and enviroment variable (typically PATH) so that the **pnut_ts** executable can be referenceed from anywhere.
 - Run VSCode with the **Spin2 v2.3.0 extension** (when it's released) to ensure that the installed **pnut_ts** was found.
 
-See detailed installation instructions for; **[macOS](https://github.com/ironsheep/P2-vscode-langserv-extension/blob/main/TASKS-User-macOS.md#installing-pnut-ts-on-macos)**, **[Windows](https://github.com/ironsheep/P2-vscode-langserv-extension/blob/main/TASKS-User-win.md#installing-pnut-ts-on-windows)**, and **[Linux/RPi](https://github.com/ironsheep/P2-vscode-langserv-extension/blob/main/TASKS-User-RPi.md#installing-pnut-ts-on-rpilinux)**. 
+See detailed installation instructions for; **[macOS](https://github.com/ironsheep/P2-vscode-langserv-extension/blob/main/TASKS-User-macOS.md#installing-pnut-ts-on-macos)**, **[Windows](https://github.com/ironsheep/P2-vscode-langserv-extension/blob/main/TASKS-User-win.md#installing-pnut-ts-on-windows)**, and **[Linux/RPi](https://github.com/ironsheep/P2-vscode-langserv-extension/blob/main/TASKS-User-RPi.md#installing-pnut-ts-on-rpilinux)**.
 
 That's really all there is to it!
 

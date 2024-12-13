@@ -36,7 +36,7 @@ Additional pages:
 ## Simplified project goals
 
 **Question**? This will only be a p2 compiler, right?
-- Yes, this will be P2 at initial release. 
+- Yes, this will be P2 at initial release.
 
 - Replace all use of Delphi/Pascal, x86 assembly, and SmallBASIC with pure typescript.
 - Produce a command line tool (command line options may be slightly different)
