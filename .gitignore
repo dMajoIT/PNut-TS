@@ -240,3 +240,4 @@ TEST/LARGE-tests/TOF/Error.txt
 /scripts-pkg/_unzipped
 *.GOOD
 *.elemGOOD
+/prebuilds
