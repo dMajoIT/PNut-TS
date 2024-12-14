@@ -26,7 +26,7 @@ export class PNutInTypeScript {
   private readonly program = new Command();
   //static isTesting: boolean = false;
   private options: OptionValues = this.program.opts();
-  private version: string = '1.43.2';
+  private version: string = '1.43.3';
   private argsArray: string[] = [];
   private context: Context;
   private spinDocument: SpinDocument | undefined = undefined;
@@ -98,6 +98,7 @@ export class PNutInTypeScript {
       //      .option('-n, --dvcnodes', 'List available USB PropPlug device (n)odes')
       .option('-v, --verbose', 'Output verbose messages')
       //.option('-B, --bin', 'Generate binary files (.bin) suitable for download')
+      .option('-a, --altbin', 'Use alternate .binary name vs. .bin')
       .option('-o, --output <name>', 'Specify output file basename')
       .option('-i, --intermediate', 'Generate *-pre.spin2 after preprocessing')
       .option('-q, --quiet', 'Quiet mode (suppress banner and non-error text)')
@@ -224,6 +225,11 @@ export class PNutInTypeScript {
     }
     if (this.options.ver44) {
       this.context.compileOptions.v44FormatListing = true;
+    }
+
+    if (this.options.altbin) {
+      this.context.compileOptions.binarySuffix = 'binary'; // use binary vs bin
+      this.context.logger.verboseMsg('Writing .binary suffix binary files');
     }
 
     //if (this.options.bin) {

@@ -531,6 +531,11 @@ export class SpinResolver {
         if (this.currElement.type == eElementType.type_end_file) {
           break;
         }
+        //this.logMessage(`  -- compile_var_blocks() at elem=[${this.currElement.toString()}]`);
+        // allow an EMPTY VAR block
+        if (this.currElement.type == eElementType.type_block) {
+          break;
+        }
 
         // is this ALIGNW or ALIGNL?
         const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?

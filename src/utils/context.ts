@@ -56,6 +56,7 @@ export interface CompileOptions {
   compile: boolean; // compile file
   enableDebug: boolean; // compile with debug
   outputFilename: string; // override output filename with this name
+  binarySuffix: string; // use this output suffix for binary file
   writeListing: boolean; // write compile report (.lst file)
   v44FormatListing: boolean; // write compile report (.lst file) use v44 style
   //v43Compile: boolean; // compile emitting v43 compatible code (maybe)
@@ -165,6 +166,7 @@ export class Context {
       compile: false,
       enableDebug: false,
       outputFilename: '',
+      binarySuffix: 'bin', // compiler default suffix
       writeListing: false,
       writeObj: false,
       writeBin: false,

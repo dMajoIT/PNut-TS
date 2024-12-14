@@ -8,14 +8,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for reminders on how to str
 
 Work to appear in upcoming releases:
 
-- adding revised STRUCT support as in PNut_v45.exe
-- adding enhanced DEBUG support as in PNut_v46.exe
-- adding TASK support as in PNut_v47.exe
+- Add revised STRUCT support as in PNut_v45.exe
+- Add enhanced DEBUG support as in PNut_v46.exe
+- Add TASK support as in PNut_v47.exe
+- Preprocessor support is superset of that in PNut_v48.exe (no need to add)
 
-## [1.43.3] 2024-12-12
+## [1.43.3] 2024-12-14
 
+- Allow empty VAR ([#6](https://github.com/ironsheep/PNut-TS/issues/6))
 - Repair command-line -0 option parsing ([#4](https://github.com/ironsheep/PNut-TS/issues/4))
-- Awaken USB Serial communication and downloading ([#5](https://github.com/ironsheep/PNut-TS/issues/5))
+- Adds new --altbin (-a) option to force output binary to have .binary suffix
 - Compatible with PNut_v43.exe
 
 ## [1.43.2] 2024-09-22

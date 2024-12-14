@@ -1,0 +1,131 @@
+'' =================================================================================================
+''
+''   File....... jm_click_template.spin2
+''   Purpose....
+''   Author..... Jon "JonnyMac" McPhalen
+''               Copyright (c) 2020 Jon McPhalen
+''               -- see below for terms of use
+''   E-mail..... jon.mcphalen@gmail.com
+''   Started....
+''   Updated.... dd mmm 2020
+''
+'' =================================================================================================
+
+
+'  -------------------------------- remove before object release -----------------------------------
+'
+'  1. Use Save-As to save this file for the target Click board
+'  2. Update header with your name and email information
+'  3. Mark pins used by Click board in diagram below
+'  4. Add object code
+'  5. Test object code with a demo application that shows off module features
+'  6. Test one more time
+'  7. Okay, one more test -- the third time is the charm
+'  8. Remove this section
+'  9. Deploy your object and await the loving adoration of the P2 community
+'
+'  -------------------------------- remove before object release -----------------------------------
+
+
+{{
+
+    P2 Eval Click Adapter IO Assignments
+    * - used by __name__ board
+
+               ┌─────────────────────────────┐
+    Base + 06  │ [ ] AN              PWM [ ] │  Base + 05
+               │                             │
+    Base + 07  │ ( ) RST             INT ( ) │  Base + 04
+               │                             │
+    Base + 08  │ ( ) CS          <-- RX  ( ) │  Base + 03  (marked TX on Click modules)
+               │                             │
+    Base + 09  │ ( ) SCK  <--    --> TX  ( ) │  Base + 02  (marked RX on Click modules)
+               │                             │
+    Base + 10  │ ( ) MISO -->    --> SCL ( ) │  Base + 01
+               │                             │
+    Base + 11  │ ( ) MOSI <--    <-> SDA ( ) │  Base + 00
+               │                             │
+               │ ( ) 3v3             5v0 ( ) │
+               │                             │
+               │ ( ) GND             GND ( ) │
+               └─────────────────────────────/
+
+}}
+
+con { debug clocking }
+
+  CLK_FREQ = 270_000_000                                        ' system freq as a constant
+  _clkfreq = CLK_FREQ                                           ' set system clock
+
+con { fixed io pins }
+
+  RX1      = 63  { I }                                          ' programming / debug
+  TX1      = 62  { O }
+
+  SF_CS    = 61  { O }                                          ' serial flash
+  SF_SCK   = 60  { O }
+  SF_SDO   = 59  { O }
+  SF_SDI   = 58  { I }
+
+
+con { click pin offsets }
+
+  #true,  ON, OFF
+  #false, NO, YES
+
+  #00, P_SDA, P_SCL, P_TX,   P_RX                               ' click board pin offsets
+  #04, P_INT, P_PWM, P_AN,   P_RST
+  #08, P_CS,  P_SCK, P_MISO, P_MOSI
+
+
+obj
+
+'  i2c    : "jm_i2c"                                             '   i2c coms
+'  serial : "jm_fds"                                             ' * async serial coms
+'  pwm    : "jm_pwm"                                             '   pwm output
+'  ain    : "jm_analog_in"                                       '   analog input
+'  aout   : "jm_analog_out"                                      '   analog output
+'  spi    : "jm_spi"                                             '   synchronous serial coms
+
+' * uses cog when loaded
+
+
+dat { pre-initialized }
+
+
+var { globals }
+
+
+pub null()
+
+'' This is not a top-level object
+
+
+pub start(basepin)
+
+
+
+con { license }
+
+{{
+
+  Terms of Use: MIT License
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of this
+  software and associated documentation files (the "Software"), to deal in the Software
+  without restriction, including without limitation the rights to use, copy, modify,
+  merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+  permit persons to whom the Software is furnished to do so, subject to the following
+  conditions:
+
+  The above copyright notice and this permission notice shall be included in all copies
+  or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+  PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+}}

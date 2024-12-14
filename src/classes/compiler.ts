@@ -78,7 +78,7 @@ export class Compiler {
         this.compileRecursively(0, this.srcFile);
         this.spin2Parser.P2List();
         const needFLash: boolean = this.context.compileOptions.writeFlash;
-        const ramDownload: boolean = this.context.compileOptions.writeRAM;
+        const ramDownload: boolean = this.context.compileOptions.writeRAM || needFLash; // we need download when flashing too!
         this.spin2Parser.ComposeRam(needFLash, ramDownload);
       } catch (error: unknown) {
         if (error instanceof Error) {

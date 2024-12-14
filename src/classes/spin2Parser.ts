@@ -17,6 +17,7 @@ import { eElementType } from './types';
 import { ObjectImage } from './objectImage';
 import { ExternalFiles } from './externalFiles';
 import { hexLong } from '../utils/formatUtils';
+import path from 'path';
 
 // src/classes/spin2Parser.ts
 
@@ -412,6 +413,16 @@ export class Spin2Parser {
     if (isDebugMode == false && isPasmMode && this.spinResolver.clockMode != 0) {
       this.P2InsertClockSetter();
     }
+
+    // BUGFIX:  binary file should NEVER contain the flash loader! (fix the order of operation here)
+
+    // save binary file?
+    if (this.context.compileOptions.writeBin) {
+      //const objImage: ObjectImage = this.context.compileData.objImage;
+      const noProgramFlash: boolean = false;
+      this.writeBinaryFile(this.objImage, 0, this.objImage.length, noProgramFlash);
+    }
+
     // insert flash loader?
     if (programFlash) {
       const codeAndLoaderSize: number = objSize + this.externalFiles.flashLoaderLength;
@@ -421,11 +432,7 @@ export class Spin2Parser {
       }
       this.P2InsertFlashLoader();
     }
-    // save binary file?
-    if (this.context.compileOptions.writeBin) {
-      //const objImage: ObjectImage = this.context.compileData.objImage;
-      this.writeBinaryFile(this.objImage, 0, this.objImage.length, programFlash); // full
-    }
+
     if (ramDownload) {
       this.LoadHardware();
     }
@@ -433,8 +440,14 @@ export class Spin2Parser {
 
   private writeBinaryFile(objImage: ObjectImage, offset: number, byteCount: number, hasFlashLoader: boolean = false) {
     const lstFilename = this.context.compileOptions.listFilename;
-    const binSuffix: string = hasFlashLoader ? '.binf' : '.bin';
-    const objFilename = lstFilename.replace('.lst', binSuffix);
+    const binarySuffix: string = this.context.compileOptions.binarySuffix;
+    const binSuffix: string = hasFlashLoader ? `.${binarySuffix}f` : `.${binarySuffix}`;
+    let objFilename = lstFilename.replace('.lst', binSuffix);
+    // BUGFIX: for issue #4 add true -o option
+    if (this.context.compileOptions.outputFilename.length > 0) {
+      const dirName = path.dirname(lstFilename);
+      objFilename = path.join(dirName, this.context.compileOptions.outputFilename);
+    }
     this.logMessage(`  -- writing BIN file (${byteCount} bytes from offset ${offset}) to ${objFilename}`);
     const stream = fs.createWriteStream(objFilename);
 
@@ -754,7 +767,7 @@ export class Spin2Parser {
   }
 
   public LoadHardware() {
-    // XY-NOPE-ZZY we need code here LoadHardware()
+    // FIXME: UNDONE XYZZY we need code here LoadHardware() when we awaken USB support
   }
 
   private logMessage(message: string): void {
