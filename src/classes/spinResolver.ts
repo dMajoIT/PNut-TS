@@ -9132,6 +9132,12 @@ private checkDec(): boolean {
     this.scopeColumn = newScopeColumn;
   }
 
+  private getElementObj(): SpinElement {
+    // FIXME: XYZZY add code for this
+    // FIXME: adjust backElement() to handle temp markers
+    return this.currElement; // NOTE: (WARNING!) this is a reference into our active element list
+  }
+
   private getElement(): SpinElement {
     //this.logMessage(`* Element Index=(${this.nextElementIndex + 1})`);
     if (this.spinElements.length == 0) {

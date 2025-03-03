@@ -12,8 +12,31 @@ TODO's from PNut Zoom 250303:
 	- flexcodes @done(2025-03-03)
 	- Directives DITTO @done(2025-03-03)
 	- IFs  if_never ->  if_ref @done(2025-03-03)
-	- Add OBJX contants (where?)
-	- 
+	- Elementizer @done(2025-03-03)
+	
+	- Add OBJX contants (where?) used by:
+		- compile_obj_symbols:
+		
+		RULE: everythng should be get_element_obj unless is SHOULD NOT be!
+		
+	- Consumers of get_element_obj:
+		- compile_obj_blocks_id:
+		- compile_sub_blocks_id:
+		- compile_dat_blocks: (MIXED! GET AND GET OBJ!)
+			- DITTO support
+		- compile_sub_blocks:
+		- compile_obj_blocks: (MIXED! GET AND GET OBJ!)
+		- compile_block: (MIXED! GET AND GET OBJ!)
+		- compile_instruction:
+		- compile_sub_blocks:
+			
+	- Consumers of get_element (orig):
+			- compile_dat_blocks_fn:
+			- compile_con_blocks:
+			- compile_var_blocks:
+				- STRUCT changes
+			- compile_dat:
+			
 DEBUG_ notes from 240919 zoom:
 - FlexSpin DEBUG_DISABLE = 0 or 1
 - DEBUG_OBJECT_MASK = $FFFF
