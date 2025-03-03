@@ -143,6 +143,7 @@ export class SpinElementizer {
   }
 
   private get_element_entries(): SpinElement[] {
+    // NOTE: PNut this is get_element:
     const elementsFound: SpinElement[] = [];
     let returningSingleEntry: boolean = true;
     let typeFound: eElementType = eElementType.type_undefined;
@@ -299,6 +300,10 @@ export class SpinElementizer {
       valueFound = value;
       symbolLengthFound = charsUsed;
       this.unprocessedLine = this.skipAhead(charsUsed, this.unprocessedLine);
+    } else if (this.unprocessedLine.length > 1 && this.unprocessedLine.charAt(0) == '$' && this.unprocessedLine.charAt(1) == '$') {
+      // standalone $$ sign
+      typeFound = eElementType.type_dollar2;
+      this.unprocessedLine = this.skipAhead(2, this.unprocessedLine);
     } else if (this.unprocessedLine.charAt(0) == '$') {
       // standalone $ sign
       typeFound = eElementType.type_dollar;
