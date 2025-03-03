@@ -1,3 +1,10 @@
+DebuggerUnit w/Chip:
+- procedure TDebuggerForm.Breakpoint;  is the core! 
+
+TODO's from P2LF 250108:
+	- add '#pragma exportdef NAME' which makes symbol appear as if specified as -D on command line.
+	- rename preproc output to __pre.spin2 (dual underscore)
+	
 DEBUG_ notes from 240919 zoom:
 - FlexSpin DEBUG_DISABLE = 0 or 1
 - DEBUG_OBJECT_MASK = $FFFF
@@ -37,6 +44,7 @@ RE-PACKAGING PNut-TS (Self-contained):
 		- at end run    xcrun stapler staple _unzipped/macos/macos-x64.dmg   # to complete the DMG
 	- run    cs_zip_dmgs.sh  to zip the .dmg files and place the .zips in _UPLOAD
 	- UPLOAD all the .zip's to the releases page for the given release
+	- run cs_fixUploadNames.sh to formally name the .zip files before uploading to repo as assets
 	
 RE-PACKAGING PNut-TS (External Node.js):
 	Ensure latest files are on _dist folder (ChangeLog.md, etc.)
