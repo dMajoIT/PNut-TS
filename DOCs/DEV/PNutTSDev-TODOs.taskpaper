@@ -5,6 +5,15 @@ TODO's from P2LF 250108:
 	- add '#pragma exportdef NAME' which makes symbol appear as if specified as -D on command line.
 	- rename preproc output to __pre.spin2 (dual underscore)
 	
+TODO's from PNut Zoom 250303:
+- update tables:
+	- types @done(2025-03-03)
+	- byte codes @done(2025-03-03)
+	- flexcodes @done(2025-03-03)
+	- Directives DITTO @done(2025-03-03)
+	- IFs  if_never ->  if_ref @done(2025-03-03)
+	- Add OBJX contants (where?)
+	- 
 DEBUG_ notes from 240919 zoom:
 - FlexSpin DEBUG_DISABLE = 0 or 1
 - DEBUG_OBJECT_MASK = $FFFF

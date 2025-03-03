@@ -2,6 +2,15 @@
 ;
 ; Flex codes
 ;
+;
+; Flex codes
+;
+;flex_params		=	07h
+;flex_results		=	38h
+;flex_results_shift	=	3
+;flex_pinfld		=	40h
+;flex_hubcode		=	80h
+
 macro		flexcode	symbol,bytecode,params,results,pinfld,hubcode
 symbol		=		bytecode + (params shl 8) + (results shl 11) + (pinfld shl 14) + (hubcode shl 15)
 		endm
@@ -19,15 +28,14 @@ flexcode	fc_getct,	bc_getct,	0,	1,	0,	0	;(also asm instruction)
 flexcode	fc_pollct,	bc_pollct,	1,	1,	0,	0
 flexcode	fc_waitct,	bc_waitct,	1,	0,	0,	0
 
-flexcode	fc_pinwrite,	bc_pinwrite,	2,	0,	1,	0
 flexcode	fc_pinlow,	bc_pinlow,	1,	0,	1,	0
 flexcode	fc_pinhigh,	bc_pinhigh,	1,	0,	1,	0
 flexcode	fc_pintoggle,	bc_pintoggle,	1,	0,	1,	0
 flexcode	fc_pinfloat,	bc_pinfloat,	1,	0,	1,	0
-flexcode	fc_pinread,	bc_pinread,	1,	1,	1,	0
-
-flexcode	fc_pinstart,	bc_pinstart,	4,	0,	1,	0
-flexcode	fc_pinclear,	bc_pinclear,	1,	0,	1,	0
+flexcode	fc_pinread,	bc_pinread,	1,	1,	1,	1
+flexcode	fc_pinwrite,	bc_pinwrite,	2,	0,	1,	1
+flexcode	fc_pinstart,	bc_pinstart,	4,	0,	1,	1
+flexcode	fc_pinclear,	bc_pinclear,	1,	0,	1,	1
 
 flexcode	fc_wrpin,	bc_wrpin,	2,	0,	1,	0	;(also asm instruction)
 flexcode	fc_wxpin,	bc_wxpin,	2,	0,	1,	0	;(also asm instruction)
@@ -54,12 +62,18 @@ flexcode	fc_call,	bc_call,	1,	0,	0,	1	;(also asm instruction)
 flexcode	fc_getregs,	bc_getregs,	3,	0,	0,	1
 flexcode	fc_setregs,	bc_setregs,	3,	0,	0,	1
 
-flexcode	fc_bytemove,	bc_bytemove,	3,	0,	0,	1
 flexcode	fc_bytefill,	bc_bytefill,	3,	0,	0,	1
-flexcode	fc_wordmove,	bc_wordmove,	3,	0,	0,	1
+flexcode	fc_bytemove,	bc_bytemove,	3,	0,	0,	1
+flexcode	fc_byteswap,	bc_byteswap,	3,	0,	0,	1
+flexcode	fc_bytecomp,	bc_bytecomp,	3,	1,	0,	1
 flexcode	fc_wordfill,	bc_wordfill,	3,	0,	0,	1
-flexcode	fc_longmove,	bc_longmove,	3,	0,	0,	1
+flexcode	fc_wordmove,	bc_wordmove,	3,	0,	0,	1
+flexcode	fc_wordswap,	bc_wordswap,	3,	0,	0,	1
+flexcode	fc_wordcomp,	bc_wordcomp,	3,	1,	0,	1
 flexcode	fc_longfill,	bc_longfill,	3,	0,	0,	1
+flexcode	fc_longmove,	bc_longmove,	3,	0,	0,	1
+flexcode	fc_longswap,	bc_longswap,	3,	0,	0,	1
+flexcode	fc_longcomp,	bc_longcomp,	3,	1,	0,	1
 
 flexcode	fc_strsize,	bc_strsize,	1,	1,	0,	1
 flexcode	fc_strcomp,	bc_strcomp,	2,	1,	0,	1
@@ -82,3 +96,11 @@ flexcode	fc_nan,		bc_nan,		1,	1,	0,	1
 flexcode	fc_round,	bc_round,	1,	1,	0,	1
 flexcode	fc_trunc,	bc_trunc,	1,	1,	0,	1
 flexcode	fc_float,	bc_float,	1,	1,	0,	1
+
+flexcode	fc_tasknext,	bc_tasknext,	0,	0,	0,	0
+flexcode	fc_taskstop,	bc_taskstop,	1,	0,	0,	1
+flexcode	fc_taskhalt,	bc_taskhalt,	1,	0,	0,	1
+flexcode	fc_taskcont,	bc_taskcont,	1,	0,	0,	1
+flexcode	fc_taskchk,	bc_taskchk,	1,	1,	0,	1
+flexcode	fc_taskid,	bc_taskid,	0,	1,	0,	1
+;

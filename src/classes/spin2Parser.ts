@@ -134,7 +134,7 @@ export class Spin2Parser {
           const symbol: SymbolEntry = userSymbols[index];
           let symbolType: string;
           switch (symbol.type) {
-            case eElementType.type_con:
+            case eElementType.type_con_int:
               symbolType = 'CON';
               break;
             case eElementType.type_con_float:
@@ -185,13 +185,13 @@ export class Spin2Parser {
             case eElementType.type_obj:
               symbolType = 'OBJ';
               break;
-            case eElementType.type_objpub:
+            case eElementType.type_obj_pub:
               symbolType = 'OBJPUB';
               break;
-            case eElementType.type_objcon:
+            case eElementType.type_obj_con_int:
               symbolType = 'OBJCON';
               break;
-            case eElementType.type_objcon_float:
+            case eElementType.type_obj_con_float:
               symbolType = 'OBJCON_FLOAT';
               break;
             case eElementType.type_method:
@@ -685,7 +685,7 @@ export class Spin2Parser {
     const symbolFound: iSymbol | undefined = this.spinResolver.getSymbol(smbolName);
     if (symbolFound) {
       definedStatus = true;
-      if (symbolFound.type == eElementType.type_con) {
+      if (symbolFound.type == eElementType.type_con_int) {
         isConStatus = true;
       }
       symValue = symbolFound.value;

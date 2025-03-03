@@ -1533,75 +1533,80 @@ export class SpinSymbolTables {
     this.asmcodeValues.set(eAsmcode.ac_asmclk, setAsmcodeValue(0, 0b00, eValueType.operand_asmclk)); // 	ASMCLK
     this.asmcodeValues.set(eAsmcode.ac_nop, setAsmcodeValue(0b000000000, 0b00, eValueType.operand_nop)); // 	NOP
     this.asmcodeValues.set(eAsmcode.ac_debug, setAsmcodeValue(0b000110110, 0b00, eValueType.operand_debug)); // 	DEBUG()
-    //
     // generated flexcode table load
-    //
+
     //		flexcode	bytecode	params	results	pinfld	hubcode
     //		---------------------------------------------------------------------------------------
-    this.flexcodeValues.set(eFlexcode.fc_coginit, setFlexcodeValue(eByteCode.bc_coginit, 3, 0, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_coginit, setFlexcodeValue(eByteCode.bc_coginit, 3, 0, 0, 0)); // (also asm instruction)
 
     this.flexcodeValues.set(eFlexcode.fc_coginit_push, setFlexcodeValue(eByteCode.bc_coginit_push, 3, 1, 0, 0));
-    this.flexcodeValues.set(eFlexcode.fc_cogstop, setFlexcodeValue(eByteCode.bc_cogstop, 1, 0, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_cogstop, setFlexcodeValue(eByteCode.bc_cogstop, 1, 0, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_cogid, setFlexcodeValue(eByteCode.bc_cogid, 0, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_cogid, setFlexcodeValue(eByteCode.bc_cogid, 0, 1, 0, 0)); // (also asm instruction)
 
     this.flexcodeValues.set(eFlexcode.fc_cogchk, setFlexcodeValue(eByteCode.bc_cogchk, 1, 1, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_getrnd, setFlexcodeValue(eByteCode.bc_getrnd, 0, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_getrnd, setFlexcodeValue(eByteCode.bc_getrnd, 0, 1, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_getct, setFlexcodeValue(eByteCode.bc_getct, 0, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_getct, setFlexcodeValue(eByteCode.bc_getct, 0, 1, 0, 0)); // (also asm instruction)
 
     this.flexcodeValues.set(eFlexcode.fc_pollct, setFlexcodeValue(eByteCode.bc_pollct, 1, 1, 0, 0));
     this.flexcodeValues.set(eFlexcode.fc_waitct, setFlexcodeValue(eByteCode.bc_waitct, 1, 0, 0, 0));
-    this.flexcodeValues.set(eFlexcode.fc_pinwrite, setFlexcodeValue(eByteCode.bc_pinwrite, 2, 0, 1, 0));
     this.flexcodeValues.set(eFlexcode.fc_pinlow, setFlexcodeValue(eByteCode.bc_pinlow, 1, 0, 1, 0));
     this.flexcodeValues.set(eFlexcode.fc_pinhigh, setFlexcodeValue(eByteCode.bc_pinhigh, 1, 0, 1, 0));
     this.flexcodeValues.set(eFlexcode.fc_pintoggle, setFlexcodeValue(eByteCode.bc_pintoggle, 1, 0, 1, 0));
     this.flexcodeValues.set(eFlexcode.fc_pinfloat, setFlexcodeValue(eByteCode.bc_pinfloat, 1, 0, 1, 0));
-    this.flexcodeValues.set(eFlexcode.fc_pinread, setFlexcodeValue(eByteCode.bc_pinread, 1, 1, 1, 0));
-    this.flexcodeValues.set(eFlexcode.fc_pinstart, setFlexcodeValue(eByteCode.bc_pinstart, 4, 0, 1, 0));
-    this.flexcodeValues.set(eFlexcode.fc_pinclear, setFlexcodeValue(eByteCode.bc_pinclear, 1, 0, 1, 0));
-    this.flexcodeValues.set(eFlexcode.fc_wrpin, setFlexcodeValue(eByteCode.bc_wrpin, 2, 0, 1, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_pinread, setFlexcodeValue(eByteCode.bc_pinread, 1, 1, 1, 1));
+    this.flexcodeValues.set(eFlexcode.fc_pinwrite, setFlexcodeValue(eByteCode.bc_pinwrite, 2, 0, 1, 1));
+    this.flexcodeValues.set(eFlexcode.fc_pinstart, setFlexcodeValue(eByteCode.bc_pinstart, 4, 0, 1, 1));
+    this.flexcodeValues.set(eFlexcode.fc_pinclear, setFlexcodeValue(eByteCode.bc_pinclear, 1, 0, 1, 1));
+    this.flexcodeValues.set(eFlexcode.fc_wrpin, setFlexcodeValue(eByteCode.bc_wrpin, 2, 0, 1, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_wxpin, setFlexcodeValue(eByteCode.bc_wxpin, 2, 0, 1, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_wxpin, setFlexcodeValue(eByteCode.bc_wxpin, 2, 0, 1, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_wypin, setFlexcodeValue(eByteCode.bc_wypin, 2, 0, 1, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_wypin, setFlexcodeValue(eByteCode.bc_wypin, 2, 0, 1, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_akpin, setFlexcodeValue(eByteCode.bc_akpin, 1, 0, 1, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_akpin, setFlexcodeValue(eByteCode.bc_akpin, 1, 0, 1, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_rdpin, setFlexcodeValue(eByteCode.bc_rdpin, 1, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_rdpin, setFlexcodeValue(eByteCode.bc_rdpin, 1, 1, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_rqpin, setFlexcodeValue(eByteCode.bc_rqpin, 1, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_rqpin, setFlexcodeValue(eByteCode.bc_rqpin, 1, 1, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_locknew, setFlexcodeValue(eByteCode.bc_locknew, 0, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_locknew, setFlexcodeValue(eByteCode.bc_locknew, 0, 1, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_lockret, setFlexcodeValue(eByteCode.bc_lockret, 1, 0, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_lockret, setFlexcodeValue(eByteCode.bc_lockret, 1, 0, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_locktry, setFlexcodeValue(eByteCode.bc_locktry, 1, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_locktry, setFlexcodeValue(eByteCode.bc_locktry, 1, 1, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_lockrel, setFlexcodeValue(eByteCode.bc_lockrel, 1, 0, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_lockrel, setFlexcodeValue(eByteCode.bc_lockrel, 1, 0, 0, 0)); // (also asm instruction)
 
     this.flexcodeValues.set(eFlexcode.fc_lockchk, setFlexcodeValue(eByteCode.bc_lockchk, 1, 1, 0, 0));
-    this.flexcodeValues.set(eFlexcode.fc_cogatn, setFlexcodeValue(eByteCode.bc_cogatn, 1, 0, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_cogatn, setFlexcodeValue(eByteCode.bc_cogatn, 1, 0, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_pollatn, setFlexcodeValue(eByteCode.bc_pollatn, 0, 1, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_pollatn, setFlexcodeValue(eByteCode.bc_pollatn, 0, 1, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_waitatn, setFlexcodeValue(eByteCode.bc_waitatn, 0, 0, 0, 0)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_waitatn, setFlexcodeValue(eByteCode.bc_waitatn, 0, 0, 0, 0)); // (also asm instruction)
 
-    this.flexcodeValues.set(eFlexcode.fc_hubset, setFlexcodeValue(eByteCode.bc_hubset, 1, 0, 0, 1)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_hubset, setFlexcodeValue(eByteCode.bc_hubset, 1, 0, 0, 1)); // (also asm instruction)
 
     this.flexcodeValues.set(eFlexcode.fc_clkset, setFlexcodeValue(eByteCode.bc_clkset, 2, 0, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_regexec, setFlexcodeValue(eByteCode.bc_regexec, 1, 0, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_regload, setFlexcodeValue(eByteCode.bc_regload, 1, 0, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_call, setFlexcodeValue(eByteCode.bc_call, 1, 0, 0, 1)); // (also asm instr.)
+    this.flexcodeValues.set(eFlexcode.fc_call, setFlexcodeValue(eByteCode.bc_call, 1, 0, 0, 1)); // (also asm instruction)
 
     this.flexcodeValues.set(eFlexcode.fc_getregs, setFlexcodeValue(eByteCode.bc_getregs, 3, 0, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_setregs, setFlexcodeValue(eByteCode.bc_setregs, 3, 0, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_bytemove, setFlexcodeValue(eByteCode.bc_bytemove, 3, 0, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_bytefill, setFlexcodeValue(eByteCode.bc_bytefill, 3, 0, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_wordmove, setFlexcodeValue(eByteCode.bc_wordmove, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_bytemove, setFlexcodeValue(eByteCode.bc_bytemove, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_byteswap, setFlexcodeValue(eByteCode.bc_byteswap, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_bytecomp, setFlexcodeValue(eByteCode.bc_bytecomp, 3, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_wordfill, setFlexcodeValue(eByteCode.bc_wordfill, 3, 0, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_longmove, setFlexcodeValue(eByteCode.bc_longmove, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_wordmove, setFlexcodeValue(eByteCode.bc_wordmove, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_wordswap, setFlexcodeValue(eByteCode.bc_wordswap, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_wordcomp, setFlexcodeValue(eByteCode.bc_wordcomp, 3, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_longfill, setFlexcodeValue(eByteCode.bc_longfill, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_longmove, setFlexcodeValue(eByteCode.bc_longmove, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_longswap, setFlexcodeValue(eByteCode.bc_longswap, 3, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_longcomp, setFlexcodeValue(eByteCode.bc_longcomp, 3, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_strsize, setFlexcodeValue(eByteCode.bc_strsize, 1, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_strcomp, setFlexcodeValue(eByteCode.bc_strcomp, 2, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_strcopy, setFlexcodeValue(eByteCode.bc_strcopy, 3, 0, 0, 1));
@@ -1620,6 +1625,12 @@ export class SpinSymbolTables {
     this.flexcodeValues.set(eFlexcode.fc_round, setFlexcodeValue(eByteCode.bc_round, 1, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_trunc, setFlexcodeValue(eByteCode.bc_trunc, 1, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_float, setFlexcodeValue(eByteCode.bc_float, 1, 1, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_tasknext, setFlexcodeValue(eByteCode.bc_tasknext, 0, 0, 0, 0));
+    this.flexcodeValues.set(eFlexcode.fc_taskstop, setFlexcodeValue(eByteCode.bc_taskstop, 1, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_taskhalt, setFlexcodeValue(eByteCode.bc_taskhalt, 1, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_taskcont, setFlexcodeValue(eByteCode.bc_taskcont, 1, 0, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_taskchk, setFlexcodeValue(eByteCode.bc_taskchk, 1, 1, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_taskid, setFlexcodeValue(eByteCode.bc_taskid, 0, 1, 0, 1));
 
     //
     // generated Automatic symbols table load
@@ -2430,38 +2441,38 @@ export class SpinSymbolTables {
     this.automatic_symbols.set(SYMBOLS.XORC, { type: eElementType.type_asm_effect2, value: 0b1110 });
     this.automatic_symbols.set(SYMBOLS.XORZ, { type: eElementType.type_asm_effect2, value: 0b1101 });
 
-    this.automatic_symbols.set(SYMBOLS._CLR, { type: eElementType.type_con, value: eValueType.if_ret }); // modcz values
-    this.automatic_symbols.set(SYMBOLS._NC_AND_NZ, { type: eElementType.type_con, value: eValueType.if_nc_and_nz });
-    this.automatic_symbols.set(SYMBOLS._NZ_AND_NC, { type: eElementType.type_con, value: eValueType.if_nc_and_nz });
-    this.automatic_symbols.set(SYMBOLS._GT, { type: eElementType.type_con, value: eValueType.if_nc_and_nz });
-    this.automatic_symbols.set(SYMBOLS._NC_AND_Z, { type: eElementType.type_con, value: eValueType.if_nc_and_z });
-    this.automatic_symbols.set(SYMBOLS._Z_AND_NC, { type: eElementType.type_con, value: eValueType.if_nc_and_z });
-    this.automatic_symbols.set(SYMBOLS._NC, { type: eElementType.type_con, value: eValueType.if_nc });
-    this.automatic_symbols.set(SYMBOLS._GE, { type: eElementType.type_con, value: eValueType.if_nc });
-    this.automatic_symbols.set(SYMBOLS._C_AND_NZ, { type: eElementType.type_con, value: eValueType.if_c_and_nz });
-    this.automatic_symbols.set(SYMBOLS._NZ_AND_C, { type: eElementType.type_con, value: eValueType.if_c_and_nz });
-    this.automatic_symbols.set(SYMBOLS._NZ, { type: eElementType.type_con, value: eValueType.if_nz });
-    this.automatic_symbols.set(SYMBOLS._NE, { type: eElementType.type_con, value: eValueType.if_nz });
-    this.automatic_symbols.set(SYMBOLS._C_NE_Z, { type: eElementType.type_con, value: eValueType.if_c_ne_z });
-    this.automatic_symbols.set(SYMBOLS._Z_NE_C, { type: eElementType.type_con, value: eValueType.if_c_ne_z });
-    this.automatic_symbols.set(SYMBOLS._NC_OR_NZ, { type: eElementType.type_con, value: eValueType.if_nc_or_nz });
-    this.automatic_symbols.set(SYMBOLS._NZ_OR_NC, { type: eElementType.type_con, value: eValueType.if_nc_or_nz });
-    this.automatic_symbols.set(SYMBOLS._C_AND_Z, { type: eElementType.type_con, value: eValueType.if_c_and_z });
-    this.automatic_symbols.set(SYMBOLS._Z_AND_C, { type: eElementType.type_con, value: eValueType.if_c_and_z });
-    this.automatic_symbols.set(SYMBOLS._C_EQ_Z, { type: eElementType.type_con, value: eValueType.if_c_eq_z });
-    this.automatic_symbols.set(SYMBOLS._Z_EQ_C, { type: eElementType.type_con, value: eValueType.if_c_eq_z });
-    this.automatic_symbols.set(SYMBOLS._Z, { type: eElementType.type_con, value: eValueType.if_z });
-    this.automatic_symbols.set(SYMBOLS._E, { type: eElementType.type_con, value: eValueType.if_z });
-    this.automatic_symbols.set(SYMBOLS._NC_OR_Z, { type: eElementType.type_con, value: eValueType.if_nc_or_z });
-    this.automatic_symbols.set(SYMBOLS._Z_OR_NC, { type: eElementType.type_con, value: eValueType.if_nc_or_z });
-    this.automatic_symbols.set(SYMBOLS._C, { type: eElementType.type_con, value: eValueType.if_c });
-    this.automatic_symbols.set(SYMBOLS._LT, { type: eElementType.type_con, value: eValueType.if_c });
-    this.automatic_symbols.set(SYMBOLS._C_OR_NZ, { type: eElementType.type_con, value: eValueType.if_c_or_nz });
-    this.automatic_symbols.set(SYMBOLS._NZ_OR_C, { type: eElementType.type_con, value: eValueType.if_c_or_nz });
-    this.automatic_symbols.set(SYMBOLS._C_OR_Z, { type: eElementType.type_con, value: eValueType.if_c_or_z });
-    this.automatic_symbols.set(SYMBOLS._Z_OR_C, { type: eElementType.type_con, value: eValueType.if_c_or_z });
-    this.automatic_symbols.set(SYMBOLS._LE, { type: eElementType.type_con, value: eValueType.if_c_or_z });
-    this.automatic_symbols.set(SYMBOLS._SET, { type: eElementType.type_con, value: eValueType.if_always });
+    this.automatic_symbols.set(SYMBOLS._CLR, { type: eElementType.type_con_int, value: eValueType.if_ret }); // modcz values
+    this.automatic_symbols.set(SYMBOLS._NC_AND_NZ, { type: eElementType.type_con_int, value: eValueType.if_nc_and_nz });
+    this.automatic_symbols.set(SYMBOLS._NZ_AND_NC, { type: eElementType.type_con_int, value: eValueType.if_nc_and_nz });
+    this.automatic_symbols.set(SYMBOLS._GT, { type: eElementType.type_con_int, value: eValueType.if_nc_and_nz });
+    this.automatic_symbols.set(SYMBOLS._NC_AND_Z, { type: eElementType.type_con_int, value: eValueType.if_nc_and_z });
+    this.automatic_symbols.set(SYMBOLS._Z_AND_NC, { type: eElementType.type_con_int, value: eValueType.if_nc_and_z });
+    this.automatic_symbols.set(SYMBOLS._NC, { type: eElementType.type_con_int, value: eValueType.if_nc });
+    this.automatic_symbols.set(SYMBOLS._GE, { type: eElementType.type_con_int, value: eValueType.if_nc });
+    this.automatic_symbols.set(SYMBOLS._C_AND_NZ, { type: eElementType.type_con_int, value: eValueType.if_c_and_nz });
+    this.automatic_symbols.set(SYMBOLS._NZ_AND_C, { type: eElementType.type_con_int, value: eValueType.if_c_and_nz });
+    this.automatic_symbols.set(SYMBOLS._NZ, { type: eElementType.type_con_int, value: eValueType.if_nz });
+    this.automatic_symbols.set(SYMBOLS._NE, { type: eElementType.type_con_int, value: eValueType.if_nz });
+    this.automatic_symbols.set(SYMBOLS._C_NE_Z, { type: eElementType.type_con_int, value: eValueType.if_c_ne_z });
+    this.automatic_symbols.set(SYMBOLS._Z_NE_C, { type: eElementType.type_con_int, value: eValueType.if_c_ne_z });
+    this.automatic_symbols.set(SYMBOLS._NC_OR_NZ, { type: eElementType.type_con_int, value: eValueType.if_nc_or_nz });
+    this.automatic_symbols.set(SYMBOLS._NZ_OR_NC, { type: eElementType.type_con_int, value: eValueType.if_nc_or_nz });
+    this.automatic_symbols.set(SYMBOLS._C_AND_Z, { type: eElementType.type_con_int, value: eValueType.if_c_and_z });
+    this.automatic_symbols.set(SYMBOLS._Z_AND_C, { type: eElementType.type_con_int, value: eValueType.if_c_and_z });
+    this.automatic_symbols.set(SYMBOLS._C_EQ_Z, { type: eElementType.type_con_int, value: eValueType.if_c_eq_z });
+    this.automatic_symbols.set(SYMBOLS._Z_EQ_C, { type: eElementType.type_con_int, value: eValueType.if_c_eq_z });
+    this.automatic_symbols.set(SYMBOLS._Z, { type: eElementType.type_con_int, value: eValueType.if_z });
+    this.automatic_symbols.set(SYMBOLS._E, { type: eElementType.type_con_int, value: eValueType.if_z });
+    this.automatic_symbols.set(SYMBOLS._NC_OR_Z, { type: eElementType.type_con_int, value: eValueType.if_nc_or_z });
+    this.automatic_symbols.set(SYMBOLS._Z_OR_NC, { type: eElementType.type_con_int, value: eValueType.if_nc_or_z });
+    this.automatic_symbols.set(SYMBOLS._C, { type: eElementType.type_con_int, value: eValueType.if_c });
+    this.automatic_symbols.set(SYMBOLS._LT, { type: eElementType.type_con_int, value: eValueType.if_c });
+    this.automatic_symbols.set(SYMBOLS._C_OR_NZ, { type: eElementType.type_con_int, value: eValueType.if_c_or_nz });
+    this.automatic_symbols.set(SYMBOLS._NZ_OR_C, { type: eElementType.type_con_int, value: eValueType.if_c_or_nz });
+    this.automatic_symbols.set(SYMBOLS._C_OR_Z, { type: eElementType.type_con_int, value: eValueType.if_c_or_z });
+    this.automatic_symbols.set(SYMBOLS._Z_OR_C, { type: eElementType.type_con_int, value: eValueType.if_c_or_z });
+    this.automatic_symbols.set(SYMBOLS._LE, { type: eElementType.type_con_int, value: eValueType.if_c_or_z });
+    this.automatic_symbols.set(SYMBOLS._SET, { type: eElementType.type_con_int, value: eValueType.if_always });
 
     this.automatic_symbols.set(SYMBOLS.REG, { type: eElementType.type_reg, value: 0 }); // reg
 
@@ -2496,259 +2507,259 @@ export class SpinSymbolTables {
 
     this.automatic_symbols.set(SYMBOLS.VARBASE, { type: eElementType.type_var_long, value: 0 });
 
-    this.automatic_symbols.set(SYMBOLS.FALSE, { type: eElementType.type_con, value: 0 }); // numeric constants
-    this.automatic_symbols.set(SYMBOLS.TRUE, { type: eElementType.type_con, value: 0x0ffffffff });
-    this.automatic_symbols.set(SYMBOLS.NEGX, { type: eElementType.type_con, value: 0x80000000 });
-    this.automatic_symbols.set(SYMBOLS.POSX, { type: eElementType.type_con, value: 0x7fffffff });
+    this.automatic_symbols.set(SYMBOLS.FALSE, { type: eElementType.type_con_int, value: 0 }); // numeric constants
+    this.automatic_symbols.set(SYMBOLS.TRUE, { type: eElementType.type_con_int, value: 0x0ffffffff });
+    this.automatic_symbols.set(SYMBOLS.NEGX, { type: eElementType.type_con_int, value: 0x80000000 });
+    this.automatic_symbols.set(SYMBOLS.POSX, { type: eElementType.type_con_int, value: 0x7fffffff });
     this.automatic_symbols.set(SYMBOLS.PI, { type: eElementType.type_con_float, value: 0x40490fdb });
 
-    this.automatic_symbols.set(SYMBOLS.COGEXEC, { type: eElementType.type_con, value: 0b000000 }); // coginit constants
-    this.automatic_symbols.set(SYMBOLS.HUBEXEC, { type: eElementType.type_con, value: 0b100000 });
-    this.automatic_symbols.set(SYMBOLS.COGEXEC_NEW, { type: eElementType.type_con, value: 0b010000 });
-    this.automatic_symbols.set(SYMBOLS.HUBEXEC_NEW, { type: eElementType.type_con, value: 0b110000 });
-    this.automatic_symbols.set(SYMBOLS.COGEXEC_NEW_PAIR, { type: eElementType.type_con, value: 0b010001 });
-    this.automatic_symbols.set(SYMBOLS.HUBEXEC_NEW_PAIR, { type: eElementType.type_con, value: 0b110001 });
-    this.automatic_symbols.set(SYMBOLS.NEWCOG, { type: eElementType.type_con, value: 0b010000 }); // cogspin constant
+    this.automatic_symbols.set(SYMBOLS.COGEXEC, { type: eElementType.type_con_int, value: 0b000000 }); // coginit constants
+    this.automatic_symbols.set(SYMBOLS.HUBEXEC, { type: eElementType.type_con_int, value: 0b100000 });
+    this.automatic_symbols.set(SYMBOLS.COGEXEC_NEW, { type: eElementType.type_con_int, value: 0b010000 });
+    this.automatic_symbols.set(SYMBOLS.HUBEXEC_NEW, { type: eElementType.type_con_int, value: 0b110000 });
+    this.automatic_symbols.set(SYMBOLS.COGEXEC_NEW_PAIR, { type: eElementType.type_con_int, value: 0b010001 });
+    this.automatic_symbols.set(SYMBOLS.HUBEXEC_NEW_PAIR, { type: eElementType.type_con_int, value: 0b110001 });
+    this.automatic_symbols.set(SYMBOLS.NEWCOG, { type: eElementType.type_con_int, value: 0b010000 }); // cogspin constant
 
-    this.automatic_symbols.set(SYMBOLS.P_TRUE_A, { type: eElementType.type_con, value: 0b00000000000000000000000000000000 }); // smart pin constants
-    this.automatic_symbols.set(SYMBOLS.P_INVERT_A, { type: eElementType.type_con, value: 0b10000000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TRUE_A, { type: eElementType.type_con_int, value: 0b00000000000000000000000000000000 }); // smart pin constants
+    this.automatic_symbols.set(SYMBOLS.P_INVERT_A, { type: eElementType.type_con_int, value: 0b10000000000000000000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_LOCAL_A, { type: eElementType.type_con, value: 0b0000000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_PLUS1_A, { type: eElementType.type_con, value: 0b0010000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_PLUS2_A, { type: eElementType.type_con, value: 0b0100000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_PLUS3_A, { type: eElementType.type_con, value: 0b0110000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_OUTBIT_A, { type: eElementType.type_con, value: 0b1000000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_MINUS3_A, { type: eElementType.type_con, value: 0b1010000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_MINUS2_A, { type: eElementType.type_con, value: 0b1100000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_MINUS1_A, { type: eElementType.type_con, value: 0b1110000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOCAL_A, { type: eElementType.type_con_int, value: 0b0000000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PLUS1_A, { type: eElementType.type_con_int, value: 0b0010000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PLUS2_A, { type: eElementType.type_con_int, value: 0b0100000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PLUS3_A, { type: eElementType.type_con_int, value: 0b0110000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_OUTBIT_A, { type: eElementType.type_con_int, value: 0b1000000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_MINUS3_A, { type: eElementType.type_con_int, value: 0b1010000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_MINUS2_A, { type: eElementType.type_con_int, value: 0b1100000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_MINUS1_A, { type: eElementType.type_con_int, value: 0b1110000000000000000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_TRUE_B, { type: eElementType.type_con, value: 0b0000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_INVERT_B, { type: eElementType.type_con, value: 0b1000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TRUE_B, { type: eElementType.type_con_int, value: 0b0000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_INVERT_B, { type: eElementType.type_con_int, value: 0b1000000000000000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_LOCAL_B, { type: eElementType.type_con, value: 0b000000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_PLUS1_B, { type: eElementType.type_con, value: 0b001000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_PLUS2_B, { type: eElementType.type_con, value: 0b010000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_PLUS3_B, { type: eElementType.type_con, value: 0b011000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_OUTBIT_B, { type: eElementType.type_con, value: 0b100000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_MINUS3_B, { type: eElementType.type_con, value: 0b101000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_MINUS2_B, { type: eElementType.type_con, value: 0b110000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_MINUS1_B, { type: eElementType.type_con, value: 0b111000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOCAL_B, { type: eElementType.type_con_int, value: 0b000000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PLUS1_B, { type: eElementType.type_con_int, value: 0b001000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PLUS2_B, { type: eElementType.type_con_int, value: 0b010000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PLUS3_B, { type: eElementType.type_con_int, value: 0b011000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_OUTBIT_B, { type: eElementType.type_con_int, value: 0b100000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_MINUS3_B, { type: eElementType.type_con_int, value: 0b101000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_MINUS2_B, { type: eElementType.type_con_int, value: 0b110000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_MINUS1_B, { type: eElementType.type_con_int, value: 0b111000000000000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_PASS_AB, { type: eElementType.type_con, value: 0b000000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_AND_AB, { type: eElementType.type_con, value: 0b001000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_OR_AB, { type: eElementType.type_con, value: 0b010000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_XOR_AB, { type: eElementType.type_con, value: 0b011000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_FILT0_AB, { type: eElementType.type_con, value: 0b100000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_FILT1_AB, { type: eElementType.type_con, value: 0b101000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_FILT2_AB, { type: eElementType.type_con, value: 0b110000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_FILT3_AB, { type: eElementType.type_con, value: 0b111000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_PASS_AB, { type: eElementType.type_con_int, value: 0b000000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_AND_AB, { type: eElementType.type_con_int, value: 0b001000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_OR_AB, { type: eElementType.type_con_int, value: 0b010000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_XOR_AB, { type: eElementType.type_con_int, value: 0b011000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_FILT0_AB, { type: eElementType.type_con_int, value: 0b100000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_FILT1_AB, { type: eElementType.type_con_int, value: 0b101000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_FILT2_AB, { type: eElementType.type_con_int, value: 0b110000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_FILT3_AB, { type: eElementType.type_con_int, value: 0b111000000000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_LOGIC_A, { type: eElementType.type_con, value: 0b000000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOGIC_A_FB, { type: eElementType.type_con, value: 0b000100000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOGIC_B_FB, { type: eElementType.type_con, value: 0b001000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_SCHMITT_A, { type: eElementType.type_con, value: 0b001100000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_SCHMITT_A_FB, { type: eElementType.type_con, value: 0b010000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_SCHMITT_B_FB, { type: eElementType.type_con, value: 0b010100000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_COMPARE_AB, { type: eElementType.type_con, value: 0b011000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_COMPARE_AB_FB, { type: eElementType.type_con, value: 0b011100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOGIC_A, { type: eElementType.type_con_int, value: 0b000000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOGIC_A_FB, { type: eElementType.type_con_int, value: 0b000100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOGIC_B_FB, { type: eElementType.type_con_int, value: 0b001000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_SCHMITT_A, { type: eElementType.type_con_int, value: 0b001100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_SCHMITT_A_FB, { type: eElementType.type_con_int, value: 0b010000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_SCHMITT_B_FB, { type: eElementType.type_con_int, value: 0b010100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_COMPARE_AB, { type: eElementType.type_con_int, value: 0b011000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_COMPARE_AB_FB, { type: eElementType.type_con_int, value: 0b011100000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_ADC_GIO, { type: eElementType.type_con, value: 0b100000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_VIO, { type: eElementType.type_con, value: 0b100001000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_FLOAT, { type: eElementType.type_con, value: 0b100010000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_1X, { type: eElementType.type_con, value: 0b100011000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_3X, { type: eElementType.type_con, value: 0b100100000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_10X, { type: eElementType.type_con, value: 0b100101000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_30X, { type: eElementType.type_con, value: 0b100110000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_100X, { type: eElementType.type_con, value: 0b100111000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_GIO, { type: eElementType.type_con_int, value: 0b100000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_VIO, { type: eElementType.type_con_int, value: 0b100001000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_FLOAT, { type: eElementType.type_con_int, value: 0b100010000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_1X, { type: eElementType.type_con_int, value: 0b100011000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_3X, { type: eElementType.type_con_int, value: 0b100100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_10X, { type: eElementType.type_con_int, value: 0b100101000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_30X, { type: eElementType.type_con_int, value: 0b100110000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_100X, { type: eElementType.type_con_int, value: 0b100111000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_DAC_990R_3V, { type: eElementType.type_con, value: 0b101000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_DAC_600R_2V, { type: eElementType.type_con, value: 0b101010000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_DAC_124R_3V, { type: eElementType.type_con, value: 0b101100000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_DAC_75R_2V, { type: eElementType.type_con, value: 0b101110000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_990R_3V, { type: eElementType.type_con_int, value: 0b101000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_600R_2V, { type: eElementType.type_con_int, value: 0b101010000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_124R_3V, { type: eElementType.type_con_int, value: 0b101100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_75R_2V, { type: eElementType.type_con_int, value: 0b101110000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_LEVEL_A, { type: eElementType.type_con, value: 0b110000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LEVEL_A_FBN, { type: eElementType.type_con, value: 0b110100000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LEVEL_B_FBP, { type: eElementType.type_con, value: 0b111000000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LEVEL_B_FBN, { type: eElementType.type_con, value: 0b111100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LEVEL_A, { type: eElementType.type_con_int, value: 0b110000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LEVEL_A_FBN, { type: eElementType.type_con_int, value: 0b110100000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LEVEL_B_FBP, { type: eElementType.type_con_int, value: 0b111000000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LEVEL_B_FBN, { type: eElementType.type_con_int, value: 0b111100000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_ASYNC_IO, { type: eElementType.type_con, value: 0b00000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_SYNC_IO, { type: eElementType.type_con, value: 0b10000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_ASYNC_IO, { type: eElementType.type_con_int, value: 0b00000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_SYNC_IO, { type: eElementType.type_con_int, value: 0b10000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_TRUE_IN, { type: eElementType.type_con, value: 0b0000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_INVERT_IN, { type: eElementType.type_con, value: 0b1000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TRUE_IN, { type: eElementType.type_con_int, value: 0b0000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_INVERT_IN, { type: eElementType.type_con_int, value: 0b1000000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_TRUE_OUTPUT, { type: eElementType.type_con, value: 0b000000000000000 }); // Added P_TRUE_OUT
-    this.automatic_symbols.set(SYMBOLS.P_TRUE_OUT, { type: eElementType.type_con, value: 0b000000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_INVERT_OUTPUT, { type: eElementType.type_con, value: 0b100000000000000 }); // Added P_INVERT_OUT
-    this.automatic_symbols.set(SYMBOLS.P_INVERT_OUT, { type: eElementType.type_con, value: 0b100000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TRUE_OUTPUT, { type: eElementType.type_con_int, value: 0b000000000000000 }); // Added P_TRUE_OUT
+    this.automatic_symbols.set(SYMBOLS.P_TRUE_OUT, { type: eElementType.type_con_int, value: 0b000000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_INVERT_OUTPUT, { type: eElementType.type_con_int, value: 0b100000000000000 }); // Added P_INVERT_OUT
+    this.automatic_symbols.set(SYMBOLS.P_INVERT_OUT, { type: eElementType.type_con_int, value: 0b100000000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_FAST, { type: eElementType.type_con, value: 0b00000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_1K5, { type: eElementType.type_con, value: 0b00100000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_15K, { type: eElementType.type_con, value: 0b01000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_150K, { type: eElementType.type_con, value: 0b01100000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_1MA, { type: eElementType.type_con, value: 0b10000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_100UA, { type: eElementType.type_con, value: 0b10100000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_10UA, { type: eElementType.type_con, value: 0b11000000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_FLOAT, { type: eElementType.type_con, value: 0b11100000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_FAST, { type: eElementType.type_con_int, value: 0b00000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_1K5, { type: eElementType.type_con_int, value: 0b00100000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_15K, { type: eElementType.type_con_int, value: 0b01000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_150K, { type: eElementType.type_con_int, value: 0b01100000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_1MA, { type: eElementType.type_con_int, value: 0b10000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_100UA, { type: eElementType.type_con_int, value: 0b10100000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_10UA, { type: eElementType.type_con_int, value: 0b11000000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_FLOAT, { type: eElementType.type_con_int, value: 0b11100000000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_LOW_FAST, { type: eElementType.type_con, value: 0b00000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_1K5, { type: eElementType.type_con, value: 0b00100000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_15K, { type: eElementType.type_con, value: 0b01000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_150K, { type: eElementType.type_con, value: 0b01100000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_1MA, { type: eElementType.type_con, value: 0b10000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_100UA, { type: eElementType.type_con, value: 0b10100000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_10UA, { type: eElementType.type_con, value: 0b11000000000 });
-    this.automatic_symbols.set(SYMBOLS.P_LOW_FLOAT, { type: eElementType.type_con, value: 0b11100000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_FAST, { type: eElementType.type_con_int, value: 0b00000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_1K5, { type: eElementType.type_con_int, value: 0b00100000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_15K, { type: eElementType.type_con_int, value: 0b01000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_150K, { type: eElementType.type_con_int, value: 0b01100000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_1MA, { type: eElementType.type_con_int, value: 0b10000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_100UA, { type: eElementType.type_con_int, value: 0b10100000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_10UA, { type: eElementType.type_con_int, value: 0b11000000000 });
+    this.automatic_symbols.set(SYMBOLS.P_LOW_FLOAT, { type: eElementType.type_con_int, value: 0b11100000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_TT_00, { type: eElementType.type_con, value: 0b00000000 });
-    this.automatic_symbols.set(SYMBOLS.P_TT_01, { type: eElementType.type_con, value: 0b01000000 });
-    this.automatic_symbols.set(SYMBOLS.P_TT_10, { type: eElementType.type_con, value: 0b10000000 });
-    this.automatic_symbols.set(SYMBOLS.P_TT_11, { type: eElementType.type_con, value: 0b11000000 });
-    this.automatic_symbols.set(SYMBOLS.P_OE, { type: eElementType.type_con, value: 0b01000000 });
-    this.automatic_symbols.set(SYMBOLS.P_CHANNEL, { type: eElementType.type_con, value: 0b01000000 });
-    this.automatic_symbols.set(SYMBOLS.P_BITDAC, { type: eElementType.type_con, value: 0b10000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TT_00, { type: eElementType.type_con_int, value: 0b00000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TT_01, { type: eElementType.type_con_int, value: 0b01000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TT_10, { type: eElementType.type_con_int, value: 0b10000000 });
+    this.automatic_symbols.set(SYMBOLS.P_TT_11, { type: eElementType.type_con_int, value: 0b11000000 });
+    this.automatic_symbols.set(SYMBOLS.P_OE, { type: eElementType.type_con_int, value: 0b01000000 });
+    this.automatic_symbols.set(SYMBOLS.P_CHANNEL, { type: eElementType.type_con_int, value: 0b01000000 });
+    this.automatic_symbols.set(SYMBOLS.P_BITDAC, { type: eElementType.type_con_int, value: 0b10000000 });
 
-    this.automatic_symbols.set(SYMBOLS.P_NORMAL, { type: eElementType.type_con, value: 0b000000 });
-    this.automatic_symbols.set(SYMBOLS.P_REPOSITORY, { type: eElementType.type_con, value: 0b000010 });
-    this.automatic_symbols.set(SYMBOLS.P_DAC_NOISE, { type: eElementType.type_con, value: 0b000010 });
-    this.automatic_symbols.set(SYMBOLS.P_DAC_DITHER_RND, { type: eElementType.type_con, value: 0b000100 });
-    this.automatic_symbols.set(SYMBOLS.P_DAC_DITHER_PWM, { type: eElementType.type_con, value: 0b000110 });
-    this.automatic_symbols.set(SYMBOLS.P_PULSE, { type: eElementType.type_con, value: 0b001000 });
-    this.automatic_symbols.set(SYMBOLS.P_TRANSITION, { type: eElementType.type_con, value: 0b001010 });
-    this.automatic_symbols.set(SYMBOLS.P_NCO_FREQ, { type: eElementType.type_con, value: 0b001100 });
-    this.automatic_symbols.set(SYMBOLS.P_NCO_DUTY, { type: eElementType.type_con, value: 0b001110 });
-    this.automatic_symbols.set(SYMBOLS.P_PWM_TRIANGLE, { type: eElementType.type_con, value: 0b010000 });
-    this.automatic_symbols.set(SYMBOLS.P_PWM_SAWTOOTH, { type: eElementType.type_con, value: 0b010010 });
-    this.automatic_symbols.set(SYMBOLS.P_PWM_SMPS, { type: eElementType.type_con, value: 0b010100 });
-    this.automatic_symbols.set(SYMBOLS.P_QUADRATURE, { type: eElementType.type_con, value: 0b010110 });
-    this.automatic_symbols.set(SYMBOLS.P_REG_UP, { type: eElementType.type_con, value: 0b011000 });
-    this.automatic_symbols.set(SYMBOLS.P_REG_UP_DOWN, { type: eElementType.type_con, value: 0b011010 });
-    this.automatic_symbols.set(SYMBOLS.P_COUNT_RISES, { type: eElementType.type_con, value: 0b011100 });
-    this.automatic_symbols.set(SYMBOLS.P_COUNT_HIGHS, { type: eElementType.type_con, value: 0b011110 });
-    this.automatic_symbols.set(SYMBOLS.P_STATE_TICKS, { type: eElementType.type_con, value: 0b100000 });
-    this.automatic_symbols.set(SYMBOLS.P_HIGH_TICKS, { type: eElementType.type_con, value: 0b100010 });
-    this.automatic_symbols.set(SYMBOLS.P_EVENTS_TICKS, { type: eElementType.type_con, value: 0b100100 });
-    this.automatic_symbols.set(SYMBOLS.P_PERIODS_TICKS, { type: eElementType.type_con, value: 0b100110 });
-    this.automatic_symbols.set(SYMBOLS.P_PERIODS_HIGHS, { type: eElementType.type_con, value: 0b101000 });
-    this.automatic_symbols.set(SYMBOLS.P_COUNTER_TICKS, { type: eElementType.type_con, value: 0b101010 });
-    this.automatic_symbols.set(SYMBOLS.P_COUNTER_HIGHS, { type: eElementType.type_con, value: 0b101100 });
-    this.automatic_symbols.set(SYMBOLS.P_COUNTER_PERIODS, { type: eElementType.type_con, value: 0b101110 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC, { type: eElementType.type_con, value: 0b110000 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_EXT, { type: eElementType.type_con, value: 0b110010 });
-    this.automatic_symbols.set(SYMBOLS.P_ADC_SCOPE, { type: eElementType.type_con, value: 0b110100 });
-    this.automatic_symbols.set(SYMBOLS.P_USB_PAIR, { type: eElementType.type_con, value: 0b110110 });
-    this.automatic_symbols.set(SYMBOLS.P_SYNC_TX, { type: eElementType.type_con, value: 0b111000 });
-    this.automatic_symbols.set(SYMBOLS.P_SYNC_RX, { type: eElementType.type_con, value: 0b111010 });
-    this.automatic_symbols.set(SYMBOLS.P_ASYNC_TX, { type: eElementType.type_con, value: 0b111100 });
-    this.automatic_symbols.set(SYMBOLS.P_ASYNC_RX, { type: eElementType.type_con, value: 0b111110 });
+    this.automatic_symbols.set(SYMBOLS.P_NORMAL, { type: eElementType.type_con_int, value: 0b000000 });
+    this.automatic_symbols.set(SYMBOLS.P_REPOSITORY, { type: eElementType.type_con_int, value: 0b000010 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_NOISE, { type: eElementType.type_con_int, value: 0b000010 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_DITHER_RND, { type: eElementType.type_con_int, value: 0b000100 });
+    this.automatic_symbols.set(SYMBOLS.P_DAC_DITHER_PWM, { type: eElementType.type_con_int, value: 0b000110 });
+    this.automatic_symbols.set(SYMBOLS.P_PULSE, { type: eElementType.type_con_int, value: 0b001000 });
+    this.automatic_symbols.set(SYMBOLS.P_TRANSITION, { type: eElementType.type_con_int, value: 0b001010 });
+    this.automatic_symbols.set(SYMBOLS.P_NCO_FREQ, { type: eElementType.type_con_int, value: 0b001100 });
+    this.automatic_symbols.set(SYMBOLS.P_NCO_DUTY, { type: eElementType.type_con_int, value: 0b001110 });
+    this.automatic_symbols.set(SYMBOLS.P_PWM_TRIANGLE, { type: eElementType.type_con_int, value: 0b010000 });
+    this.automatic_symbols.set(SYMBOLS.P_PWM_SAWTOOTH, { type: eElementType.type_con_int, value: 0b010010 });
+    this.automatic_symbols.set(SYMBOLS.P_PWM_SMPS, { type: eElementType.type_con_int, value: 0b010100 });
+    this.automatic_symbols.set(SYMBOLS.P_QUADRATURE, { type: eElementType.type_con_int, value: 0b010110 });
+    this.automatic_symbols.set(SYMBOLS.P_REG_UP, { type: eElementType.type_con_int, value: 0b011000 });
+    this.automatic_symbols.set(SYMBOLS.P_REG_UP_DOWN, { type: eElementType.type_con_int, value: 0b011010 });
+    this.automatic_symbols.set(SYMBOLS.P_COUNT_RISES, { type: eElementType.type_con_int, value: 0b011100 });
+    this.automatic_symbols.set(SYMBOLS.P_COUNT_HIGHS, { type: eElementType.type_con_int, value: 0b011110 });
+    this.automatic_symbols.set(SYMBOLS.P_STATE_TICKS, { type: eElementType.type_con_int, value: 0b100000 });
+    this.automatic_symbols.set(SYMBOLS.P_HIGH_TICKS, { type: eElementType.type_con_int, value: 0b100010 });
+    this.automatic_symbols.set(SYMBOLS.P_EVENTS_TICKS, { type: eElementType.type_con_int, value: 0b100100 });
+    this.automatic_symbols.set(SYMBOLS.P_PERIODS_TICKS, { type: eElementType.type_con_int, value: 0b100110 });
+    this.automatic_symbols.set(SYMBOLS.P_PERIODS_HIGHS, { type: eElementType.type_con_int, value: 0b101000 });
+    this.automatic_symbols.set(SYMBOLS.P_COUNTER_TICKS, { type: eElementType.type_con_int, value: 0b101010 });
+    this.automatic_symbols.set(SYMBOLS.P_COUNTER_HIGHS, { type: eElementType.type_con_int, value: 0b101100 });
+    this.automatic_symbols.set(SYMBOLS.P_COUNTER_PERIODS, { type: eElementType.type_con_int, value: 0b101110 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC, { type: eElementType.type_con_int, value: 0b110000 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_EXT, { type: eElementType.type_con_int, value: 0b110010 });
+    this.automatic_symbols.set(SYMBOLS.P_ADC_SCOPE, { type: eElementType.type_con_int, value: 0b110100 });
+    this.automatic_symbols.set(SYMBOLS.P_USB_PAIR, { type: eElementType.type_con_int, value: 0b110110 });
+    this.automatic_symbols.set(SYMBOLS.P_SYNC_TX, { type: eElementType.type_con_int, value: 0b111000 });
+    this.automatic_symbols.set(SYMBOLS.P_SYNC_RX, { type: eElementType.type_con_int, value: 0b111010 });
+    this.automatic_symbols.set(SYMBOLS.P_ASYNC_TX, { type: eElementType.type_con_int, value: 0b111100 });
+    this.automatic_symbols.set(SYMBOLS.P_ASYNC_RX, { type: eElementType.type_con_int, value: 0b111110 });
 
-    this.automatic_symbols.set(SYMBOLS.X_IMM_32X1_LUT, { type: eElementType.type_con, value: 0x00000000 }); // streamer constants
-    this.automatic_symbols.set(SYMBOLS.X_IMM_16X2_LUT, { type: eElementType.type_con, value: 0x10000000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_LUT, { type: eElementType.type_con, value: 0x20000000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_LUT, { type: eElementType.type_con, value: 0x30000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_32X1_LUT, { type: eElementType.type_con_int, value: 0x00000000 }); // streamer constants
+    this.automatic_symbols.set(SYMBOLS.X_IMM_16X2_LUT, { type: eElementType.type_con_int, value: 0x10000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_LUT, { type: eElementType.type_con_int, value: 0x20000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_LUT, { type: eElementType.type_con_int, value: 0x30000000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_IMM_32X1_1DAC1, { type: eElementType.type_con, value: 0x40000000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_16X2_2DAC1, { type: eElementType.type_con, value: 0x50000000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_16X2_1DAC2, { type: eElementType.type_con, value: 0x50020000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_4DAC1, { type: eElementType.type_con, value: 0x60000000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_2DAC2, { type: eElementType.type_con, value: 0x60020000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_1DAC4, { type: eElementType.type_con, value: 0x60040000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_4DAC2, { type: eElementType.type_con, value: 0x60060000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_2DAC4, { type: eElementType.type_con, value: 0x60070000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_1DAC8, { type: eElementType.type_con, value: 0x600e0000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_2X16_4DAC4, { type: eElementType.type_con, value: 0x600f0000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_2X16_2DAC8, { type: eElementType.type_con, value: 0x70000000 });
-    this.automatic_symbols.set(SYMBOLS.X_IMM_1X32_4DAC8, { type: eElementType.type_con, value: 0x70010000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_32X1_1DAC1, { type: eElementType.type_con_int, value: 0x40000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_16X2_2DAC1, { type: eElementType.type_con_int, value: 0x50000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_16X2_1DAC2, { type: eElementType.type_con_int, value: 0x50020000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_4DAC1, { type: eElementType.type_con_int, value: 0x60000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_2DAC2, { type: eElementType.type_con_int, value: 0x60020000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_8X4_1DAC4, { type: eElementType.type_con_int, value: 0x60040000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_4DAC2, { type: eElementType.type_con_int, value: 0x60060000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_2DAC4, { type: eElementType.type_con_int, value: 0x60070000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_4X8_1DAC8, { type: eElementType.type_con_int, value: 0x600e0000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_2X16_4DAC4, { type: eElementType.type_con_int, value: 0x600f0000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_2X16_2DAC8, { type: eElementType.type_con_int, value: 0x70000000 });
+    this.automatic_symbols.set(SYMBOLS.X_IMM_1X32_4DAC8, { type: eElementType.type_con_int, value: 0x70010000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_RFLONG_32X1_LUT, { type: eElementType.type_con, value: 0x70020000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFLONG_16X2_LUT, { type: eElementType.type_con, value: 0x70040000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFLONG_8X4_LUT, { type: eElementType.type_con, value: 0x70060000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFLONG_4X8_LUT, { type: eElementType.type_con, value: 0x70080000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFLONG_32X1_LUT, { type: eElementType.type_con_int, value: 0x70020000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFLONG_16X2_LUT, { type: eElementType.type_con_int, value: 0x70040000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFLONG_8X4_LUT, { type: eElementType.type_con_int, value: 0x70060000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFLONG_4X8_LUT, { type: eElementType.type_con_int, value: 0x70080000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_1P_1DAC1, { type: eElementType.type_con, value: 0x080000000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_2P_2DAC1, { type: eElementType.type_con, value: 0x090000000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_2P_1DAC2, { type: eElementType.type_con, value: 0x090020000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_4P_4DAC1, { type: eElementType.type_con, value: 0x0a0000000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_4P_2DAC2, { type: eElementType.type_con, value: 0x0a0020000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_4P_1DAC4, { type: eElementType.type_con, value: 0x0a0040000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_8P_4DAC2, { type: eElementType.type_con, value: 0x0a0060000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_8P_2DAC4, { type: eElementType.type_con, value: 0x0a0070000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_8P_1DAC8, { type: eElementType.type_con, value: 0x0a00e0000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFWORD_16P_4DAC4, { type: eElementType.type_con, value: 0x0a00f0000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFWORD_16P_2DAC8, { type: eElementType.type_con, value: 0x0b0000000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFLONG_32P_4DAC8, { type: eElementType.type_con, value: 0x0b0010000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_1P_1DAC1, { type: eElementType.type_con_int, value: 0x080000000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_2P_2DAC1, { type: eElementType.type_con_int, value: 0x090000000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_2P_1DAC2, { type: eElementType.type_con_int, value: 0x090020000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_4P_4DAC1, { type: eElementType.type_con_int, value: 0x0a0000000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_4P_2DAC2, { type: eElementType.type_con_int, value: 0x0a0020000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_4P_1DAC4, { type: eElementType.type_con_int, value: 0x0a0040000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_8P_4DAC2, { type: eElementType.type_con_int, value: 0x0a0060000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_8P_2DAC4, { type: eElementType.type_con_int, value: 0x0a0070000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_8P_1DAC8, { type: eElementType.type_con_int, value: 0x0a00e0000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFWORD_16P_4DAC4, { type: eElementType.type_con_int, value: 0x0a00f0000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFWORD_16P_2DAC8, { type: eElementType.type_con_int, value: 0x0b0000000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFLONG_32P_4DAC8, { type: eElementType.type_con_int, value: 0x0b0010000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_LUMA8, { type: eElementType.type_con, value: 0x0b0020000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_RGBI8, { type: eElementType.type_con, value: 0x0b0030000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_RGB8, { type: eElementType.type_con, value: 0x0b0040000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFWORD_RGB16, { type: eElementType.type_con, value: 0x0b0050000 });
-    this.automatic_symbols.set(SYMBOLS.X_RFLONG_RGB24, { type: eElementType.type_con, value: 0x0b0060000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_LUMA8, { type: eElementType.type_con_int, value: 0x0b0020000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_RGBI8, { type: eElementType.type_con_int, value: 0x0b0030000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFBYTE_RGB8, { type: eElementType.type_con_int, value: 0x0b0040000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFWORD_RGB16, { type: eElementType.type_con_int, value: 0x0b0050000 });
+    this.automatic_symbols.set(SYMBOLS.X_RFLONG_RGB24, { type: eElementType.type_con_int, value: 0x0b0060000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_1P_1DAC1_WFBYTE, { type: eElementType.type_con, value: 0x0c0000000 });
-    this.automatic_symbols.set(SYMBOLS.X_2P_2DAC1_WFBYTE, { type: eElementType.type_con, value: 0x0d0000000 });
-    this.automatic_symbols.set(SYMBOLS.X_2P_1DAC2_WFBYTE, { type: eElementType.type_con, value: 0x0d0020000 });
-    this.automatic_symbols.set(SYMBOLS.X_4P_4DAC1_WFBYTE, { type: eElementType.type_con, value: 0x0e0000000 });
-    this.automatic_symbols.set(SYMBOLS.X_4P_2DAC2_WFBYTE, { type: eElementType.type_con, value: 0x0e0020000 });
-    this.automatic_symbols.set(SYMBOLS.X_4P_1DAC4_WFBYTE, { type: eElementType.type_con, value: 0x0e0040000 });
-    this.automatic_symbols.set(SYMBOLS.X_8P_4DAC2_WFBYTE, { type: eElementType.type_con, value: 0x0e0060000 });
-    this.automatic_symbols.set(SYMBOLS.X_8P_2DAC4_WFBYTE, { type: eElementType.type_con, value: 0x0e0070000 });
-    this.automatic_symbols.set(SYMBOLS.X_8P_1DAC8_WFBYTE, { type: eElementType.type_con, value: 0x0e00e0000 });
-    this.automatic_symbols.set(SYMBOLS.X_16P_4DAC4_WFWORD, { type: eElementType.type_con, value: 0x0e00f0000 });
-    this.automatic_symbols.set(SYMBOLS.X_16P_2DAC8_WFWORD, { type: eElementType.type_con, value: 0x0f0000000 });
-    this.automatic_symbols.set(SYMBOLS.X_32P_4DAC8_WFLONG, { type: eElementType.type_con, value: 0x0f0010000 });
+    this.automatic_symbols.set(SYMBOLS.X_1P_1DAC1_WFBYTE, { type: eElementType.type_con_int, value: 0x0c0000000 });
+    this.automatic_symbols.set(SYMBOLS.X_2P_2DAC1_WFBYTE, { type: eElementType.type_con_int, value: 0x0d0000000 });
+    this.automatic_symbols.set(SYMBOLS.X_2P_1DAC2_WFBYTE, { type: eElementType.type_con_int, value: 0x0d0020000 });
+    this.automatic_symbols.set(SYMBOLS.X_4P_4DAC1_WFBYTE, { type: eElementType.type_con_int, value: 0x0e0000000 });
+    this.automatic_symbols.set(SYMBOLS.X_4P_2DAC2_WFBYTE, { type: eElementType.type_con_int, value: 0x0e0020000 });
+    this.automatic_symbols.set(SYMBOLS.X_4P_1DAC4_WFBYTE, { type: eElementType.type_con_int, value: 0x0e0040000 });
+    this.automatic_symbols.set(SYMBOLS.X_8P_4DAC2_WFBYTE, { type: eElementType.type_con_int, value: 0x0e0060000 });
+    this.automatic_symbols.set(SYMBOLS.X_8P_2DAC4_WFBYTE, { type: eElementType.type_con_int, value: 0x0e0070000 });
+    this.automatic_symbols.set(SYMBOLS.X_8P_1DAC8_WFBYTE, { type: eElementType.type_con_int, value: 0x0e00e0000 });
+    this.automatic_symbols.set(SYMBOLS.X_16P_4DAC4_WFWORD, { type: eElementType.type_con_int, value: 0x0e00f0000 });
+    this.automatic_symbols.set(SYMBOLS.X_16P_2DAC8_WFWORD, { type: eElementType.type_con_int, value: 0x0f0000000 });
+    this.automatic_symbols.set(SYMBOLS.X_32P_4DAC8_WFLONG, { type: eElementType.type_con_int, value: 0x0f0010000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_1ADC8_0P_1DAC8_WFBYTE, { type: eElementType.type_con, value: 0x0f0020000 });
-    this.automatic_symbols.set(SYMBOLS.X_1ADC8_8P_2DAC8_WFWORD, { type: eElementType.type_con, value: 0x0f0030000 });
-    this.automatic_symbols.set(SYMBOLS.X_2ADC8_0P_2DAC8_WFWORD, { type: eElementType.type_con, value: 0x0f0040000 });
-    this.automatic_symbols.set(SYMBOLS.X_2ADC8_16P_4DAC8_WFLONG, { type: eElementType.type_con, value: 0x0f0050000 });
-    this.automatic_symbols.set(SYMBOLS.X_4ADC8_0P_4DAC8_WFLONG, { type: eElementType.type_con, value: 0x0f0060000 });
+    this.automatic_symbols.set(SYMBOLS.X_1ADC8_0P_1DAC8_WFBYTE, { type: eElementType.type_con_int, value: 0x0f0020000 });
+    this.automatic_symbols.set(SYMBOLS.X_1ADC8_8P_2DAC8_WFWORD, { type: eElementType.type_con_int, value: 0x0f0030000 });
+    this.automatic_symbols.set(SYMBOLS.X_2ADC8_0P_2DAC8_WFWORD, { type: eElementType.type_con_int, value: 0x0f0040000 });
+    this.automatic_symbols.set(SYMBOLS.X_2ADC8_16P_4DAC8_WFLONG, { type: eElementType.type_con_int, value: 0x0f0050000 });
+    this.automatic_symbols.set(SYMBOLS.X_4ADC8_0P_4DAC8_WFLONG, { type: eElementType.type_con_int, value: 0x0f0060000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_DDS_GOERTZEL_SINC1, { type: eElementType.type_con, value: 0x0f0070000 });
-    this.automatic_symbols.set(SYMBOLS.X_DDS_GOERTZEL_SINC2, { type: eElementType.type_con, value: 0x0f0870000 });
+    this.automatic_symbols.set(SYMBOLS.X_DDS_GOERTZEL_SINC1, { type: eElementType.type_con_int, value: 0x0f0070000 });
+    this.automatic_symbols.set(SYMBOLS.X_DDS_GOERTZEL_SINC2, { type: eElementType.type_con_int, value: 0x0f0870000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_DACS_OFF, { type: eElementType.type_con, value: 0x00000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_0_0_0_0, { type: eElementType.type_con, value: 0x01000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_0_0, { type: eElementType.type_con, value: 0x02000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_0_0_X_X, { type: eElementType.type_con, value: 0x03000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_X_0, { type: eElementType.type_con, value: 0x04000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_0_X, { type: eElementType.type_con, value: 0x05000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_X_0_X_X, { type: eElementType.type_con, value: 0x06000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_0_X_X_X, { type: eElementType.type_con, value: 0x07000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_0N0_0N0, { type: eElementType.type_con, value: 0x08000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_0N0, { type: eElementType.type_con, value: 0x09000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_0N0_X_X, { type: eElementType.type_con, value: 0x0a000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_1_0_1_0, { type: eElementType.type_con, value: 0x0b000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_1_0, { type: eElementType.type_con, value: 0x0c000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_1_0_X_X, { type: eElementType.type_con, value: 0x0d000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_1N1_0N0, { type: eElementType.type_con, value: 0x0e000000 });
-    this.automatic_symbols.set(SYMBOLS.X_DACS_3_2_1_0, { type: eElementType.type_con, value: 0x0f000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_OFF, { type: eElementType.type_con_int, value: 0x00000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_0_0_0_0, { type: eElementType.type_con_int, value: 0x01000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_0_0, { type: eElementType.type_con_int, value: 0x02000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_0_0_X_X, { type: eElementType.type_con_int, value: 0x03000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_X_0, { type: eElementType.type_con_int, value: 0x04000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_0_X, { type: eElementType.type_con_int, value: 0x05000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_X_0_X_X, { type: eElementType.type_con_int, value: 0x06000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_0_X_X_X, { type: eElementType.type_con_int, value: 0x07000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_0N0_0N0, { type: eElementType.type_con_int, value: 0x08000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_0N0, { type: eElementType.type_con_int, value: 0x09000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_0N0_X_X, { type: eElementType.type_con_int, value: 0x0a000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_1_0_1_0, { type: eElementType.type_con_int, value: 0x0b000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_X_X_1_0, { type: eElementType.type_con_int, value: 0x0c000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_1_0_X_X, { type: eElementType.type_con_int, value: 0x0d000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_1N1_0N0, { type: eElementType.type_con_int, value: 0x0e000000 });
+    this.automatic_symbols.set(SYMBOLS.X_DACS_3_2_1_0, { type: eElementType.type_con_int, value: 0x0f000000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_PINS_OFF, { type: eElementType.type_con, value: 0x00000000 });
-    this.automatic_symbols.set(SYMBOLS.X_PINS_ON, { type: eElementType.type_con, value: 0x00800000 });
+    this.automatic_symbols.set(SYMBOLS.X_PINS_OFF, { type: eElementType.type_con_int, value: 0x00000000 });
+    this.automatic_symbols.set(SYMBOLS.X_PINS_ON, { type: eElementType.type_con_int, value: 0x00800000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_WRITE_OFF, { type: eElementType.type_con, value: 0x00000000 });
-    this.automatic_symbols.set(SYMBOLS.X_WRITE_ON, { type: eElementType.type_con, value: 0x00800000 });
+    this.automatic_symbols.set(SYMBOLS.X_WRITE_OFF, { type: eElementType.type_con_int, value: 0x00000000 });
+    this.automatic_symbols.set(SYMBOLS.X_WRITE_ON, { type: eElementType.type_con_int, value: 0x00800000 });
 
-    this.automatic_symbols.set(SYMBOLS.X_ALT_OFF, { type: eElementType.type_con, value: 0x00000000 });
-    this.automatic_symbols.set(SYMBOLS.X_ALT_ON, { type: eElementType.type_con, value: 0x00010000 });
+    this.automatic_symbols.set(SYMBOLS.X_ALT_OFF, { type: eElementType.type_con_int, value: 0x00000000 });
+    this.automatic_symbols.set(SYMBOLS.X_ALT_ON, { type: eElementType.type_con_int, value: 0x00010000 });
 
-    this.automatic_symbols.set(SYMBOLS.INT_OFF, { type: eElementType.type_con, value: 0 }); // event/interrupt constants
-    this.automatic_symbols.set(SYMBOLS.EVENT_INT, { type: eElementType.type_con, value: 0 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_CT1, { type: eElementType.type_con, value: 1 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_CT2, { type: eElementType.type_con, value: 2 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_CT3, { type: eElementType.type_con, value: 3 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_SE1, { type: eElementType.type_con, value: 4 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_SE2, { type: eElementType.type_con, value: 5 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_SE3, { type: eElementType.type_con, value: 6 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_SE4, { type: eElementType.type_con, value: 7 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_PAT, { type: eElementType.type_con, value: 8 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_FBW, { type: eElementType.type_con, value: 9 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_XMT, { type: eElementType.type_con, value: 10 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_XFI, { type: eElementType.type_con, value: 11 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_XRO, { type: eElementType.type_con, value: 12 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_XRL, { type: eElementType.type_con, value: 13 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_ATN, { type: eElementType.type_con, value: 14 });
-    this.automatic_symbols.set(SYMBOLS.EVENT_QMT, { type: eElementType.type_con, value: 15 });
+    this.automatic_symbols.set(SYMBOLS.INT_OFF, { type: eElementType.type_con_int, value: 0 }); // event/interrupt constants
+    this.automatic_symbols.set(SYMBOLS.EVENT_INT, { type: eElementType.type_con_int, value: 0 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_CT1, { type: eElementType.type_con_int, value: 1 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_CT2, { type: eElementType.type_con_int, value: 2 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_CT3, { type: eElementType.type_con_int, value: 3 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_SE1, { type: eElementType.type_con_int, value: 4 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_SE2, { type: eElementType.type_con_int, value: 5 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_SE3, { type: eElementType.type_con_int, value: 6 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_SE4, { type: eElementType.type_con_int, value: 7 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_PAT, { type: eElementType.type_con_int, value: 8 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_FBW, { type: eElementType.type_con_int, value: 9 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_XMT, { type: eElementType.type_con_int, value: 10 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_XFI, { type: eElementType.type_con_int, value: 11 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_XRO, { type: eElementType.type_con_int, value: 12 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_XRL, { type: eElementType.type_con_int, value: 13 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_ATN, { type: eElementType.type_con_int, value: 14 });
+    this.automatic_symbols.set(SYMBOLS.EVENT_QMT, { type: eElementType.type_con_int, value: 15 });
 
     //
     // HAND generated Automatic symbols table load v43

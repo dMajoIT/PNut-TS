@@ -288,14 +288,14 @@ export class SpinElementizer {
     } else if (this.isDigit(this.unprocessedLine.charAt(0))) {
       // handle decimal or decimal-float convertion
       const [isFloat, charsUsed, value] = this.decimalConversion(this.unprocessedLine);
-      typeFound = isFloat ? eElementType.type_con_float : eElementType.type_con;
+      typeFound = isFloat ? eElementType.type_con_float : eElementType.type_con_int;
       valueFound = value;
       symbolLengthFound = charsUsed;
       this.unprocessedLine = this.skipAhead(charsUsed, this.unprocessedLine);
     } else if (this.unprocessedLine.charAt(0) == '$' && this.isHexStartChar(this.unprocessedLine.charAt(1))) {
       // handle hexadecimal conversion Ex: $0f, $dead_f00d, etc.
       const [charsUsed, value] = this.hexadecimalConversion(this.unprocessedLine);
-      typeFound = eElementType.type_con;
+      typeFound = eElementType.type_con_int;
       valueFound = value;
       symbolLengthFound = charsUsed;
       this.unprocessedLine = this.skipAhead(charsUsed, this.unprocessedLine);
@@ -306,21 +306,21 @@ export class SpinElementizer {
     } else if (this.unprocessedLine.startsWith('%%') && this.isQuartStartChar(this.unprocessedLine.charAt(2))) {
       // handle base-four numbers of the form %%012_032_000, %%0320213, etc
       const [charsUsed, value] = this.quaternaryConversion(this.unprocessedLine);
-      typeFound = eElementType.type_con;
+      typeFound = eElementType.type_con_int;
       valueFound = value;
       symbolLengthFound = charsUsed;
       this.unprocessedLine = this.skipAhead(charsUsed, this.unprocessedLine);
     } else if (this.unprocessedLine.charAt(0) == '%' && this.isBinStartChar(this.unprocessedLine.charAt(1))) {
       // handle base-two numbers of the form %0100_0111, %01111010, etc
       const [charsUsed, value] = this.binaryConversion(this.unprocessedLine);
-      typeFound = eElementType.type_con;
+      typeFound = eElementType.type_con_int;
       valueFound = value;
       symbolLengthFound = charsUsed;
       this.unprocessedLine = this.skipAhead(charsUsed, this.unprocessedLine);
     } else if (this.unprocessedLine.startsWith('%"') && this.unprocessedLine.substring(2).includes('"')) {
       // handle %"abcd" one to four chars packed into long
       const [charsUsed, value] = this.packedAsciiConversion(this.unprocessedLine);
-      typeFound = eElementType.type_con;
+      typeFound = eElementType.type_con_int;
       valueFound = value;
       symbolLengthFound = charsUsed;
       this.unprocessedLine = this.skipAhead(charsUsed, this.unprocessedLine);
@@ -470,7 +470,7 @@ export class SpinElementizer {
     }
     if (shouldBe2ByteCode) {
       // push two prefix elements
-      const prefixChar: SpinElement = this.buildElement(eElementType.type_con, prefixByte, charOffset);
+      const prefixChar: SpinElement = this.buildElement(eElementType.type_con_int, prefixByte, charOffset);
       newElements.push(prefixChar);
       const elementComma: SpinElement = this.buildElement(eElementType.type_comma, 0n, charOffset);
       elementComma.midStringComma = true;
@@ -481,7 +481,7 @@ export class SpinElementizer {
     }
     // now puch our character element
     const char = isString ? String.fromCharCode(charCode) : BigInt(charCode);
-    const elementChar: SpinElement = this.buildElement(eElementType.type_con, char, charOffset);
+    const elementChar: SpinElement = this.buildElement(eElementType.type_con_int, char, charOffset);
     newElements.push(elementChar);
     // if this is not the last character of the string push a trailing comma element
     if (notLastChar) {

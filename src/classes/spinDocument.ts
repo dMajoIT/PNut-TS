@@ -242,16 +242,16 @@ export class SpinDocument {
     this.logMessage(`CODE: defSymbol(${newSymbol})=[${value}]`);
     if (!this.preProcSymbols.exists(newSymbol)) {
       if (typeof value === 'number') {
-        this.preProcSymbols.add(newSymbol, eElementType.type_con, BigInt(value));
+        this.preProcSymbols.add(newSymbol, eElementType.type_con_int, BigInt(value));
       } else {
-        this.preProcSymbols.add(newSymbol, eElementType.type_con, value);
+        this.preProcSymbols.add(newSymbol, eElementType.type_con_int, value);
       }
       if (subType == eTextSub.SA_TEXT_YES) {
         if (typeof value === 'number') {
           // hmmm... this should never happen...
-          this.preProcTextSymbols.add(newSymbol, eElementType.type_con, BigInt(value));
+          this.preProcTextSymbols.add(newSymbol, eElementType.type_con_int, BigInt(value));
         } else {
-          this.preProcTextSymbols.add(newSymbol, eElementType.type_con, value);
+          this.preProcTextSymbols.add(newSymbol, eElementType.type_con_int, value);
         }
       }
     } else {

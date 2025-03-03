@@ -179,7 +179,7 @@ export class SpinElement {
   }
 
   get isConstantInt(): boolean {
-    return this._type == eElementType.type_con;
+    return this._type == eElementType.type_con_int;
   }
 
   get isOperation(): boolean {

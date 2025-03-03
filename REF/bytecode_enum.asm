@@ -29,7 +29,6 @@ counter		=	counter+2
 		endm
 
 ;
-;
 ; Bytecodes
 ;
 count0		bc_drop				;main bytecodes
@@ -101,15 +100,10 @@ count		bc_getct
 count		bc_pollct
 count		bc_waitct
 
-count		bc_pinwrite
 count		bc_pinlow
 count		bc_pinhigh
 count		bc_pintoggle
 count		bc_pinfloat
-count		bc_pinread
-
-count		bc_pinstart
-count		bc_pinclear
 
 count		bc_wrpin
 count		bc_wxpin
@@ -117,6 +111,9 @@ count		bc_wypin
 count		bc_akpin
 count		bc_rdpin
 count		bc_rqpin
+
+count		bc_tasknext
+count		bc_unused
 
 count		bc_debug
 
@@ -160,16 +157,18 @@ count		bc_setup_long_pbase_pi
 count		bc_setup_long_vbase_pi
 count		bc_setup_long_dbase_pi
 
-count		bc_setup_byte_pb_pi
-count		bc_setup_word_pb_pi
-count		bc_setup_long_pb_pi
-
 count		bc_setup_byte_pa
 count		bc_setup_word_pa
 count		bc_setup_long_pa
 
-count		unused1
-count		unused2
+count		bc_setup_byte_pb_pi
+count		bc_setup_word_pb_pi
+count		bc_setup_long_pb_pi
+
+count		bc_setup_struct_pbase
+count		bc_setup_struct_vbase
+count		bc_setup_struct_dbase
+count		bc_setup_struct_pop
 
 count		bc_ternary
 
@@ -239,7 +238,9 @@ counti		bc_read_local_0_15	,16
 counti		bc_write_local_0_15	,16
 
 
-countn		bc_repeat_var_init_n	,7Ah	;variable operator bytecodes
+countn		bc_set_incdec		,79h	;variable operator bytecodes
+
+count		bc_repeat_var_init_n
 count		bc_repeat_var_init_1
 count		bc_repeat_var_init
 count		bc_repeat_var_loop
@@ -360,18 +361,24 @@ count2		bc_clkset
 count2		bc_read_clkfreq
 count2		bc_cogspin
 count2		bc_cogchk
-count2		bc_inline
+count2		bc_org
 count2		bc_regexec
 count2		bc_regload
 count2		bc_call
 count2		bc_getregs
 count2		bc_setregs
-count2		bc_bytemove
 count2		bc_bytefill
-count2		bc_wordmove
+count2		bc_bytemove
+count2		bc_byteswap
+count2		bc_bytecomp
 count2		bc_wordfill
-count2		bc_longmove
+count2		bc_wordmove
+count2		bc_wordswap
+count2		bc_wordcomp
 count2		bc_longfill
+count2		bc_longmove
+count2		bc_longswap
+count2		bc_longcomp
 count2		bc_strsize
 count2		bc_strcomp
 count2		bc_strcopy
@@ -387,7 +394,9 @@ count2		bc_rotxy
 count2		bc_polxy
 count2		bc_xypol
 
-count2		bc_nan				;hub bytecodes, floating point
+count2		bc_float			;hub bytecodes, floating point
+count2		bc_trunc
+count2		bc_round
 count2		bc_fneg
 count2		bc_fabs
 count2		bc_fsqrt
@@ -401,6 +410,18 @@ count2		bc_fne
 count2		bc_fe
 count2		bc_flte
 count2		bc_fgte
-count2		bc_round
-count2		bc_trunc
-count2		bc_float
+count2		bc_nan
+
+count2		bc_pinread			;hub bytecodes, miscellaneous
+count2		bc_pinwrite
+count2		bc_pinstart
+count2		bc_pinclear
+count2		bc_taskspin
+count2		bc_taskstop
+count2		bc_taskhalt
+count2		bc_taskcont
+count2		bc_taskchk
+count2		bc_taskid
+count2		bc_task_return
+count2		bc_orgh
+;

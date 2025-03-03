@@ -7,100 +7,128 @@
 
 export enum eElementType {
   type_undefined = 0, // 0x00 (undefined symbol, must be 0)
-  type_left = 1, // 0x01 (
-  type_right = 2, // 0x02 )
-  type_leftb = 3, // 0x03 [
-  type_rightb = 4, // 0x04 ]
-  type_comma = 5, // 0x05 ,
-  type_equal = 6, // 0x06 =
-  type_pound = 7, // 0x07 #
-  type_colon = 8, // 0x08 :
-  type_back = 9, // 0x09 \
-  type_under = 10, // 0x0a _
-  type_tick = 11, // 0x0b `
-  type_dollar = 12, // 0x0c $ (without a hex digit following)
-  type_percent = 13, // 0x0d % (without a bin digit following)
-  type_dot = 14, // 0x0e .
-  type_dotdot = 15, // 0x0f ..
-  type_at = 16, // 0x10 @
-  type_atat = 17, // 0x11 @@
-  type_upat = 18, // 0x12 ^@
-  type_til = 19, // 0x13 ~
-  type_tiltil = 20, // 0x14 ~~
-  type_inc = 21, // 0x15 ++
-  type_dec = 22, // 0x16 --
-  type_rnd = 23, // 0x17 ??
-  type_assign = 24, // 0x18 :=
-  type_op = 25, // 0x19 !, -, ABS, ENC, etc.
-  type_float = 26, // 0x1a FLOAT
-  type_round = 27, // 0x1b ROUND
-  type_trunc = 28, // 0x1c TRUNC
-  type_constr = 29, // 0x1d STRING
-  type_conlstr = 30, // 0x1e LSTRING
-  type_block = 31, // 0x1f CON, VAR, DAT, OBJ, PUB, PRI
-  type_field = 32, // 0x20 FIELD
-  type_size = 33, // 0x21 BYTE, WORD, LONG
-  type_size_fit = 34, // 0x22 BYTEFIT, WORDFIT
-  type_fvar = 35, // 0x23 FVAR, FVARS
-  type_file = 36, // 0x24 FILE
-  type_if = 37, // 0x25 IF
-  type_ifnot = 38, // 0x26 IFNOT
-  type_elseif = 39, // 0x27 ELSEIF
-  type_elseifnot = 40, // 0x28 ELSEIFNOT
-  type_else = 41, // 0x29 ELSE
-  type_case = 42, // 0x2a CASE
-  type_case_fast = 43, // 0x2b CASE_FAST
-  type_other = 44, // 0x2c OTHER
-  type_repeat = 45, // 0x2d REPEAT
-  type_repeat_var = 46, // 0x2e REPEAT var		- different QUIT method
-  type_repeat_count = 47, // 0x2f REPEAT count		- different QUIT method
-  type_repeat_count_var = 48, // 0x30 REPEAT count WITH var	- different QUIT method
-  type_while = 49, // 0x31 WHILE
-  type_until = 50, // 0x32 UNTIL
-  type_from = 51, // 0x33 FROM
-  type_to = 52, // 0x34 TO
-  type_step = 53, // 0x35 STEP
-  type_with = 54, // 0x36 WITH
-  type_i_next_quit = 55, // 0x37 NEXT/QUIT
-  type_i_return = 56, // 0x38 RETURN
-  type_i_abort = 57, // 0x39 ABORT
-  type_i_look = 58, // 0x3a LOOKUPZ/LOOKUP/LOOKDOWNZ/LOOKDOWN
-  type_i_cogspin = 59, // 0x3b COGSPIN
-  type_i_flex = 60, // 0x3c HUBSET, COGINIT, COGSTOP...
-  type_recv = 61, // 0x3d RECV
-  type_send = 62, // 0x3e SEND
-  type_debug = 63, // 0x3f DEBUG
-  type_debug_cmd = 64, // 0x40 DEBUG commands
-  type_asm_end = 65, // 0x41 END
-  type_asm_dir = 66, // 0x42 ORGH, ORG, ORGF, RES, FIT
-  type_asm_cond = 67, // 0x43 IF_C, IF_Z, IF_NC, etc
-  type_asm_inst = 68, // 0x44 RDBYTE, RDWORD, RDLONG, etc.
-  type_asm_effect = 69, // 0x45 WC, WZ, WCZ
-  type_asm_effect2 = 70, // 0x46 ANDC, ANDZ, ORC, ORZ, XORC, XORZ
-  type_reg = 71, // 0x47 REG
-  type_con = 72, // 0x48 user constant integer (must be followed by type_con_float)
-  type_con_float = 73, // 0x49 user constant float
-  type_register = 74, // 0x4a user long register
-  type_loc_byte = 75, // 0x4b user byte local
-  type_loc_word = 76, // 0x4c user word local
-  type_loc_long = 77, // 0x4d user long local
-  type_var_byte = 78, // 0x4e V0	user byte var
-  type_var_word = 79, // 0x4f V1	user word var
-  type_var_long = 80, // 0x50 V2	user long var
-  type_dat_byte = 81, // 0x51 D0	user byte dat
-  type_dat_word = 82, // 0x52 D1	user word dat (must follow type_dat_byte)
-  type_dat_long = 83, // 0x53 D2	user long dat (must follow type_dat_word)
-  type_dat_long_res = 84, // 0x54 (D2)	user res dat (must follow type_dat_long)
-  type_hub_byte = 85, // 0x55 H0	user byte hub
-  type_hub_word = 86, // 0x56 H1	user word hub
-  type_hub_long = 87, // 0x57 H2	user long hub
-  type_obj = 88, // 0x58 user object
-  type_objpub = 89, // 0x59 user object.subroutine
-  type_objcon = 90, // 0x5a user object.constant (must be followed by type_objcon_float)
-  type_objcon_float = 91, // 0x5b user object.constant float
-  type_method = 92, // 0x5c user method
-  type_end = 93, // 0x5d end-of-line c=0, end-of-file c=1
-  type_end_file = 94 //	0x5e end-of-file c=1
+  type_pre_command = 1, // 0x01 preprocessor commands DEFINE/UNDEF/IFDEF/IFNDEF/ELSEIFDEF/ELSEIFNDEF/ELSE/ENDIF
+  type_pre_symbol = 2, // 0x02 preprocessor symbols
+  type_left = 3, // 0x03 (
+  type_right = 4, // 0x04 )
+  type_leftb = 5, // 0x05 [
+  type_rightb = 6, // 0x06 ]
+  type_comma = 7, // 0x07 ,
+  type_equal = 8, // 0x08 =
+  type_pound = 9, // 0x09 #
+  type_colon = 10, // 0x0A :
+  type_back = 11, // 0x0B \
+  type_under = 12, // 0x0C _
+  type_tick = 13, // 0x0D `
+  type_dollar = 14, // 0x0E $ (without a hex digit following)
+  type_dollar2 = 15, // 0x0F $$
+  type_percent = 16, // 0x10 % (without a bin digit or quote following)
+  type_dot = 17, // 0x11 .
+  type_dotdot = 18, // 0x12 ..
+  type_at = 19, // 0x13 @
+  type_atat = 20, // 0x14 @@
+  type_upat = 21, // 0x15 ^@
+  type_til = 22, // 0x16 ~
+  type_tiltil = 23, // 0x17 ~~
+  type_inc = 24, // 0x18 ++
+  type_dec = 25, // 0x19 --
+  type_rnd = 26, // 0x1A ??
+  type_assign = 27, // 0x1B :=
+  type_swap = 28, // 0x1C :=:
+  type_op = 29, // 0x1D !, -, ABS, ENC, etc.
+  type_float = 30, // 0x1E FLOAT
+  type_round = 31, // 0x1F ROUND
+  type_trunc = 32, // 0x20 TRUNC
+  type_constr = 33, // 0x21 STRING
+  type_conlstr = 34, // 0x22 LSTRING
+  type_block = 35, // 0x23 CON, VAR, DAT, OBJ, PUB, PRI
+  type_field = 36, // 0x24 FIELD
+  type_struct = 37, // 0x25 STRUCT
+  type_sizeof = 38, // 0x26 SIZEOF
+  type_size = 39, // 0x27 BYTE, WORD, LONG
+  type_size_fit = 40, // 0x28 BYTEFIT, WORDFIT
+  type_fvar = 41, // 0x29 FVAR, FVARS
+  type_file = 42, // 0x2A FILE
+  type_if = 43, // 0x2B IF
+  type_ifnot = 44, // 0x2C IFNOT
+  type_elseif = 45, // 0x2D ELSEIF
+  type_elseifnot = 46, // 0x2E ELSEIFNOT
+  type_else = 47, // 0x2F ELSE
+  type_case = 48, // 0x30 CASE
+  type_case_fast = 49, // 0x31 CASE_FAST
+  type_other = 50, // 0x32 OTHER
+  type_repeat = 51, // 0x33 REPEAT
+  type_repeat_var = 52, // 0x34 REPEAT var - different QUIT method
+  type_repeat_count = 53, // 0x35 REPEAT count - different QUIT method
+  type_repeat_count_var = 54, // 0x36 REPEAT count WITH var - different QUIT method
+  type_while = 55, // 0x37 WHILE
+  type_until = 56, // 0x38 UNTIL
+  type_from = 57, // 0x39 FROM
+  type_to = 58, // 0x3A TO
+  type_step = 59, // 0x3B STEP
+  type_with = 60, // 0x3C WITH
+  type_i_next_quit = 61, // 0x3D NEXT/QUIT
+  type_i_return = 62, // 0x3E RETURN
+  type_i_abort = 63, // 0x3F ABORT
+  type_i_look = 64, // 0x40 LOOKUPZ, LOOKUP, LOOKDOWNZ, LOOKDOWN
+  type_i_cogspin = 65, // 0x41 COGSPIN
+  type_i_taskspin = 66, // 0x42 TASKSPIN
+  type_i_flex = 67, // 0x43 HUBSET, COGINIT, COGSTOP...
+  type_recv = 68, // 0x44 RECV
+  type_send = 69, // 0x45 SEND
+  type_debug = 70, // 0x46 DEBUG
+  type_debug_cmd = 71, // 0x47 DEBUG commands
+  type_asm_end = 72, // 0x48 END
+  type_asm_dir = 73, // 0x49 ORGH, ORG, ORGF, RES, FIT
+  type_asm_cond = 74, // 0x4A IF_C, IF_Z, IF_NC, etc
+  type_asm_inst = 75, // 0x4B RDBYTE, RDWORD, RDLONG, etc.
+  type_asm_effect = 76, // 0x4C WC, WZ, WCZ
+  type_asm_effect2 = 77, // 0x4D ANDC, ANDZ, ORC, ORZ, XORC, XORZ
+  type_reg = 78, // 0x4E REG
+  type_con_int = 79, // 0x4F C0 user constant integer (C0..C2 must be contiguous)
+  type_con_float = 80, // 0x50 C1 user constant float
+  type_con_struct = 81, // 0x51 C2 user data structure
+  type_register = 82, // 0x52 user register long
+  type_loc_byte = 83, // 0x53 L0 user loc byte (L0..L11 must be contiguous)
+  type_loc_word = 84, // 0x54 L1 user loc word
+  type_loc_long = 85, // 0x55 L2 user loc long
+  type_loc_struct = 86, // 0x56 L3 user loc struct
+  type_loc_byte_ptr = 87, // 0x57 L4 user loc byte ptr
+  type_loc_word_ptr = 88, // 0x58 L5 user loc word ptr
+  type_loc_long_ptr = 89, // 0x59 L6 user loc long ptr
+  type_loc_struct_ptr = 90, // 0x5A L7 user loc struct ptr
+  type_loc_byte_ptr_val = 91, // 0x5B L8 internal loc byte ptr val
+  type_loc_word_ptr_val = 92, // 0x5C L9 internal loc word ptr val
+  type_loc_long_ptr_val = 93, // 0x5D L10 internal loc long ptr val
+  type_loc_struct_ptr_val = 94, // 0x5E L11 internal loc struct ptr val
+  type_var_byte = 95, // 0x5F V0 user var byte (V0..V11 must be contiguous)
+  type_var_word = 96, // 0x60 V1 user var word
+  type_var_long = 97, // 0x61 V2 user var long
+  type_var_struct = 98, // 0x62 V3 user var struct
+  type_var_byte_ptr = 99, // 0x63 V4 user var byte ptr
+  type_var_word_ptr = 100, // 0x64 V5 user var word ptr
+  type_var_long_ptr = 101, // 0x65 V6 user var long ptr
+  type_var_struct_ptr = 102, // 0x66 V7 user var struct ptr
+  type_var_byte_ptr_val = 103, // 0x67 V8 internal var byte ptr val
+  type_var_word_ptr_val = 104, // 0x68 V9 internal var word ptr val
+  type_var_long_ptr_val = 105, // 0x69 V10 internal var long ptr val
+  type_var_struct_ptr_val = 106, // 0x6A V11 internal var struct ptr val
+  type_dat_byte = 107, // 0x6B D0 user dat byte (D0..D3 must be contiguous)
+  type_dat_word = 108, // 0x6C D1 user dat word
+  type_dat_long = 109, // 0x6D D2 user dat long
+  type_dat_struct = 110, // 0x6E D3 user dat struct
+  type_dat_long_res = 111, // 0x6F (D2) user dat long reserve
+  type_hub_byte = 112, // 0x70 H0 user hub byte (unused) (H0..H2 must be contiguous)
+  type_hub_word = 113, // 0x71 H1 user hub word (unused)
+  type_hub_long = 114, // 0x72 H2 user hub long (CLKMODE, CLKFREQ)
+  type_obj = 115, // 0x73 user object
+  type_obj_con_int = 116, // 0x74 O1 user object.constant integer (O0..O2 must be contiguous)
+  type_obj_con_float = 117, // 0x75 O2 user object.constant float
+  type_obj_con_struct = 118, // 0x76 O3 user object.constant structure
+  type_obj_pub = 119, // 0x77 user object.method()
+  type_method = 120, // 0x78 user method
+  type_end = 121, // 0x79 end of line
+  type_end_file = 122 // 0x7A end-of-file
 }
 
 export function getElementTypeString(value: eElementType): string {
@@ -223,10 +251,11 @@ export enum eValueType {
   dir_orgf = 4, // 0x04
   dir_res = 5, // 0x05
   dir_fit = 6, // 0x06
+  dir_ditto = 7, // 0x07
   //
   // Ifs
   //
-  if_ret = 0, // 0x00  (also, if_return)
+  if_ret = 0, // 0x00  (also, if_return) (P1 was if_never)
   if_nc_and_nz = 1, // 0x01
   if_nc_and_z = 2, // 0x02
   if_nc = 3, // 0x03
@@ -532,60 +561,60 @@ export enum eByteCode {
   bc_getct = 50, // 0x32
   bc_pollct = 51, // 0x33
   bc_waitct = 52, // 0x34
-  bc_pinwrite = 53, // 0x35
-  bc_pinlow = 54, // 0x36
-  bc_pinhigh = 55, // 0x37
-  bc_pintoggle = 56, // 0x38
-  bc_pinfloat = 57, // 0x39
-  bc_pinread = 58, // 0x3a
-  bc_pinstart = 59, // 0x3b
-  bc_pinclear = 60, // 0x3c
-  bc_wrpin = 61, // 0x3d
-  bc_wxpin = 62, // 0x3e
-  bc_wypin = 63, // 0x3f
-  bc_akpin = 64, // 0x40
-  bc_rdpin = 65, // 0x41
-  bc_rqpin = 66, // 0x42
-  bc_debug = 67, // 0x43
-  bc_con_rfbyte = 68, // 0x44
-  bc_con_rfbyte_not = 69, // 0x45
-  bc_con_rfword = 70, // 0x46
-  bc_con_rfword_not = 71, // 0x47
-  bc_con_rflong = 72, // 0x48
-  bc_con_rfbyte_decod = 73, // 0x49
-  bc_con_rfbyte_decod_not = 74, // 0x4a
-  bc_con_rfbyte_bmask = 75, // 0x4b
-  bc_con_rfbyte_bmask_not = 76, // 0x4c
-  bc_setup_field_p = 77, // 0x4d
-  bc_setup_field_pi = 78, // 0x4e
-  bc_setup_reg = 79, // 0x4f
-  bc_setup_reg_pi = 80, // 0x50
-  bc_setup_byte_pbase = 81, // 0x51
-  bc_setup_byte_vbase = 82, // 0x52
-  bc_setup_byte_dbase = 83, // 0x53
-  bc_setup_byte_pbase_pi = 84, // 0x54
-  bc_setup_byte_vbase_pi = 85, // 0x55
-  bc_setup_byte_dbase_pi = 86, // 0x56
-  bc_setup_word_pbase = 87, // 0x57
-  bc_setup_word_vbase = 88, // 0x58
-  bc_setup_word_dbase = 89, // 0x59
-  bc_setup_word_pbase_pi = 90, // 0x5a
-  bc_setup_word_vbase_pi = 91, // 0x5b
-  bc_setup_word_dbase_pi = 92, // 0x5c
-  bc_setup_long_pbase = 93, // 0x5d
-  bc_setup_long_vbase = 94, // 0x5e
-  bc_setup_long_dbase = 95, // 0x5f
-  bc_setup_long_pbase_pi = 96, // 0x60
-  bc_setup_long_vbase_pi = 97, // 0x61
-  bc_setup_long_dbase_pi = 98, // 0x62
-  bc_setup_byte_pb_pi = 99, // 0x63
-  bc_setup_word_pb_pi = 100, // 0x64
-  bc_setup_long_pb_pi = 101, // 0x65
-  bc_setup_byte_pa = 102, // 0x66
-  bc_setup_word_pa = 103, // 0x67
-  bc_setup_long_pa = 104, // 0x68
-  unused1 = 105, // 0x69
-  unused2 = 106, // 0x6a
+  bc_pinlow = 53, // 0x35
+  bc_pinhigh = 54, // 0x36
+  bc_pintoggle = 55, // 0x37
+  bc_pinfloat = 56, // 0x38
+  bc_wrpin = 57, // 0x39
+  bc_wxpin = 58, // 0x3a
+  bc_wypin = 59, // 0x3b
+  bc_akpin = 60, // 0x3c
+  bc_rdpin = 61, // 0x3d
+  bc_rqpin = 62, // 0x3e
+  bc_tasknext = 63, // 0x3f
+  bc_unused = 64, // 0x40
+  bc_debug = 65, // 0x41
+  bc_con_rfbyte = 66, // 0x42
+  bc_con_rfbyte_not = 67, // 0x43
+  bc_con_rfword = 68, // 0x44
+  bc_con_rfword_not = 69, // 0x45
+  bc_con_rflong = 70, // 0x46
+  bc_con_rfbyte_decod = 71, // 0x47
+  bc_con_rfbyte_decod_not = 72, // 0x48
+  bc_con_rfbyte_bmask = 73, // 0x49
+  bc_con_rfbyte_bmask_not = 74, // 0x4a
+  bc_setup_field_p = 75, // 0x4b
+  bc_setup_field_pi = 76, // 0x4c
+  bc_setup_reg = 77, // 0x4d
+  bc_setup_reg_pi = 78, // 0x4e
+  bc_setup_byte_pbase = 79, // 0x4f
+  bc_setup_byte_vbase = 80, // 0x50
+  bc_setup_byte_dbase = 81, // 0x51
+  bc_setup_byte_pbase_pi = 82, // 0x52
+  bc_setup_byte_vbase_pi = 83, // 0x53
+  bc_setup_byte_dbase_pi = 84, // 0x54
+  bc_setup_word_pbase = 85, // 0x55
+  bc_setup_word_vbase = 86, // 0x56
+  bc_setup_word_dbase = 87, // 0x57
+  bc_setup_word_pbase_pi = 88, // 0x58
+  bc_setup_word_vbase_pi = 89, // 0x59
+  bc_setup_word_dbase_pi = 90, // 0x5a
+  bc_setup_long_pbase = 91, // 0x5b
+  bc_setup_long_vbase = 92, // 0x5c
+  bc_setup_long_dbase = 93, // 0x5d
+  bc_setup_long_pbase_pi = 94, // 0x5e
+  bc_setup_long_vbase_pi = 95, // 0x5f
+  bc_setup_long_dbase_pi = 96, // 0x60
+  bc_setup_byte_pa = 97, // 0x61
+  bc_setup_word_pa = 98, // 0x62
+  bc_setup_long_pa = 99, // 0x63
+  bc_setup_byte_pb_pi = 100, // 0x64
+  bc_setup_word_pb_pi = 101, // 0x65
+  bc_setup_long_pb_pi = 102, // 0x66
+  bc_setup_struct_pbase = 103, // 0x67
+  bc_setup_struct_vbase = 104, // 0x68
+  bc_setup_struct_dbase = 105, // 0x69
+  bc_setup_struct_pop = 106, // 0x6a
   bc_ternary = 107, // 0x6b
   bc_lt = 108, // 0x6c
   bc_ltu = 109, // 0x6d
@@ -647,9 +676,10 @@ export enum eByteCode {
   bc_write_local_0_15 = 240, // 0xf0
 
   //
-  // reset! counter resets to =007A
+  // reset! counter resets to =0079
   //
-  bc_repeat_var_init_n = 122, // 0x7a variable operator bytecodes
+  bc_set_incdec = 121, // 0x79 variable operator bytecodes
+  bc_repeat_var_init_n = 122, // 0x7a
   bc_repeat_var_init_1 = 123, // 0x7b
   bc_repeat_var_init = 124, // 0x7c
   bc_repeat_var_loop = 125, // 0x7d
@@ -754,56 +784,74 @@ export enum eByteCode {
   bc_setup_bfield_0_31 = 224, // 0xe0
 
   //
-  //  reset! counter reset to =0054
+  // reset! counter resets to =0054
   //
   bc_hubset = 84, // 0x54 hub bytecodes, miscellaneous (step by 2)
   bc_clkset = 86, // 0x56
   bc_read_clkfreq = 88, // 0x58
   bc_cogspin = 90, // 0x5a
   bc_cogchk = 92, // 0x5c
-  bc_inline = 94, // 0x5e
+  bc_org = 94, // 0x5e
   bc_regexec = 96, // 0x60
   bc_regload = 98, // 0x62
   bc_call = 100, // 0x64
   bc_getregs = 102, // 0x66
   bc_setregs = 104, // 0x68
-  bc_bytemove = 106, // 0x6a
-  bc_bytefill = 108, // 0x6c
-  bc_wordmove = 110, // 0x6e
-  bc_wordfill = 112, // 0x70
-  bc_longmove = 114, // 0x72
-  bc_longfill = 116, // 0x74
-  bc_strsize = 118, // 0x76
-  bc_strcomp = 120, // 0x78
-  bc_strcopy = 122, // 0x7a
-  bc_getcrc = 124, // 0x7c
-  bc_waitus = 126, // 0x7e
-  bc_waitms = 128, // 0x80
-  bc_getms = 130, // 0x82
-  bc_getsec = 132, // 0x84
-  bc_muldiv64 = 134, // 0x86
-  bc_qsin = 136, // 0x88
-  bc_qcos = 138, // 0x8a
-  bc_rotxy = 140, // 0x8c
-  bc_polxy = 142, // 0x8e
-  bc_xypol = 144, // 0x90
-  bc_nan = 146, // 0x92 hub bytecodes, floating point
-  bc_fneg = 148, // 0x94
-  bc_fabs = 150, // 0x96
-  bc_fsqrt = 152, // 0x98
-  bc_fadd = 154, // 0x9a
-  bc_fsub = 156, // 0x9c
-  bc_fmul = 158, // 0x9e
-  bc_fdiv = 160, // 0xa0
-  bc_flt = 162, // 0xa2
-  bc_fgt = 164, // 0xa4
-  bc_fne = 166, // 0xa6
-  bc_fe = 168, // 0xa8
-  bc_flte = 170, // 0xaa
-  bc_fgte = 172, // 0xac
-  bc_round = 174, // 0xae
-  bc_trunc = 176, // 0xb0
-  bc_float = 178 // 0xb2
+  bc_bytefill = 106, // 0x6a
+  bc_bytemove = 108, // 0x6c
+  bc_byteswap = 110, // 0x6e
+  bc_bytecomp = 112, // 0x70
+  bc_wordfill = 114, // 0x72
+  bc_wordmove = 116, // 0x74
+  bc_wordswap = 118, // 0x76
+  bc_wordcomp = 120, // 0x78
+  bc_longfill = 122, // 0x7a
+  bc_longmove = 124, // 0x7c
+  bc_longswap = 126, // 0x7e
+  bc_longcomp = 128, // 0x80
+  bc_strsize = 130, // 0x82
+  bc_strcomp = 132, // 0x84
+  bc_strcopy = 134, // 0x86
+  bc_getcrc = 136, // 0x88
+  bc_waitus = 138, // 0x8a
+  bc_waitms = 140, // 0x8c
+  bc_getms = 142, // 0x8e
+  bc_getsec = 144, // 0x90
+  bc_muldiv64 = 146, // 0x92
+  bc_qsin = 148, // 0x94
+  bc_qcos = 150, // 0x96
+  bc_rotxy = 152, // 0x98
+  bc_polxy = 154, // 0x9a
+  bc_xypol = 156, // 0x9c
+  bc_float = 158, // 0x9e hub bytecodes, floating point
+  bc_trunc = 160, // 0xa0
+  bc_round = 162, // 0xa2
+  bc_fneg = 164, // 0xa4
+  bc_fabs = 166, // 0xa6
+  bc_fsqrt = 168, // 0xa8
+  bc_fadd = 170, // 0xaa
+  bc_fsub = 172, // 0xac
+  bc_fmul = 174, // 0xae
+  bc_fdiv = 176, // 0xb0
+  bc_flt = 178, // 0xb2
+  bc_fgt = 180, // 0xb4
+  bc_fne = 182, // 0xb6
+  bc_fe = 184, // 0xb8
+  bc_flte = 186, // 0xba
+  bc_fgte = 188, // 0xbc
+  bc_nan = 190, // 0xbe
+  bc_pinread = 192, // 0xc0 hub bytecodes, miscellaneous
+  bc_pinwrite = 194, // 0xc2
+  bc_pinstart = 196, // 0xc4
+  bc_pinclear = 198, // 0xc6
+  bc_taskspin = 200, // 0xc8
+  bc_taskstop = 202, // 0xca
+  bc_taskhalt = 204, // 0xcc
+  bc_taskcont = 206, // 0xce
+  bc_taskchk = 208, // 0xd0
+  bc_taskid = 210, // 0xd2
+  bc_task_return = 212, // 0xd4
+  bc_orgh = 214 // 0xd6
 }
 
 export enum eFlexcode {
@@ -816,12 +864,12 @@ export enum eFlexcode {
   fc_getct,
   fc_pollct,
   fc_waitct,
-  fc_pinwrite,
   fc_pinlow,
   fc_pinhigh,
   fc_pintoggle,
   fc_pinfloat,
   fc_pinread,
+  fc_pinwrite,
   fc_pinstart,
   fc_pinclear,
   fc_wrpin,
@@ -845,12 +893,18 @@ export enum eFlexcode {
   fc_call,
   fc_getregs,
   fc_setregs,
-  fc_bytemove,
   fc_bytefill,
-  fc_wordmove,
+  fc_bytemove,
+  fc_byteswap,
+  fc_bytecomp,
   fc_wordfill,
-  fc_longmove,
+  fc_wordmove,
+  fc_wordswap,
+  fc_wordcomp,
   fc_longfill,
+  fc_longmove,
+  fc_longswap,
+  fc_longcomp,
   fc_strsize,
   fc_strcomp,
   fc_strcopy,
@@ -868,5 +922,11 @@ export enum eFlexcode {
   fc_nan,
   fc_round,
   fc_trunc,
-  fc_float
+  fc_float,
+  fc_tasknext,
+  fc_taskstop,
+  fc_taskhalt,
+  fc_taskcont,
+  fc_taskchk,
+  fc_taskid
 }

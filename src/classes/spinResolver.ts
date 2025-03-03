@@ -668,7 +668,7 @@ export class SpinResolver {
       //this.isLogging = false;
       this.getElement();
       this.isLogging = savedLogState; // so exceptions have logging in good state...
-      if (this.currElement.type != eElementType.type_con) {
+      if (this.currElement.type != eElementType.type_con_int) {
         // [error_ifufiq]
         throw new Error('Invalid filename, use "FilenameInQuotes"');
       }
@@ -719,7 +719,7 @@ export class SpinResolver {
     for (let [symbolName, symbolMaskBit] of clockSymbols) {
       const symbolValue: iSymbol | undefined = this.mainSymbols.get(symbolName);
       if (symbolValue !== undefined) {
-        if (symbolValue.type == eElementType.type_con) {
+        if (symbolValue.type == eElementType.type_con_int) {
           symbolsFoundBits |= symbolMaskBit;
           switch (symbolMaskBit) {
             case 0x20:
@@ -808,9 +808,9 @@ export class SpinResolver {
     }
 
     // record our symbols
-    let tempSymbol: iSymbol = { name: 'CLKMODE_', type: eElementType.type_con, value: BigInt(this.clkMode) };
+    let tempSymbol: iSymbol = { name: 'CLKMODE_', type: eElementType.type_con_int, value: BigInt(this.clkMode) };
     this.recordSymbol(tempSymbol);
-    tempSymbol = { name: 'CLKFREQ_', type: eElementType.type_con, value: BigInt(this.clkFreq) };
+    tempSymbol = { name: 'CLKFREQ_', type: eElementType.type_con_int, value: BigInt(this.clkFreq) };
     this.recordSymbol(tempSymbol);
   }
 
@@ -924,7 +924,7 @@ export class SpinResolver {
     const symbolFound: iSymbol | undefined = this.getSymbol(smbolName);
     if (symbolFound) {
       definedStatus = true;
-      if (symbolFound.type == eElementType.type_con) {
+      if (symbolFound.type == eElementType.type_con_int) {
         isConStatus = true;
       }
       symValue = symbolFound.value;
@@ -3958,7 +3958,7 @@ export class SpinResolver {
               const overrideName: string = this.currElement.stringValue;
               this.getEqual();
               const valueReturn: iValueReturn = this.getValue(eMode.BM_IntOrFloat, eResolve.BR_Must);
-              const valueType: eElementType = valueReturn.isFloat ? eElementType.type_con_float : eElementType.type_con;
+              const valueType: eElementType = valueReturn.isFloat ? eElementType.type_con_float : eElementType.type_con_int;
               objFileRecord.recordOverride(overrideName, valueType, valueReturn.value);
             } while (this.getCommaOrEndOfLine());
           }
@@ -4100,12 +4100,13 @@ export class SpinResolver {
           // have PUB
           const symbolParameters: number = this.objectData.readByte();
           const symbolValue = (symbolParameters << 24) | (symbolTypeOrResults << 20) | pubIndex++;
-          const newObjPubSymbol: iSymbol = { name: objectsSymbolName, type: eElementType.type_objpub, value: BigInt(symbolValue) };
+          const newObjPubSymbol: iSymbol = { name: objectsSymbolName, type: eElementType.type_obj_pub, value: BigInt(symbolValue) };
           this.recordSymbol(newObjPubSymbol);
         } else if (symbolTypeOrResults <= this.results_limit + 2) {
           // have con or con_float
           const symbolValue: number = this.objectData.readLong();
-          const symbolType: eElementType = symbolTypeOrResults == this.results_limit + 2 ? eElementType.type_objcon_float : eElementType.type_objcon;
+          const symbolType: eElementType =
+            symbolTypeOrResults == this.results_limit + 2 ? eElementType.type_obj_con_float : eElementType.type_obj_con_int;
           const newObjConSymbol: iSymbol = { name: objectsSymbolName, type: symbolType, value: BigInt(symbolValue) };
           this.recordSymbol(newObjConSymbol);
         } else {
@@ -4873,7 +4874,7 @@ export class SpinResolver {
               }
               this.getRightBracket();
             }
-          } else if (this.currElement.type == eElementType.type_con || this.currElement.type == eElementType.type_con_float) {
+          } else if (this.currElement.type == eElementType.type_con_int || this.currElement.type == eElementType.type_con_float) {
             // Example: we are validating for symbol
             //   #0[4], name1, name2, name3[5], name4
             //   name = value, name = value, name = name = value, #0[4], name1, name2
@@ -5036,7 +5037,7 @@ export class SpinResolver {
   }
 
   private verifySameValue(symbolName: string, currentValue: SpinElement, expectedValue: iValueReturn) {
-    const expectedType: eElementType = expectedValue.isFloat ? eElementType.type_con_float : eElementType.type_con;
+    const expectedType: eElementType = expectedValue.isFloat ? eElementType.type_con_float : eElementType.type_con_int;
     let adjustedExpected: iSymbol = { name: symbolName, type: expectedType, value: expectedValue.value };
 
     // We replace expected value with found symbol
@@ -5061,7 +5062,7 @@ export class SpinResolver {
 
   private recordCONSymbolValue(symbolName: string, symbolValue: iValueReturn) {
     // do assign process
-    const symbolType: eElementType = symbolValue.isFloat ? eElementType.type_con_float : eElementType.type_con;
+    const symbolType: eElementType = symbolValue.isFloat ? eElementType.type_con_float : eElementType.type_con_int;
     let adjustedCONSymbol: iSymbol = { name: symbolName, type: symbolType, value: symbolValue.value };
 
     const foundSymbol: iSymbol | undefined = this.checkImportedParam(symbolName); //  checkParam - is parameter? substitute value
@@ -5449,7 +5450,7 @@ export class SpinResolver {
     }
     // this is @@org:
     this.objWrByte(eByteCode.bc_hub_bytecode);
-    this.objWrByte(eByteCode.bc_inline);
+    this.objWrByte(eByteCode.bc_org);
     this.objWrWord(inlineOrigin); // enter origin
     this.objWrWord(0); // enter placeholder for length in longs
     const patchLocation: number = this.objImage.offset;
@@ -5579,7 +5580,7 @@ export class SpinResolver {
       do {
         // here is @@trybytes
         this.getElement();
-        if (this.currElement.type != eElementType.type_con || this.currElement.bigintValue > 255n) {
+        if (this.currElement.type != eElementType.type_con_int || this.currElement.bigintValue > 255n) {
           break;
         }
         byteCount++;
@@ -6125,7 +6126,7 @@ export class SpinResolver {
     this.logMessage(
       `* debugExpSource() elem=[${this.currElement.toString()}](${this.currElement.sourceCharacterOffset},${this.currElement.sourceCharacterEndOffset})`
     );
-    //if (this.currElement.type == eElementType.type_con) {
+    //if (this.currElement.type == eElementType.type_con_int) {
     //  this.getElement
     //}
     const endoffset: number = this.currElement.sourceCharacterEndOffset;
@@ -6209,7 +6210,7 @@ export class SpinResolver {
     const savedElementIndex = this.saveElementLocation();
     do {
       this.getElement();
-      if (this.currElement.type != eElementType.type_con) {
+      if (this.currElement.type != eElementType.type_con_int) {
         break;
       }
       const charValue: number = this.currElement.numberValue;
@@ -6250,7 +6251,7 @@ export class SpinResolver {
     const savedElementIndex = this.saveElementLocation();
     do {
       this.getElement();
-      if (this.currElement.type != eElementType.type_con) {
+      if (this.currElement.type != eElementType.type_con_int) {
         break;
       }
       const charValue: number = this.currElement.numberValue;
@@ -6748,7 +6749,7 @@ export class SpinResolver {
       this.checkIndex();
       this.getDot();
       let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-      if (objSymType == eElementType.type_objpub) {
+      if (objSymType == eElementType.type_obj_pub) {
         // remember ct_objpub()
         // here is @@checkmult:
         const returnValueCount: number = (Number(objSymValue) >> 20) & 0x0f;
@@ -6997,7 +6998,7 @@ export class SpinResolver {
       this.checkIndex();
       this.getDot();
       let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-      if (objSymType != eElementType.type_objpub) {
+      if (objSymType != eElementType.type_obj_pub) {
         // [error_eamn]
         throw new Error('Expected a method name (m0A0)');
       }
@@ -7048,7 +7049,7 @@ export class SpinResolver {
     // PNut ct_at:
     this.getElement();
     this.logMessage(`* ct_at() get then elem=[${this.currElement.toString()}]`);
-    if (this.currElement.type == eElementType.type_con) {
+    if (this.currElement.type == eElementType.type_con_int) {
       // here is @@string:
       this.objWrByte(eByteCode.bc_string);
       const patchLocation: number = this.objImage.offset;
@@ -7082,7 +7083,7 @@ export class SpinResolver {
       const [indexFound, objectElementIndex] = this.checkIndex();
       this.getDot();
       const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-      if (objSymType != eElementType.type_objpub) {
+      if (objSymType != eElementType.type_obj_pub) {
         // [error_eamn]
         throw new Error('Expected a method name (m0A1)');
       }
@@ -7134,7 +7135,7 @@ export class SpinResolver {
       // could be object constant OR object method
       this.getDot();
       const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-      if (objSymType == eElementType.type_objpub) {
+      if (objSymType == eElementType.type_obj_pub) {
         // compile obj.method({param,...})
         this.restoreElementLocation(savedElementIndex);
         this.getElement();
@@ -7153,9 +7154,9 @@ export class SpinResolver {
     const savedElement: SpinElement = this.currElement;
     const [foundIndex, elementIndexOfIndex] = this.checkIndex();
     this.getDot();
-    // if type_objpub: then objSymValue is methodValue: 7-bit parameterCount, 4-bit resultCount, 20-bit Address
+    // if type_obj_pub: then objSymValue is methodValue: 7-bit parameterCount, 4-bit resultCount, 20-bit Address
     const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-    if (objSymType != eElementType.type_objpub) {
+    if (objSymType != eElementType.type_obj_pub) {
       // [error_eamn]
       throw new Error('Expected a method name (m0A2)');
     }
@@ -7276,7 +7277,7 @@ export class SpinResolver {
       let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
       this.restoreElementLocation(savedElementIndex);
       let returnValueCount: number = 0;
-      if (objSymType == eElementType.type_objpub) {
+      if (objSymType == eElementType.type_obj_pub) {
         // remember ct_objpub()
         // @@checkmult:
         returnValueCount = (Number(objSymValue) >> 20) & 0x0f;
@@ -7290,7 +7291,7 @@ export class SpinResolver {
           this.ct_objpub(eResultRequirements.RR_None, eByteCode.bc_drop);
         }
       }
-      if (objSymType != eElementType.type_objpub || (objSymType == eElementType.type_objpub && returnValueCount == 1)) {
+      if (objSymType != eElementType.type_obj_pub || (objSymType == eElementType.type_obj_pub && returnValueCount == 1)) {
         // have obj_con or obj_con_float
         // this is @@exp:
         this.compileExpression();
@@ -7808,7 +7809,7 @@ export class SpinResolver {
           throw new Error('[INTERNAL] Spin2 Constant failed to resolve');
         }
         const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-        if (objSymType == eElementType.type_objpub) {
+        if (objSymType == eElementType.type_obj_pub) {
           // [error_NEW for Pnut-ts] (BEING CAPTURED)
           throw new Error('[INTERNAL] Spin2 Constant failed to resolve');
         }
@@ -7824,7 +7825,7 @@ export class SpinResolver {
       this.SubToNeg(); // makes currentElem op_neg if was op_sub!
       if (this.currElement.operation == eOperationType.op_neg) {
         // if the next element is a constant we can negate it
-        if (this.nextElementType() == eElementType.type_con) {
+        if (this.nextElementType() == eElementType.type_con_int) {
           // coerce element to negative value
           this.getElement();
           this.logMessage(`* type_con e=[${this.currElement.toString()}]`);
@@ -7961,7 +7962,7 @@ export class SpinResolver {
               const savedElement: SpinElement = this.currElement;
               this.getDot();
               const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-              if (objSymType == eElementType.type_objpub) {
+              if (objSymType == eElementType.type_obj_pub) {
                 // [error_eacn]
                 throw new Error('Expected a constant name (m080)');
               }
@@ -8046,11 +8047,11 @@ export class SpinResolver {
     const foundSymbol: iSymbol = this.findSymbol(symbolName);
     this.logMessage(`  -- found sym.name=[${foundSymbol.name}] type=[${eElementType[foundSymbol.type]}]`);
     desiredValue = foundSymbol.value;
-    if (foundSymbol.type == eElementType.type_objpub) {
+    if (foundSymbol.type == eElementType.type_obj_pub) {
       desiredType = foundSymbol.type;
-    } else if (foundSymbol.type == eElementType.type_objcon) {
-      desiredType = eElementType.type_con;
-    } else if (foundSymbol.type == eElementType.type_objcon_float) {
+    } else if (foundSymbol.type == eElementType.type_obj_con_int) {
+      desiredType = eElementType.type_con_int;
+    } else if (foundSymbol.type == eElementType.type_obj_con_float) {
       desiredType = eElementType.type_con_float;
     } else {
       // [error_eaocom]
@@ -8936,7 +8937,7 @@ private checkDec(): boolean {
 
   private getConInt(): number {
     this.getElement();
-    if (this.currElement.type != eElementType.type_con) {
+    if (this.currElement.type != eElementType.type_con_int) {
       // [error_eicon]
       throw new Error('Expected integer constant (m112)');
     }
