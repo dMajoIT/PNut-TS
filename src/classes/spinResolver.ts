@@ -518,6 +518,7 @@ export class SpinResolver {
 
   private compile_var_blocks() {
     // Compile var blocks
+    // PNut compile_var_blocks:
     this.logMessageOutline('++ compile_var_blocks()');
     this.varPtr = 4; // leave room for the long pointer to object
     this.restoreElementLocation(0); // start from first in list
@@ -527,7 +528,7 @@ export class SpinResolver {
       // BLOCK loop
       do {
         // LINE loop
-        this.getElement();
+        this.getElementObj();
         if (this.currElement.type == eElementType.type_end_file) {
           break;
         }
@@ -549,7 +550,7 @@ export class SpinResolver {
         let wordSize: number = eWordSize.WS_Long; // NOTE: this matches our enum values
         if (this.currElement.type == eElementType.type_size) {
           wordSize = Number(this.currElement.value); // NOTE: this matches our enum values
-          this.getElement();
+          this.getElementObj();
         }
 
         // ok, had to have one of these three!
@@ -562,7 +563,7 @@ export class SpinResolver {
         }
 
         do {
-          this.currElement = this.getElement();
+          this.currElement = this.getElementObj();
           if (this.currElement.isTypeUndefined == false) {
             // [error_eauvn]
             throw new Error('Expected a unique variable name');
@@ -1022,6 +1023,7 @@ export class SpinResolver {
    */
   private compile_dat_blocks(inLineMode: boolean = false, inLineCogOrg: number = 0, inLineCogOrgLimit: number = 0) {
     // compile all DAT blocks in file
+    // PNut compile_dat_blocks:
     //const startTime = Date.now();
     //this.logMessageOutline(`++ compile_dat_blocks(inLineMode=(${inLineMode})) - ENTRY`);
     this.logMessage(`*==* COMPILE_dat_blocks() inLineMode=(${inLineMode})`);
@@ -1078,7 +1080,7 @@ export class SpinResolver {
         do {
           this.logMessage(`LOOP: next line TOP`);
           //
-          this.getElement(); // create copy of element in our global
+          this.getElementObj(); // create copy of element in our global
           this.logMessage(`* DAT NEXTLINE LOOP currElement=[${this.currElement.toString()}]`);
           if (this.currElement.type == eElementType.type_end_file) {
             if (inLineMode) {
@@ -1108,7 +1110,7 @@ export class SpinResolver {
           this.logMessage(`* compile_dat_blocks() symbolName=[${this.symbolName}]`);
 
           if (this.weHaveASymbol || isDatStorage) {
-            this.getElement(); // moving on to next (past this symbol)
+            this.getElementObj(); // moving on to next (past this symbol)
             this.logMessage(`*  SYM/STORAGE  next element=[${this.currElement.toString()}]`);
           }
 
@@ -1127,7 +1129,7 @@ export class SpinResolver {
             this.enterDatSymbol(); // process pending symbol
             do {
               let currSize: eWordSize = this.wordSize;
-              this.currElement = this.getElement(); // moving on to next (past this symbol)
+              this.currElement = this.getElementObj(); // moving on to next (past this symbol)
               if (this.currElement.type == eElementType.type_end) {
                 break;
               }
@@ -2744,7 +2746,7 @@ export class SpinResolver {
     this.restoreElementLocation(0); // start from first in list
     while (this.nextBlock(blockType)) {
       // here is @@nextblock:
-      this.getElement();
+      this.getElementObj();
       if (this.currElement.type != eElementType.type_undefined) {
         // [error_eaumn]
         throw new Error('Expected a unique method name');
@@ -2758,7 +2760,7 @@ export class SpinResolver {
         // have parameters
         // here is @@param:
         do {
-          this.getElement();
+          this.getElementObj();
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaupn]
             throw new Error('Expected a unique parameter name (m0C0)');
@@ -2775,7 +2777,7 @@ export class SpinResolver {
       if (this.checkColon()) {
         // here is @@result:
         do {
-          this.getElement();
+          this.getElementObj();
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaurn]
             throw new Error('Expected a unique result name (m0D0)');
@@ -2793,14 +2795,14 @@ export class SpinResolver {
         // have locals
         do {
           // here is @@local:
-          this.currElement = this.getElement(); // assignment gets past lint warning
+          this.currElement = this.getElementObj(); // assignment gets past lint warning
           const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?
           if (foundAlign) {
-            this.getElement(); // skip alignw/alignl
+            this.getElementObj(); // skip alignw/alignl
           }
           // here is @@noalign:
           if (this.currElement.type == eElementType.type_size) {
-            this.getElement(); // skip BYTE/WORD/LONG
+            this.getElementObj(); // skip BYTE/WORD/LONG
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
@@ -3900,7 +3902,7 @@ export class SpinResolver {
       // eslint-disable-next-line no-constant-condition
       while (true) {
         // here is @@nextline:
-        this.getElement();
+        this.getElementObj();
         if (this.currElement.isTypeUndefined) {
           // here is @@newobj:
           // backup symbol
@@ -3950,7 +3952,7 @@ export class SpinResolver {
             do {
               // here is @@param:
               // get parameter name
-              this.getElement();
+              this.getElementObj();
               if (!this.currElement.isTypeUndefined) {
                 // [error_eas]
                 throw new Error('Expected a symbol');
@@ -7620,7 +7622,7 @@ export class SpinResolver {
       this.logMessage(`* MUST resolve!`);
       // skip leading pluses
       do {
-        this.getElement();
+        this.getElementObj();
         if (this.currElement.isPlus) {
           this.logMessage(`* skipping + operator`);
         }
@@ -7681,7 +7683,7 @@ export class SpinResolver {
       this.resolveExp(mode, resolve, currPrecedence);
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        this.getElement();
+        this.getElementObj();
         this.logMessage(`* resolvExp() LOOP currElement=[${this.currElement.toString()}] currPrec=${currPrecedence} prec=${precedence}`);
         const activeOperation: eOperationType = this.currElement.operation;
         const activePrecedence: number = this.currElement.precedence;
@@ -7777,7 +7779,7 @@ export class SpinResolver {
       // trying to resolve spin2 constant
       this.logMessage(`  -- in Spin2, not PASM`);
       if (this.SubToNeg()) {
-        this.getElement(); // get element following the minus sign
+        this.getElementObj(); // get element following the minus sign
         if (this.currElement.isConstantInt) {
           resultStatus.value = this.currElement.negateBigIntValue();
         } else if (this.currElement.isConstantFloat) {
@@ -7793,7 +7795,7 @@ export class SpinResolver {
         // this is a constant
         resultStatus.value = this.currElement.bigintValue;
       } else if (this.currElement.type == eElementType.type_pound) {
-        this.getElement();
+        this.getElementObj();
         const registerAddress: number = Number((this.currElement.bigintValue & BigInt(0xfff00000)) >> (32n - 12n));
         if (this.isDatStorageType() && registerAddress < 0x400) {
           resultStatus.value = BigInt(registerAddress);
@@ -7801,6 +7803,9 @@ export class SpinResolver {
           // [error_eregsym]
           throw new Error('Expected a register symbol');
         }
+      } else if (this.currElement.type == eElementType.type_register) {
+        const registerAddress: number = Number((this.currElement.bigintValue & BigInt(0xfff00000)) >> (32n - 12n));
+        resultStatus.value = BigInt(registerAddress);
       } else if (this.currElement.type == eElementType.type_obj) {
         // Handle Spin2 object-instance reference
         const savedElement: SpinElement = this.currElement;
@@ -7825,6 +7830,8 @@ export class SpinResolver {
       this.SubToNeg(); // makes currentElem op_neg if was op_sub!
       if (this.currElement.operation == eOperationType.op_neg) {
         // if the next element is a constant we can negate it
+        // FIXME: will these look aheads work!? Given OBJ Tuple processing?
+        // FIXME: XYZZY need test case with op_neg followed by OBJ TUPLE!!!!
         if (this.nextElementType() == eElementType.type_con_int) {
           // coerce element to negative value
           this.getElement();
@@ -7919,11 +7926,13 @@ export class SpinResolver {
             if (this.currElement.type == eElementType.type_dollar) {
               // HANDLE an origin symbol
               if (mode != eMode.BM_OperandIntOnly && mode != eMode.BM_OperandIntOrFloat) {
-                // [error_oinah]
-                throw new Error('"$" is not allowed here');
+                // [error_dioa]
+                throw new Error('"$" (DAT origin) is only allowed in DAT blocks');
               }
               this.checkIntMode();
               resultStatus.value = BigInt(this.hubMode ? this.hubOrg : this.cogOrg >> 2);
+            } else if (this.currElement.type == eElementType.type_dollar2) {
+              // XYZZY add DITTO support here
             } else if (this.currElement.type == eElementType.type_register) {
               // PNut here is @@notorg:
               this.logMessage(`* getCON() type_register`);
@@ -7973,7 +7982,7 @@ export class SpinResolver {
             } else if (this.currElement.type == eElementType.type_at) {
               // HANDLE address of DAT symbol
               this.checkIntMode();
-              this.currElement = this.getElement();
+              this.currElement = this.getElementObj();
               if (this.checkDat(mode) || this.currElement.type == eElementType.type_hub_long) {
                 // we have DAT variable address
                 // here is @@trim:
@@ -8053,9 +8062,11 @@ export class SpinResolver {
       desiredType = eElementType.type_con_int;
     } else if (foundSymbol.type == eElementType.type_obj_con_float) {
       desiredType = eElementType.type_con_float;
+    } else if (foundSymbol.type == eElementType.type_obj_con_struct) {
+      desiredType = eElementType.type_con_struct;
     } else {
-      // [error_eaocom]
-      throw new Error('Expected an object constant or method');
+      // [error_eaocsom]
+      throw new Error('Expected an object constant, structure, or method');
     }
     return [desiredType, desiredValue];
   }
@@ -9132,10 +9143,52 @@ private checkDec(): boolean {
     this.scopeColumn = newScopeColumn;
   }
 
+  //  Get element, converting type_obj subtypes, c=1 if eof
+  //
+  // 	type_obj.type_obj_con_int    --> type_con_int
+  // 	type_obj.type_obj_con_float  --> type_con_float
+  // 	type_obj.type_obj_con_struct --> type_con_struct
+  // 	type_obj.type_obj_pub        --> type_obj (compiler will discover type_obj_pub)
+  // 	type_obj                     --> type_obj (compiler will handle whatever is next)
+  //
   private getElementObj(): SpinElement {
-    // FIXME: XYZZY add code for this
-    // FIXME: adjust backElement() to handle temp markers
-    return this.currElement; // NOTE: (WARNING!) this is a reference into our active element list
+    // if we are found an OBJ trio and found a constant return leaf element resolved as non-obj constant
+    let exitWithCurrElement: boolean = false; // if true we already did the getElement() (and backs) so exit with current
+    if (this.nextElementType() != eElementType.type_end) {
+      // have object reference?
+      if (this.nextElementType() == eElementType.type_obj) {
+        // found OBJ check next
+        exitWithCurrElement = true;
+        this.getElement(); // now have OBJECT as current
+        if (this.nextElementType() == eElementType.type_dot) {
+          this.getElement(); // now have DOT as current
+          const nextType: eElementType = this.nextElementType();
+          if (
+            nextType == eElementType.type_obj_con_int ||
+            nextType == eElementType.type_obj_con_float ||
+            nextType == eElementType.type_obj_con_struct ||
+            nextType == eElementType.type_obj_pub
+          ) {
+            let [objSymType, objSymValue] = this.getObjSymbol(this.nextElementValue());
+            // if public method of object then back out and let compiler
+            if (objSymType == eElementType.type_obj_pub) {
+              // let compiler discover OBJ.PUB
+              this.backElement(); // move from DOT back to OBJ
+            } else {
+              // we have obj type_obj_con_int, type_obj_con_float, or type_obj_con_struct
+              // mark our DOT as part
+              this.currElement.partOfObjReference = true; // mark dot for skip when backing up
+              this.nextElementIndex++;
+              this.currElement = new SpinElement(0, objSymType, '', 0, 0, this.spinElements[this.nextElementIndex]);
+            }
+          } else {
+            // let compiler discover OBJ
+            this.backElement(); // move from DOT back to OBJ
+          }
+        }
+      }
+    }
+    return exitWithCurrElement ? this.currElement : this.getElement(); // NOTE: (WARNING!) this is a reference into our active element list
   }
 
   private getElement(): SpinElement {
@@ -9206,6 +9259,10 @@ private checkDec(): boolean {
     this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.spinElements[this.nextElementIndex++]);
     // and make sure our column offset into the line is set
     this.logMessage(`* BACKele i#${this.nextElementIndex - 1}, e=[${this.currElement.toString()}], nextElemIdx=(${this.nextElementIndex})`);
+    // if i'm sitting at DOT which is part of obj.constant then back up one more
+    if (this.currElement.partOfObjReference) {
+      this.backElement();
+    }
   }
 
   private getColumn() {

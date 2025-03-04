@@ -21,6 +21,7 @@ export class SpinElement {
   private _isSymbol: boolean = false; // valid when element refers to symbol in source code
   private _symbolLength: number = 0; // valid only when _isSymbol is true
   private _sourceSymbolWasUndefined: boolean = false; // valid only when _isSymbol is true
+  private _isObjectReference: boolean = false; // valid only when ...
 
   constructor(fileID: number, type: eElementType, value: bigint | string, lineIndex: number, charIndex: number, copy?: SpinElement) {
     if (copy) {
@@ -34,6 +35,7 @@ export class SpinElement {
       this._isSymbol = copy._isSymbol; // valid when element referrs to symbol in source code
       this._symbolLength = copy._symbolLength; // valid only when _isSymbol is true
       this._sourceSymbolWasUndefined = copy._sourceSymbolWasUndefined; // valid only when _isSymbol is true
+      this._isObjectReference = copy._isObjectReference; // valid only when _isSymbol is true
     } else {
       // if not copy constructor then load these five specifically
       this._fileId = fileID;
@@ -67,6 +69,14 @@ export class SpinElement {
 
   public setSourceColumnOffset(countLeftWhiteColumns: number) {
     this._expandedColumn = countLeftWhiteColumns;
+  }
+
+  set partOfObjReference(value: boolean) {
+    this._isObjectReference = value;
+  }
+
+  get partOfObjReference(): boolean {
+    return this._isObjectReference;
   }
 
   get sourceElementWasUndefined(): boolean {

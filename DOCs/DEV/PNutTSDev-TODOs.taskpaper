@@ -1,41 +1,50 @@
 DebuggerUnit w/Chip:
-- procedure TDebuggerForm.Breakpoint;  is the core! 
+	- procedure TDebuggerForm.Breakpoint;  is the core! 
 
 TODO's from P2LF 250108:
 	- add '#pragma exportdef NAME' which makes symbol appear as if specified as -D on command line.
 	- rename preproc output to __pre.spin2 (dual underscore)
 	
 TODO's from PNut Zoom 250303:
-- update tables:
-	- types @done(2025-03-03)
-	- byte codes @done(2025-03-03)
-	- flexcodes @done(2025-03-03)
-	- Directives DITTO @done(2025-03-03)
-	- IFs  if_never ->  if_ref @done(2025-03-03)
-	- Elementizer @done(2025-03-03)
-	
-	- Add OBJX contants (where?) used by:
-		- compile_obj_symbols:
+	- update tables:
+		- types @done(2025-03-03)
+		- byte codes @done(2025-03-03)
+		- flexcodes @done(2025-03-03)
+		- Directives DITTO @done(2025-03-03)
+		- IFs  if_never ->  if_ref @done(2025-03-03)
+		- Elementizer @done(2025-03-03)
+		Day2:
+		- Finish getElementObj() @done(2025-03-04)
+		- Start replacing getElement() with getElementObj() @done(2025-03-04)
+		Day3:
+		- Place getElementObj() calls where needed
+		- See XYZZY for DITTO in check_constant
 		
-		RULE: everythng should be get_element_obj unless is SHOULD NOT be!
+		Upcoming:
+		- Review each block handling method for STRUCT addition, etc. DITTO Support
 		
-	- Consumers of get_element_obj:
-		- compile_obj_blocks_id:
-		- compile_sub_blocks_id:
-		- compile_dat_blocks: (MIXED! GET AND GET OBJ!)
-			- DITTO support
-		- compile_sub_blocks:
-		- compile_obj_blocks: (MIXED! GET AND GET OBJ!)
-		- compile_block: (MIXED! GET AND GET OBJ!)
-		- compile_instruction:
-		- compile_sub_blocks:
+		- Add OBJX contants (where?) used by:
+			- compile_obj_symbols:
 			
-	- Consumers of get_element (orig):
-			- compile_dat_blocks_fn:
-			- compile_con_blocks:
-			- compile_var_blocks:
-				- STRUCT changes
-			- compile_dat:
+			RULE: everythng should be get_element_obj unless is SHOULD NOT be!
+			
+		- Consumers of get_element_obj:
+			- compile_obj_blocks_id: @done(2025-03-04)
+			- compile_sub_blocks_id: @done(2025-03-04)
+			- compile_dat_blocks: (MIXED! GET AND GET OBJ!)
+				- DITTO support
+			- compile_sub_blocks:
+			- compile_obj_blocks: (MIXED! GET AND GET OBJ!)
+			- compile_block: (MIXED! GET AND GET OBJ!)
+			- compile_instruction:
+			- compile_sub_blocks:
+				
+		- Consumers of get_element (orig):
+				- compile_dat_blocks_fn:
+				- compile_con_blocks:
+				- compile_var_blocks:
+					- STRUCT changes
+				- compile_dat:
 			
 DEBUG_ notes from 240919 zoom:
 - FlexSpin DEBUG_DISABLE = 0 or 1
