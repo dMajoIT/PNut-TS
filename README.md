@@ -15,7 +15,7 @@ Reimplementation Pnut for Windows in a platform agnostic language.
 
 ## We are inviting testing help
 
-v1.43.0 is an early release inviting testing of the v43 compatibility. The hope is that our community can help us expand our initial testing beyond what we've been able to do to help us
+v1.43.3 is an early release inviting testing of the v43 compatibility. The hope is that our community can help us expand our initial testing beyond what we've been able to do to help us
 find any compilation issues we may not have found.
 
 The page [Testing PNut-TS v1.43.0](Testing.md) will help you learn how to test and identify what to report when you find an issue.

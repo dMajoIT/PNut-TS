@@ -249,6 +249,14 @@ export class SpinResolver {
   private distiller: number[] = []; // PNut dis  FIXME: remove this after implement use of distillerList
   private distillerList: DistillerList;
 
+  // here for new DITTO in DAT support
+  private ditto_flag: boolean = false;
+  private ditto_index: number = 0;
+  private ditto_count: number = 0;
+
+  // allow registers in CON blocks
+  private inConBlock: boolean = false;
+
   // Debug()  support
   // debug mode support
   private debugPinRx: number = 63; // default maybe overridden by code
@@ -477,17 +485,21 @@ export class SpinResolver {
   private compile_con_blocks_1st() {
     // true here means very-first pass!
     const FIRST_PASS: boolean = true;
+    this.inConBlock = true;
     this.logMessage('*==* COMPILE_con_blocks_1st() 1of2');
     this.compile_con_blocks(eResolve.BR_Try, FIRST_PASS);
     this.logMessage('*==* COMPILE_con_blocks_1st() 2of2');
     this.compile_con_blocks(eResolve.BR_Try);
+    this.inConBlock = false;
   }
 
   private compile_con_blocks_2nd() {
+    this.inConBlock = true;
     this.logMessage('*==* COMPILE_con_blocks_2nd() 1of2');
     this.compile_con_blocks(eResolve.BR_Try);
     this.logMessage('*==* COMPILE_con_blocks_2nd() 2of2');
     this.compile_con_blocks(eResolve.BR_Must);
+    this.inConBlock = false;
   }
 
   private determinePasmMode(): boolean {
@@ -3004,7 +3016,7 @@ export class SpinResolver {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       // here is cb_loop:
-      this.getElement();
+      this.getElementObj();
       if (this.currElement.type == eElementType.type_end_file) {
         break;
       } else if (this.currElement.type == eElementType.type_end) {
@@ -4793,6 +4805,7 @@ export class SpinResolver {
 
   private compile_con_blocks(resolve: eResolve, firstPass: boolean = false) {
     // compile all CON blocks in file
+    // PNut compile_con_blocks:
     this.logMessage(`*==* COMPILE_con_blocks(firstPass=(${firstPass}))`);
     this.restoreElementLocation(0); // start from first in list
     this.logMessage(`  -- restore to nextType=[${eElementType[this.nextElementType()]}]`);
@@ -5260,7 +5273,7 @@ export class SpinResolver {
 
   private compileInstruction() {
     // Instruction Compiler
-    // PNut compile_inst:
+    // PNut compile_inst: or new compile_instruction:
     this.logMessage(`*==* compileInstruction() at elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_back) {
       this.ct_try(eResultRequirements.RR_None, eByteCode.bc_drop_trap);
@@ -5282,6 +5295,9 @@ export class SpinResolver {
     } else if (this.currElement.type == eElementType.type_i_cogspin) {
       // instruction 'COGSPIN' ?
       this.ct_cogspin(eByteCode.bc_coginit);
+    } else if (this.currElement.type == eElementType.type_i_taskspin) {
+      // instruction 'TASKSPIN' ?
+      this.ct_cogspin(eByteCode.bc_taskspin);
     } else if (this.currElement.type == eElementType.type_debug) {
       // DEBUG()?
       this.ci_debug();
@@ -5295,8 +5311,11 @@ export class SpinResolver {
       const flexCode: eFlexcode = this.spinSymbolTables.getFlexcodeFromBytecode(this.currElement.flexByteCode);
       this.compileFlex(flexCode);
     } else if (this.currElement.isAsmDirective(eValueType.dir_org)) {
-      // inline assembly?
-      this.compileInline();
+      // inline assembly to run in COG?
+      this.compileOrg();
+    } else if (this.currElement.isAsmDirective(eValueType.dir_orgh)) {
+      // inline assembly to run from HUB RAM?
+      this.compileOrgh();
     } else if (this.currElement.type == eElementType.type_inc) {
       // ++var ?
       this.compileVariablePre(eByteCode.bc_var_inc);
@@ -5327,7 +5346,7 @@ export class SpinResolver {
             // [error_eaiov]
             throw new Error('Expected an instruction or variable');
           }
-          this.currElement = this.getElement(); // get element after variable
+          this.currElement = this.getElementObj(); // get element after variable- obj due to better error flagging
           if (this.currElement.type == eElementType.type_comma) {
             // var,... := param(s),... ?
             this.compileVariableMultiple(savedNextElementIndex);
@@ -5423,10 +5442,10 @@ export class SpinResolver {
     //this.logMessage(`  -- compileVariableMultiple(by [${callerID}]) elem=[${this.nextElementIndex}] - EXIT`);
   }
 
-  private compileInline() {
+  private compileOrg() {
     // Compile inline assembly section - first handle ORG operand(s)
     // PNut compile_inline:
-    this.logMessage(`* compileInline() - ENTRY`);
+    this.logMessage(`* compileOrg() - ENTRY`);
     let inlineOrigin: number = 0;
     let inlineLimit: number = this.inlineLimit;
     // handle inline:  ORG {start{,limit}}
@@ -5474,7 +5493,11 @@ export class SpinResolver {
       throw new Error('Inline section is empty');
     }
     this.objImage.replaceWord(lengthInLongs - 1, patchLocation - 2); // replace the placeholder with length
-    this.logMessage(`* compileInline() - EXIT`);
+    this.logMessage(`* compileOrg() - EXIT`);
+  }
+
+  private compileOrgh() {
+    // XYZZY add code here
   }
 
   private ci_next_quit() {
@@ -7806,19 +7829,6 @@ export class SpinResolver {
       } else if (this.currElement.type == eElementType.type_register) {
         const registerAddress: number = Number((this.currElement.bigintValue & BigInt(0xfff00000)) >> (32n - 12n));
         resultStatus.value = BigInt(registerAddress);
-      } else if (this.currElement.type == eElementType.type_obj) {
-        // Handle Spin2 object-instance reference
-        const savedElement: SpinElement = this.currElement;
-        if (this.checkDot() == false) {
-          // [error_NEW for Pnut-ts] (BEING CAPTURED)
-          throw new Error('[INTERNAL] Spin2 Constant failed to resolve');
-        }
-        const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-        if (objSymType == eElementType.type_obj_pub) {
-          // [error_NEW for Pnut-ts] (BEING CAPTURED)
-          throw new Error('[INTERNAL] Spin2 Constant failed to resolve');
-        }
-        resultStatus.value = BigInt(objSymValue);
       } else {
         resultStatus.foundConstant = false;
       }
@@ -7830,18 +7840,17 @@ export class SpinResolver {
       this.SubToNeg(); // makes currentElem op_neg if was op_sub!
       if (this.currElement.operation == eOperationType.op_neg) {
         // if the next element is a constant we can negate it
-        // FIXME: will these look aheads work!? Given OBJ Tuple processing?
-        // FIXME: XYZZY need test case with op_neg followed by OBJ TUPLE!!!!
-        if (this.nextElementType() == eElementType.type_con_int) {
+        // NOTE: need test case with op_neg followed by OBJ TUPLE!!!!
+        if (this.nextElementObjType() == eElementType.type_con_int) {
           // coerce element to negative value
-          this.getElement();
+          this.getElementObj();
           this.logMessage(`* type_con e=[${this.currElement.toString()}]`);
           resultStatus.value = this.currElement.negateBigIntValue();
           this.checkIntMode(); // throw if we were float
           // if not set then set else
-        } else if (this.nextElementType() == eElementType.type_con_float) {
+        } else if (this.nextElementObjType() == eElementType.type_con_float) {
           // coerce element to negative value
-          this.getElement();
+          this.getElementObj();
           this.logMessage(`* type_con_float e=[${this.currElement.toString()}]`);
           resultStatus.value = BigInt(this.currElement.value) ^ BigInt(0x80000000);
           this.checkFloatMode(); // throw if we were int
@@ -7932,12 +7941,18 @@ export class SpinResolver {
               this.checkIntMode();
               resultStatus.value = BigInt(this.hubMode ? this.hubOrg : this.cogOrg >> 2);
             } else if (this.currElement.type == eElementType.type_dollar2) {
-              // XYZZY add DITTO support here
+              // new DITTO support here
+              if (mode != eMode.BM_OperandIntOnly || this.ditto_flag == false) {
+                // [error_diioa]
+                throw new Error('"$$" (DITTO index) is only allowed within a DITTO block, inside a DAT block');
+              }
+              resultStatus.value = BigInt(this.ditto_index);
             } else if (this.currElement.type == eElementType.type_register) {
               // PNut here is @@notorg:
               this.logMessage(`* getCON() type_register`);
-              // HANDLE a cog register
-              if (mode != eMode.BM_OperandIntOnly && mode != eMode.BM_OperandIntOrFloat) {
+              // HANDLE a cog register (the inConBlock check allows registers in CON block)
+              //   if not in CON block and NOT in operand mode...
+              if (this.inConBlock == false && mode != eMode.BM_OperandIntOnly && mode != eMode.BM_OperandIntOrFloat) {
                 // [error_rinah]
                 throw new Error('Register is not allowed here');
               }
@@ -7962,23 +7977,17 @@ export class SpinResolver {
               // [error_lvmb]
               // We don't quite like this message (so we adjusted to not match PNut)
               throw new Error('Local variable must be LONG and within first 16 longs (m1C1)');
-            } else if (this.inlineModeForGetConstant && this.currElement.type == eElementType.type_loc_long) {
+            } else if (
+              this.inlineModeForGetConstant &&
+              (this.currElement.type == eElementType.type_loc_long ||
+                this.currElement.type == eElementType.type_loc_struct ||
+                this.currElement.type == eElementType.type_loc_byte_ptr ||
+                this.currElement.type == eElementType.type_loc_word_ptr ||
+                this.currElement.type == eElementType.type_loc_long_ptr ||
+                this.currElement.type == eElementType.type_loc_struct_ptr)
+            ) {
               // return address of local var
               resultStatus.value = (this.currElement.bigintValue >> 2n) + BigInt(this.inlineLocalsStart);
-            } else if (this.currElement.type == eElementType.type_obj) {
-              // above is @@notinline:
-              // HANDLE object.constant reference
-              const savedElement: SpinElement = this.currElement;
-              this.getDot();
-              const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-              if (objSymType == eElementType.type_obj_pub) {
-                // [error_eacn]
-                throw new Error('Expected a constant name (m080)');
-              }
-              // Adjust element replacing current and pass new
-              this.currElement.setType(objSymType);
-              this.currElement.setValue(BigInt(objSymValue));
-              return this.getConstant(mode, resolve);
             } else if (this.currElement.type == eElementType.type_at) {
               // HANDLE address of DAT symbol
               this.checkIntMode();
@@ -9116,9 +9125,24 @@ private checkDec(): boolean {
   }
 
   private nextElementType(): eElementType {
-    const element = this.spinElements[this.nextElementIndex];
+    const element: SpinElement = this.spinElements[this.nextElementIndex];
     //this.logMessage(`* NEXTele i#${this.nextElementIndex}, e=[${this.spinElements[this.nextElementIndex].toString()}]`);
     return element.type;
+  }
+
+  private nextElementObjType(): eElementType {
+    // look ahead if we have an OBJ tuple
+    let element: SpinElement = this.spinElements[this.nextElementIndex];
+    let desiredType: eElementType = element.type;
+    if (element.type == eElementType.type_obj) {
+      element = this.spinElements[this.nextElementIndex + 1];
+      if (element.type == eElementType.type_dot) {
+        element = this.spinElements[this.nextElementIndex + 2];
+        desiredType = element.type;
+      }
+    }
+    //this.logMessage(`* NEXTele i#${this.nextElementIndex}, e=[${this.spinElements[this.nextElementIndex].toString()}]`);
+    return desiredType;
   }
 
   private nextElementValue(): eValueType | eBlockType {

@@ -5,22 +5,32 @@ TODO's from P2LF 250108:
 	- add '#pragma exportdef NAME' which makes symbol appear as if specified as -D on command line.
 	- rename preproc output to __pre.spin2 (dual underscore)
 	
-TODO's from PNut Zoom 250303:
-	- update tables:
-		- types @done(2025-03-03)
-		- byte codes @done(2025-03-03)
-		- flexcodes @done(2025-03-03)
-		- Directives DITTO @done(2025-03-03)
-		- IFs  if_never ->  if_ref @done(2025-03-03)
-		- Elementizer @done(2025-03-03)
-		Day2:
+TODO's from PNut Zoom 250303++:
+	- update tables: @done(2025-03-05)
+	- types @done(2025-03-03)
+	- byte codes @done(2025-03-03)
+	- flexcodes @done(2025-03-03)
+	- Directives DITTO @done(2025-03-03)
+	- IFs  if_never ->  if_ref @done(2025-03-03)
+	- Elementizer @done(2025-03-03)
+	Day2:
 		- Finish getElementObj() @done(2025-03-04)
 		- Start replacing getElement() with getElementObj() @done(2025-03-04)
-		Day3:
+	Day3:
+		- Complete changes in check_constant: getConstant() @done(2025-03-05)
+		- Rename compileInline() to compileOrg() @done(2025-03-05)
 		- Place getElementObj() calls where needed
-		- See XYZZY for DITTO in check_constant
+		- Complete changes in compile_inst()
+		- Add new compileOrgh()
+	Day4:
+		- expression resolver (resolve_exp?)
+		- CON block -> structures
+		- DAT block
+		- VAR block -> using structures, ptrs
+		- SPIN blocks (PUB, PRI)
+		- OBJ block -> obj attributes
 		
-		Upcoming:
+	Upcoming:
 		- Review each block handling method for STRUCT addition, etc. DITTO Support
 		
 		- Add OBJX contants (where?) used by:
