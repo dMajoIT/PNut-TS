@@ -101,10 +101,11 @@ export class ObjectSymbols {
     this.writeByte(paramterCount);
   }
 
-  public writeConstant(name: string, type: number, value: bigint) {
+  public writeConstant(name: string, isFloat: boolean, value: bigint) {
     // add to this objects' public interface symbol store PubConList
+    const interfaceType: number = isFloat ? 17 : 16;
     this.writeSymbolName(name);
-    this.writeByte(type); // 16, 17
+    this.writeByte(interfaceType); // 16, 17
     this.writeLong(value);
   }
 

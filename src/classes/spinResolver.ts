@@ -5131,8 +5131,7 @@ export class SpinResolver {
     );
 
     // write info to object pub/con list
-    const interfaceType: number = symbolValue.isFloat ? 17 : 16;
-    this.pubConList.writeConstant(symbolName, interfaceType, BigInt(adjustedCONSymbol.value));
+    this.pubConList.writeConstant(symbolName, symbolValue.isFloat, BigInt(adjustedCONSymbol.value));
   }
 
   private checkImportedParam(symbolName: string): iSymbol | undefined {
