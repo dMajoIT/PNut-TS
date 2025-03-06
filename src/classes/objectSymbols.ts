@@ -8,6 +8,11 @@
 import { Context } from '../utils/context';
 import { hexAddress, hexByte } from '../utils/formatUtils';
 
+const objx_con_int = 1 << 5;
+const objx_con_float = 2 << 5;
+const objx_con_struct = 3 << 5;
+const objx_pub = 4 << 5;
+
 // src/classes/objectImage.ts
 
 // version < v45 record structure:
@@ -94,19 +99,25 @@ export class ObjectSymbols {
     }
   }
 
-  public writePubSymbol(name: string, resultCount: number, paramterCount: number) {
+  public writePubSymbol(name: string, parameterCount: number, resultCount: number) {
     // add to this objects' public interface symbol store PubConList
+    const type: number = objx_pub | name.length;
+    this.writeByte(type); // tttlllll
     this.writeSymbolName(name);
-    this.writeByte(resultCount); // 0-15
-    this.writeByte(paramterCount);
+    this.writeByte(parameterCount);
+    this.writeByte(resultCount);
   }
 
   public writeConstant(name: string, isFloat: boolean, value: bigint) {
     // add to this objects' public interface symbol store PubConList
-    const interfaceType: number = isFloat ? 17 : 16;
+    const interfaceType: number = (isFloat ? objx_con_float : objx_con_int) | name.length;
+    this.writeByte(interfaceType);
     this.writeSymbolName(name);
-    this.writeByte(interfaceType); // 16, 17
     this.writeLong(value);
+  }
+
+  public writeStructure(name: string, bytes: Uint8Array) {
+    // XYZZY we are here!!
   }
 
   public writeLong(uint32: bigint) {

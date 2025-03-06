@@ -2875,7 +2875,7 @@ export class SpinResolver {
       // if we have a PUB method...
       if (blockType == eBlockType.block_pub) {
         // record Objects' PUB method details: symbol, number results, number parameters
-        this.pubConList.writePubSymbol(symbolName, resultCount, parameterCount);
+        this.pubConList.writePubSymbol(symbolName, parameterCount, resultCount);
       }
       // here is @@notpub:
       foundBlocksStatus = true;

@@ -28,8 +28,11 @@ TODO's from PNut Zoom 250303++:
 			-  (seems to work, can't cause to fail!   So can't test) @done(2025-03-06)
 		- Adjust compile1 and compile2 @done(2025-03-06)
 		- Adjust objSymbols interface (move routines into object) @done(2025-03-06)
+	Day5:
 		- Convert objSymbols to new record format
+			- finish writeStructure() in objectSymbols.ts
 		- CON block -> structures 
+			- call writeStructure()
 		- DAT block
 		- VAR block -> using structures, ptrs
 		- SPIN blocks (PUB, PRI)
