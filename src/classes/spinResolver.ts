@@ -272,6 +272,9 @@ export class SpinResolver {
   private debug_display_top: number = 0;
   private debug_log_size: number = 0;
   private debug_windows_off: boolean = false;
+  // new in recent versions
+  private debug_disable: boolean = false; // set if we see DEBUG_DISABLE = nonzero
+  private debug_mask: number = 0; // set if we see DEBUG_MASK = %00000000_00000000_00000000_00000000
 
   private debug_record: DebugRecord; // a single debug record (fill in, then commit it)
   private debug_data: DebugData; // the collection of committed debug records
@@ -432,7 +435,6 @@ export class SpinResolver {
     this.compile_con_blocks_1st();
     if (this.context.passOptions.afterConBlock == false) {
       this.compile_obj_blocks_id();
-      this.compile_sub_blocks_id();
       this.compile_dat_blocks_fn();
     }
   }
@@ -449,19 +451,21 @@ export class SpinResolver {
     this.determine_clock();
     this.compile_con_blocks_2nd();
     this.determine_bauds_pins();
+    this.determine_debug_enables();
     if (this.context.passOptions.afterConBlock == false) {
       this.logMessage('* continue compilation after CON pass');
       if (this.pasmMode == false) {
         this.compile_var_blocks();
       }
+      this.compile_sub_blocks_id();
       this.compile_dat_blocks();
       this.compile_sub_blocks();
       this.compile_obj_blocks();
       this.distill_obj_blocks();
-      //this.point_to_con();  // XYZZY do we need this?
+      //this.point_to_con();  // we DON't need this
       this.collapse_debug_data(isTopLevel);
       this.compile_final();
-      //this.compile_done();  // XYZZY do we need this?
+      //this.compile_done();  // // we DON't need this
     }
     const endTime = Date.now();
     const elapsedTimeMS = endTime - startTime;
@@ -906,6 +910,36 @@ export class SpinResolver {
     this.debug_log_size = this.hostSymbolOverrideNumber(symlog, 0);
 
     this.debug_windows_off = this.hostSymbolOverrideBoolean(symoff, false);
+  }
+
+  private determine_debug_enables() {
+    // PNut determine_debug_enables:
+    const debugDisable = 'DEBUG_DISABLE';
+    const debugMask = 'DEBUG_MASK';
+
+    this.debug_disable = false;
+    let [symbolFound, isConstInteger, value] = this.checkDebugSymbol(debugDisable);
+    if (symbolFound) {
+      if (isConstInteger) {
+        if (Number(value) != 0) {
+          this.debug_disable = true;
+        }
+      } else {
+        // [error_downbaud]
+        throw new Error('DEBUG_DISABLE can only be defined as an integer constant');
+      }
+    }
+
+    this.debug_mask = 0;
+    [symbolFound, isConstInteger, value] = this.checkDebugSymbol(debugMask);
+    if (symbolFound) {
+      if (isConstInteger) {
+        this.debug_mask = Number(value);
+      } else {
+        // [error_downbaud]
+        throw new Error('DEBUG_MASK can only be defined as an integer constant');
+      }
+    }
   }
 
   private hostSymbolOverrideNumber(symbolName: string, defaultValue: number): number {
@@ -2841,7 +2875,7 @@ export class SpinResolver {
       // if we have a PUB method...
       if (blockType == eBlockType.block_pub) {
         // record Objects' PUB method details: symbol, number results, number parameters
-        this.objWrPubSymbol(symbolName, resultCount, parameterCount);
+        this.pubConList.writePubSymbol(symbolName, resultCount, parameterCount);
       }
       // here is @@notpub:
       foundBlocksStatus = true;
@@ -4894,8 +4928,8 @@ export class SpinResolver {
             //   #0[4], name1, name2, name3[5], name4
             //   name = value, name = value, name = name = value, #0[4], name1, name2
             if (firstPass) {
-              // [error_eaucnop]
-              throw new Error('Expected a unique constant name or "#" (m0B0)');
+              // [error_eaucnpos]
+              throw new Error('Expected a unique constant name, "#", or STRUCT (m0B0)');
             }
             backupSymbolName = this.replacedName; // stashed by getElement()
             this.logMessage(`* BACKUP SYMBOL name for use in set/verify name=[${backupSymbolName}]`);
@@ -4983,6 +5017,8 @@ export class SpinResolver {
               // [error_eelcoeol]
               throw new Error('Expected "=" "[" "," or end of line');
             }
+          } else if (this.currElement.type == eElementType.type_struct) {
+            // here with new STRUCT support
           } else if (this.currElement.type == eElementType.type_block) {
             // let our outermost loop decide if we should process this next block
             // TODO: COVERAGE test me
@@ -4994,8 +5030,8 @@ export class SpinResolver {
             this.backElement(); // so we can re-discover the comma or EOL at while()
             this.getElement();
             this.logMessage(`EEEE: Element at fail: [${this.currElement.toString()}]`);
-            // [error_eaucnop]
-            throw new Error('Expected a unique constant name or "#" (m0B1)');
+            // [error_eaucnpos]
+            throw new Error('Expected a unique constant name, "#", or STRUCT (m0B1)');
           }
         } while (this.getCommaOrEndOfLine());
         // if we hit end of file, we're done
@@ -5096,7 +5132,7 @@ export class SpinResolver {
 
     // write info to object pub/con list
     const interfaceType: number = symbolValue.isFloat ? 17 : 16;
-    this.objWrConstant(symbolName, interfaceType, BigInt(adjustedCONSymbol.value));
+    this.pubConList.writeConstant(symbolName, interfaceType, BigInt(adjustedCONSymbol.value));
   }
 
   private checkImportedParam(symbolName: string): iSymbol | undefined {
@@ -7590,20 +7626,6 @@ export class SpinResolver {
     this.objImage.append(byteValue & 0xff);
   }
 
-  private objWrPubSymbol(name: string, resultCount: number, paramterCount: number) {
-    // add to this objects' public interface symbol store PubConList
-    this.pubConList.writeSymbolName(name);
-    this.pubConList.writeByte(resultCount);
-    this.pubConList.writeByte(paramterCount);
-  }
-
-  private objWrConstant(name: string, type: number, value: bigint) {
-    // add to this objects' public interface symbol store PubConList
-    this.pubConList.writeSymbolName(name);
-    this.pubConList.writeByte(type);
-    this.pubConList.writeLong(value);
-  }
-
   private trySpin2ConExpression(): iValueReturn {
     // PNut try_spin2_con_exp:
     this.logMessage(`*==* trySpin2ConExpression()`);
@@ -7637,7 +7659,9 @@ export class SpinResolver {
   }
 
   private resolveExp(mode: eMode, resolve: eResolve, precedence: number) {
-    // leaves answer on stack
+    // PNut resolve_exp: ???
+    // Resolve expression with sub-expressions
+    //  (leaves answer on stack)
     let currPrecedence: number = precedence;
     this.logMessage(`* resolveExp(${precedence}) - ENTRY w/Elem=[${this.currElement.toString()}]`);
     if (--currPrecedence < 0) {
@@ -7675,7 +7699,7 @@ export class SpinResolver {
         if (this.currElement.isUnary) {
           // our element is a unary operation
           this.logMessage(`  -- resolvExp() currElement.isUnary!`);
-          this.checkDualModeOp(activeFloatCompatibility, mode); // (this IS in good place...)
+          this.checkDualModeOp(activeFloatCompatibility, mode); // (this IS in good place...!!)
           this.resolveExp(mode, resolve, activePrecedence);
           // Perform Unary
           const aValue = this.numberStack.pop();
@@ -7748,7 +7772,6 @@ export class SpinResolver {
           if (activePrecedence == currPrecedence) {
             // Perform Binary
             this.resolveExp(mode, resolve, currPrecedence); // push rhs value
-            // Perform binary
             const bValue = this.numberStack.pop();
             const aValue = this.numberStack.pop();
             let exprResult: bigint = 0n;
@@ -7781,7 +7804,7 @@ export class SpinResolver {
   }
 
   private checkDualModeOp(isElementFloatCompatible: boolean, mode: eMode) {
-    // [preview_op]
+    // PNut preview_op:
     if (isElementFloatCompatible == false && mode != eMode.BM_Spin2) {
       if (this.mathMode == eMathMode.MM_FloatMode) {
         // [error_ionaifpe]

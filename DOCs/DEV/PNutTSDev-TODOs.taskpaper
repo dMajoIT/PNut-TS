@@ -23,8 +23,13 @@ TODO's from PNut Zoom 250303++:
 		- Complete changes in compile_inst()
 		- Add new compileOrgh()
 	Day4:
-		- expression resolver (resolve_exp?)
-		- CON block -> structures
+		- expression resolver (resolve_exp?) @done(2025-03-06)
+		- FOUND BUG in flt!  bad code. Fixed. Need TEST CASE! @done(2025-03-06)
+			-  (seems to work, can't cause to fail!   So can't test) @done(2025-03-06)
+		- Adjust compile1 and compile2 @done(2025-03-06)
+		- Adjust objSymbols interface (move routines into object) @done(2025-03-06)
+		- Convert objSymbols to new record format
+		- CON block -> structures 
 		- DAT block
 		- VAR block -> using structures, ptrs
 		- SPIN blocks (PUB, PRI)

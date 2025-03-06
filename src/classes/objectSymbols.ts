@@ -10,6 +10,46 @@ import { hexAddress, hexByte } from '../utils/formatUtils';
 
 // src/classes/objectImage.ts
 
+// version < v45 record structure:
+// ---------------------------------
+// CON PUB:
+//  name string (no terminator)
+//  type byte [0-15 is PUB return count]
+//  type byte [parameter count]
+//
+// CON CONSTANT:
+//  name string (no terminator)
+//  type byte [16 (int),17 (float)]
+//  type long {value}
+
+// version >= v45 record structure:
+// ---------------------------------
+//  type byte: tttlllll
+//   ttt:
+//    objx_con_int     1 << 5
+//    objx_con_float   2 << 5
+//    objx_con_struct  3 << 5
+//    objx_pub         4 << 5
+//   lllll:
+//    len (0-31)
+//
+// CON PUB: (ttt: pub)
+//   type BYTE [tttlllll]
+//   name string (no terminator)
+//   BYTE parameter count
+//   BYTE result count
+//
+// CON CONSTANT: (ttt: con_int, con_float)
+//  type BYTE [tttlllll]
+//  name string (no terminator)
+//  LONG {value}
+//
+// CON STRUCT: (ttt: con_struct)
+//  type BYTE [tttlllll]
+//  name string (no terminator)
+//  WORD size
+//  BYTEs data[size-2]
+
 export class ObjectSymbols {
   private context: Context;
   private isLogging: boolean = false;
@@ -45,13 +85,27 @@ export class ObjectSymbols {
     return desiredValue;
   }
 
-  public writeSymbolName(name: string) {
+  private writeSymbolName(name: string) {
     if (name !== undefined && name.length > 0) {
       for (let index = 0; index < name.length; index++) {
         const charByte: number = name.charCodeAt(index);
         this.writeByte(charByte);
       }
     }
+  }
+
+  public writePubSymbol(name: string, resultCount: number, paramterCount: number) {
+    // add to this objects' public interface symbol store PubConList
+    this.writeSymbolName(name);
+    this.writeByte(resultCount); // 0-15
+    this.writeByte(paramterCount);
+  }
+
+  public writeConstant(name: string, type: number, value: bigint) {
+    // add to this objects' public interface symbol store PubConList
+    this.writeSymbolName(name);
+    this.writeByte(type); // 16, 17
+    this.writeLong(value);
   }
 
   public writeLong(uint32: bigint) {
