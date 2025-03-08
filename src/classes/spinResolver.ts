@@ -24,6 +24,7 @@ import { DistillerList, DistillerRecord } from './distillerList';
 import { DebugData, DebugRecord } from './debugData';
 import { SpinDocument } from './spinDocument';
 import { hexByte, hexLong } from '../utils/formatUtils';
+import { ObjectStructures } from './objectStructures';
 
 // Internal types used for passing complex values
 interface iValueReturn {
@@ -205,6 +206,8 @@ export class SpinResolver {
   private xinFreq: number = 0;
   private inlineModeForGetConstant: boolean = false;
 
+  private objectStructureSet: ObjectStructures;
+
   // registers / constants
   private readonly inlineLimit: number = 0x120; // address
   private readonly mrecvReg: number = 0x1d2; // address
@@ -305,6 +308,7 @@ export class SpinResolver {
     this.numberStack.enableLogging(this.isLogging);
     this.blockStack.enableLogging(this.isLogging);
     this.pubConList = new ObjectSymbols(ctx, 'PUBCONList');
+    this.objectStructureSet = new ObjectStructures(ctx, 'PUBStructList');
     this.distillerList = new DistillerList(ctx);
     this.distillerList.enableLogging(this.isLogging);
     this.spinSymbolTables.enableLogging(this.isLogging);
@@ -489,6 +493,7 @@ export class SpinResolver {
   private compile_con_blocks_1st() {
     // true here means very-first pass!
     const FIRST_PASS: boolean = true;
+    this.objectStructureSet.reset();
     this.inConBlock = true;
     this.logMessage('*==* COMPILE_con_blocks_1st() 1of2');
     this.compile_con_blocks(eResolve.BR_Try, FIRST_PASS);
@@ -2117,7 +2122,7 @@ export class SpinResolver {
           }
           if (this.context.compileOptions.enableDebug == false) {
             this.logMessage(`  -- DEBUG is OFF`);
-            this.skipToEnd();
+            this.skipToEndOfLine();
             skipInstructionGeneration = true;
           } else {
             this.logMessage(`  -- DEBUG is ON`);
@@ -2133,7 +2138,7 @@ export class SpinResolver {
               this.logMessage(`  -- found open paren pass=(${pass})`);
               // here is debug() - PNut @@debugleft:
               if (pass == 0) {
-                this.skipToEnd();
+                this.skipToEndOfLine();
                 //this.backElement(); // TODO: bad?
                 // allow instruction generation to avoid pass phase error
               } else {
@@ -5018,7 +5023,42 @@ export class SpinResolver {
               throw new Error('Expected "=" "[" "," or end of line');
             }
           } else if (this.currElement.type == eElementType.type_struct) {
-            // here with new STRUCT support
+            // XYZZY here with new STRUCT support
+            // PNut :@@struct
+            this.getElement(); // move to structure name
+            if (!this.currElement.isTypeUndefined) {
+              // [error_error_eausn]
+              throw new Error('Expected a unique STRUCT name');
+            }
+            if (firstPass) {
+              // skip to end of structure decl.
+              //  structure def'ns are not nested, so we don't have nested parens!
+              if (this.nextElementType() == eElementType.type_left) {
+                // then skip ahead to right paren
+                this.scanToRightParen();
+              } else if (this.nextElementType() == eElementType.type_equal) {
+                // else skip to , (end of decl) or end (end of line)
+                this.skipToCommaOrEndOfLine();
+              } else {
+                // [error_eloe]
+                throw new Error('Expected "(" or "="');
+              }
+            } else {
+              // process structure
+              // PNut @@structenter:
+              const symbolName: string = getSourceSymbol(this.context, this.currElement); // PNut backup_symbol
+              if (this.objectStructureSet.haveMaxStructures) {
+                // [error_loxdsde]
+                throw new Error(`Limit of ${ObjectStructures.MAX_STRUCTURES} data structure definitions exceeded`);
+              }
+              // record new structure definition
+              const rcdId = this.buildStructureRecord();
+              const newObjSymbol: iSymbol = { name: symbolName, type: eElementType.type_con_struct, value: BigInt(rcdId) };
+              this.recordSymbol(newObjSymbol);
+              // record structure in object public interface
+              const structureRecord: Uint8Array = this.objectStructureSet.readRecord(rcdId);
+              this.pubConList.writeStructure(symbolName, structureRecord);
+            }
           } else if (this.currElement.type == eElementType.type_block) {
             // let our outermost loop decide if we should process this next block
             // TODO: COVERAGE test me
@@ -5040,6 +5080,27 @@ export class SpinResolver {
         }
       } while (this.nextElementType() != eElementType.type_block);
     } while (this.nextBlock(eBlockType.block_con));
+  }
+
+  private buildStructureRecord(): number {
+    // PNut build_struct_record:
+    // do we have assignment or def'n
+    if (this.currElement.type == eElementType.type_equal) {
+      // we have structure assignment
+      this.currElement = this.getElementObj();
+      if (this.currElement.type != eElementType.type_con_struct) {
+        // [error_eaesn]
+        throw new Error('Expected an existing STRUCT name');
+      }
+      const structureId: number = this.currElement.numberValue;
+      this.objectStructureSet.beginRecord();
+      this.objectStructureSet.enterSubStructure(structureId);
+      this.objectStructureSet.endRecord();
+    } else {
+      // we have structure def'n
+      // XYZZY let's now record new stucture def'n
+    }
+    return 0;
   }
 
   private compile_final() {
@@ -5532,7 +5593,7 @@ export class SpinResolver {
   }
 
   private compileOrgh() {
-    // XYZZY add code here
+    // XYZZY add code here compileOrgh()
   }
 
   private ci_next_quit() {
@@ -5785,7 +5846,7 @@ export class SpinResolver {
     if (this.context.compileOptions.enableDebug == false) {
       // remove all but end of line
       this.logMessage(`*--* ci_debug(${this.currElement.toString()}) - Debug() processing disabled`);
-      this.skipToEnd();
+      this.skipToEndOfLine();
     } else {
       this.logMessage(`*--* ci_debug(${this.currElement.toString()}) ENTRY`);
       if (!this.checkLeftParen()) {
@@ -5829,7 +5890,7 @@ export class SpinResolver {
     const anotherTickFollows: boolean = this.debugTickString();
     if (anotherTickFollows == false) {
       // found ')' and end of line, enter debug data
-      this.skipToEnd(); // syncronize our element list position
+      this.skipToEndOfLine(); // syncronize our element list position
       brkCode = this.enterDebug(isPasmMode);
     } else {
       // we know another tick is coming but our element list is not positioned correctly
@@ -8236,10 +8297,24 @@ private checkDec(): boolean {
     return foundTickStatus;
   }
 
-  private skipToEnd() {
+  private skipToEndOfLine() {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if (this.nextElementType() == eElementType.type_end || this.nextElementType() == eElementType.type_end_file) {
+        break;
+      }
+      this.getElement();
+    }
+  }
+
+  private skipToCommaOrEndOfLine() {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (
+        this.nextElementType() == eElementType.type_comma ||
+        this.nextElementType() == eElementType.type_end ||
+        this.nextElementType() == eElementType.type_end_file
+      ) {
         break;
       }
       this.getElement();

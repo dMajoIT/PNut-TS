@@ -117,7 +117,13 @@ export class ObjectSymbols {
   }
 
   public writeStructure(name: string, bytes: Uint8Array) {
-    // XYZZY we are here!!
+    // add a public structure def'm to object interface
+    const interfaceType: number = objx_con_struct | name.length;
+    this.writeByte(interfaceType);
+    this.writeSymbolName(name);
+    for (let index = 0; index < bytes.length; index++) {
+      this.writeByte(bytes[index]);
+    }
   }
 
   public writeLong(uint32: bigint) {

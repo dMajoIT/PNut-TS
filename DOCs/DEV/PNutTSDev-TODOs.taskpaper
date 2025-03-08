@@ -6,33 +6,37 @@ TODO's from P2LF 250108:
 	- rename preproc output to __pre.spin2 (dual underscore)
 	
 TODO's from PNut Zoom 250303++:
-	- update tables: @done(2025-03-05)
-	- types @done(2025-03-03)
-	- byte codes @done(2025-03-03)
-	- flexcodes @done(2025-03-03)
-	- Directives DITTO @done(2025-03-03)
-	- IFs  if_never ->  if_ref @done(2025-03-03)
-	- Elementizer @done(2025-03-03)
-	Day2:
+	Day1: Mon:
+		- update tables: @done(2025-03-05)
+		- types @done(2025-03-03)
+		- byte codes @done(2025-03-03)
+		- flexcodes @done(2025-03-03)
+		- Directives DITTO @done(2025-03-03)
+		- IFs  if_never ->  if_ref @done(2025-03-03)
+		- Elementizer @done(2025-03-03)
+	Day2: Tue:
 		- Finish getElementObj() @done(2025-03-04)
 		- Start replacing getElement() with getElementObj() @done(2025-03-04)
-	Day3:
+	Day3: Wed:
 		- Complete changes in check_constant: getConstant() @done(2025-03-05)
 		- Rename compileInline() to compileOrg() @done(2025-03-05)
 		- Place getElementObj() calls where needed
 		- Complete changes in compile_inst()
 		- Add new compileOrgh()
-	Day4:
+	Day4: Thu:
 		- expression resolver (resolve_exp?) @done(2025-03-06)
 		- FOUND BUG in flt!  bad code. Fixed. Need TEST CASE! @done(2025-03-06)
 			-  (seems to work, can't cause to fail!   So can't test) @done(2025-03-06)
 		- Adjust compile1 and compile2 @done(2025-03-06)
 		- Adjust objSymbols interface (move routines into object) @done(2025-03-06)
-	Day5:
-		- Convert objSymbols to new record format
-			- finish writeStructure() in objectSymbols.ts
-		- CON block -> structures 
-			- call writeStructure()
+	Day5: Fri:
+		- Convert objSymbols to new record format @done(2025-03-07)
+			- finish writeStructure() in objectSymbols.ts @done(2025-03-07)
+			- Implement new record structure recording object @done(2025-03-07)
+	Day6: Mon:
+			- Complete new record structure recording object
+			- CON block -> structures 
+				- call writeStructure()
 		- DAT block
 		- VAR block -> using structures, ptrs
 		- SPIN blocks (PUB, PRI)
