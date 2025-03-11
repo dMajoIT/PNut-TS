@@ -81,26 +81,41 @@ export class ObjectImage {
     return desiredValue;
   }
 
-  public append(uint8: number, alreadyLogged: boolean = false) {
+  public appendLong(longValue: number) {
+    this.logMessage(`* OBJ[${this._id}]: append(v=(${hexLong(longValue & 0xffffffff)})) wroteTo(${hexAddress(this._objOffset)})`);
+    this.appendWord(longValue, SUPPRESS_LOG_MSG);
+    this.appendWord(longValue >> 16, SUPPRESS_LOG_MSG);
+  }
+
+  public appendWord(wordValue: number, alreadyLogged: boolean = false) {
+    if (alreadyLogged == false) {
+      this.logMessage(`* OBJ[${this._id}]: append(v=(${hexWord(wordValue & 0xffff)})) wroteTo(${hexAddress(this._objOffset)})`);
+      alreadyLogged = SUPPRESS_LOG_MSG;
+    }
+    this.appendByte(wordValue, alreadyLogged);
+    this.appendByte(wordValue >> 8, alreadyLogged);
+  }
+
+  public appendByte(byteValue: number, alreadyLogged: boolean = false) {
+    if (alreadyLogged == false) {
+      this.logMessage(`* OBJ[${this._id}]: append(v=(${hexByte(byteValue & 0xff)})) wroteTo(${hexAddress(this._objOffset)})`);
+      alreadyLogged = SUPPRESS_LOG_MSG;
+    }
+    this.append(byteValue, alreadyLogged);
+  }
+
+  private append(byteValue: number, alreadyLogged: boolean = false) {
     // append byte to end of image
     if (alreadyLogged == false) {
-      this.logMessage(`* OBJ[${this._id}]: append(v=(${hexByte(uint8 & 0xff)})) wroteTo(${hexAddress(this._objOffset)})`);
+      this.logMessage(`* OBJ[${this._id}]: append(v=(${hexByte(byteValue & 0xff)})) wroteTo(${hexAddress(this._objOffset)})`);
     }
     if (this._objOffset < ObjectImage.MAX_SIZE_IN_BYTES) {
-      this._objImage[this._objOffset++] = uint8 & 0xff;
+      this._objImage[this._objOffset++] = byteValue & 0xff;
       this.updateMax();
     } else {
       // [error_pex]
       throw new Error('Program exceeds 1024KB (m1F0)');
     }
-  }
-
-  public appendLong(uint32: number) {
-    this.logMessage(`* OBJ[${this._id}]: append(v=(${hexLong(uint32 & 0xffffffff)})) wroteTo(${hexAddress(this._objOffset)})`);
-    this.append(uint32, SUPPRESS_LOG_MSG);
-    this.append(uint32 >> 8, SUPPRESS_LOG_MSG);
-    this.append(uint32 >> 16, SUPPRESS_LOG_MSG);
-    this.append(uint32 >> 24, SUPPRESS_LOG_MSG);
   }
 
   public read(offset: number): number {

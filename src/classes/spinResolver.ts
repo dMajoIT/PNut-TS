@@ -24,7 +24,7 @@ import { DistillerList, DistillerRecord } from './distillerList';
 import { DebugData, DebugRecord } from './debugData';
 import { SpinDocument } from './spinDocument';
 import { hexByte, hexLong } from '../utils/formatUtils';
-import { ObjectStructures } from './objectStructures';
+import { eMemberType, ObjectStructures } from './objectStructures';
 
 // Internal types used for passing complex values
 interface iValueReturn {
@@ -325,6 +325,7 @@ export class SpinResolver {
   }
 
   public getSymbol(symbolName: string): iSymbol | undefined {
+    // PNut get_symbol:
     return this.mainSymbols.get(symbolName);
   }
 
@@ -1076,6 +1077,7 @@ export class SpinResolver {
     // compile all DAT blocks in file
     // PNut compile_dat_blocks:
     //const startTime = Date.now();
+    // XYZZY we are doing mods here next
     //this.logMessageOutline(`++ compile_dat_blocks(inLineMode=(${inLineMode})) - ENTRY`);
     this.logMessage(`*==* COMPILE_dat_blocks() inLineMode=(${inLineMode})`);
     this.inlineModeForGetConstant = inLineMode;
@@ -2743,7 +2745,7 @@ export class SpinResolver {
       // write multiplier occurrences of value to our object
       for (let index = 0; index < multiplier; index++) {
         for (let byteIndex = 0; byteIndex < 1 << currSize; byteIndex++) {
-          this.objImage.append((Number(value) >> (byteIndex << 3)) & 0xff);
+          this.objImage.appendByte((Number(value) >> (byteIndex << 3)) & 0xff);
           if (this.hubMode) {
             // in HUB mode
             this.hubOrg++;
@@ -2781,7 +2783,7 @@ export class SpinResolver {
       }
       // compile PRI blocks
       this.compilePubPriBlocksId(eBlockType.block_pri, subStartIndex);
-      this.objWrLong(0); // enter 0 (future size) into index
+      this.objImage.appendLong(0); // enter 0 (future size) into index
     }
     //this.logMessage(`** compile_sub_blocks_id() pasmMode=(${this.pasmMode}) - EXIT`);
   }
@@ -2876,7 +2878,7 @@ export class SpinResolver {
       //this.logMessage(`* compilePubPriBlocksId() calling record symbol [${newSymbol}]`);
       this.recordSymbol(newSymbol); // PUB/PRI symbol name
       const objMethodDetails: number = 0x80000000 | (parameterCount << 24) | (resultCount << 20);
-      this.objWrLong(objMethodDetails);
+      this.objImage.appendLong(objMethodDetails);
       // if we have a PUB method...
       if (blockType == eBlockType.block_pub) {
         // record Objects' PUB method details: symbol, number results, number parameters
@@ -3041,7 +3043,7 @@ export class SpinResolver {
     this.blockStack.reset();
     this.setScopeColumn(0); // effectively -1
     this.compileBlock(this.scopeColumn); // effectively -1
-    this.objWrByte(eByteCode.bc_return_results);
+    this.objImage.appendByte(eByteCode.bc_return_results);
     this.logMessage(`* compileTopBlock() endBlock at offset=(${this.objImage.offsetHex})`);
   }
 
@@ -3253,7 +3255,7 @@ export class SpinResolver {
       this.setScopeColumn(savedCaseColumn);
     }
     // here is @@noother:
-    this.objWrByte(eByteCode.bc_case_done);
+    this.objImage.appendByte(eByteCode.bc_case_done);
     // move back to beginning of case statement (1st match)
     this.restoreElementLocation(savedCaseStartElementIndex);
     caseCount = 0; // ready to count again
@@ -3294,7 +3296,7 @@ export class SpinResolver {
         this.getElement(); // skip colon
         this.write_bstack_ptr(++caseCount);
         this.compileBlock(this.scopeColumn);
-        this.objWrByte(eByteCode.bc_case_done);
+        this.objImage.appendByte(eByteCode.bc_case_done);
       }
       // here is @@skipped
       this.setScopeColumn(savedCaseColumn);
@@ -3338,9 +3340,9 @@ export class SpinResolver {
     this.compile_bstack_address(eCaseFast.CF_FinalAddr); // compile final address
     this.compileExpression(); // compile case "target" value
     this.getEndOfLine();
-    this.objWrByte(eByteCode.bc_case_fast_init);
-    this.objWrLong(0); // enter spacer for rflong (-6)
-    this.objWrWord(0); // enter spacer for rfword (-2)
+    this.objImage.appendByte(eByteCode.bc_case_fast_init);
+    this.objImage.appendLong(0); // enter spacer for rflong (-6)
+    this.objImage.appendWord(0); // enter spacer for rfword (-2)
     this.write_bstack_ptr(eCaseFast.CF_TablePtr);
     this.write_bstack(eCaseFast.CF_SourcePtr, this.saveElementLocation());
     this.write_bstack(eCaseFast.CF_MinValue, 0x7fffffff);
@@ -3413,7 +3415,7 @@ export class SpinResolver {
     let caseIndex: number = 0;
     do {
       // here is @@inittable:
-      this.objWrWord(otherCaseIndex);
+      this.objImage.appendWord(otherCaseIndex);
     } while (++caseIndex <= caseSpan);
 
     // point back to source after 'case_fast' line
@@ -3482,7 +3484,7 @@ export class SpinResolver {
         // [error_cfbex]
         throw new Error('CASE_FAST block exceeds 64KB');
       }
-      this.objWrByte(eByteCode.bc_case_fast_done);
+      this.objImage.appendByte(eByteCode.bc_case_fast_done);
       this.setScopeColumn(savedCaseColumn);
     }
     // here is @@done2
@@ -3994,8 +3996,8 @@ export class SpinResolver {
               throw new Error(`Limit of ${this.objs_limit} OBJ instances exceeded`);
             }
             // stage these values to objImage... they will be replaced in compile_obj_blocks
-            this.objWrLong(this.spinFiles.objFileCount - 1);
-            this.objWrLong(0); // write placeholder VAR offset for this object
+            this.objImage.appendLong(this.spinFiles.objFileCount - 1);
+            this.objImage.appendLong(0); // write placeholder VAR offset for this object
             this.objectInstanceInMemoryCount++;
           }
           if (this.getPipeOrEnd()) {
@@ -4209,7 +4211,7 @@ export class SpinResolver {
         for (let byteCount = 0; byteCount < remainingObjLength; byteCount++) {
           const uint8byte: number = this.objectData.read();
           //this.logMessage(`  -- compObjBlks() uint8byte=(${uint8byte})`);
-          this.objWrByte(uint8byte);
+          this.objImage.appendByte(uint8byte);
         }
       }
 
@@ -4838,7 +4840,7 @@ export class SpinResolver {
   private pad_obj_long() {
     // pad object to next long
     while (this.objImage.offset & 0b11) {
-      this.objWrByte(0);
+      this.objImage.appendByte(0);
     }
   }
 
@@ -5023,7 +5025,6 @@ export class SpinResolver {
               throw new Error('Expected "=" "[" "," or end of line');
             }
           } else if (this.currElement.type == eElementType.type_struct) {
-            // XYZZY here with new STRUCT support
             // PNut :@@struct
             this.getElement(); // move to structure name
             if (!this.currElement.isTypeUndefined) {
@@ -5085,6 +5086,7 @@ export class SpinResolver {
   private buildStructureRecord(): number {
     // PNut build_struct_record:
     // do we have assignment or def'n
+    let newStructId: number;
     if (this.currElement.type == eElementType.type_equal) {
       // we have structure assignment
       this.currElement = this.getElementObj();
@@ -5094,13 +5096,66 @@ export class SpinResolver {
       }
       const structureId: number = this.currElement.numberValue;
       this.objectStructureSet.beginRecord();
-      this.objectStructureSet.enterSubStructure(structureId);
-      this.objectStructureSet.endRecord();
+      this.objectStructureSet.enterAssignedStructure(structureId);
+      newStructId = this.objectStructureSet.endRecord();
     } else {
+      // PNut @@notassign:
       // we have structure def'n
-      // XYZZY let's now record new stucture def'n
+      if (!this.checkLeftParen()) {
+        // [error_eeqol]
+        throw new Error('Expected "=", or "("');
+      }
+      // save start address for size patching
+      this.objectStructureSet.beginRecord();
+      let foundComma: boolean = false;
+      do {
+        this.getElementObj();
+        if (this.currElement.type == eElementType.type_size) {
+          const elemSize: number = this.currElement.numberValue;
+          // record 0,1,2 byte, word, long
+          this.objectStructureSet.recordStructElement(elemSize);
+        } else if (this.currElement.type == eElementType.type_con_struct) {
+          const structId: number = this.currElement.numberValue;
+          this.objectStructureSet.recordStructWithinStruct(structId);
+        } else {
+          // PNut @@notstruct:
+          this.objectStructureSet.recordStructElement(eMemberType.MT_LONG);
+          this.backElement(); // back up to name
+        }
+        // PNut @@getname:
+        const symbolName: string = this.currElement.stringValue;
+        const symbolFound: iSymbol | undefined = this.getSymbol(symbolName);
+        if (!symbolFound) {
+          // [error_eas]
+          throw new Error('Expected a symbol');
+        }
+        this.objectStructureSet.recordStructElementName(symbolFound.name);
+        let instanceCount: number = 1; // default
+        if (this.checkLeftBracket()) {
+          // have multiplier
+          const resultReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
+          if (resultReturn.isResolved) {
+            const tempInstanceCount: number = Number(resultReturn.value);
+            if (tempInstanceCount < 1) {
+              // [error_iccbl]
+              throw new Error('Instance count cannot be less than 1');
+            } else if (tempInstanceCount > 0x10000) {
+              // [error_icce]
+              throw new Error('Instance count cannot exceed $10000');
+            }
+            instanceCount = tempInstanceCount;
+          }
+        }
+        this.objectStructureSet.finalizeStructElement(instanceCount, this.obj_limit);
+        foundComma = this.getCommaOrRightParen();
+        const flagValue: number = foundComma ? 1 : 0;
+        // record more or done byte value
+        this.objectStructureSet.enterByte(flagValue);
+      } while (foundComma);
+      // patch structure record
+      newStructId = this.objectStructureSet.endRecord();
     }
-    return 0;
+    return newStructId;
   }
 
   private compile_final() {
@@ -5115,20 +5170,20 @@ export class SpinResolver {
     if (this.pasmMode == false) {
       this.sizeInterpreter = 0; // FIXME: for now,  but move  in actual length when we get it
       const checksumOffset: number = this.objImage.offset; // PNut [edx]
-      this.objWrByte(0); // our checksum placeholder
+      this.objImage.appendByte(0); // our checksum placeholder
       // copy the entire symbol set
       //for (const byte of this.pubConList) {
-      //  this.objWrByte(byte); // copy the symbol array
+      //  this.objImage.appendByte(byte); // copy the symbol array
       //}
       this.pubConList.setOffset(0);
       this.logMessage(`  -- pubCon list has (${this.pubConList.length}) bytes`);
       for (let index = 0; index < this.pubConList.length; index++) {
         const byte = this.pubConList.readNext();
-        this.objWrByte(byte);
+        this.objImage.appendByte(byte);
       }
       // We need to inject two longs at head of image...
-      this.objWrLong(0); // open space for move of data
-      this.objWrLong(0); // open space for move of data
+      this.objImage.appendLong(0); // open space for move of data
+      this.objImage.appendLong(0); // open space for move of data
       // move the data up, leaving room for our two longs at front of image
       //   here is the behavior of PNut move_obj_up
       for (let writeOffset = this.objImage.offset - 1; writeOffset >= 8; writeOffset--) {
@@ -5311,7 +5366,7 @@ export class SpinResolver {
       this.FSubToFNeg();
       if (this.currElement.type == eElementType.type_atat) {
         this.compileSubExpression(0); // with prec of 0
-        this.objWrByte(eByteCode.bc_add_pbase);
+        this.objImage.appendByte(eByteCode.bc_add_pbase);
       } else if (this.currElement.isUnary) {
         const savedElement: SpinElement = this.currElement;
         if (this.checkEqual()) {
@@ -5347,7 +5402,7 @@ export class SpinResolver {
             this.compileSubExpression(this.lowestPrecedence);
             this.getColon();
             this.compileSubExpression(this.lowestPrecedence);
-            this.objWrByte(eByteCode.bc_ternary);
+            this.objImage.appendByte(eByteCode.bc_ternary);
             break;
           } else {
             // not ternary prec.
@@ -5528,7 +5583,7 @@ export class SpinResolver {
         throw new Error('ERROR: [CODE] compileVariableMultiple() underflowed internal stack');
       }
       if (this.checkUnderscore()) {
-        this.objWrByte(eByteCode.bc_pop);
+        this.objImage.appendByte(eByteCode.bc_pop);
       } else {
         this.compileVariableWrite();
       }
@@ -5566,10 +5621,10 @@ export class SpinResolver {
       this.getEndOfLine();
     }
     // this is @@org:
-    this.objWrByte(eByteCode.bc_hub_bytecode);
-    this.objWrByte(eByteCode.bc_org);
-    this.objWrWord(inlineOrigin); // enter origin
-    this.objWrWord(0); // enter placeholder for length in longs
+    this.objImage.appendByte(eByteCode.bc_hub_bytecode);
+    this.objImage.appendByte(eByteCode.bc_org);
+    this.objImage.appendWord(inlineOrigin); // enter origin
+    this.objImage.appendWord(0); // enter placeholder for length in longs
     const patchLocation: number = this.objImage.offset;
     const isInlineMode: boolean = true;
     // compile inline section
@@ -5578,7 +5633,7 @@ export class SpinResolver {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if ((this.objImage.offset ^ patchLocation) & 0b11) {
-        this.objWrByte(0);
+        this.objImage.appendByte(0);
       } else {
         break;
       }
@@ -5640,9 +5695,9 @@ export class SpinResolver {
     // here is @@got
     if (popCount > 0) {
       if (popCount == 1 * 4) {
-        this.objWrByte(eByteCode.bc_pop);
+        this.objImage.appendByte(eByteCode.bc_pop);
       } else {
-        this.objWrByte(eByteCode.bc_pop_rfvar);
+        this.objImage.appendByte(eByteCode.bc_pop_rfvar);
         this.compileRfvar(BigInt(popCount - 1 * 4));
       }
     }
@@ -5660,14 +5715,14 @@ export class SpinResolver {
     // Compile instruction - 'return'
     // PNut ci_return:
     if (this.nextElementType() == eElementType.type_end) {
-      this.objWrByte(eByteCode.bc_return_results);
+      this.objImage.appendByte(eByteCode.bc_return_results);
     } else {
       if (this.subResults == 0) {
         // [error_eeol]
         throw new Error('Expected end of line (m100)');
       }
       this.compileParametersNoParens(this.subResults);
-      this.objWrByte(eByteCode.bc_return_args);
+      this.objImage.appendByte(eByteCode.bc_return_args);
     }
   }
 
@@ -5675,10 +5730,10 @@ export class SpinResolver {
     // Compile instruction - 'abort'
     // PNut ci_abort:
     if (this.nextElementType() == eElementType.type_end) {
-      this.objWrByte(eByteCode.bc_abort_0);
+      this.objImage.appendByte(eByteCode.bc_abort_0);
     } else {
       this.compileExpression();
-      this.objWrByte(eByteCode.bc_abort_arg);
+      this.objImage.appendByte(eByteCode.bc_abort_arg);
     }
   }
 
@@ -5713,12 +5768,12 @@ export class SpinResolver {
       // if we have more than two constants...
       if (byteCount >= 2) {
         // we should declare this as string
-        this.objWrByte(eByteCode.bc_call_send_bytes);
+        this.objImage.appendByte(eByteCode.bc_call_send_bytes);
         this.compileRfvar(BigInt(byteCount));
         do {
           // this is @@enterbytes:
           this.getElement();
-          this.objWrByte(Number(this.currElement.value));
+          this.objImage.appendByte(Number(this.currElement.value));
           if (byteCount > 1) {
             this.getComma();
           }
@@ -5729,7 +5784,7 @@ export class SpinResolver {
         // byteCount < 2
         const valueIsOnStack: boolean = this.compileParameterSend();
         if (valueIsOnStack) {
-          this.objWrByte(eByteCode.bc_call_send);
+          this.objImage.appendByte(eByteCode.bc_call_send);
         }
       }
     } while (this.getCommaOrRightParen());
@@ -5854,9 +5909,9 @@ export class SpinResolver {
         // we found 'debug' without parens
         this.getEndOfLine();
         this.backElement();
-        this.objWrByte(eByteCode.bc_debug); // enter DEBUG bytecode
-        this.objWrByte(0); // enter rfvar value for stack popping
-        this.objWrByte(0); // enter BRK code for debugger
+        this.objImage.appendByte(eByteCode.bc_debug); // enter DEBUG bytecode
+        this.objImage.appendByte(0); // enter rfvar value for stack popping
+        this.objImage.appendByte(0); // enter BRK code for debugger
       } else {
         // here is @@left
         if (this.checkRightParen()) {
@@ -6037,10 +6092,10 @@ export class SpinResolver {
     this.logMessage(`  -- enterDebug(isPasmMode=(${isPasmMode})) ENTRY`);
     let brkCode: number = 0; // only useful if isPasmMode == true
     if (isPasmMode == false) {
-      this.objWrByte(eByteCode.bc_debug); // end of DEBUG data/commands, enter DEBUG bytecode
-      this.objWrByte(this.debug_stack_depth); // enter rfvar value for stack popping
+      this.objImage.appendByte(eByteCode.bc_debug); // end of DEBUG data/commands, enter DEBUG bytecode
+      this.objImage.appendByte(this.debug_stack_depth); // enter rfvar value for stack popping
       const brkCode: number = this.debugEnterRecord(); // enter record into debug data, returning brk code
-      this.objWrByte(brkCode); // enter BRK code
+      this.objImage.appendByte(brkCode); // enter BRK code
     } else {
       // here is ci_debug:@@enterdebug
       brkCode = this.debugEnterRecord(); // enter record into debug data, returning brk code
@@ -6719,8 +6774,8 @@ export class SpinResolver {
               this.compileExpression();
               this.getDotDot();
               this.compileExpression();
-              this.objWrByte(eByteCode.bc_bitrange);
-              this.objWrByte(eByteCode.bc_addpins);
+              this.objImage.appendByte(eByteCode.bc_bitrange);
+              this.objImage.appendByte(eByteCode.bc_addpins);
               if (--remainingParamCount > 0) {
                 this.getComma();
                 this.compileParametersNoParens(remainingParamCount);
@@ -6747,9 +6802,9 @@ export class SpinResolver {
     }
     this.getRightParen();
     if (isHubCode) {
-      this.objWrByte(eByteCode.bc_hub_bytecode);
+      this.objImage.appendByte(eByteCode.bc_hub_bytecode);
     }
-    this.objWrByte(bytecode);
+    this.objImage.appendByte(bytecode);
   }
 
   private getMethodPointer(): iVariableReturn {
@@ -6955,7 +7010,7 @@ export class SpinResolver {
     this.getLeftParen();
     this.compileExpression(); // compile target value
     this.getColon();
-    this.objWrByte(eByteCode.bc_con_n + 1 + (lookType & 1)); // lookupz or lookup
+    this.objImage.appendByte(eByteCode.bc_con_n + 1 + (lookType & 1)); // lookupz or lookup
     do {
       let tempLookType = (lookType >> 1) & 0b01;
       const isRange: boolean = this.compileRange(); // compile (next) value/range
@@ -6963,9 +7018,9 @@ export class SpinResolver {
         tempLookType |= 0b10;
       }
       // create (bc_lookup_value, bc_lookdown_value, bc_lookup_range, bc_lookdown_range) code
-      this.objWrByte(eByteCode.bc_lookup_value + tempLookType);
+      this.objImage.appendByte(eByteCode.bc_lookup_value + tempLookType);
     } while (this.getCommaOrRightParen());
-    this.objWrByte(eByteCode.bc_look_done);
+    this.objImage.appendByte(eByteCode.bc_look_done);
     this.write_bstack_ptr(0);
   }
 
@@ -7017,14 +7072,14 @@ export class SpinResolver {
   private compile_bstack_address(index: number) {
     const address: number = this.blockStack.read(index);
     if (address > 0xffff) {
-      this.objWrByte(eByteCode.bc_con_rflong);
-      this.objWrLong(address);
+      this.objImage.appendByte(eByteCode.bc_con_rflong);
+      this.objImage.appendLong(address);
     } else if (address > 0xff) {
-      this.objWrByte(eByteCode.bc_con_rfword);
-      this.objWrWord(address);
+      this.objImage.appendByte(eByteCode.bc_con_rfword);
+      this.objImage.appendWord(address);
     } else {
-      this.objWrByte(eByteCode.bc_con_rfbyte);
-      this.objWrByte(address);
+      this.objImage.appendByte(eByteCode.bc_con_rfbyte);
+      this.objImage.appendByte(address);
     }
   }
 
@@ -7035,7 +7090,7 @@ export class SpinResolver {
 
   private compileBranch(byteCode: eByteCode, address: number) {
     // PNut compile_branch:
-    this.objWrByte(byteCode);
+    this.objImage.appendByte(byteCode);
     this.compileRfvars(BigInt(address - this.objImage.offset));
   }
 
@@ -7159,10 +7214,10 @@ export class SpinResolver {
     this.getComma();
     this.compileExpression();
     this.getRightParen();
-    this.objWrByte(eByteCode.bc_hub_bytecode);
-    this.objWrByte(eByteCode.bc_cogspin);
-    this.objWrByte(parameterCount);
-    this.objWrByte(byteCode);
+    this.objImage.appendByte(eByteCode.bc_hub_bytecode);
+    this.objImage.appendByte(eByteCode.bc_cogspin);
+    this.objImage.appendByte(parameterCount);
+    this.objImage.appendByte(byteCode);
   }
 
   private ct_at() {
@@ -7172,9 +7227,9 @@ export class SpinResolver {
     this.logMessage(`* ct_at() get then elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_con_int) {
       // here is @@string:
-      this.objWrByte(eByteCode.bc_string);
+      this.objImage.appendByte(eByteCode.bc_string);
       const patchLocation: number = this.objImage.offset;
-      this.objWrByte(0); // placeholder for now
+      this.objImage.appendByte(0); // placeholder for now
       let stringLength: number = 1;
       this.backElement();
       do {
@@ -7183,7 +7238,7 @@ export class SpinResolver {
           // [error_scmrf]
           throw new Error('STRING characters must range from 1 to 255 (m210)');
         }
-        this.objWrByte(Number(valueReturn.value));
+        this.objImage.appendByte(Number(valueReturn.value));
         if (++stringLength > 255) {
           // [error_sdcx]
           throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m220)');
@@ -7196,7 +7251,7 @@ export class SpinResolver {
         // eslint-disable-next-line no-constant-condition
       } while (true);
       this.backElement();
-      this.objWrByte(0); // emit string terminator
+      this.objImage.appendByte(0); // emit string terminator
       this.objImage.replaceByte(stringLength, patchLocation); // replace the placeholder with length
     } else if (this.currElement.type == eElementType.type_obj) {
       // here is @@object:
@@ -7211,14 +7266,14 @@ export class SpinResolver {
       if (indexFound) {
         this.compileOutOfSequenceExpression(objectElementIndex);
       }
-      this.objWrByte(indexFound ? eByteCode.bc_mptr_obji_sub : eByteCode.bc_mptr_obj_sub);
+      this.objImage.appendByte(indexFound ? eByteCode.bc_mptr_obji_sub : eByteCode.bc_mptr_obj_sub);
       this.compileRfvar(BigInt(savedElement.numberValue & 0xffffff));
       this.compileRfvar(BigInt(Number(objSymValue) & 0xfffff));
     } else if (this.currElement.type == eElementType.type_method) {
       // here is @@method:
       // get index to PUB/PRI then write it
       const methodIndex: number = Number(this.currElement.bigintValue);
-      this.objWrByte(eByteCode.bc_mptr_sub);
+      this.objImage.appendByte(eByteCode.bc_mptr_sub);
       this.compileRfvar(BigInt(methodIndex & 0xfffff));
     } else {
       // have @hubvar case
@@ -7271,7 +7326,7 @@ export class SpinResolver {
   private ct_objpub(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
     // Compile term - obj{[]}.method({param,...})
     // PNut ct_objpub:
-    this.objWrByte(byteCode);
+    this.objImage.appendByte(byteCode);
     const savedElement: SpinElement = this.currElement;
     const [foundIndex, elementIndexOfIndex] = this.checkIndex();
     this.getDot();
@@ -7288,7 +7343,7 @@ export class SpinResolver {
     if (foundIndex) {
       this.compileOutOfSequenceExpression(elementIndexOfIndex);
     }
-    this.objWrByte(foundIndex ? eByteCode.bc_call_obji_sub : eByteCode.bc_call_obj_sub);
+    this.objImage.appendByte(foundIndex ? eByteCode.bc_call_obji_sub : eByteCode.bc_call_obj_sub);
     this.compileRfvar(BigInt(savedElement.numberValue & 0xffffff));
     this.compileRfvar(BigInt(symValueAsNumber & 0xfffff));
   }
@@ -7300,10 +7355,10 @@ export class SpinResolver {
     this.logMessage(`* ct_method(${eResultRequirements[resultsNeeded]}, elem=[${this.currElement.toString()}] ...)`);
     const methodValue: number = Number(this.currElement.bigintValue);
     this.confirmResult(resultsNeeded, methodValue);
-    this.objWrByte(byteCode);
+    this.objImage.appendByte(byteCode);
     const parameterCount: number = (methodValue >> 24) & 0x7f;
     this.compileParameters(parameterCount);
-    this.objWrByte(eByteCode.bc_call_sub);
+    this.objImage.appendByte(eByteCode.bc_call_sub);
     this.compileRfvar(BigInt(methodValue & 0xfffff));
   }
 
@@ -7321,7 +7376,7 @@ export class SpinResolver {
       }
       this.getLeftParen();
       this.getRightParen();
-      this.objWrByte(eByteCode.bc_call_recv);
+      this.objImage.appendByte(eByteCode.bc_call_recv);
     } else if (methodResult.type == eElementType.type_register && methodResult.address == this.msendReg) {
       // have  SEND(param{,...})
       if (byteCode != eByteCode.bc_drop) {
@@ -7332,7 +7387,7 @@ export class SpinResolver {
     } else {
       // have var({param,...}){:results} (long is method-pointer)
       // this is @@notsend:
-      this.objWrByte(byteCode);
+      this.objImage.appendByte(byteCode);
       const parameterCount: number = this.compileParametersMethodPtr();
       let returnValueCount: number = 0;
       if (this.checkColon()) {
@@ -7349,7 +7404,7 @@ export class SpinResolver {
       this.restoreElementLocation(nextElementIndex); // restart from passed nextElementIndex
       this.compileVariableRead(); // get method pointer
       this.restoreElementLocation(savedElementIndex); // pop
-      this.objWrByte(eByteCode.bc_call_ptr); // invoke method
+      this.objImage.appendByte(eByteCode.bc_call_ptr); // invoke method
     }
   }
 
@@ -7489,9 +7544,9 @@ export class SpinResolver {
   private compileConData(initialWordSize: number) {
     // Compile term - BYTE/WORD/LONG(value, value, BYTE/WORD/LONG value)
     // PNut ct_condata:
-    this.objWrByte(eByteCode.bc_string);
+    this.objImage.appendByte(eByteCode.bc_string);
     const offSetToLength = this.objImage.offset;
-    this.objWrByte(0); // place holder for length
+    this.objImage.appendByte(0); // place holder for length
     let dataCount: number = 0;
     do {
       let wordSize: eWordSize = initialWordSize;
@@ -7504,15 +7559,15 @@ export class SpinResolver {
       const data: number = Number(dataReturn.value);
       switch (wordSize) {
         case eWordSize.WS_Byte:
-          this.objWrByte(data);
+          this.objImage.appendByte(data);
           dataCount += 1;
           break;
         case eWordSize.WS_Word:
-          this.objWrWord(data);
+          this.objImage.appendWord(data);
           dataCount += 2;
           break;
         case eWordSize.WS_Long:
-          this.objWrLong(data);
+          this.objImage.appendLong(data);
           dataCount += 4;
           break;
       }
@@ -7529,9 +7584,9 @@ export class SpinResolver {
     // Compile term - STRING("constantstring")
     // PNut ct_constr:
     this.getLeftParen();
-    this.objWrByte(eByteCode.bc_string);
+    this.objImage.appendByte(eByteCode.bc_string);
     const offSetToLength = this.objImage.offset;
-    this.objWrByte(0); // place holder for length
+    this.objImage.appendByte(0); // place holder for length
     let charCount: number = 0;
     do {
       let charReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
@@ -7539,13 +7594,13 @@ export class SpinResolver {
         // [error_scmrf]
         throw new Error('STRING characters must range from 1 to 255 (m211)');
       }
-      this.objWrByte(Number(charReturn.value));
+      this.objImage.appendByte(Number(charReturn.value));
       if (++charCount > 254) {
         // [error_sdcx]
         throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m221)');
       }
     } while (this.getCommaOrRightParen());
-    this.objWrByte(0); // place zero terminator
+    this.objImage.appendByte(0); // place zero terminator
     // and place final string length just before string in object
     this.objImage.replaceByte(charCount + 1, offSetToLength);
   }
@@ -7554,10 +7609,10 @@ export class SpinResolver {
     // Compile term - LSTRING("constantstring")
     // PNut ct_conlstr:
     this.getLeftParen();
-    this.objWrByte(eByteCode.bc_string);
+    this.objImage.appendByte(eByteCode.bc_string);
     const offSetToLength = this.objImage.offset;
-    this.objWrByte(0); // place holder for length for interpreter
-    this.objWrByte(0); // place holder for length for user
+    this.objImage.appendByte(0); // place holder for length for interpreter
+    this.objImage.appendByte(0); // place holder for length for user
     let charCount: number = 0;
     do {
       let charReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
@@ -7565,7 +7620,7 @@ export class SpinResolver {
         // [error_lscmrf]
         throw new Error('LSTRING characters must range from 0 to 255');
       }
-      this.objWrByte(Number(charReturn.value));
+      this.objImage.appendByte(Number(charReturn.value));
       if (++charCount > 254) {
         // [error_sdcx]
         throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m222)');
@@ -7582,9 +7637,9 @@ export class SpinResolver {
     // is f* instruction?
     this.logMessage(`* enterExpOp(Ln#${element.sourceLineNumber}(${element.sourceCharacterOffset})${eElementType[element.type]})`);
     if (element.isHubcode) {
-      this.objWrByte(eByteCode.bc_hub_bytecode);
+      this.objImage.appendByte(eByteCode.bc_hub_bytecode);
     }
-    this.objWrByte(element.byteCode);
+    this.objImage.appendByte(element.byteCode);
   }
 
   private negConToCon() {
@@ -7606,29 +7661,29 @@ export class SpinResolver {
     const workingValue: number = Number(this.signExtendFrom32Bit(value));
     if (workingValue >= -1 && workingValue <= 14) {
       // -1 to 14
-      this.objWrByte(eByteCode.bc_con_n | ((workingValue + 1) & 0x0f));
+      this.objImage.appendByte(eByteCode.bc_con_n | ((workingValue + 1) & 0x0f));
     } else if (workingValue >= 0 && workingValue <= 0xff) {
       // 0 to 0xff
-      this.objWrByte(eByteCode.bc_con_rfbyte);
-      this.objWrByte(workingValue);
+      this.objImage.appendByte(eByteCode.bc_con_rfbyte);
+      this.objImage.appendByte(workingValue);
     } else if (workingValue >= -0x100 && workingValue <= -1) {
       // -0x100 to -1
-      this.objWrByte(eByteCode.bc_con_rfbyte_not);
-      this.objWrByte(~workingValue);
+      this.objImage.appendByte(eByteCode.bc_con_rfbyte_not);
+      this.objImage.appendByte(~workingValue);
     } else if (this.constantWasDecoded(workingValue)) {
       // nothing more to do...
     } else if (workingValue >= 0 && workingValue <= 0xffff) {
       // 0 to 0xFFFF
-      this.objWrByte(eByteCode.bc_con_rfword);
-      this.objWrWord(workingValue);
+      this.objImage.appendByte(eByteCode.bc_con_rfword);
+      this.objImage.appendWord(workingValue);
     } else if (workingValue >= -0x10000 && workingValue <= -1) {
       // -0x10000 to -1
-      this.objWrByte(eByteCode.bc_con_rfword_not);
-      this.objWrWord(~workingValue);
+      this.objImage.appendByte(eByteCode.bc_con_rfword_not);
+      this.objImage.appendWord(~workingValue);
     } else {
       // the long value
-      this.objWrByte(eByteCode.bc_con_rflong);
-      this.objWrLong(workingValue);
+      this.objImage.appendByte(eByteCode.bc_con_rflong);
+      this.objImage.appendLong(workingValue);
     }
   }
 
@@ -7637,8 +7692,8 @@ export class SpinResolver {
     for (let shiftValue = 0; shiftValue < 0x20; shiftValue++) {
       if (((1 << shiftValue) & 0xffffffff) == value) {
         // BUGFIX: added final mask above with 0xffffffff to clear sign extension
-        this.objWrByte(eByteCode.bc_con_rfbyte_decod);
-        this.objWrByte(shiftValue);
+        this.objImage.appendByte(eByteCode.bc_con_rfbyte_decod);
+        this.objImage.appendByte(shiftValue);
         didDecodeStatus = true;
         break;
       } else if ((((1 << shiftValue) ^ 0xffffffff) & 0xffffffff) == value) {
@@ -7646,8 +7701,8 @@ export class SpinResolver {
         //this.logMessageOutline(
         //  `* constantWasDecoded() bc_con_rfbyte_decod_not value=(${hexLong(value, '0x')}), shiftValue=(${hexLong(shiftValue, '0x')})`
         //);
-        this.objWrByte(eByteCode.bc_con_rfbyte_decod_not);
-        this.objWrByte(shiftValue);
+        this.objImage.appendByte(eByteCode.bc_con_rfbyte_decod_not);
+        this.objImage.appendByte(shiftValue);
         didDecodeStatus = true;
         break;
       } else if ((((2 << shiftValue) - 1) & 0xffffffff) == value) {
@@ -7655,35 +7710,19 @@ export class SpinResolver {
         //this.logMessageOutline(
         //  `* constantWasDecoded() bc_con_rfbyte_bmask value=(${hexLong(value, '0x')}), shiftValue=(${hexLong(shiftValue, '0x')})`
         //);
-        this.objWrByte(eByteCode.bc_con_rfbyte_bmask);
-        this.objWrByte(shiftValue);
+        this.objImage.appendByte(eByteCode.bc_con_rfbyte_bmask);
+        this.objImage.appendByte(shiftValue);
         didDecodeStatus = true;
         break;
       } else if (((((2 << shiftValue) - 1) ^ 0xffffffff) & 0xffffffff) == value) {
         // BUGFIX: added final mask above with 0xffffffff to clear sign extension
-        this.objWrByte(eByteCode.bc_con_rfbyte_bmask_not);
-        this.objWrByte(shiftValue);
+        this.objImage.appendByte(eByteCode.bc_con_rfbyte_bmask_not);
+        this.objImage.appendByte(shiftValue);
         didDecodeStatus = true;
         break;
       }
     }
     return didDecodeStatus;
-  }
-
-  private objWrLong(longValue: number) {
-    this.objWrWord(longValue & 0xffff);
-    this.objWrWord((longValue >> 16) & 0xffff);
-  }
-
-  private objWrWord(wordValue: number) {
-    //this.logMessage(`* objWrWord(${hexWord(wordValue, '0x')})`);
-    this.objWrByte(wordValue & 0xff);
-    this.objWrByte((wordValue >> 8) & 0xff);
-  }
-
-  private objWrByte(byteValue: number) {
-    //this.logMessage(`* objWrByte(${hexByte(byteValue, '0x')})`);
-    this.objImage.append(byteValue & 0xff);
   }
 
   private trySpin2ConExpression(): iValueReturn {
@@ -8407,8 +8446,8 @@ private checkDec(): boolean {
       if (this.checkDotDot()) {
         this.compileExpression(); // upper end of range
         // handle low and high of range
-        this.objWrByte(eByteCode.bc_bitrange); // prepare for add
-        this.objWrByte(eByteCode.bc_addbits); // add then result back on stack
+        this.objImage.appendByte(eByteCode.bc_bitrange); // prepare for add
+        this.objImage.appendByte(eByteCode.bc_addbits); // add then result back on stack
       }
       this.getRightBracket();
       this.restoreElementLocation(saveIndex); // return to starting location
@@ -8420,9 +8459,9 @@ private checkDec(): boolean {
       this.compileIndex();
       if (variable.indexFlag == true) {
         this.compileIndex();
-        this.objWrByte(eByteCode.bc_setup_field_pi);
+        this.objImage.appendByte(eByteCode.bc_setup_field_pi);
       } else {
-        this.objWrByte(eByteCode.bc_setup_field_p);
+        this.objImage.appendByte(eByteCode.bc_setup_field_p);
       }
       this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
@@ -8433,26 +8472,26 @@ private checkDec(): boolean {
     //  (or actual register name constants)
     if (variable.type == eElementType.type_register) {
       if (variable.address >= this.pasmRegs && variable.address <= this.pasmRegs + 7 && variable.indexFlag == false) {
-        this.objWrByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - this.pasmRegs));
+        this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - this.pasmRegs));
       } else if (variable.address >= 0x1f8 && variable.address <= 0x1ff && variable.indexFlag == false) {
-        this.objWrByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - 0x1f8 + 8));
+        this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - 0x1f8 + 8));
       } else {
         if (variable.indexFlag == true) {
           // have an index
           const valueReturn = this.compileIndexCheckCon(); // local version of @@compileindex:
           if (valueReturn.isResolved) {
             // we have a constant
-            this.objWrByte(eByteCode.bc_setup_reg);
+            this.objImage.appendByte(eByteCode.bc_setup_reg);
             // TODO: ?? check for 0-0x1ff else throw error out-of-bounds (not in PNut)
             variable.address += Number(valueReturn.value);
             // NOTE: this could likely be optimized to use single byte opcodes (as we did above)
           } else {
             // we have runtime eval not constant
-            this.objWrByte(eByteCode.bc_setup_reg_pi);
+            this.objImage.appendByte(eByteCode.bc_setup_reg_pi);
           }
         } else {
           // don't have an index
-          this.objWrByte(eByteCode.bc_setup_reg);
+          this.objImage.appendByte(eByteCode.bc_setup_reg);
         }
         const signedRegister: number = variable.address & 0x100 ? variable.address | 0xfffffe00 : variable.address & 0x1ff;
         this.compileRfvars(BigInt(signedRegister));
@@ -8468,9 +8507,9 @@ private checkDec(): boolean {
       this.compileIndex();
       if (variable.indexFlag == true) {
         this.compileIndex();
-        this.objWrByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize); // pop base and index
+        this.objImage.appendByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize); // pop base and index
       } else {
-        this.objWrByte(eByteCode.bc_setup_byte_pa + variable.wordSize); // pop address
+        this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize); // pop address
       }
       this.compileVariableBitfield(variable);
       this.compileVariableReadWriteAssign(variable);
@@ -8492,7 +8531,7 @@ private checkDec(): boolean {
       variable.address < 16 * 4 &&
       variable.indexFlag == false
     ) {
-      this.objWrByte(eByteCode.bc_setup_var_0_15 + (variable.address >> 2)); // one of our first 16
+      this.objImage.appendByte(eByteCode.bc_setup_var_0_15 + (variable.address >> 2)); // one of our first 16
       this.compileVariableBitfield(variable);
       this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
@@ -8508,13 +8547,13 @@ private checkDec(): boolean {
     ) {
       this.logMessage(`* compileVariable() op=[${eVariableOperation[variable.operation]}] bitfield=(${variable.bitfieldFlag})`);
       if (variable.bitfieldFlag == true || variable.operation == eVariableOperation.VO_ASSIGN) {
-        this.objWrByte(eByteCode.bc_setup_local_0_15 + (variable.address >> 2)); // one of our first 16
+        this.objImage.appendByte(eByteCode.bc_setup_local_0_15 + (variable.address >> 2)); // one of our first 16
         this.compileVariableBitfield(variable);
         this.compileVariableReadWriteAssign(variable);
       } else if (variable.operation == eVariableOperation.VO_WRITE) {
-        this.objWrByte(eByteCode.bc_write_local_0_15 + (variable.address >> 2)); // one of our first 16
+        this.objImage.appendByte(eByteCode.bc_write_local_0_15 + (variable.address >> 2)); // one of our first 16
       } else {
-        this.objWrByte(eByteCode.bc_read_local_0_15 + (variable.address >> 2)); // one of our first 16
+        this.objImage.appendByte(eByteCode.bc_read_local_0_15 + (variable.address >> 2)); // one of our first 16
       }
       workIsComplete = true; // DONE
     }
@@ -8529,17 +8568,17 @@ private checkDec(): boolean {
         variable.indexFlag == false &&
         variable.bitfieldFlag == false
       ) {
-        this.objWrByte(eByteCode.bc_hub_bytecode);
-        this.objWrByte(eByteCode.bc_read_clkfreq);
+        this.objImage.appendByte(eByteCode.bc_hub_bytecode);
+        this.objImage.appendByte(eByteCode.bc_read_clkfreq);
       } else {
         // not a CLKFREQ read
         this.logMessage(`  -- compileVariable() variable.wordSize=(${variable.wordSize})`);
         this.compileConstant(BigInt(variable.address));
         if (variable.indexFlag == true) {
           this.compileIndex();
-          this.objWrByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize);
+          this.objImage.appendByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize);
         } else {
-          this.objWrByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
+          this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
         }
         this.compileVariableBitfield(variable);
         this.compileVariableReadWriteAssign(variable);
@@ -8567,14 +8606,14 @@ private checkDec(): boolean {
         accessBytecode += 3;
         const indexReturn: iValueReturn = this.compileIndexCheckCon();
         if (indexReturn.isResolved) {
-          this.objWrByte(accessBytecode - 3); // undo the +3, not needed when index
+          this.objImage.appendByte(accessBytecode - 3); // undo the +3, not needed when index
           this.compileRfvar(BigInt(variable.address) + (indexReturn.value << BigInt(variable.wordSize)));
         } else {
-          this.objWrByte(accessBytecode);
+          this.objImage.appendByte(accessBytecode);
           this.compileRfvar(BigInt(variable.address));
         }
       } else {
-        this.objWrByte(accessBytecode);
+        this.objImage.appendByte(accessBytecode);
         this.compileRfvar(BigInt(variable.address));
       }
       this.compileVariableBitfield(variable);
@@ -8587,7 +8626,7 @@ private checkDec(): boolean {
   private compileVariableClearSetInst(variable: iVariableReturn, mode: eCompOp) {
     // PNut: compile_var_clrset_inst:
     const bytecode: eByteCode = mode == eCompOp.CO_Clear ? eByteCode.bc_con_n + 1 : eByteCode.bc_con_n;
-    this.objWrByte(bytecode);
+    this.objImage.appendByte(bytecode);
     variable.operation = eVariableOperation.VO_WRITE;
     this.compileVariable(variable); // this is var~ // var~~
   }
@@ -8595,7 +8634,7 @@ private checkDec(): boolean {
   private compileVariableClearSetTerm(variable: iVariableReturn, mode: eCompOp) {
     // PNut: compile_var_clrset_term:
     const bytecode: eByteCode = mode == eCompOp.CO_Clear ? eByteCode.bc_con_n + 1 : eByteCode.bc_con_n;
-    this.objWrByte(bytecode);
+    this.objImage.appendByte(bytecode);
     variable.operation = eVariableOperation.VO_ASSIGN;
     // uses post assignment to effect var~ // var~~
     variable.assignmentBytecode = eByteCode.bc_var_swap; // this is \value post assignment
@@ -8654,15 +8693,15 @@ private checkDec(): boolean {
   private compileVariableReadWriteAssign(variable: iVariableReturn) {
     switch (variable.operation) {
       case eVariableOperation.VO_READ:
-        this.objWrByte(eByteCode.bc_read);
+        this.objImage.appendByte(eByteCode.bc_read);
         break;
 
       case eVariableOperation.VO_WRITE:
-        this.objWrByte(eByteCode.bc_write);
+        this.objImage.appendByte(eByteCode.bc_write);
         break;
 
       case eVariableOperation.VO_ASSIGN:
-        this.objWrByte(variable.assignmentBytecode);
+        this.objImage.appendByte(variable.assignmentBytecode);
         break;
     }
   }
@@ -8678,7 +8717,7 @@ private checkDec(): boolean {
           this.skipExpression();
         }
         // not constant bitfield, already compiled
-        this.objWrByte(eByteCode.bc_setup_bfield_pop);
+        this.objImage.appendByte(eByteCode.bc_setup_bfield_pop);
       } else {
         // bitfieldConstantFlag is true
         const firstValueReturn = this.skipExpressionCheckCon();
@@ -8701,10 +8740,10 @@ private checkDec(): boolean {
         }
         if (encodedBitfield <= 0x1f) {
           // have single bit
-          this.objWrByte(eByteCode.bc_setup_bfield_0_31 + encodedBitfield);
+          this.objImage.appendByte(eByteCode.bc_setup_bfield_0_31 + encodedBitfield);
         } else {
           // have bit plus additional bit(s)
-          this.objWrByte(eByteCode.bc_setup_bfield_rfvar);
+          this.objImage.appendByte(eByteCode.bc_setup_bfield_rfvar);
           this.compileRfvar(BigInt(encodedBitfield));
         }
       }
@@ -8722,23 +8761,23 @@ private checkDec(): boolean {
     }
     if (workingValue >= BigInt(0xffffffc0) || workingValue <= BigInt(0x0000003f)) {
       // 1 BYTE value
-      this.objWrByte(Number(workingValue & BigInt(0x7f)));
+      this.objImage.appendByte(Number(workingValue & BigInt(0x7f)));
     } else if (workingValue >= BigInt(0xffffe000) || workingValue <= BigInt(0x00001fff)) {
       // 2 BYTE value
-      this.objWrByte(Number(workingValue | BigInt(0x80)));
-      this.objWrByte(Number((workingValue >> 7n) & BigInt(0x7f)));
+      this.objImage.appendByte(Number(workingValue | BigInt(0x80)));
+      this.objImage.appendByte(Number((workingValue >> 7n) & BigInt(0x7f)));
     } else if (workingValue >= BigInt(0xfff00000) || workingValue <= BigInt(0x000fffff)) {
       // 3 BYTE value
-      this.objWrByte(Number(workingValue | BigInt(0x80)));
-      this.objWrByte(Number((workingValue >> 7n) | BigInt(0x80)));
-      this.objWrByte(Number((workingValue >> 14n) & BigInt(0x7f)));
+      this.objImage.appendByte(Number(workingValue | BigInt(0x80)));
+      this.objImage.appendByte(Number((workingValue >> 7n) | BigInt(0x80)));
+      this.objImage.appendByte(Number((workingValue >> 14n) & BigInt(0x7f)));
     } else {
       // 4 BYTE value
       // NOTE: unable to figure out, so far, how to coverage test this
-      this.objWrByte(Number(workingValue | BigInt(0x80)));
-      this.objWrByte(Number((workingValue >> 7n) | BigInt(0x80)));
-      this.objWrByte(Number((workingValue >> 14n) | BigInt(0x80)));
-      this.objWrByte(Number(workingValue >> 21n));
+      this.objImage.appendByte(Number(workingValue | BigInt(0x80)));
+      this.objImage.appendByte(Number((workingValue >> 7n) | BigInt(0x80)));
+      this.objImage.appendByte(Number((workingValue >> 14n) | BigInt(0x80)));
+      this.objImage.appendByte(Number(workingValue >> 21n));
     }
   }
 
@@ -8747,14 +8786,14 @@ private checkDec(): boolean {
     const masks = [BigInt(0x1fffff80), BigInt(0x1fffc000), BigInt(0x1fe00000)];
     for (let i = 0; i < masks.length; i++) {
       if (value & masks[i]) {
-        this.objImage.append(((Number(value) >> (7 * i)) & 0x7f) | 0x80);
+        this.objImage.appendByte(((Number(value) >> (7 * i)) & 0x7f) | 0x80);
       } else {
-        this.objImage.append((Number(value) >> (7 * i)) & 0x7f);
+        this.objImage.appendByte((Number(value) >> (7 * i)) & 0x7f);
         return;
       }
     }
     // NOTE: unable to figure out, so far, how to coverage test this
-    this.objImage.append((Number(value) >> 21) & 0xff);
+    this.objImage.appendByte((Number(value) >> 21) & 0xff);
   }
 
   private compileIndexCheckCon(): iValueReturn {

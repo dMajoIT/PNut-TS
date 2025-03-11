@@ -697,7 +697,7 @@ export class Spin2Parser {
     // PNut insert_flash_loader:
     // pad object to next long
     while (this.objImage.offset & 0b11) {
-      this.objImage.append(0);
+      this.objImage.appendByte(0);
     }
     const _checksum_ = 0x04;
     const _debugnop_ = 0x08;

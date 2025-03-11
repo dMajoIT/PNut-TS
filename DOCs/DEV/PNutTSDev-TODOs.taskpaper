@@ -33,10 +33,11 @@ TODO's from PNut Zoom 250303++:
 		- Convert objSymbols to new record format @done(2025-03-07)
 			- finish writeStructure() in objectSymbols.ts @done(2025-03-07)
 			- Implement new record structure recording object @done(2025-03-07)
-	Day6: Mon:
-			- Complete new record structure recording object
-			- CON block -> structures 
-				- call writeStructure()
+	Day6: Tue:
+			- Complete new record structure recording object @done(2025-03-11)
+			- CON block -> structures @done(2025-03-11)
+				- call buildStructureRecord() @done(2025-03-11)
+	Day7: Thu:
 		- DAT block
 		- VAR block -> using structures, ptrs
 		- SPIN blocks (PUB, PRI)
