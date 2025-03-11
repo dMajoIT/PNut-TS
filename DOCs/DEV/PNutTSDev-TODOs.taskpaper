@@ -39,6 +39,11 @@ TODO's from PNut Zoom 250303++:
 				- call buildStructureRecord() @done(2025-03-11)
 	Day7: Thu:
 		- DAT block
+			- ditto
+			- orgh
+			- dat struct
+			- debug enable and mask stuff
+			- getElementObj conversion
 		- VAR block -> using structures, ptrs
 		- SPIN blocks (PUB, PRI)
 		- OBJ block -> obj attributes
