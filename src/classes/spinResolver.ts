@@ -187,10 +187,12 @@ export class SpinResolver {
   // DAT processing support data
   private objImage: ObjectImage;
   private asmLocal: number = 0;
+  // ORGH handling (HUB)
   private hubOrg: number = 0x00000;
   private hubOrgLimit: number = 0x100000;
   private hubMode: boolean = false; // was orgh!
   private orghOffset: number = 0;
+  // ORG handling (COG)
   private cogOrg: number = 0 << 2; // byte-address
   private cogOrgLimit: number = 0x1f8 << 2; // byte-address limit
   private pasmMode: boolean = false;
@@ -253,9 +255,11 @@ export class SpinResolver {
   private distillerList: DistillerList;
 
   // here for new DITTO in DAT support
-  private ditto_flag: boolean = false;
-  private ditto_index: number = 0;
-  private ditto_count: number = 0;
+  private dittoIsActive: boolean = false; // PNut ditto_flag
+  private dittoIndex: number = 0; // PNut ditto_index
+  private dittoCount: number = 0; // PNut ditto_count
+  private dittoElementIndex: number = 0; // PNut ditto_source_ptr
+  private dittoObjectIndex: number = 0; // PNut ditto_obj_ptr
 
   // allow registers in CON blocks
   private inConBlock: boolean = false;
@@ -276,15 +280,15 @@ export class SpinResolver {
   private debug_log_size: number = 0;
   private debug_windows_off: boolean = false;
   // new in recent versions
-  private debug_disable: boolean = false; // set if we see DEBUG_DISABLE = nonzero
-  private debug_mask: number = 0; // set if we see DEBUG_MASK = %00000000_00000000_00000000_00000000
-
   private debug_record: DebugRecord; // a single debug record (fill in, then commit it)
   private debug_data: DebugData; // the collection of committed debug records
   private debug_compressed_data: Uint8Array | undefined = undefined; // a zero's removed version of the debug data
   private debug_first: boolean = false;
   private debug_stack_depth: number = 0; // our overall debug stack depth
   private srcFile: SpinDocument | undefined; // reference to the file we are compiling (element list refers to this file)
+  private debugDisable: boolean = false; // set if we see DEBUG_DISABLE = nonzero
+  private debugMask: number = 0; // set if we see DEBUG_MASK = %00000000_00000000_00000000_00000000
+  private debugMaskDefined: boolean = false; // also set if we see DEBUG_MASK = %00000000_00000000_00000000_00000000
 
   constructor(ctx: Context) {
     this.context = ctx;
@@ -923,12 +927,12 @@ export class SpinResolver {
     const debugDisable = 'DEBUG_DISABLE';
     const debugMask = 'DEBUG_MASK';
 
-    this.debug_disable = false;
+    this.debugDisable = false;
     let [symbolFound, isConstInteger, value] = this.checkDebugSymbol(debugDisable);
     if (symbolFound) {
       if (isConstInteger) {
         if (Number(value) != 0) {
-          this.debug_disable = true;
+          this.debugDisable = true;
         }
       } else {
         // [error_downbaud]
@@ -936,11 +940,13 @@ export class SpinResolver {
       }
     }
 
-    this.debug_mask = 0;
+    this.debugMaskDefined = false;
+    this.debugMask = 0;
     [symbolFound, isConstInteger, value] = this.checkDebugSymbol(debugMask);
     if (symbolFound) {
+      this.debugMaskDefined = true;
       if (isConstInteger) {
-        this.debug_mask = Number(value);
+        this.debugMask = Number(value);
       } else {
         // [error_downbaud]
         throw new Error('DEBUG_MASK can only be defined as an integer constant');
@@ -1104,14 +1110,18 @@ export class SpinResolver {
       this.hubOrg = 0x00000; // get constant(getValue) will use this
       this.hubOrgLimit = 0x100000; // get constant(getValue) will use this;
       this.wordSize = eWordSize.WS_Byte; // 0=byte, 1=word, 2=long
+      this.dittoIsActive = false;
 
       if (inLineMode) {
-        this.hubMode = false;
         this.cogOrg = inLineCogOrg;
         this.cogOrgLimit = inLineCogOrgLimit;
+        this.hubOrg = 0x400;
+        this.orghOffset = this.hubOrg - this.objImage.offset;
+        this.hubOrgLimit = 0x100000;
         this.restoreElementLocation(startingElementIndex);
       } else {
-        this.hubMode = true;
+        // PNut @@passblock:
+        this.hubMode = true; // PNut orgh as bool (0,1)
         this.cogOrg = 0x000 << 2;
         this.cogOrgLimit = 0x1f8 << 2;
         // location in object of start -OR- start of hub for execution
@@ -1136,6 +1146,10 @@ export class SpinResolver {
           this.getElementObj(); // create copy of element in our global
           this.logMessage(`* DAT NEXTLINE LOOP currElement=[${this.currElement.toString()}]`);
           if (this.currElement.type == eElementType.type_end_file) {
+            if (this.dittoIsActive) {
+              // [error_edend]
+              throw new Error('Expected DITTO END');
+            }
             if (inLineMode) {
               // [error_eend]
               throw new Error('Expected END');
@@ -1152,7 +1166,7 @@ export class SpinResolver {
           this.weHaveASymbol = this.currElement.isTypeUndefined;
           const isDatStorage: boolean = this.isDatStorageType();
           if ((this.weHaveASymbol || isDatStorage) && !didFindLocal) {
-            this.incrementLocalScopeCounter();
+            this.incrementLocalScopeCounter(); // this is PNut @@asmlocal:
           }
           if (isDatStorage && pass == 0) {
             // [error_siad]
@@ -1173,7 +1187,31 @@ export class SpinResolver {
             // back to top of loop to get first elem of new line
             continue;
           }
-          //
+
+          if (this.currElement.type == eElementType.type_con_struct) {
+            if (pass > 0) {
+              if (!this.hubMode) {
+                // [error_dscobd]
+                throw new Error('DAT structures can only be declared in ORGH mode');
+              }
+              if (!this.weHaveASymbol) {
+                // [error_dsmbpbas]
+                throw new Error('DAT structure must be preceded by a symbol');
+              }
+              const structId: number = this.currElement.numberValue;
+              const symbolValue: bigint = BigInt((structId << 12) | this.objImage.offset);
+              const symbolType: eElementType = eElementType.type_dat_struct;
+              this.logMessage(`* enterDatSymbol value=(${float32ToHexString(symbolValue)}) upper=(${symbolValue.toString(16).toUpperCase()})`);
+              const newSymbol: iSymbol = { name: this.symbolName, type: symbolType, value: symbolValue };
+              //this.logMessage(`* enterDatSymbol() calling record symbol [${newSymbol}]`);
+              this.recordSymbol(newSymbol);
+            }
+            this.getEndOfLine();
+            // back to top of loop to get first elem of new line
+            continue;
+          }
+
+          // PNut v44+ @@notstruct:
           // HANDLE size
           let fitToSize: boolean = this.currElement.type == eElementType.type_size_fit;
           if (this.currElement.type == eElementType.type_size || fitToSize) {
@@ -1236,8 +1274,50 @@ export class SpinResolver {
 
             const pasmDirective: number = Number(this.currElement.value);
             this.wordSize = eWordSize.WS_Long;
-
-            if (pasmDirective == eValueType.dir_fit) {
+            if (pasmDirective == eValueType.dir_ditto) {
+              // PNut @@dirditto:
+              if (this.dittoIsActive) {
+                // DITTO already active
+                if (this.nextElementType() != eElementType.type_asm_end) {
+                  // [error_eend]
+                  throw new Error('Expected END');
+                }
+                this.getEndOfLine();
+                let dittoCompleted: boolean = false;
+                if (this.dittoCount == 0) {
+                  this.objImage.setOffsetTo(this.dittoObjectIndex);
+                  dittoCompleted = true;
+                } else {
+                  // increment count if not done, restore to first line
+                  if (++this.dittoIndex < this.dittoCount) {
+                    this.restoreElementLocation(this.dittoElementIndex); // start from first in DITTO block
+                  } else {
+                    dittoCompleted = true;
+                  }
+                }
+                if (dittoCompleted) {
+                  // PNut @@dittodone:
+                  this.dittoIsActive = false;
+                  this.enterDatSymbol(); // process pending symbol
+                }
+                // fall thru to nextline...
+              } else {
+                // starting DITTO
+                this.enterDatSymbol(); // process pending symbol
+                // retrieve the DITTO repeat count
+                let repeatCountResult = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
+                if (repeatCountResult.value < 0n) {
+                  // [error_dcmbapi]
+                  throw new Error('DITTO count must be a positive integer or zero');
+                }
+                this.getEndOfLine();
+                this.dittoIsActive = true;
+                this.dittoIndex = 0;
+                this.dittoCount = Number(repeatCountResult.value);
+                this.dittoElementIndex = this.saveElementLocation();
+                this.dittoObjectIndex = this.objImage.offset;
+              }
+            } else if (pasmDirective == eValueType.dir_fit) {
               //
               // ASM dir: FIT {address}
               this.errorIfSymbol();
@@ -1296,6 +1376,10 @@ export class SpinResolver {
               if (inLineMode) {
                 // [error_onawiac]
                 throw new Error('ORG not allowed within inline assembly code');
+              }
+              if (this.dittoIsActive) {
+                // [error_onawads]
+                throw new Error('ORG not allowed within a DITTO section');
               }
               this.errorIfSymbol();
               // reset cog address and limit
@@ -1388,6 +1472,9 @@ export class SpinResolver {
               while (this.objImage.offset & (pasmDirective == eValueType.dir_alignl ? 0x03 : 0x01)) {
                 this.enterDataByte(0n);
               }
+            } else if (this.dittoIsActive) {
+              // [error_ohnawads]
+              throw new Error('ORGH not allowed within a DITTO section');
             }
             // ensure this gets to end-of-line check (throw error if not)
             this.getEndOfLine();
@@ -1404,6 +1491,11 @@ export class SpinResolver {
           } else if (inLineMode) {
             this.logMessage(`  -- NO instruction but INLINE mode, so must be pasm 'END' elem=[${this.currElement.toString()}]`);
             //
+            // HANDLE DITTO must have DITTO end
+            if (this.dittoIsActive) {
+              // [error_edend]
+              throw new Error('Expected DITTO END');
+            }
             // HANDLE inline must have end
             if (this.currElement.type != eElementType.type_asm_end) {
               // [error_eidbwloe]
@@ -1452,6 +1544,10 @@ export class SpinResolver {
             // [error_eaunbwlo]
             throw new Error('Expected a unique name, BYTE, WORD, LONG, or assembly instruction');
           } else {
+            if (this.dittoIsActive) {
+              // [error_edend]
+              throw new Error('Expected DITTO END');
+            }
             // put block back in list
             this.backElement();
             // get out of next line loop
@@ -1511,7 +1607,7 @@ export class SpinResolver {
     let instructionValue: number;
     if (this.currElement.type == eElementType.type_asm_cond) {
       asmCondition = Number(this.currElement.value);
-      this.getElement();
+      this.getElementObj();
       const [foundInstruction, tmpInstructionValue] = this.checkInstruction();
       instructionValue = tmpInstructionValue;
     } else {
@@ -2122,7 +2218,8 @@ export class SpinResolver {
             // [error_dcbpbac]
             throw new Error('DEBUG cannot be preceded by a condition, except _RET_');
           }
-          if (this.context.compileOptions.enableDebug == false) {
+          if (!this.debugStatementWillEmitCode()) {
+            // above removed square brackets of debug[0..31](...) if found
             this.logMessage(`  -- DEBUG is OFF`);
             this.skipToEndOfLine();
             skipInstructionGeneration = true;
@@ -2141,10 +2238,11 @@ export class SpinResolver {
               // here is debug() - PNut @@debugleft:
               if (pass == 0) {
                 this.skipToEndOfLine();
-                //this.backElement(); // TODO: bad?
+                //this.backElement(); //  bad!!
                 // allow instruction generation to avoid pass phase error
               } else {
                 // PNut @@debugpass1:
+                //  XYZZY we need to add conditional skip code here...
                 const breakCode = this.ci_debug_asm();
                 // keeping condition value, convert to given BRK n immediate
                 this.instructionImage |= (1 << 18) | (breakCode << 9);
@@ -2166,7 +2264,7 @@ export class SpinResolver {
     this.logMessage(`  -- AInstruFmLn() should be at end - elem=[${this.currElement.toString()}]`);
     if (this.nextElementType() != eElementType.type_end) {
       // we have an effect!
-      this.getElement();
+      this.getElementObj();
       if (this.currElement.type != eElementType.type_asm_effect) {
         // [error_eaaeoeol]
         throw new Error('Expected an assembly effect or end of line');
@@ -2185,6 +2283,31 @@ export class SpinResolver {
       // write instruction to obj image
       this.enterDataLong(BigInt(this.instructionImage));
     }
+  }
+
+  private debugStatementWillEmitCode(): boolean {
+    // PNut check_debug:
+    let debugEnableStatus: boolean = false;
+    if (this.context.compileOptions.enableDebug == true && this.debugDisable == false) {
+      debugEnableStatus = true;
+      // now do we have debug mask?
+      if (this.checkLeftBracket()) {
+        let debugMaskResult = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
+        if (debugMaskResult.value < 0n || debugMaskResult.value > 31n) {
+          // [error_dmbmb]
+          throw new Error('DEBUG mask bit-number must be 0..31');
+        }
+        if (this.debugMaskDefined == false) {
+          // [error_dmmbd]
+          throw new Error('DEBUG_MASK symbol must be defined for DEBUG[0..31] usage');
+        }
+        this.getRightBracket();
+        if ((this.debugMask & (1 << Number(debugMaskResult.value))) == 0) {
+          debugEnableStatus = false;
+        }
+      }
+    }
+    return debugEnableStatus;
   }
 
   private tryD() {
@@ -3841,6 +3964,7 @@ export class SpinResolver {
       case eElementType.type_dat_byte:
       case eElementType.type_dat_word:
       case eElementType.type_dat_long:
+      case eElementType.type_struct:
       case eElementType.type_dat_long_res:
         break;
       default:
@@ -8064,11 +8188,11 @@ export class SpinResolver {
               resultStatus.value = BigInt(this.hubMode ? this.hubOrg : this.cogOrg >> 2);
             } else if (this.currElement.type == eElementType.type_dollar2) {
               // new DITTO support here
-              if (mode != eMode.BM_OperandIntOnly || this.ditto_flag == false) {
+              if (mode != eMode.BM_OperandIntOnly || this.dittoIsActive == false) {
                 // [error_diioa]
                 throw new Error('"$$" (DITTO index) is only allowed within a DITTO block, inside a DAT block');
               }
-              resultStatus.value = BigInt(this.ditto_index);
+              resultStatus.value = BigInt(this.dittoIndex);
             } else if (this.currElement.type == eElementType.type_register) {
               // PNut here is @@notorg:
               this.logMessage(`* getCON() type_register`);
