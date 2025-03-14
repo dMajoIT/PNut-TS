@@ -192,6 +192,10 @@ export class SpinElement {
     return this._type == eElementType.type_con_int;
   }
 
+  get isCaret(): boolean {
+    return this._type == eElementType.type_op && this.operation == eOperationType.op_bitxor;
+  }
+
   get isOperation(): boolean {
     return this._type == eElementType.type_op;
   }

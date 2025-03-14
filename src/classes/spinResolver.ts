@@ -545,8 +545,9 @@ export class SpinResolver {
   private compile_var_blocks() {
     // Compile var blocks
     // PNut compile_var_blocks:
+    // XYZZY we are here
     this.logMessageOutline('++ compile_var_blocks()');
-    this.varPtr = 4; // leave room for the long pointer to object
+    this.varPtr = 4; // start variable pointer at 4 to accommodate long pointer to object
     this.restoreElementLocation(0); // start from first in list
 
     // for each VAR block...
@@ -564,55 +565,86 @@ export class SpinResolver {
           break;
         }
 
-        // is this ALIGNW or ALIGNL?
-        const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?
-        if (foundAlign) {
-          this.alignVar(alignMask);
-          this.getEndOfLine();
-          continue; // align[wl] is only text on line
-        }
-
-        // is this a size (BYTE, WORD, LONG)?
-        let wordSize: number = eWordSize.WS_Long; // NOTE: this matches our enum values
-        if (this.currElement.type == eElementType.type_size) {
-          wordSize = Number(this.currElement.value); // NOTE: this matches our enum values
-          this.getElementObj();
-        }
-
-        // ok, had to have one of these three!
-        if (this.currElement.isTypeUndefined) {
-          this.backElement();
-        } else {
-          // our symbol/element was NOT undefined!
-          // [error_eauvnsa]
-          throw new Error('Expected a unique variable name, BYTE, WORD, LONG, ALIGNW, or ALIGNL (m0E0)');
-        }
-
+        let structId: number = 0; // not yet a structure
+        let variableType: eElementType = eElementType.type_var_long;
+        let variableSize: number = 4;
         do {
+          // is this ALIGNW or ALIGNL?
+          const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?
+          if (foundAlign) {
+            this.alignVar(alignMask);
+            this.getElementObj();
+            continue; // allow consective aligns?!
+          }
+
+          // is this a size (BYTE, WORD, LONG)?
+          if (this.currElement.type == eElementType.type_size) {
+            const sizeEncoded: number = Number(this.currElement.value);
+            variableSize = 1 << sizeEncoded; // NOTE: this matches our enum values
+            variableType = eElementType.type_var_byte + sizeEncoded;
+            this.getElementObj();
+          }
+
+          // handle structure
+          if (this.currElement.type == eElementType.type_con_struct) {
+            // XYZZY more code here
+            structId = this.currElement.numberValue;
+            // get struct size in bytes
+            variableSize = this.objectStructureSet.getStructureSizeForID(structId);
+            variableType = eElementType.type_var_struct_ptr;
+          }
+
+          // handle ^var  pointer variable
+          if (this.checkPtr()) {
+            variableSize = 4; // all pointers
+            if (this.currElement.type == eElementType.type_size) {
+              const sizeEncoded: number = Number(this.currElement.value); // NOTE: this matches our enum values
+              variableType = eElementType.type_var_byte_ptr + sizeEncoded;
+            } else {
+              // here with type = type_con_struct
+              structId = this.currElement.numberValue;
+              variableType = eElementType.type_var_struct_ptr;
+            }
+          }
+
+          // ok, had to have one of these four!
+          if (this.currElement.isTypeUndefined) {
+            this.backElement();
+          } else {
+            // our symbol/element was NOT undefined!
+            // [error_eauvnsa]
+            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E0)');
+          }
+
           this.currElement = this.getElementObj();
           if (this.currElement.isTypeUndefined == false) {
             // [error_eauvn]
             throw new Error('Expected a unique variable name');
           }
           const symbolName: string = this.currElement.stringValue;
-          let count: number = 1; // we default to count of one being allocated
+          let instanceCount: number = 1; // we default to count of one being allocated
           if (this.checkLeftBracket()) {
+            if (this.isPtr(variableType)) {
+              // [error_pcba]
+              throw new Error('Pointers cannot be arrays');
+            }
             // we have [count]. Get the value, replacing our 1
             let countResult = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
             if (countResult.value > BigInt(this.hubOrgLimit)) {
               // [error_tmvsid]
               throw new Error('Too much variable space is declared (m280)');
             }
-            count = Number(countResult.value);
+            instanceCount = Number(countResult.value);
             this.getRightBracket();
           }
           // now record [count|1] instances with symbol name at start
-          const newVarSymbol: iSymbol = { name: symbolName, type: eElementType.type_var_byte + wordSize, value: BigInt(this.varPtr) };
-          this.varPtr += count << wordSize;
+          let adjustedValue: number = (structId << 20) | this.varPtr;
+          this.varPtr += instanceCount * variableSize;
           if (this.varPtr > this.hubOrgLimit) {
             // [error_tmvsid]
             throw new Error('Too much variable space is declared (m281)');
           }
+          const newVarSymbol: iSymbol = { name: symbolName, type: variableType, value: BigInt(adjustedValue) };
           this.recordSymbol(newVarSymbol);
         } while (this.getCommaOrEndOfLine());
 
@@ -621,6 +653,23 @@ export class SpinResolver {
     }
     this.alignVar(0b11); // align to next long for start of next instance
     this.logMessageOutline(`  -- compile_var_blocks() EXIT w/varPtr=(${this.varPtr})(${hexLong(this.varPtr, '0x')})`);
+  }
+
+  private isPtr(type: eElementType): boolean {
+    let ptrTypeStatus: boolean = false;
+    if (
+      type == eElementType.type_var_byte_ptr ||
+      type == eElementType.type_var_word_ptr ||
+      type == eElementType.type_var_long_ptr ||
+      type == eElementType.type_var_struct_ptr ||
+      type == eElementType.type_loc_byte_ptr ||
+      type == eElementType.type_loc_word_ptr ||
+      type == eElementType.type_loc_long_ptr ||
+      type == eElementType.type_loc_struct_ptr
+    ) {
+      ptrTypeStatus = true;
+    }
+    return ptrTypeStatus;
   }
 
   private checkAlign(): [boolean, number] {
@@ -2457,7 +2506,7 @@ export class SpinResolver {
     if (this.currElement.type == eElementType.type_inc) {
       // have ++(ptra/ptrb)?
       this.getElement(); // get ptra/ptrb
-      const [foundPtr, ptrSelectBit] = this.checkPtr();
+      const [foundPtr, ptrSelectBit] = this.checkPtrAB();
       if (foundPtr) {
         // ++ptra/ptrb, set update bit, set index to +1
         ptrBits |= ptrSelectBit | 0x40 | 0x01;
@@ -2470,7 +2519,7 @@ export class SpinResolver {
     } else if (this.currElement.type == eElementType.type_dec) {
       // have --(ptra/ptrb)?
       this.getElement(); // get ptra/ptrb
-      const [foundPtr, ptrSelectBit] = this.checkPtr();
+      const [foundPtr, ptrSelectBit] = this.checkPtrAB();
       if (foundPtr) {
         // --ptra/ptrb, set update bit, set index to -1
         ptrBits |= ptrSelectBit | 0x40 | 0x1f;
@@ -2482,7 +2531,7 @@ export class SpinResolver {
       }
     } else {
       // curr element is ptra/ptrb...
-      const [foundPtr, ptrSelectBit] = this.checkPtr();
+      const [foundPtr, ptrSelectBit] = this.checkPtrAB();
       if (foundPtr) {
         // we have a ptr, do we have post incr or decr?
         this.currElement = this.getElement();
@@ -2575,7 +2624,21 @@ export class SpinResolver {
     }
   }
 
-  private checkPtr(): [boolean, number] {
+  private checkPtr(): boolean {
+    // if we have a caret "^" then have  ptr variable
+    let foundPtrStatus: boolean = false;
+    if (this.currElement.isCaret) {
+      this.getElementObj();
+      if (this.currElement.type != eElementType.type_size && this.currElement.type != eElementType.type_con_struct) {
+        // [error_ebwls]
+        throw new Error('Expected BYTE, WORD, LONG, or STRUCT name');
+      }
+      foundPtrStatus = true;
+    }
+    return foundPtrStatus;
+  }
+
+  private checkPtrAB(): [boolean, number] {
     let foundPtr: boolean = false;
     let ptrSelectBit: number = 0;
     if (this.currElement.type == eElementType.type_register) {
@@ -2585,7 +2648,7 @@ export class SpinResolver {
         foundPtr = true;
       }
     }
-    this.logMessage(`* checkPtr() regValue=[${hexString(this.currElement.value)}], ptrSelectBit=[${ptrSelectBit}], foundPtr=(${foundPtr})`);
+    this.logMessage(`* checkPtrAB() regValue=[${hexString(this.currElement.value)}], ptrSelectBit=[${ptrSelectBit}], foundPtr=(${foundPtr})`);
     return [foundPtr, ptrSelectBit];
   }
 
@@ -2983,7 +3046,7 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
-            throw new Error('Expected a unique variable name, BYTE, WORD, LONG, ALIGNW, or ALIGNL (m0E1)');
+            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E1)');
           }
           // if array index, skip it
           if (this.checkLeftBracket()) {
@@ -3111,7 +3174,7 @@ export class SpinResolver {
           const currType: eElementType = eElementType.type_loc_byte + currSize;
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
-            throw new Error('Expected a unique variable name, BYTE, WORD, LONG, ALIGNW, or ALIGNL (m0E2)');
+            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E2)');
           }
           const newLocalSymbol: iSymbol = { name: this.currElement.stringValue, type: currType, value: BigInt(localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);

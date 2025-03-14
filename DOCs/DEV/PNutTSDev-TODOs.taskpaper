@@ -44,15 +44,19 @@ TODO's from PNut Zoom 250303++:
 			- dat struct @done(2025-03-13)
 			- debug enable and mask stuff (partial)
 			- getElementObj conversion @done(2025-03-13)
-		Day8: Fri:
+	Day8: Fri:
 		- DAT block (20 mins) @done(2025-03-14)
 			- debug enable and mask stuff (partial) @done(2025-03-14)
 				- emit instruction skip @done(2025-03-14)
 			- more getElementObj conversion @done(2025-03-14)
 			- relative branches crossing:  (move pass check upwards) @done(2025-03-14)
-		- VAR block -> using structures, ptrs
-		- SPIN blocks (PUB, PRI)
+		- VAR block -> using structures, ptrs @done(2025-03-14)
+	Day9: Mon:
 		- OBJ block -> obj attributes
+		- SPIN blocks (PUB, PRI)
+		- Add code deltat from v50 to v51
+		- Adjust existing regression tests to work
+		- Add new regressions tests for v45 - v51 
 		
 	Upcoming:
 		- Review each block handling method for STRUCT addition, etc. DITTO Support

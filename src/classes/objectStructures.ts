@@ -92,6 +92,15 @@ export class ObjectStructures {
     return desiredValue;
   }
 
+  public getStructureSizeForID(recordId: number): number {
+    let desiredSizeInBytes: number = 0;
+    if (recordId >= 0 && recordId < this._objStructRecordOffsets.length) {
+      const record: Uint8Array = this.readRecord(recordId);
+      desiredSizeInBytes = this.readLongAt(2, record);
+    }
+    return desiredSizeInBytes;
+  }
+
   public readRecord(recordId: number): Uint8Array {
     // retrieve the record from the set of structure-definition records
     let desiredRecord: Uint8Array = new Uint8Array();
