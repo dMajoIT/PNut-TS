@@ -44,12 +44,12 @@ TODO's from PNut Zoom 250303++:
 			- dat struct @done(2025-03-13)
 			- debug enable and mask stuff (partial)
 			- getElementObj conversion @done(2025-03-13)
-		Day7: Fri:
-		- DAT block (20 mins)
-			- debug enable and mask stuff (partial)
-				- emit instruction skip
-			- more getElementObj conversion
-			- relative branches crossing:  (move pass check upwards)
+		Day8: Fri:
+		- DAT block (20 mins) @done(2025-03-14)
+			- debug enable and mask stuff (partial) @done(2025-03-14)
+				- emit instruction skip @done(2025-03-14)
+			- more getElementObj conversion @done(2025-03-14)
+			- relative branches crossing:  (move pass check upwards) @done(2025-03-14)
 		- VAR block -> using structures, ptrs
 		- SPIN blocks (PUB, PRI)
 		- OBJ block -> obj attributes

@@ -1083,7 +1083,6 @@ export class SpinResolver {
     // compile all DAT blocks in file
     // PNut compile_dat_blocks:
     //const startTime = Date.now();
-    // XYZZY we are doing mods here next
     //this.logMessageOutline(`++ compile_dat_blocks(inLineMode=(${inLineMode})) - ENTRY`);
     this.logMessage(`*==* COMPILE_dat_blocks() inLineMode=(${inLineMode})`);
     this.inlineModeForGetConstant = inLineMode;
@@ -2213,11 +2212,6 @@ export class SpinResolver {
       case eValueType.operand_debug: // we have break register 0
         {
           this.logMessage(`  -- at operand_debug:`);
-          const asmCondition = (this.instructionImage >> 28) & 0x0f;
-          if (asmCondition > 0x0 && asmCondition < 0xf) {
-            // [error_dcbpbac]
-            throw new Error('DEBUG cannot be preceded by a condition, except _RET_');
-          }
           if (!this.debugStatementWillEmitCode()) {
             // above removed square brackets of debug[0..31](...) if found
             this.logMessage(`  -- DEBUG is OFF`);
@@ -2225,7 +2219,15 @@ export class SpinResolver {
             skipInstructionGeneration = true;
           } else {
             this.logMessage(`  -- DEBUG is ON`);
-            // head debug() in assembly code
+            // here debug() in assembly code
+            const asmCondition = (this.instructionImage >> 28) & 0x0f;
+            if (asmCondition != 0x0 && asmCondition != 0xf) {
+              let newInstructionImage: number = asmCondition << 28;
+              newInstructionImage ^= 0xfd640231;
+              this.enterDataLong(BigInt(newInstructionImage));
+              // rewrite BRK instruction to be always!
+              this.instructionImage |= 0xf0000000;
+            }
             if (this.checkLeftParen() == false) {
               // have 'debug' without ()
               // keeping condition value, convert to BRK #0 (break immediate 0)
@@ -2242,7 +2244,6 @@ export class SpinResolver {
                 // allow instruction generation to avoid pass phase error
               } else {
                 // PNut @@debugpass1:
-                //  XYZZY we need to add conditional skip code here...
                 const breakCode = this.ci_debug_asm();
                 // keeping condition value, convert to given BRK n immediate
                 this.instructionImage |= (1 << 18) | (breakCode << 9);
@@ -2608,7 +2609,7 @@ export class SpinResolver {
   private getCorZ(): number {
     // return asmCondition if present?
     let logicFunction: number = 0b00;
-    this.getElement();
+    this.getElementObj(); // use obj get to make better error!
     if (
       this.currElement.type == eElementType.type_asm_effect2 ||
       (this.currElement.type == eElementType.type_asm_effect && Number(this.currElement.value) != 0b11)
