@@ -127,14 +127,11 @@ export class ChildObjectsImage {
     return this._offset;
   }
 
-  public readSymbolName(): string {
+  public readSymbolName(length: number): string {
     let newName: string = '';
     // eslint-disable-next-line no-constant-condition
-    while (true) {
+    while (length-- > 0) {
       const symbolChar = this._objImage[this._offset];
-      if (symbolChar < 0x20) {
-        break;
-      }
       newName += String.fromCharCode(symbolChar);
       this._offset++;
     }

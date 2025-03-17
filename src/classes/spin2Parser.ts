@@ -472,9 +472,7 @@ export class Spin2Parser {
     const var_longs = 0x3c;
     const clkmode_hub = 0x40;
     const clkfreq_hub = 0x44;
-    const _debugnop1_ = 0xe54;
-    const _debugnop2_ = 0xe58;
-    const _debugnop3_ = 0xe5c;
+    const _debugnop_ = 0xf20; // this changes with interpreter changes
 
     //const objImage: ObjectImage = this.context.compileData.objImage;
     //objImage.setOffsetTo(this.spinResolver.executableSize + 8); // move this...
@@ -548,21 +546,21 @@ export class Spin2Parser {
     this.objImage.replaceLong(this.spinResolver.clockFrequency, clkfreq_hub);
     if (isDebugMode == false) {
       // if not debug mode, force NOP instructions
-      this.objImage.replaceLong(0, _debugnop1_);
-      this.objImage.replaceLong(0, _debugnop2_);
-      this.objImage.replaceLong(0, _debugnop3_);
+      this.objImage.replaceLong(0, _debugnop_ + 0);
+      this.objImage.replaceLong(0, _debugnop_ + 4);
+      this.objImage.replaceLong(0, _debugnop_ + 8);
     } else {
       // debug mode, install debug_pin_rx into instructions
       const debugPinRx = this.spinResolver.debugPinReceive;
-      let newLongValue = this.objImage.readLong(_debugnop1_);
+      let newLongValue = this.objImage.readLong(_debugnop_ + 0);
       newLongValue |= debugPinRx << 9;
-      this.objImage.replaceLong(newLongValue, _debugnop1_);
-      newLongValue = this.objImage.readLong(_debugnop2_);
+      this.objImage.replaceLong(newLongValue, _debugnop_ + 0);
+      newLongValue = this.objImage.readLong(_debugnop_ + 4);
       newLongValue |= debugPinRx;
-      this.objImage.replaceLong(newLongValue, _debugnop2_);
-      newLongValue = this.objImage.readLong(_debugnop3_);
+      this.objImage.replaceLong(newLongValue, _debugnop_ + 4);
+      newLongValue = this.objImage.readLong(_debugnop_ + 8);
       newLongValue |= debugPinRx << 9;
-      this.objImage.replaceLong(newLongValue, _debugnop3_);
+      this.objImage.replaceLong(newLongValue, _debugnop_ + 8);
     }
     // mark the new end of this image
     this.objImage.setOffsetTo(interpreterLength + this.spinResolver.executableSize); // address of byte after our image

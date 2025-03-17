@@ -4328,6 +4328,7 @@ export class SpinResolver {
       // now record
       this.objectData.setOffset(offsetToPubConList); // PNut is using [esi]
       // eslint-disable-next-line no-constant-condition
+      let foundObjError: boolean = false;
       while (true) {
         // here is @@nextsymbol:
         if (this.objectData.offset > offsetPastObj) {
@@ -4336,25 +4337,48 @@ export class SpinResolver {
         } else if (this.objectData.offset == offsetPastObj) {
           break;
         }
+
+        let symbolTypeLength: number = this.objectData.readByte();
+        const symbolType: number = symbolTypeLength & 0xe0;
+        const symbolLength = symbolTypeLength & 0x1f;
         // get our symbol
-        const objectsSymbolName: string = this.objectData.readSymbolName() + String.fromCharCode(objFileIndex + 1);
-        const symbolTypeOrResults: number = this.objectData.readByte();
-        if (symbolTypeOrResults <= this.results_limit) {
-          // have PUB
-          const symbolParameters: number = this.objectData.readByte();
-          const symbolValue = (symbolParameters << 24) | (symbolTypeOrResults << 20) | pubIndex++;
-          const newObjPubSymbol: iSymbol = { name: objectsSymbolName, type: eElementType.type_obj_pub, value: BigInt(symbolValue) };
-          this.recordSymbol(newObjPubSymbol);
-        } else if (symbolTypeOrResults <= this.results_limit + 2) {
-          // have con or con_float
-          const symbolValue: number = this.objectData.readLong();
-          const symbolType: eElementType =
-            symbolTypeOrResults == this.results_limit + 2 ? eElementType.type_obj_con_float : eElementType.type_obj_con_int;
-          const newObjConSymbol: iSymbol = { name: objectsSymbolName, type: symbolType, value: BigInt(symbolValue) };
-          this.recordSymbol(newObjConSymbol);
-        } else {
-          // [error_INTERNAL]
-          throw new Error(`ERROR[INTERNAL]: failed to decode object symbols for [${objFileRecords[objFileIndex].fileName}]`);
+        const objectsSymbolName: string = this.objectData.readSymbolName(symbolLength) + String.fromCharCode(objFileIndex + 1);
+        switch (symbolType) {
+          case ObjectSymbols.objx_con_int:
+          case ObjectSymbols.objx_con_float:
+            {
+              // have con or con_float
+              const symbolValue: number = this.objectData.readLong();
+              const actualType: eElementType =
+                symbolType == ObjectSymbols.objx_con_float ? eElementType.type_obj_con_float : eElementType.type_obj_con_int;
+              const newObjConSymbol: iSymbol = { name: objectsSymbolName, type: actualType, value: BigInt(symbolValue) };
+              this.recordSymbol(newObjConSymbol);
+            }
+            break;
+          case ObjectSymbols.objx_con_struct:
+            // XYZZY decode incoming struct and emit symbol
+            break;
+          case ObjectSymbols.objx_pub:
+            {
+              // have PUB
+              const methodParameterCount: number = this.objectData.readByte();
+              if (methodParameterCount > this.params_limit) {
+                this.errorBadObjectImage(objFileRecords[objFileIndex]);
+              }
+              const methodResultCount: number = this.objectData.readByte();
+              if (methodResultCount > this.results_limit) {
+                this.errorBadObjectImage(objFileRecords[objFileIndex]);
+              }
+              const symbolValue = (methodParameterCount << 24) | (methodResultCount << 20) | pubIndex++;
+              const newObjPubSymbol: iSymbol = { name: objectsSymbolName, type: eElementType.type_obj_pub, value: BigInt(symbolValue) };
+              this.recordSymbol(newObjPubSymbol);
+            }
+            break;
+
+          default:
+            // [error_INTERNAL]
+            throw new Error(`ERROR[INTERNAL]: failed to decode object symbol type (${symbolType}) for [${objFileRecords[objFileIndex].fileName}]`);
+            break;
         }
       }
     }
@@ -4371,6 +4395,7 @@ export class SpinResolver {
     // Compile obj data
     //   moves data from objects into our output binary image
     // PNut compile_obj_blocks:
+    // XYZZY Monday 17 Mar
     if (this.pasmMode == false) {
       this.logMessageOutline('++ compile_obj_blocks()');
       this.pad_obj_long();
@@ -5363,7 +5388,7 @@ export class SpinResolver {
       //for (const byte of this.pubConList) {
       //  this.objImage.appendByte(byte); // copy the symbol array
       //}
-      this.pubConList.setOffset(0);
+      this.pubConList.setReadOffset(0);
       this.logMessage(`  -- pubCon list has (${this.pubConList.length}) bytes`);
       for (let index = 0; index < this.pubConList.length; index++) {
         const byte = this.pubConList.readNext();

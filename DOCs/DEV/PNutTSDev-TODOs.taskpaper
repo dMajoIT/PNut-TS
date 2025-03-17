@@ -38,7 +38,7 @@ TODO's from PNut Zoom 250303++:
 			- CON block -> structures @done(2025-03-11)
 				- call buildStructureRecord() @done(2025-03-11)
 	Day7: Thu:
-		- DAT block
+		- DAT block @done(2025-03-17)
 			- ditto @done(2025-03-13)
 			- orgh @done(2025-03-13)
 			- dat struct @done(2025-03-13)
@@ -52,7 +52,9 @@ TODO's from PNut Zoom 250303++:
 			- relative branches crossing:  (move pass check upwards) @done(2025-03-14)
 		- VAR block -> using structures, ptrs @done(2025-03-14)
 	Day9: Mon:
-		- OBJ block -> obj attributes
+		- OBJ block -> obj attributes (partial) @done(2025-03-17)
+	Day10: Tue:
+		- OBJ block -> obj attributes - struct
 		- SPIN blocks (PUB, PRI)
 		- Add code deltat from v50 to v51
 		- Adjust existing regression tests to work

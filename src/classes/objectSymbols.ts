@@ -8,11 +8,6 @@
 import { Context } from '../utils/context';
 import { hexAddress, hexByte } from '../utils/formatUtils';
 
-const objx_con_int = 1 << 5;
-const objx_con_float = 2 << 5;
-const objx_con_struct = 3 << 5;
-const objx_pub = 4 << 5;
-
 // src/classes/objectImage.ts
 
 // version < v45 record structure:
@@ -56,6 +51,11 @@ const objx_pub = 4 << 5;
 //  BYTEs data[size-2]
 
 export class ObjectSymbols {
+  static objx_con_int = 1 << 5;
+  static objx_con_float = 2 << 5;
+  static objx_con_struct = 3 << 5;
+  static objx_pub = 4 << 5;
+
   private context: Context;
   private isLogging: boolean = false;
   private _id: string;
@@ -79,7 +79,7 @@ export class ObjectSymbols {
     return this._objOffset;
   }
 
-  public setOffset(offset: number) {
+  public setReadOffset(offset: number) {
     this._objReadOffset = offset;
   }
 
@@ -101,7 +101,7 @@ export class ObjectSymbols {
 
   public writePubSymbol(name: string, parameterCount: number, resultCount: number) {
     // add to this objects' public interface symbol store PubConList
-    const type: number = objx_pub | name.length;
+    const type: number = ObjectSymbols.objx_pub | name.length;
     this.writeByte(type); // tttlllll
     this.writeSymbolName(name);
     this.writeByte(parameterCount);
@@ -110,7 +110,7 @@ export class ObjectSymbols {
 
   public writeConstant(name: string, isFloat: boolean, value: bigint) {
     // add to this objects' public interface symbol store PubConList
-    const interfaceType: number = (isFloat ? objx_con_float : objx_con_int) | name.length;
+    const interfaceType: number = (isFloat ? ObjectSymbols.objx_con_float : ObjectSymbols.objx_con_int) | name.length;
     this.writeByte(interfaceType);
     this.writeSymbolName(name);
     this.writeLong(value);
@@ -118,7 +118,7 @@ export class ObjectSymbols {
 
   public writeStructure(name: string, bytes: Uint8Array) {
     // add a public structure def'm to object interface
-    const interfaceType: number = objx_con_struct | name.length;
+    const interfaceType: number = ObjectSymbols.objx_con_struct | name.length;
     this.writeByte(interfaceType);
     this.writeSymbolName(name);
     for (let index = 0; index < bytes.length; index++) {

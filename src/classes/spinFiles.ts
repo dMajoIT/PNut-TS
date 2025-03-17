@@ -11,7 +11,7 @@ import { SymbolTable } from './symbolTable';
 import { eElementType } from './types';
 
 const FILE_LIMIT: number = 32; // DAT and OBJ limit is same
-const PARAM_LIMIT: number = 16; // OBJ override limit
+const PARAM_LIMIT: number = 16; // OBJ override limit - PMut obj_param_limit
 const ALLOW_LIBRARY_SEARCH: boolean = true;
 
 interface iPossibleSymbolTable {
