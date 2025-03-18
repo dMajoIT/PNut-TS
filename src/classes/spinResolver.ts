@@ -45,6 +45,7 @@ interface iVariableReturn {
   bitfieldConstantFlag: boolean;
   operation: eVariableOperation;
   assignmentBytecode: eByteCode; // used iff VO_ASSIGN
+  modifierBytecode: eByteCode; // used iff pre/post inc/dec
 }
 
 enum eCaseFast { // enum for bc_casefast() and blockCasefast() methods
@@ -653,18 +654,66 @@ export class SpinResolver {
     this.logMessageOutline(`  -- compile_var_blocks() EXIT w/varPtr=(${this.varPtr})(${hexLong(this.varPtr, '0x')})`);
   }
 
+  private isStruct(type: eElementType): boolean {
+    let ptrTypeStatus: boolean = false;
+    if (
+      type == eElementType.type_con_struct ||
+      type == eElementType.type_loc_struct ||
+      type == eElementType.type_var_struct ||
+      type == eElementType.type_dat_struct
+    ) {
+      ptrTypeStatus = true;
+    } else {
+      ptrTypeStatus = this.isStructPtr(type);
+    }
+    return ptrTypeStatus;
+  }
+
   private isPtr(type: eElementType): boolean {
     let ptrTypeStatus: boolean = false;
     if (
       type == eElementType.type_var_byte_ptr ||
       type == eElementType.type_var_word_ptr ||
       type == eElementType.type_var_long_ptr ||
-      type == eElementType.type_var_struct_ptr ||
       type == eElementType.type_loc_byte_ptr ||
       type == eElementType.type_loc_word_ptr ||
-      type == eElementType.type_loc_long_ptr ||
-      type == eElementType.type_loc_struct_ptr
+      type == eElementType.type_loc_long_ptr
     ) {
+      ptrTypeStatus = true;
+    } else {
+      ptrTypeStatus = this.isStructPtr(type);
+    }
+    return ptrTypeStatus;
+  }
+
+  private isStructPtr(type: eElementType): boolean {
+    let ptrTypeStatus: boolean = false;
+    if (type == eElementType.type_var_struct_ptr || type == eElementType.type_loc_struct_ptr) {
+      ptrTypeStatus = true;
+    }
+    return ptrTypeStatus;
+  }
+
+  private isPtrValue(type: eElementType): boolean {
+    let ptrTypeStatus: boolean = false;
+    if (
+      type == eElementType.type_loc_byte_ptr_val ||
+      type == eElementType.type_var_byte_ptr_val ||
+      type == eElementType.type_loc_word_ptr_val ||
+      type == eElementType.type_var_word_ptr_val ||
+      type == eElementType.type_loc_long_ptr_val ||
+      type == eElementType.type_var_long_ptr_val
+    ) {
+      ptrTypeStatus = true;
+    } else {
+      ptrTypeStatus = this.isStructPtrValue(type);
+    }
+    return ptrTypeStatus;
+  }
+
+  private isStructPtrValue(type: eElementType): boolean {
+    let ptrTypeStatus: boolean = false;
+    if (type == eElementType.type_loc_struct_ptr_val || type == eElementType.type_var_struct_ptr_val) {
       ptrTypeStatus = true;
     }
     return ptrTypeStatus;
@@ -4354,7 +4403,6 @@ export class SpinResolver {
             }
             break;
           case ObjectSymbols.objx_con_struct:
-            // XYZZY decode incoming struct and emit symbol
             {
               const actualType: eElementType = eElementType.type_obj_con_struct;
               const structRcdSize: number = this.objectData.peekWord(); // read without moving read offset
@@ -4406,7 +4454,6 @@ export class SpinResolver {
     // Compile obj data
     //   moves data from objects into our output binary image
     // PNut compile_obj_blocks:
-    // XYZZY Monday 17 Mar
     if (this.pasmMode == false) {
       this.logMessageOutline('++ compile_obj_blocks()');
       this.pad_obj_long();
@@ -8464,6 +8511,10 @@ export class SpinResolver {
     return this.checkElementType(eElementType.type_leftb);
   }
 
+  private checkRightBracket(): boolean {
+    return this.checkElementType(eElementType.type_rightb);
+  }
+
   private checkComma(): boolean {
     return this.checkElementType(eElementType.type_comma);
   }
@@ -9030,38 +9081,111 @@ private checkDec(): boolean {
 
   private checkVariable(): iVariableReturn {
     //
-    //  field - type_field
-    //  ------------------
-    //
-    //  FIELD[memfield]
-    //  FIELD[memfield][index]
+    // Check variable
+    // on entry, al must hold type and ebx must hold value
+    // on exit, z=1 if variable with ecx/esi/edi set
     //
     //
-    //  register - type_register
-    //  ------------------------
+    //	ecx:31:24  = variable pointer pre/post-inc/dec-push bytecode or 0 for read
     //
-    //  regname
-    //  regname.[bitfield]
-    //  regname[index]
-    //  regname[index].[bitfield]
+    //	ecx.19     = bitfield constant flag
+    //	ecx.18     = bitfield flag
+    //	ecx.17     = index flag
+    //	ecx.16     = size override flag
+    //
+    //	ch         = type_register
+    //	             type_field
+    //	             type_size
+    //
+    //	             type_loc_byte
+    //	             type_loc_byte_ptr
+    //	             type_var_byte
+    //	             type_var_byte_ptr
+    //	             type_dat_byte
+    //
+    //	             type_con_struct
+    //	             type_loc_struct
+    //	             type_loc_struct_ptr
+    //	             type_var_struct
+    //	             type_var_struct_ptr
+    //	             type_dat_struct
+    //
+    //	cl         = 0:byte/default
+    //	             1:word in hub
+    //	             2:long in hub
+    //
+    //	esi = address (reg/loc/var/dat/hub/struct)
+    //	edi = source_ptr after variable (points to [base]/[index]/.[bitfield] exp)
     //
     //
-    //  hub memory - type_loc_???? / type_var_???? / type_dat_???? / type_hub_????
-    //  --------------------------------------------------------------------------
+    //	register
+    //	--------------------------------------------------------------------------
+    //	type_reg	(REG)
+    //	type_register
+    //	--------------------------------------------------------------------------
+    //	        REG [register] {[index]} {.[bitfield]}
+    //	        regname        {[index]} {.[bitfield]}
     //
-    //  hubname{.BYTE/WORD/LONG}
-    //  hubname{.BYTE/WORD/LONG}.[bitfield]
-    //  hubname{.BYTE/WORD/LONG}[index]
-    //  hubname{.BYTE/WORD/LONG}[index].[bitfield]
+    //
+    //	register/hub FIELD
+    //	--------------------------------------------------------------------------
+    //	type_field	(FIELD)
+    //	--------------------------------------------------------------------------
+    //	        FIELD [memfield] {[index]}
     //
     //
-    //  hub memory - type_size
-    //  ----------------------
+    //	hub BYTE/WORD/LONG
+    //	--------------------------------------------------------------------------
+    //	type_size	(BYTE/WORD/LONG)
+    //	--------------------------------------------------------------------------
+    //	        BYTE/WORD/LONG [base]            {[index]} {.[bitfield]}
     //
-    //  BYTE/WORD/LONG[base]
-    //  BYTE/WORD/LONG[base].[bitfield]
-    //  BYTE/WORD/LONG[base][index]
-    //  BYTE/WORD/LONG[base][index].[bitfield]
+    //
+    //	hub byte/word/long variable
+    //	--------------------------------------------------------------------------
+    //	type_loc_byte / type_var_byte / type_dat_byte / type_hub_byte
+    //	type_loc_word / type_var_word / type_dat_word / type_hub_word
+    //	type_loc_long / type_var_long / type_dat_long / type_hub_long
+    //	--------------------------------------------------------------------------
+    //	        hubvar         {.BYTE/WORD/LONG} {[index]} {.[bitfield]}
+    //
+    //
+    //	hub byte/word/long variable pointer	(++/-- is byte/word/long sized)
+    //	--------------------------------------------------------------------------
+    //	type_loc_byte_ptr / type_var_byte_ptr
+    //	type_loc_word_ptr / type_var_word_ptr
+    //	type_loc_long_ptr / type_var_long_ptr
+    //	--------------------------------------------------------------------------
+    //	        hubptr         {.BYTE/WORD/LONG} {[index]} {.[bitfield]}
+    //	[++/--] hubptr         {.BYTE/WORD/LONG} {[index]} {.[bitfield]}
+    //	        hubptr [++/--] {.BYTE/WORD/LONG} {[index]} {.[bitfield]}
+    //
+    //	       [hubptr]
+    //
+    //
+    //	hub CON STRUCT variable
+    //	--------------------------------------------------------------------------
+    //	type_con_struct
+    //	--------------------------------------------------------------------------
+    //	        structname [base] {[index]} {.member {[index]}} {.[bitfield]}
+    //
+    //
+    //	hub struct variable
+    //	--------------------------------------------------------------------------
+    //	type_loc_struct / type_var_struct / type_dat_struct
+    //	--------------------------------------------------------------------------
+    //	        structvar         {[index]} {.member {[index]}} {.[bitfield]}
+    //
+    //
+    //	hub struct variable pointer		(++/-- is struct sized)
+    //	--------------------------------------------------------------------------
+    //	type_loc_struct_ptr / type_var_struct_ptr
+    //	--------------------------------------------------------------------------
+    //	        structptr         {[index]} {.member {[index]}} {.[bitfield]}
+    //	[++/--] structptr         {[index]} {.member {[index]}} {.[bitfield]}
+    //	        structptr [++/--] {[index]} {.member {[index]}} {.[bitfield]}
+    //
+    //	       [structptr]
     //
     let resultVariable: iVariableReturn = {
       isVariable: true,
@@ -9074,7 +9198,8 @@ private checkDec(): boolean {
       bitfieldFlag: false,
       bitfieldConstantFlag: false,
       operation: eVariableOperation.VO_Unknown,
-      assignmentBytecode: 0
+      assignmentBytecode: 0,
+      modifierBytecode: 0
     };
 
     this.logMessage(`* checkVariable() elem=[${this.currElement.toString()}]`);
@@ -9097,6 +9222,72 @@ private checkDec(): boolean {
     resultVariable.address = variableAddress;
     resultVariable.nextElementIndex = this.nextElementIndex; // next to be gotten
     resultVariable.address &= 0xfffff; // forecast for structure stuff
+
+    // XYZZY adding new check_variable code here
+    if (this.isPtr(variableType)) {
+      if (this.checkLeftBracket()) {
+        this.getElement();
+        if (this.checkRightBracket()) {
+          if (this.currElement.type == eElementType.type_inc) {
+            // here is @@postinc
+            resultVariable.modifierBytecode = eByteCode.bc_var_postinc_push;
+          } else if (this.currElement.type == eElementType.type_dec) {
+            // here is @@postdec
+            resultVariable.modifierBytecode = eByteCode.bc_var_postdec_push;
+          } else {
+            this.backElement();
+          }
+        } else {
+          // left but no right?!
+          this.backElement();
+          this.backElement();
+        }
+      }
+    } else {
+      // PNUt @@notpostptr:
+      if (this.currElement.type == eElementType.type_leftb) {
+        this.currElement = this.getElement();
+        this.getRightBracket();
+        if (!this.isPtr(this.currElement.type)) {
+          // we DONT have a ptr
+          if (this.currElement.type == eElementType.type_inc) {
+            // here is @@postinc
+            resultVariable.modifierBytecode = eByteCode.bc_var_preinc_push;
+          } else if (this.currElement.type == eElementType.type_dec) {
+            // here is @@postdec
+            resultVariable.modifierBytecode = eByteCode.bc_var_predec_push;
+          } else {
+            // [error_eptrid]
+            throw new Error('Expected pointer variable, "++", or "--"');
+          }
+          //PNut @@preptr:
+          this.getElement();
+          if (!this.isPtr(this.currElement.type)) {
+            // [error_eptr]
+            throw new Error('Expected pointer variable');
+          }
+          resultVariable.type = this.currElement.type;
+          resultVariable.address = this.currElement.numberValue;
+        } else {
+          // we have a PTR
+          // PNut @@ptrval:
+          resultVariable.type = this.currElement.type + 4;
+          resultVariable.address = this.currElement.numberValue;
+          resultVariable.nextElementIndex = this.nextElementIndex; // after the right bracket
+          // FIXME: goto @@isvar
+        }
+      } else {
+        // PNUt @@notpreptr:
+        if (this.isStruct(this.currElement.type)) {
+          this.skip_struct_setup();
+          // XYZZY continue after skip... is completed
+        } else {
+          // PNut @@notstruct:
+        }
+      }
+    }
+    // PNut @@gotptr
+    resultVariable.nextElementIndex = this.nextElementIndex; // after the ptr variable
 
     switch (variableType) {
       case eElementType.type_loc_byte:
@@ -9190,6 +9381,75 @@ private checkDec(): boolean {
         break;
     }
     return resultVariable;
+  }
+
+  private skip_struct_setup() {
+    // PNut skip_struct_setup:
+    const savedObjPtr: number = this.objImage.offset;
+    this.compile_struct_setup();
+    // restore the object offset (backup over the compiled constant)
+    this.objImage.setOffsetTo(savedObjPtr);
+  }
+
+  private compile_struct_setup() {
+    //
+    // Compile structure setup
+    //
+    // on entry:
+    //
+    //   struct_name[address]{[index]}{{.byte/word/long/struct{[index]} ...}
+    //
+    //      al = type_con_struct, ebx = struct id
+    //
+    //   struct_var{[index]}{{.byte/word/long/struct{[index]} ...}
+    //
+    //      al = type_loc_struct, ebx.[31..20] = struct id, ebx.[19..0] = loc address of structure
+    //      al = type_var_struct, ebx.[31..20] = struct id, ebx.[19..0] = var address of structure
+    //      al = type_dat_struct, ebx.[31..20] = struct id, ebx.[19..0] = dat address of structure
+    //
+    //   {[++/--]}struct_ptr{[++/--]}{[index]}{{.byte/word/long/struct{[index]} ...}
+    //
+    //      al = type_loc_struct_ptr, ebx.[31..20] = struct id, ebx.[19..0] = loc address of ptr, ecx[31..24] = pre/post-inc/dec-push or 0 for read
+    //      al = type_var_struct_ptr, ebx.[31..20] = struct id, ebx.[19..0] = var address of ptr, ecx[31..24] = pre/post-inc/dec-push or 0 for read
+    //
+    // on exit:
+    //
+    //      compiled_struct_flags.[0]       = index or '.' was found, else base structure
+    //      compiled_struct_flags.[1]       = byte/word/long, else base/sub structure
+    //
+    //      compiled_struct_flags           = 0 if base structure (returns address at runtime)
+    //                                        1 if index or sub structure (returns address at runtime)
+    //                                        3 if byte/word/long (performs setup at runtime for read/write/assign)
+    //
+    //      compiled_struct_size            = size of last structure/byte/word/long in expression
+    //      compiled_struct_address         = address of byte/word/long (before any index)
+    //      compiled_struct_word_size       = size of member, if present (0/1/2 for byte/word/long)
+    //      compiled_struct_source_ptr      = source pointer after byte/word/long member (before [index]/.[bitfield] exp)
+    //      compiled_struct_obj_ptr         = obj_ptr of structure-setup bytecodes (after pushed values)
+    //
+    //      compiled_struct_index_mode      = 0 if no indexes (can be optimized)
+    //                                        1 if single index on byte/word/long member (can be optimized)
+    //                                        else other case (cannot be optimized)
+    //
+    //
+    // Optimization is possible if the following are all true:
+    //
+    //      al                              = type_loc/var/dat_struct (not type_con_struct or type_loc/var_struct_ptr)
+    //      compiled_struct_flags           = 3 (byte/word/long member, not a structure)
+    //      compiled_struct_index_mode      = 0 (no index) or 1 (single index on byte/word/long member)
+    //
+    //
+    // To optimize for compile_var, set registers as follows:
+    //
+    //      cl              = compiled_struct_word_size (0/1/2 for byte/word/long)
+    //      ch              = ch - 3 (type_???_struct --> type_???_byte)
+    //      ecx.17          = 1 if compiled_struct_index_mode == 1
+    //      esi             = compiled_struct_address
+    //      source_ptr      = compiled_struct_source_ptr
+    //      obj_ptr         = compiled_struct_obj_ptr
+    //
+    // PNut compile_struct_setup:
+    // XYZZY we need this compile_struct_setup code!!!
   }
 
   private checkVariableMethod(): [boolean, number] {

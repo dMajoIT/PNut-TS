@@ -55,6 +55,9 @@ TODO's from PNut Zoom 250303++:
 		- OBJ block -> obj attributes (partial) @done(2025-03-17)
 	Day10: Tue:
 		- OBJ block -> obj attributes - struct @done(2025-03-18)
+		- adjust check_variable() - partial @done(2025-03-18)
+	Day11: Wed:
+		- adjust check_variable - complete skip_structure_setup() then finish check_variable()
 		- SPIN blocks (PUB, PRI)
 		- Add code deltat from v50 to v51
 		- Adjust existing regression tests to work
