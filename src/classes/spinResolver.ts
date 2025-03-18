@@ -545,7 +545,6 @@ export class SpinResolver {
   private compile_var_blocks() {
     // Compile var blocks
     // PNut compile_var_blocks:
-    // XYZZY we are here
     this.logMessageOutline('++ compile_var_blocks()');
     this.varPtr = 4; // start variable pointer at 4 to accommodate long pointer to object
     this.restoreElementLocation(0); // start from first in list
@@ -587,7 +586,6 @@ export class SpinResolver {
 
           // handle structure
           if (this.currElement.type == eElementType.type_con_struct) {
-            // XYZZY more code here
             structId = this.currElement.numberValue;
             // get struct size in bytes
             variableSize = this.objectStructureSet.getStructureSizeForID(structId);
@@ -4327,8 +4325,8 @@ export class SpinResolver {
 
       // now record
       this.objectData.setOffset(offsetToPubConList); // PNut is using [esi]
-      // eslint-disable-next-line no-constant-condition
       let foundObjError: boolean = false;
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         // here is @@nextsymbol:
         if (this.objectData.offset > offsetPastObj) {
@@ -4357,6 +4355,19 @@ export class SpinResolver {
             break;
           case ObjectSymbols.objx_con_struct:
             // XYZZY decode incoming struct and emit symbol
+            {
+              const actualType: eElementType = eElementType.type_obj_con_struct;
+              const structRcdSize: number = this.objectData.peekWord(); // read without moving read offset
+              const structBytes: Uint8Array = this.objectData.readBytes(structRcdSize);
+              // ensure we have room for new structure
+              if (this.objectStructureSet.haveMaxStructures) {
+                // [error_loxdsde]
+                throw new Error(`Limit of ${ObjectStructures.MAX_STRUCTURES} data structure definitions exceeded`);
+              }
+              const structId: number = this.objectStructureSet.enterStructureAsNew(structBytes);
+              const newObjConSymbol: iSymbol = { name: objectsSymbolName, type: actualType, value: BigInt(structId) };
+              this.recordSymbol(newObjConSymbol);
+            }
             break;
           case ObjectSymbols.objx_pub:
             {
@@ -4369,7 +4380,7 @@ export class SpinResolver {
               if (methodResultCount > this.results_limit) {
                 this.errorBadObjectImage(objFileRecords[objFileIndex]);
               }
-              const symbolValue = (methodParameterCount << 24) | (methodResultCount << 20) | pubIndex++;
+              const symbolValue = (methodParameterCount << 24) | (methodResultCount << 20) | pubIndex++; // pubIndex is PNut [@@pub]
               const newObjPubSymbol: iSymbol = { name: objectsSymbolName, type: eElementType.type_obj_pub, value: BigInt(symbolValue) };
               this.recordSymbol(newObjPubSymbol);
             }

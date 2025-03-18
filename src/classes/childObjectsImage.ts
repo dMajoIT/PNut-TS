@@ -138,10 +138,6 @@ export class ChildObjectsImage {
     return newName;
   }
 
-  public readByte(): number {
-    return this.read();
-  }
-
   public read(): number {
     // read existing value from image
     let desiredValue: number = 0;
@@ -157,6 +153,34 @@ export class ChildObjectsImage {
     desiredValue |= this._objImage[this._offset++] << 16;
     desiredValue |= this._objImage[this._offset++] << 24;
     return desiredValue;
+  }
+
+  public readWord(): number {
+    // read existing WORD value from image
+    let desiredValue: number = 0;
+    desiredValue = this._objImage[this._offset++];
+    desiredValue |= this._objImage[this._offset++] << 8;
+    return desiredValue;
+  }
+
+  public peekWord(): number {
+    // read existing WORD value from image without moving past
+    let desiredValue: number = 0;
+    desiredValue = this._objImage[this._offset + 0];
+    desiredValue |= this._objImage[this._offset + 1] << 8;
+    return desiredValue;
+  }
+
+  public readByte(): number {
+    return this.read();
+  }
+
+  public readBytes(sizeInBytes: number): Uint8Array {
+    // read next N bytes from data and position at next after
+    const desiredBytesArray = new Uint8Array(sizeInBytes);
+    desiredBytesArray.set(this._objImage.subarray(this._offset, sizeInBytes), sizeInBytes);
+    this._offset += sizeInBytes;
+    return desiredBytesArray;
   }
 
   public write(value: number) {

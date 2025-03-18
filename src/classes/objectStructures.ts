@@ -7,7 +7,6 @@
 
 import { Context } from '../utils/context';
 import { hexAddress, hexByte } from '../utils/formatUtils';
-import { locateIncludeFile } from '../utils/files';
 
 // src/classes/objectStructures.ts
 
@@ -135,6 +134,7 @@ export class ObjectStructures {
     // record accumulated record size and memory size into record
     this.replaceWord(this._structStartOffset, this._structRecordSize);
     this.replaceLong(this._structStartOffset + 2, this._structMemorySize);
+    this._structIdNext++;
     const latestRecordId = this._objStructureSet.length - 1;
     return latestRecordId;
   }
@@ -166,6 +166,19 @@ export class ObjectStructures {
     for (let index = 0; index < existingRecord.length; index++) {
       this.enterByte(existingRecord[index]);
     }
+  }
+
+  public enterStructureAsNew(structData: Uint8Array): number {
+    // adding existing record, record offset into table for new ID
+    //  accumulated record size and memory size are already in bytes
+    this._structStartOffset = this._objStructureOffset;
+    this._objStructRecordOffsets.push(this._structStartOffset);
+    for (let index = 0; index < structData.length; index++) {
+      this.enterByte(structData[index]);
+    }
+    this._structIdNext++; // count this structure too for limit checks
+    const latestRecordId = this._objStructureSet.length - 1;
+    return latestRecordId;
   }
 
   public recordStructElementName(name: string) {
