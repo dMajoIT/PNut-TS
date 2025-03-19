@@ -25,6 +25,7 @@ import { DebugData, DebugRecord } from './debugData';
 import { SpinDocument } from './spinDocument';
 import { hexByte, hexLong } from '../utils/formatUtils';
 import { eMemberType, ObjectStructures } from './objectStructures';
+import { ObjectStructureRecord } from './objectStructureRecord';
 
 // Internal types used for passing complex values
 interface iValueReturn {
@@ -46,6 +47,30 @@ interface iVariableReturn {
   operation: eVariableOperation;
   assignmentBytecode: eByteCode; // used iff VO_ASSIGN
   modifierBytecode: eByteCode; // used iff pre/post inc/dec
+}
+
+enum eStructureType { // enum for bc_casefast() and blockCasefast() methods
+  ST_RawStructure, // 0 - if base structure (returns address at runtime)
+  ST_IndexOrSubStructure, // 1 - index or sub structure (returns address at runtime)
+  ST_Unknown,
+  ST_ResolvedAsBWL // 3 - byte/word/long (performs setup at runtime for read/write/assign)
+}
+
+enum eStructureIndexMode { // enum for bc_casefast() and blockCasefast() methods
+  SIM_NoIndexes, //  0 - if no indexes (can be optimized)
+  SIM_SingleIndex, // 1 - if single index on byte/word/long member (can be optimized)
+  SIM_NoOptimize, // 2 (or more) other case (cannot be optimized)
+  SIM_Unknown
+}
+
+interface iStructureReturn {
+  flags: eStructureType; // index = true, '.' is false
+  size: number;
+  address: number;
+  wordSize: number;
+  nextElementIndex: number;
+  objectPtr: number;
+  indexMode: eStructureIndexMode;
 }
 
 enum eCaseFast { // enum for bc_casefast() and blockCasefast() methods
@@ -9223,7 +9248,7 @@ private checkDec(): boolean {
     resultVariable.nextElementIndex = this.nextElementIndex; // next to be gotten
     resultVariable.address &= 0xfffff; // forecast for structure stuff
 
-    // XYZZY adding new check_variable code here
+    // XYZZY START adding new check_variable code here
     if (this.isPtr(variableType)) {
       if (this.checkLeftBracket()) {
         this.getElement();
@@ -9279,7 +9304,7 @@ private checkDec(): boolean {
       } else {
         // PNUt @@notpreptr:
         if (this.isStruct(this.currElement.type)) {
-          this.skip_struct_setup();
+          this.skip_struct_setup(resultVariable);
           // XYZZY continue after skip... is completed
         } else {
           // PNut @@notstruct:
@@ -9383,15 +9408,16 @@ private checkDec(): boolean {
     return resultVariable;
   }
 
-  private skip_struct_setup() {
+  private skip_struct_setup(resultVariable: iVariableReturn): iStructureReturn {
     // PNut skip_struct_setup:
     const savedObjPtr: number = this.objImage.offset;
-    this.compile_struct_setup();
+    const structureReturn = this.compile_struct_setup(resultVariable);
     // restore the object offset (backup over the compiled constant)
     this.objImage.setOffsetTo(savedObjPtr);
+    return structureReturn;
   }
 
-  private compile_struct_setup() {
+  private compile_struct_setup(variable: iVariableReturn): iStructureReturn {
     //
     // Compile structure setup
     //
@@ -9450,6 +9476,81 @@ private checkDec(): boolean {
     //
     // PNut compile_struct_setup:
     // XYZZY we need this compile_struct_setup code!!!
+    const structureType: eElementType = this.currElement.type; // @@struct_type
+    let structureId: number = this.currElement.numberValue;
+    let address: number = 0;
+    if (structureType != eElementType.type_con_struct) {
+      structureId >>= 20;
+      address = this.currElement.numberValue & 0xfffff;
+    }
+    let offsetInStructure: number = 0;
+
+    // set our default values
+    let resultStructure: iStructureReturn = {
+      flags: eStructureType.ST_RawStructure,
+      size: 0,
+      address: 0,
+      wordSize: 0,
+      nextElementIndex: 0,
+      objectPtr: 0,
+      indexMode: eStructureIndexMode.SIM_NoIndexes
+    };
+    let popExpressionIndex: number = 0;
+    let liveIndexCount: number = 0;
+    let memberSize: number = 0; // 1,2,4 or structure size
+
+    // temporary for calling compilerVariable()
+    let structPtrVariable: iVariableReturn = {
+      isVariable: true,
+      type: eElementType.type_undefined,
+      address: 0,
+      nextElementIndex: 0,
+      wordSize: 0,
+      sizeOverrideFlag: false,
+      indexFlag: false,
+      bitfieldFlag: false,
+      bitfieldConstantFlag: false,
+      operation: eVariableOperation.VO_Unknown,
+      assignmentBytecode: 0,
+      modifierBytecode: 0
+    };
+
+    if (this.currElement.type == eElementType.type_con_struct) {
+      // have index
+      this.getLeftBracket();
+      popExpressionIndex = this.saveElementLocation();
+      this.skipExpression();
+      this.getRightBracket();
+    } else if (this.isStructPtr(this.currElement.type)) {
+      // have structure pointer
+      structPtrVariable.type = variable.type + 4;
+      structPtrVariable.assignmentBytecode = variable.modifierBytecode;
+      structPtrVariable.operation = structPtrVariable.assignmentBytecode == 0 ? eVariableOperation.VO_READ : eVariableOperation.VO_ASSIGN;
+      structPtrVariable.address = variable.address;
+      structPtrVariable.nextElementIndex = this.nextElementIndex; // source_pre
+    } else {
+      // PNut @@notstructptr:
+      offsetInStructure = address;
+      const structureRecord: ObjectStructureRecord = this.objectStructureSet.getStrutureRecord(structureId);
+      structureRecord.nextWord();
+      memberSize = structureRecord.nextLong();
+      const indexPresent = this.handleStructureIndex();
+      // XYZZY we hare here next...@@notstructptr
+    }
+    // PNut @@gotsetup:
+    liveIndexCount = 0;
+
+    return resultStructure;
+  }
+
+  private handleStructureIndex(): boolean {
+    let foundIndexStatus: boolean = false;
+    if (this.checkLeftBracket()) {
+      // have index...
+      foundIndexStatus = true;
+      // XYZZY we are translating this code handleStructureIndex() - we need rich return structure
+    }
+    return foundIndexStatus;
   }
 
   private checkVariableMethod(): [boolean, number] {

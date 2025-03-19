@@ -7,6 +7,7 @@
 
 import { Context } from '../utils/context';
 import { hexAddress, hexByte } from '../utils/formatUtils';
+import { ObjectStructureRecord } from './objectStructureRecord';
 
 // src/classes/objectStructures.ts
 
@@ -98,6 +99,11 @@ export class ObjectStructures {
       desiredSizeInBytes = this.readLongAt(2, record);
     }
     return desiredSizeInBytes;
+  }
+
+  public getStrutureRecord(recordId: number): ObjectStructureRecord {
+    const recordImage = this.readRecord(recordId);
+    return new ObjectStructureRecord(this.context, `RCD#${recordId}`, recordImage);
   }
 
   public readRecord(recordId: number): Uint8Array {
