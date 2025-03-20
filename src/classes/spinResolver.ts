@@ -50,10 +50,10 @@ interface iVariableReturn {
 }
 
 enum eStructureType { // enum for bc_casefast() and blockCasefast() methods
-  ST_RawStructure, // 0 - if base structure (returns address at runtime)
-  ST_IndexOrSubStructure, // 1 - index or sub structure (returns address at runtime)
-  ST_Unknown,
-  ST_ResolvedAsBWL // 3 - byte/word/long (performs setup at runtime for read/write/assign)
+  ST_RawStructure = 0, // 0 - if base structure (returns address at runtime)
+  ST_IndexOrSubStructure = 1, // 1 - index or sub structure (returns address at runtime)
+  ST_Unknown = 2,
+  ST_ResolvedAsBWL = 3 // 3 - byte/word/long (performs setup at runtime for read/write/assign)
 }
 
 enum eStructureIndexMode { // enum for bc_casefast() and blockCasefast() methods
@@ -71,6 +71,12 @@ interface iStructureReturn {
   nextElementIndex: number;
   objectPtr: number;
   indexMode: eStructureIndexMode;
+}
+
+interface iIndexReturn {
+  foundIndex: boolean; // T/F where T means we have an index
+  foundLiveIndex: boolean; // T/F where T means an index was Live (variable vs. constant)
+  offsetInStructure: number; // Offset = current offset from structure base
 }
 
 enum eCaseFast { // enum for bc_casefast() and blockCasefast() methods
@@ -791,7 +797,7 @@ export class SpinResolver {
           break;
         }
         if (this.currElement.type == eElementType.type_file) {
-          const fileElementIndex = this.saveElementLocation();
+          const fileElementIndex = this.savedElementLocation();
           const fileName = this.getFilename();
           this.logMessage(`* cdb_fn() have type_file filename=(${fileName})`);
           if (this.spinFiles.dataFileExists(fileName) == false) {
@@ -1434,7 +1440,7 @@ export class SpinResolver {
                 this.dittoIsActive = true;
                 this.dittoIndex = 0;
                 this.dittoCount = Number(repeatCountResult.value);
-                this.dittoElementIndex = this.saveElementLocation();
+                this.dittoElementIndex = this.savedElementLocation();
                 this.dittoObjectIndex = this.objImage.offset;
               }
             } else if (pasmDirective == eValueType.dir_fit) {
@@ -1629,7 +1635,7 @@ export class SpinResolver {
             //
             // HANDLE FILE
             // PNut @@file:
-            const fileElementIndex = this.saveElementLocation();
+            const fileElementIndex = this.savedElementLocation();
 
             this.wordSize = eWordSize.WS_Byte;
             this.enterDatSymbol(); // have name of our file
@@ -3443,7 +3449,7 @@ export class SpinResolver {
     this.compile_bstack_address(0); // compile final address
     this.compileExpression(); // compile case "target" value (switch variable/constant)
     this.getEndOfLine();
-    const savedCaseStartElementIndex = this.saveElementLocation(); // rember location of 1st case statement
+    const savedCaseStartElementIndex = this.savedElementLocation(); // rember location of 1st case statement
     let caseCount: number = 0; // this is PNut ecx[30-0]
     let haveOtherCase: boolean = false; // this is PNut ecx[31] bit of register
     let otherCaseElementIndex: number = 0; // this is PNut edx register
@@ -3479,7 +3485,7 @@ export class SpinResolver {
         this.getElement(); // skip 'other'
         // save this index for 2nd loop
         // NOTE: get current element index, NOT next element index
-        otherCaseElementIndex = this.saveElementLocation() - 1; // [source_start]
+        otherCaseElementIndex = this.savedElementLocation() - 1; // [source_start]
       } else {
         // here is @@notother1:
         if (++caseCount > this.case_limit) {
@@ -3603,7 +3609,7 @@ export class SpinResolver {
     this.objImage.appendLong(0); // enter spacer for rflong (-6)
     this.objImage.appendWord(0); // enter spacer for rfword (-2)
     this.write_bstack_ptr(eCaseFast.CF_TablePtr);
-    this.write_bstack(eCaseFast.CF_SourcePtr, this.saveElementLocation());
+    this.write_bstack(eCaseFast.CF_SourcePtr, this.savedElementLocation());
     this.write_bstack(eCaseFast.CF_MinValue, 0x7fffffff);
     this.write_bstack(eCaseFast.CF_MaxValue, -0x80000000);
 
@@ -3825,7 +3831,7 @@ export class SpinResolver {
       this.optimizeBlock(eOptimizerMethod.OM_RepeatPreWhileUntil, eByteCode.bc_jnz);
     } else {
       this.backElement(); // reposition to count?
-      const savedExpressionElementIndex = this.saveElementLocation();
+      const savedExpressionElementIndex = this.savedElementLocation();
       this.skipExpression();
       this.currElement = this.getElement();
       this.restoreElementLocation(savedExpressionElementIndex);
@@ -3983,7 +3989,7 @@ export class SpinResolver {
     const variableReturn: iVariableReturn = this.getVariable();
     this.getFrom();
     // remember the FROM expression start
-    const savedElementIndex = this.saveElementLocation();
+    const savedElementIndex = this.savedElementLocation();
     this.skipExpression();
     this.getTo();
     this.compileExpression(); // compile TO expression
@@ -4232,9 +4238,9 @@ export class SpinResolver {
             this.getRightBracket();
           }
           this.getColon();
-          const filenameElementIndex = this.saveElementLocation();
+          const filenameElementIndex = this.savedElementLocation();
           const objFilename: string = this.getFilename();
-          const savedElementIndex = this.saveElementLocation();
+          const savedElementIndex = this.savedElementLocation();
           // the following counts object files and checks file count limit (PNut file_limit)
           // restore so Error if generated by addObjFile() is correct
           this.restoreElementLocation(filenameElementIndex);
@@ -5780,7 +5786,7 @@ export class SpinResolver {
       } else {
         // remember this element
         // NOTE: get current element index, NOT next element index
-        const savedNextElementIndex: number = this.saveElementLocation() - 1; // [source_start]
+        const savedNextElementIndex: number = this.savedElementLocation() - 1; // [source_start]
         if (this.currElement.type == eElementType.type_under) {
           // _,... := param(s),... ?
           this.getComma(); // this works since we are at the beginning of line!
@@ -5858,7 +5864,7 @@ export class SpinResolver {
     // eslint-disable-next-line no-constant-condition
     do {
       this.logMessage(`* pushed element index... have ${elementIndexStack.length} now...`);
-      elementIndexStack.push(this.saveElementLocation());
+      elementIndexStack.push(this.savedElementLocation());
       if (this.checkUnderscore() == false) {
         this.getVariable();
       }
@@ -5867,7 +5873,7 @@ export class SpinResolver {
     this.getAssign();
     this.compileParametersNoParens(parameterCount);
     // capture ending index
-    const endElementIndex = this.saveElementLocation();
+    const endElementIndex = this.savedElementLocation();
     // set up for count down...
     let remainingParameterCount: number = parameterCount;
     do {
@@ -6047,7 +6053,7 @@ export class SpinResolver {
       // here is @@trynext
       let byteCount: number = 0;
       // remember start of constants
-      const savedElementIndex = this.saveElementLocation();
+      const savedElementIndex = this.savedElementLocation();
       // count the number of constant-bytes in sequence
       do {
         // here is @@trybytes
@@ -6578,7 +6584,7 @@ export class SpinResolver {
 
   private debugExpSource(isPasmMode: boolean = false): [number, number] {
     // PNut debug_exp_source:
-    const savedElementIndex = this.saveElementLocation();
+    const savedElementIndex = this.savedElementLocation();
     this.getElement(); // skip paren
     this.logMessage(
       `* debugExpSource(isPasm=(${isPasmMode})) - ENTRY elem=[${this.currElement.toString()}](${this.currElement.sourceCharacterOffset},?)`
@@ -6679,7 +6685,7 @@ export class SpinResolver {
     let foundStringStatus = true;
     this.backElement(); // postion to left paren
     let stringLength: number = 0;
-    const savedElementIndex = this.saveElementLocation();
+    const savedElementIndex = this.savedElementLocation();
     do {
       this.getElement();
       if (this.currElement.type != eElementType.type_con_int) {
@@ -6720,7 +6726,7 @@ export class SpinResolver {
     // If chrs expressed in source, enter string
     let foundStringStatus = true;
     let stringLength: number = 0;
-    const savedElementIndex = this.saveElementLocation();
+    const savedElementIndex = this.savedElementLocation();
     do {
       this.getElement();
       if (this.currElement.type != eElementType.type_con_int) {
@@ -6954,7 +6960,7 @@ export class SpinResolver {
       this.compileVariablePre(eByteCode.bc_var_rnd_push);
     } else {
       // NOTE: get current element index, NOT next element index
-      const startElementIndex = this.saveElementLocation() - 1; // [source_start]
+      const startElementIndex = this.savedElementLocation() - 1; // [source_start]
       const variableResult: iVariableReturn = this.checkVariable(); // var ?
       if (variableResult.isVariable == false) {
         // [error_eaet]
@@ -7020,7 +7026,7 @@ export class SpinResolver {
     if (paramCount > 0) {
       if (isPinField) {
         // we have a pinfield
-        const savedElementIndex: number = this.saveElementLocation();
+        const savedElementIndex: number = this.savedElementLocation();
         const savedObjectOffset: number = this.objImage.offset;
         let remainingParamCount = paramCount;
         let numberReturnValues: number = this.compileParameter();
@@ -7207,7 +7213,7 @@ export class SpinResolver {
     // PNut compile_parameter:
     this.logMessage(`*--* compileParameter() elem=[${this.currElement.toString()}]`);
     let compiledParameterCount: number = -1; // flag saying we need to compile expression
-    const savedElementIndex: number = this.saveElementLocation();
+    const savedElementIndex: number = this.savedElementLocation();
     this.getElement();
     if (this.currElement.type == eElementType.type_i_flex) {
       const flexResultCount: number = this.currElement.flexResultCount;
@@ -7277,7 +7283,7 @@ export class SpinResolver {
       this.ct_method(resultsNeeded, byteCode);
     } else {
       // NOTE: get current element index, NOT next element index
-      const savedElementIndex: number = this.saveElementLocation() - 1; // [source_start]
+      const savedElementIndex: number = this.savedElementLocation() - 1; // [source_start]
       const variableResult: iVariableReturn = this.checkVariable();
       if (variableResult.isVariable) {
         // \var({param,...}){:results} ?
@@ -7399,7 +7405,7 @@ export class SpinResolver {
     //  `* optimizeBlock(${eOptimizerMethod[methodId]}, (${subType})) elem=[${this.currElement.toString()}], depth=(${this.logBlockOptimizeDepth})`
     //);
     //this.logBlockOptimizeDepth++;
-    const savedElementIndex = this.saveElementLocation();
+    const savedElementIndex = this.savedElementLocation();
     const savedObjOffset = this.objImage.offset;
     let lastOffset: number = 0;
     let notDone: boolean = true;
@@ -7463,7 +7469,7 @@ export class SpinResolver {
     this.getComma();
     this.getElement(); // method/obj/var
     // NOTE: get current element index, NOT next element index
-    const startElementIndex = this.saveElementLocation() - 1; // [source_start]
+    const startElementIndex = this.savedElementLocation() - 1; // [source_start]
     let parameterCount: number = 0;
     if (this.currElement.type == eElementType.type_obj) {
       const savedElement: SpinElement = this.currElement;
@@ -7478,7 +7484,7 @@ export class SpinResolver {
       parameterCount = (Number(objSymValue) >> 24) & 0x7f;
       this.compileParameters(parameterCount);
       // compile a method point without affecting nextElementIndex
-      const savedElementIndex = this.saveElementLocation(); // push
+      const savedElementIndex = this.savedElementLocation(); // push
       this.restoreElementLocation(startElementIndex);
       this.ct_at();
       this.restoreElementLocation(savedElementIndex); // pop
@@ -7486,7 +7492,7 @@ export class SpinResolver {
       parameterCount = this.currElement.methodParameterCount;
       this.compileParameters(parameterCount);
       // compile a method point without affecting nextElementIndex
-      const savedElementIndex = this.saveElementLocation(); // push
+      const savedElementIndex = this.savedElementLocation(); // push
       this.restoreElementLocation(startElementIndex);
       this.ct_at();
       this.restoreElementLocation(savedElementIndex); // pop
@@ -7501,7 +7507,7 @@ export class SpinResolver {
       this.restoreElementLocation(startElementIndex);
       this.getMethodPointer();
       parameterCount = this.compileParametersMethodPtr();
-      const savedElementIndex = this.saveElementLocation(); // push
+      const savedElementIndex = this.savedElementLocation(); // push
       this.restoreElementLocation(startElementIndex);
       this.compileVariableRead();
       this.restoreElementLocation(savedElementIndex); // pop
@@ -7595,7 +7601,7 @@ export class SpinResolver {
     // Compile term - obj{[]}.method({param,...}) or obj.con
     // PNut ct_objpubcon:
     // NOTE: get current element index, NOT next element index
-    const savedElementIndex: number = this.saveElementLocation() - 1; // [source_start]
+    const savedElementIndex: number = this.savedElementLocation() - 1; // [source_start]
     const savedElement: SpinElement = this.currElement; // our type_obj element on entry
     const [foundIndex, nextElementIndex] = this.checkIndex();
     if (foundIndex) {
@@ -7696,7 +7702,7 @@ export class SpinResolver {
       // this is @@noresults:
       this.confirmResult(resultsNeeded, returnValueCount << 20);
       // this is @@varread:
-      const savedElementIndex: number = this.saveElementLocation(); // push
+      const savedElementIndex: number = this.savedElementLocation(); // push
       this.restoreElementLocation(nextElementIndex); // restart from passed nextElementIndex
       this.compileVariableRead(); // get method pointer
       this.restoreElementLocation(savedElementIndex); // pop
@@ -7739,7 +7745,7 @@ export class SpinResolver {
     // PNut compile_parameter_send:
     this.logMessage(`*==* compileParameterSend()`);
     let valueOnStackStatus: boolean = false;
-    const savedElementIndex: number = this.saveElementLocation();
+    const savedElementIndex: number = this.savedElementLocation();
     this.getElement();
     if (this.currElement.type == eElementType.type_obj) {
       //  obj{[]}.method({params,...})
@@ -7815,7 +7821,7 @@ export class SpinResolver {
 
   private compileOutOfSequenceExpression(nextElementIndex: number) {
     // PNut compile_oos_exp:
-    const savedElementIndex: number = this.saveElementLocation();
+    const savedElementIndex: number = this.savedElementLocation();
     this.restoreElementLocation(nextElementIndex);
     this.compileExpression();
     this.restoreElementLocation(savedElementIndex);
@@ -8026,7 +8032,7 @@ export class SpinResolver {
     this.logMessage(`*==* trySpin2ConExpression()`);
     const valueResult: iValueReturn = { value: 0n, isResolved: false, isFloat: false };
     this.numberStack.reset(); // empty our stack
-    const savedElementIndex = this.saveElementLocation();
+    const savedElementIndex = this.savedElementLocation();
     let didResolve: boolean = true;
     try {
       this.resolveExp(eMode.BM_Spin2, eResolve.BR_Must, this.lowestPrecedence);
@@ -8720,13 +8726,13 @@ private checkDec(): boolean {
   private compileVariable(variable: iVariableReturn) {
     // PNut compile_var:
     this.logMessage(`*==* compileVariable()`);
-    const resumeIndex: number = this.saveElementLocation();
+    const resumeIndex: number = this.savedElementLocation();
     let workIsComplete: boolean = false;
     this.restoreElementLocation(variable.nextElementIndex);
 
     // runtime-resolved bitfield
     if (variable.bitfieldFlag && variable.bitfieldConstantFlag == false) {
-      const saveIndex: number = this.saveElementLocation();
+      const saveIndex: number = this.savedElementLocation();
       if (variable.type == eElementType.type_size) {
         this.skipIndex();
       }
@@ -9498,8 +9504,10 @@ private checkDec(): boolean {
     let popExpressionIndex: number = 0;
     let liveIndexCount: number = 0;
     let memberSize: number = 0; // 1,2,4 or structure size
+    let liveIndexExpElementIndex: number[] = [0, 0, 0, 0]; // Element index for index expression 0..3
+    let liveIndexSize: number[] = [0, 0, 0, 0]; // MemberSize for index 0..3
 
-    // temporary for calling compilerVariable()
+    // temporary for calling compileVariable()
     let structPtrVariable: iVariableReturn = {
       isVariable: true,
       type: eElementType.type_undefined,
@@ -9515,10 +9523,12 @@ private checkDec(): boolean {
       modifierBytecode: 0
     };
 
+    let structureRecord: ObjectStructureRecord = new ObjectStructureRecord(this.context, 'DUMMY Record', new Uint8Array(0));
+
     if (this.currElement.type == eElementType.type_con_struct) {
       // have index
       this.getLeftBracket();
-      popExpressionIndex = this.saveElementLocation();
+      popExpressionIndex = this.savedElementLocation();
       this.skipExpression();
       this.getRightBracket();
     } else if (this.isStructPtr(this.currElement.type)) {
@@ -9531,26 +9541,125 @@ private checkDec(): boolean {
     } else {
       // PNut @@notstructptr:
       offsetInStructure = address;
-      const structureRecord: ObjectStructureRecord = this.objectStructureSet.getStrutureRecord(structureId);
-      structureRecord.nextWord();
-      memberSize = structureRecord.nextLong();
-      const indexPresent = this.handleStructureIndex();
-      // XYZZY we hare here next...@@notstructptr
+      structureRecord = this.objectStructureSet.getStructureRecord(structureId);
     }
     // PNut @@gotsetup:
-    liveIndexCount = 0;
-
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      // PNut @@structloop:
+      structureRecord.nextWord(); // skip record size
+      memberSize = structureRecord.nextLong(); // get structure in-memory size
+      const indexResults: iIndexReturn = this.handleStructureIndex(memberSize, liveIndexCount, offsetInStructure);
+      if (indexResults.foundIndex) {
+        resultStructure.flags |= eStructureType.ST_IndexOrSubStructure; // index or '.' (MOVE)
+        if (indexResults.foundLiveIndex) {
+          liveIndexExpElementIndex[liveIndexCount] = this.savedElementLocation(); // (MOVE)
+          liveIndexSize[liveIndexCount] = memberSize; // (MOVE)
+          liveIndexCount++;
+        } else {
+          offsetInStructure = indexResults.offsetInStructure;
+        }
+      }
+      resultStructure.wordSize = eMemberType.MT_STRUCT; // default to structure
+      if (!this.checkDot()) {
+        // NOT have member
+        break; // let's break out of loop (off to @@compile)
+      }
+      if (this.checkLeftBracket()) {
+        // have bitfield '.[...]'
+        this.backElement();
+        this.backElement();
+        break; // let's break out of loop (off to @@compile)
+      }
+      resultStructure.flags |= eStructureType.ST_IndexOrSubStructure; // index or '.' (MOVE)
+      // FIXME: UNDONE: verify thru regression test that the following line is correct
+      const srcSymbolName: string = this.replacedName.length > 0 ? this.replacedName : this.currElement.stringValue;
+      if (srcSymbolName.length == 0) {
+        // [error_easmn]
+        throw new Error('Expected a structure member name');
+      }
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        // PNut @@checkmember:
+        const memberOffset: number = structureRecord.nextLong(); // get strcture offset
+        const [foundStruct, savedStructOffset] = structureRecord.skipToName(); // skips type or type & record
+        const memberSymbol: string = structureRecord.readString();
+        if (srcSymbolName === memberSymbol) {
+          // have symbol matching member name
+          offsetInStructure += memberOffset;
+          if (foundStruct) {
+            structureRecord = structureRecord.recordWithinStructureRecord(savedStructOffset);
+            break; // back to struct loop
+          } else {
+            // BYTE, WORD or LONG
+            // XYZZY continue this and fix exit of outer loop
+          }
+        } else {
+          // DON't have match
+          const rcdSetEndMarker: number = structureRecord.nextByte(); // returns 1 if another member, 0 if end of record
+          if (rcdSetEndMarker == 0) {
+            // [error_sdnctn]
+            throw new Error('Structure does not contain this name');
+          }
+        }
+      }
+    }
+    // PNut @@compile:
     return resultStructure;
   }
 
-  private handleStructureIndex(): boolean {
-    let foundIndexStatus: boolean = false;
+  // cases:
+  //   struct record
+  //      struct record
+  //      ...
+  //      struct record
+  //   struct record
+  //   struct record
+
+  private handleStructureIndex(memberSize: number, liveIndexCount: number, structureOffset: number): iIndexReturn {
+    let indexReturn: iIndexReturn = {
+      foundIndex: false, // T/F where T means we have an index
+      foundLiveIndex: false, // T/F where T means an index was Live (variable vs. constant)
+      offsetInStructure: structureOffset // current offset from structure base
+    };
     if (this.checkLeftBracket()) {
       // have index...
-      foundIndexStatus = true;
-      // XYZZY we are translating this code handleStructureIndex() - we need rich return structure
+      indexReturn.foundIndex = true;
+      if (memberSize > 0xffff) {
+        // [error_iscexb]
+        throw new Error('Indexed structures cannot exceed $FFFF bytes in size');
+      }
+      //const currIndex: number = liveIndexCount;
+      const valueReturn: iValueReturn = this.skipExpressionCheckCon();
+      if (valueReturn.isResolved) {
+        // have constant as index
+        // PNut @@indexcon:
+        const instanceCount: number = Number(valueReturn.value);
+        if (instanceCount < 0 || instanceCount > 0xffff) {
+          // [error_simbf]
+          throw new Error('Structure index must be from 0 to $FFFF');
+        }
+        const scaledMemberSize: number = memberSize * instanceCount;
+        if (scaledMemberSize > this.obj_limit) {
+          // [error_sehr]
+          throw new Error('Structure exceeds hub range of $FFFFF');
+        }
+        indexReturn.offsetInStructure += scaledMemberSize;
+        if (indexReturn.offsetInStructure > this.obj_limit) {
+          // [error_sehr]
+          throw new Error('Structure exceeds hub range of $FFFFF');
+        }
+      } else {
+        // have variable as index
+        indexReturn.foundLiveIndex = true;
+        if (liveIndexCount >= 3) {
+          // [error_loxriee]
+          throw new Error('Limit of 3 runtime structure index expressions exceeded');
+        }
+      }
+      this.getRightBracket();
     }
-    return foundIndexStatus;
+    return indexReturn;
   }
 
   private checkVariableMethod(): [boolean, number] {
@@ -9646,7 +9755,7 @@ private checkDec(): boolean {
     let indexPresentStatus: boolean = false;
     let nextElementIndex: number = 0;
     if (this.checkLeftBracket()) {
-      nextElementIndex = this.saveElementLocation();
+      nextElementIndex = this.savedElementLocation();
       indexPresentStatus = true;
       this.skipExpression();
       this.getRightBracket();
@@ -9871,11 +9980,11 @@ private checkDec(): boolean {
     return Number(element.value);
   }
 
-  private saveElementLocation(): number {
+  private savedElementLocation(): number {
     // return current index for later restore
-    const savedElementIndex: number = this.nextElementIndex;
-    this.logMessage(`*** SAVEd Element Index (${savedElementIndex})`);
-    return savedElementIndex;
+    const elementIndex: number = this.nextElementIndex;
+    this.logMessage(`*** SAVEd Element Index (${elementIndex})`);
+    return elementIndex;
   }
 
   private restoreElementLocation(savedLocation: number) {

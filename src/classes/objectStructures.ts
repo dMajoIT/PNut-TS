@@ -101,7 +101,7 @@ export class ObjectStructures {
     return desiredSizeInBytes;
   }
 
-  public getStrutureRecord(recordId: number): ObjectStructureRecord {
+  public getStructureRecord(recordId: number): ObjectStructureRecord {
     const recordImage = this.readRecord(recordId);
     return new ObjectStructureRecord(this.context, `RCD#${recordId}`, recordImage);
   }

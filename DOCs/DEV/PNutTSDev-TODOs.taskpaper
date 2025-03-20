@@ -59,7 +59,9 @@ TODO's from PNut Zoom 250303++:
 	Day11: Wed:
 	- adjust check_variable - complete skip_structure_setup() then finish check_variable() PARTIAL @done(2025-03-19)
 	Day12: Thu:
-		- adjust check_variable - complete skip_structure_setup() then finish check_variable()
+		- adjust check_variable - complete skip_structure_setup() then finish check_variable() @done(2025-03-20)
+	Day13: Fri:
+		- adjust check_variable - complete check_variable()
 		- SPIN blocks (PUB, PRI)
 		- Add code deltat from v50 to v51
 		- Adjust existing regression tests to work
