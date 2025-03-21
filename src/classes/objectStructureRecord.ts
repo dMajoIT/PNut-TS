@@ -85,7 +85,7 @@ export class ObjectStructureRecord {
     return desiredWord;
   }
 
-  public skipToName(): [boolean, number] {
+  public skipToName(): [boolean, number, number] {
     // called when at type byte.  If type is structure then return offset to structure and skip past it
     let structureFoundStatus: boolean = false;
     let structureOffset: number = 0;
@@ -96,7 +96,7 @@ export class ObjectStructureRecord {
       const rcdLength = this.nextWord();
       this.readOffset += rcdLength - 2;
     }
-    return [structureFoundStatus, structureOffset];
+    return [structureFoundStatus, typeByte, structureOffset];
   }
 
   public recordWithinStructureRecord(internalRcdOffset: number): ObjectStructureRecord {
