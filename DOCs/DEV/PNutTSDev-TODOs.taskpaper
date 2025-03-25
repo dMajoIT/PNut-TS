@@ -57,17 +57,21 @@ TODO's from PNut Zoom 250303++:
 		- OBJ block -> obj attributes - struct @done(2025-03-18)
 		- adjust check_variable() - partial @done(2025-03-18)
 	Day11: Wed:
-	- adjust check_variable - complete skip_structure_setup() then finish check_variable() PARTIAL @done(2025-03-19)
+		- adjust check_variable - complete skip_structure_setup() then finish check_variable() PARTIAL @done(2025-03-19)
 	Day12: Thu:
 		- adjust check_variable - complete skip_structure_setup() then finish check_variable() @done(2025-03-20)
 	Day13: Fri:
 		- finish 1st half of compile_struct_setup() - all before @@compile: @done(2025-03-21)
 		- write 2nd half of compile_struct_setup() - @@compile: @done(2025-03-21)
-	Day14: Mon:
+	Day14: Mon (eve):
 		- Finish v50 changes
 			- SPIN blocks (PUB, PRI)
-				- audit compile_struct_setup() 
-				- finish check_variable()
+				- audit compile_struct_setup() @done(2025-03-24)
+				- finish check_variable() all but audit @done(2025-03-24)
+	Day15: Tue:
+		- Finish v50 changes
+			- SPIN blocks (PUB, PRI)
+				- audit check_variable() 
 				- update compile_variable()
 				- update misc other routines showing in diff
 		- Audit all deltas n change log
