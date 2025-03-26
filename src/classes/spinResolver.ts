@@ -8727,6 +8727,7 @@ private checkDec(): boolean {
 
   private compileVariable(variable: iVariableReturn) {
     // PNut compile_var:
+    // XYZZY Update compileVariable()
     this.logMessage(`*==* compileVariable()`);
     const resumeIndex: number = this.logSavedElementLocation();
     let workIsComplete: boolean = false;
@@ -8735,6 +8736,12 @@ private checkDec(): boolean {
     // runtime-resolved bitfield
     if (variable.bitfieldFlag && variable.bitfieldConstantFlag == false) {
       const saveIndex: number = this.logSavedElementLocation();
+
+      if (this.isStruct(this.currElement.type)) {
+        // skip past our structure so can process following code
+        this.skip_struct_setup(variable);
+      }
+
       if (variable.type == eElementType.type_size) {
         this.skipIndex();
       }
@@ -8761,6 +8768,126 @@ private checkDec(): boolean {
       this.logRestoredElementLocation(saveIndex); // return to starting location
     }
 
+    // PNut @@nobf:
+    if (this.isPtrValue(variable.type)) {
+      let incDecValue: number = 1;
+      if (variable.operation == eVariableOperation.VO_ASSIGN) {
+        if (
+          variable.assignmentBytecode == eByteCode.bc_var_inc ||
+          variable.assignmentBytecode == eByteCode.bc_var_dec ||
+          variable.assignmentBytecode == eByteCode.bc_var_preinc_push ||
+          variable.assignmentBytecode == eByteCode.bc_var_predec_push ||
+          variable.assignmentBytecode == eByteCode.bc_var_postinc_push ||
+          variable.assignmentBytecode == eByteCode.bc_var_postdec_push
+        ) {
+          if (this.isStructPtrValue(variable.type)) {
+            const structureId: number = variable.address >> 20;
+            const structSize: number = this.objectStructureSet.getStructureSizeForID(structureId);
+            incDecValue = structSize;
+          } else {
+            if (variable.type == eElementType.type_loc_byte_ptr_val || variable.type == eElementType.type_var_byte_ptr_val) {
+              incDecValue = 1;
+            } else if (variable.type == eElementType.type_loc_word_ptr_val || variable.type == eElementType.type_var_word_ptr_val) {
+              incDecValue = 2;
+            } else {
+              incDecValue = 4;
+            }
+          }
+        }
+      }
+      // PNut @@ptrvalx:
+      if (
+        variable.type == eElementType.type_loc_byte_ptr_val ||
+        variable.type == eElementType.type_loc_word_ptr_val ||
+        variable.type == eElementType.type_loc_long_ptr_val ||
+        variable.type == eElementType.type_loc_struct_ptr_val
+      ) {
+        variable.type = eElementType.type_loc_byte;
+      } else {
+        variable.type = eElementType.type_var_byte;
+      }
+      variable.wordSize = eWordSize.WS_Long;
+      variable.address &= 0xfffff; // mask away any struct id
+      this.compileVariable(variable);
+      if (incDecValue != 1) {
+        this.objImage.setOffsetTo(this.objImage.offset - 1); // remove last bytecode
+        this.objImage.appendByte(eByteCode.bc_set_incdec);
+        this.compileRfvar(BigInt(incDecValue));
+        this.objImage.appendByte(variable.assignmentBytecode); // now put it back
+        workIsComplete = true; // DONE
+      }
+    }
+    // PNut @@notptrval:
+    if (this.isPtr(variable.type) && !this.isStructPtr(variable.type)) {
+      // PNut
+      let tempVariable: iVariableReturn = {
+        isVariable: true,
+        type: variable.type + 4 + variable.wordSize,
+        address: variable.address,
+        nextElementIndex: 0,
+        wordSize: variable.wordSize,
+        sizeOverrideFlag: false,
+        indexFlag: false,
+        bitfieldFlag: false,
+        bitfieldConstantFlag: false,
+        operation: variable.modifierBytecode == 0 ? eVariableOperation.VO_READ : eVariableOperation.VO_ASSIGN,
+        assignmentBytecode: variable.modifierBytecode,
+        modifierBytecode: 0
+      };
+      this.compileVariable(tempVariable); // compile read/assign of pointer variable
+      if (variable.sizeOverrideFlag == true) {
+        this.getDot(); // skip dot
+        this.getSize(); // skip size
+      }
+      // PNut @@ptrnosor:
+      if (variable.indexFlag == true) {
+        this.compileIndex();
+        this.objImage.appendByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize);
+      } else {
+        this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
+      }
+    }
+
+    // PNut @@notptr:
+    if (this.isStruct(variable.type)) {
+      const structureReturn = this.compile_struct_setup(variable);
+      if (structureReturn.flags == eStructureType.ST_ResolvedAsBWL) {
+        if (
+          variable.type == eElementType.type_con_struct ||
+          variable.type == eElementType.type_loc_struct_ptr ||
+          variable.type == eElementType.type_var_struct_ptr
+        ) {
+          // fall thru to tail handling.. by NOT setting DONE
+        }
+        if (structureReturn.indexMode > 1) {
+          // fall thru to tail handling.. by NOT setting DONE
+        } else if (structureReturn.indexMode == 1) {
+          variable.indexFlag = true;
+        }
+        variable.type -= 3; // convert to byte
+        variable.wordSize = structureReturn.wordSize;
+        variable.nextElementIndex = structureReturn.structElemIndex;
+        this.objImage.setOffsetTo(structureReturn.objectPtr);
+        // fall thru to tail handling.. by NOT setting DONE
+      } else {
+        if (variable.operation == eVariableOperation.VO_ASSIGN) {
+          if (variable.assignmentBytecode != eByteCode.bc_get_addr) {
+            // [error_oaocbats]
+            throw new Error('Only @ operator can be applied to a structure');
+          }
+          this.objImage.appendByte(0);
+        }
+        // PNut @@structnotass:
+        if (structureReturn.size > 15 * 4) {
+          // [error_stosmne]
+          throw new Error('Structures transferred on the stack must not exceed 15 longs');
+        }
+        const flaggedStructSize: number = structureReturn.size | (variable.operation == eVariableOperation.VO_WRITE ? 0 : 0x80);
+        this.objImage.appendByte(flaggedStructSize);
+        workIsComplete = true; // DONE
+      }
+    }
+
     // field
     //
     if (variable.type == eElementType.type_field) {
@@ -8776,6 +8903,7 @@ private checkDec(): boolean {
     }
 
     // register
+    // PNut @@notfield:
     //  REG[register][index]{.[bitfield]}
     //  (or actual register name constants)
     if (variable.type == eElementType.type_register) {
@@ -9220,6 +9348,7 @@ private checkDec(): boolean {
     //
     //	       [structptr]
     //
+    //PNut check_var:
     let resultVariable: iVariableReturn = {
       isVariable: true,
       type: eElementType.type_undefined,
@@ -9256,7 +9385,6 @@ private checkDec(): boolean {
     resultVariable.nextElementIndex = this.nextElementIndex; // next to be gotten
     resultVariable.address &= 0xfffff; // forecast for structure stuff
 
-    // XYZZY START adding new check_variable code here
     if (this.isPtr(variableType)) {
       if (this.checkLeftBracket()) {
         this.getElement();
@@ -9324,14 +9452,11 @@ private checkDec(): boolean {
         // PNUt @@notpreptr:
         if (this.isStruct(this.currElement.type)) {
           const compiledStructureInfo: iStructureReturn = this.skip_struct_setup(resultVariable);
-
           if (compiledStructureInfo.flags == eStructureType.ST_ResolvedAsBWL) {
             // PNut @@chkbitfield:
-            //this.checkDot()
             this.checkVariableBitfield(resultVariable);
-          } else {
-            // PNut @@isvar: this is really an exit
           }
+          // PNut @@isvar: this is really an exit
         } else {
           // PNut @@notstruct:
           switch (variableType) {
@@ -9398,6 +9523,7 @@ private checkDec(): boolean {
 
             case eElementType.type_reg:
               {
+                // reg[address]?
                 this.getLeftBracket();
                 const registerResult = this.getValue(eMode.BM_OperandIntOnly, eResolve.BR_Must);
                 const registerAddress: number = Number(this.signExtendFrom32Bit(registerResult.value));
@@ -9415,12 +9541,14 @@ private checkDec(): boolean {
               break;
 
             case eElementType.type_field:
+              // FIELD[memfield]?
               resultVariable.type = eElementType.type_field;
               this.skipIndex();
               this.checkVariableIndex(resultVariable); // this sets the flag if present
               break;
 
             case eElementType.type_register:
+              // register?
               resultVariable.type = eElementType.type_register;
               this.checkVariableIndex(resultVariable);
               this.checkVariableBitfield(resultVariable);
@@ -9428,6 +9556,7 @@ private checkDec(): boolean {
 
             case eElementType.type_size:
               {
+                // BYTE/WORD/LONG?
                 const [foundIndex, nextElementIndex] = this.checkIndex();
                 if (foundIndex == false) {
                   // NOTE coverage: this appears to be an exception case...
@@ -9452,10 +9581,10 @@ private checkDec(): boolean {
     return resultVariable;
   }
 
-  private skip_struct_setup(resultVariable: iVariableReturn): iStructureReturn {
+  private skip_struct_setup(variable: iVariableReturn): iStructureReturn {
     // PNut skip_struct_setup:
     const savedObjPtr: number = this.objImage.offset;
-    const structureReturn = this.compile_struct_setup(resultVariable);
+    const structureReturn = this.compile_struct_setup(variable);
     // restore the object offset (backup over the compiled constant)
     this.objImage.setOffsetTo(savedObjPtr);
     return structureReturn;

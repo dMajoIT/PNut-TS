@@ -71,13 +71,16 @@ TODO's from PNut Zoom 250303++:
 	Day15: Tue:
 		- Finish v50 changes
 			- SPIN blocks (PUB, PRI)
-				- audit check_variable() 
-				- update compile_variable()
-				- update misc other routines showing in diff
-		- Audit all deltas n change log
-		- Add code deltatfrom v50 to v51
-		- Adjust existing regression tests to work
-		- Add new regressions tests for v45 - v51 
+				- audit check_variable() @done(2025-03-26)
+				- update compile_variable() complete @done(2025-03-26)
+	Day16: Wed:
+			- Finish v50 changes
+				- SPIN blocks (PUB, PRI)
+					- update misc other routines showing in diff
+			- Audit all deltas n change log
+			- Add code deltatfrom v50 to v51
+			- Adjust existing regression tests to work
+			- Add new regressions tests for v45 - v51 
 		
 	Upcoming:
 		- Review each block handling method for STRUCT addition, etc. DITTO Support

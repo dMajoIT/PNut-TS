@@ -765,7 +765,7 @@ export class Spin2Parser {
   }
 
   public LoadHardware() {
-    // FIXME: UNDONE XYZZY we need code here LoadHardware() when we awaken USB support
+    // FIXME: UNDONE  we need code here LoadHardware() when we awaken USB support
   }
 
   private logMessage(message: string): void {
