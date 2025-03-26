@@ -300,8 +300,11 @@ export enum eValueType {
   dc_dly = 7, // 0x07
   dc_pc_key = 8, // 0x08
   dc_pc_mouse = 9, // 0x09
+  dc_c_z_pre = 10, // 0x0a
+  dc_c_z = 11, // 0x0b
 
   // discrete values
+  taskhlt_reg = 460, // 0x1CC
   pasm_regs = 472, // 0x1D8
 
   // operands

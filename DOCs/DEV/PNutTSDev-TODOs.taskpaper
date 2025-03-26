@@ -76,20 +76,29 @@ TODO's from PNut Zoom 250303++:
 	Day16: Wed:
 			- Finish v50 changes
 				- SPIN blocks (PUB, PRI)
+					- update version symbol tables & version detection @done(2025-03-26)
+					- update compile_sub_blocks_id() @done(2025-03-26)
+					- compileOrgh() @done(2025-03-26)
+					
+	Day17: Thu:
+			- Finish v50 changes
+				- SPIN blocks (PUB, PRI)
+					- update compile_sub_blocks()
 					- update misc other routines showing in diff
 			- Audit all deltas n change log
 			- Add code deltatfrom v50 to v51
 			- Adjust existing regression tests to work
 			- Add new regressions tests for v45 - v51 
 		
-	Upcoming:
-		- Review each block handling method for STRUCT addition, etc. DITTO Support
+	
+Upcoming:
+	- Review each block handling method for STRUCT addition, etc. DITTO Support
+	
+	- Add OBJX contants (where?) used by:
+		- compile_obj_symbols:
 		
-		- Add OBJX contants (where?) used by:
-			- compile_obj_symbols:
-			
-			RULE: everythng should be get_element_obj unless is SHOULD NOT be!
-			
+		RULE: everythng should be get_element_obj unless is SHOULD NOT be!
+		
 		- Consumers of get_element_obj:
 			- compile_obj_blocks_id: @done(2025-03-04)
 			- compile_sub_blocks_id: @done(2025-03-04)

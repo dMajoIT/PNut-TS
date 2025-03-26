@@ -22,7 +22,7 @@ import { ChildObjectsImage, iFileDetails } from './childObjectsImage';
 import { ObjectSymbols } from './objectSymbols';
 import { DistillerList, DistillerRecord } from './distillerList';
 import { DebugData, DebugRecord } from './debugData';
-import { SpinDocument } from './spinDocument';
+import { eTextSub, SpinDocument } from './spinDocument';
 import { hexByte, hexLong, hexWord } from '../utils/formatUtils';
 import { eMemberType, ObjectStructures } from './objectStructures';
 import { ObjectStructureRecord } from './objectStructureRecord';
@@ -245,8 +245,9 @@ export class SpinResolver {
 
   // registers / constants
   private readonly inlineLimit: number = 0x120; // address
-  private readonly mrecvReg: number = 0x1d2; // address
-  private readonly msendReg: number = 0x1d3; // address
+  private readonly taskhltReg: number = 0x1cc; // address
+  private readonly mrecvReg: number = 0x1d1; // address
+  private readonly msendReg: number = 0x1d2; // address
   private readonly pasmRegs: number = 0x1d8; // address
   private readonly inlineLocalsStart: number = 0x1e0; // address
   private readonly clkfreqAddress: number = 0x44; // address
@@ -257,7 +258,7 @@ export class SpinResolver {
   private readonly case_fast_limit: number = 256; // max cases
   private readonly subs_limit: number = 1024; // max PUB/PRI count
   private readonly objs_limit: number = 1024; // max object count
-  private readonly distiller_limit: number = 0x4000; // max distiller limit
+  private readonly distiller_limit: number = 0x10000; // max distiller limit
   private readonly locals_limit: number = 0x10000 + this.params_limit * 4 + this.results_limit * 4;
   private readonly obj_limit = 0x100000;
   // VAR processing support data
@@ -1372,13 +1373,13 @@ export class SpinResolver {
                     // [error_fvar]
                     throw new Error('FVAR/FVARS data is too big (m160)');
                   }
-                  this.compileDatRfvars(fvarResult.value);
+                  this.compileRfvarsDat(fvarResult.value);
                 } else {
                   if ((BigInt(fvarResult.value) & BigInt(0xe0000000)) != 0n) {
                     // [error_fvar]
                     throw new Error('FVAR/FVARS data is too big (m161)');
                   }
-                  this.compileDatRfvar(fvarResult.value);
+                  this.compileRfvarDat(fvarResult.value);
                 }
               } else {
                 // DAT declaring long data
@@ -3080,11 +3081,19 @@ export class SpinResolver {
         // here is @@param:
         do {
           this.getElementObj();
+          let paramSizeInLongs: number = 1; // in longs
+          const [isStructure, structSize] = this.check_con_struct_size();
+          if (isStructure) {
+            paramSizeInLongs = (structSize + 3) >> 2; // nbr longs
+          }
+          if (this.checkPtr()) {
+            this.getElementObj();
+          }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaupn]
             throw new Error('Expected a unique parameter name (m0C0)');
           }
-          parameterCount++;
+          parameterCount += paramSizeInLongs;
           if (parameterCount > this.params_limit) {
             // [error_loxpe]
             throw new Error(`Limit of ${this.params_limit} parameters exceeded`);
@@ -3097,11 +3106,19 @@ export class SpinResolver {
         // here is @@result:
         do {
           this.getElementObj();
+          let resultSizeInLongs: number = 1; // in longs
+          const [isStructure, structSize] = this.check_con_struct_size();
+          if (isStructure) {
+            resultSizeInLongs = (structSize + 3) >> 2; // nbr longs
+          }
+          if (this.checkPtr()) {
+            this.getElementObj();
+          }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaurn]
             throw new Error('Expected a unique result name (m0D0)');
           }
-          resultCount++;
+          resultCount += resultSizeInLongs;
           if (resultCount > this.results_limit) {
             // [error_loxre]
             throw new Error(`Limit of ${this.results_limit} results exceeded`);
@@ -3112,6 +3129,7 @@ export class SpinResolver {
       // do we have any local variables...
       if (this.getPipeOrEnd()) {
         // have locals
+        let havePointer: boolean = false;
         do {
           // here is @@local:
           this.currElement = this.getElementObj(); // assignment gets past lint warning
@@ -3122,6 +3140,16 @@ export class SpinResolver {
           // here is @@noalign:
           if (this.currElement.type == eElementType.type_size) {
             this.getElementObj(); // skip BYTE/WORD/LONG
+          } else {
+            const [isStructure, structSize] = this.check_con_struct_size();
+            if (isStructure) {
+              this.getElementObj(); // skip CON STRUCT mame (to parameter name)
+            } else {
+              if (this.checkPtr()) {
+                havePointer = true;
+                this.getElementObj(); // skip ^ type (to parameter name)
+              }
+            }
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
@@ -3129,8 +3157,13 @@ export class SpinResolver {
           }
           // if array index, skip it
           if (this.checkLeftBracket()) {
+            if (havePointer) {
+              // [error_pcba]
+              throw new Error('Pointers cannot be arrays');
+            }
             this.scanToRightBracket();
           }
+          // PNut @@noarray:
         } while (this.getCommaOrEndOfLine());
       }
       // here is @@nolocals:
@@ -3158,9 +3191,21 @@ export class SpinResolver {
     return foundBlocksStatus;
   }
 
+  private check_con_struct_size(): [boolean, number] {
+    let structFoundStatus: boolean = false;
+    let structureSize: number = 0;
+    if (this.currElement.type == eElementType.type_con_struct) {
+      structFoundStatus = true;
+      const structureID: number = this.currElement.numberValue >> 20;
+      structureSize = this.objectStructureSet.getStructureSizeForID(structureID);
+    }
+    return [structFoundStatus, structureSize];
+  }
+
   private compile_sub_blocks() {
     // Compile sub blocks
     // PNut compile_sub_blocks:
+    // XYZZY update compile_sub_blocks()
     if (this.pasmMode == false) {
       this.logMessageOutline('++ compile_sub_blocks()');
       // compile PUB blocks
@@ -4017,7 +4062,7 @@ export class SpinResolver {
     this.write_bstack_ptr(eRepeat.RP_QuitAddress);
   }
 
-  private compileDatRfvars(value: bigint) {
+  private compileRfvarsDat(value: bigint) {
     // generates 1-4 bytes (signed)
     const masks = [
       { mask: BigInt(0x1fffffc0), bits: BigInt(0x7f) },
@@ -4027,17 +4072,17 @@ export class SpinResolver {
     let needLastCompile: boolean = true;
     for (let i = 0; i < masks.length; i++) {
       if ((value & masks[i].mask) == 0n || (value & masks[i].mask) == masks[i].mask) {
-        this.compileDatRfvar(value & masks[i].bits);
+        this.compileRfvarDat(value & masks[i].bits);
         needLastCompile = false;
         break;
       }
     }
     if (needLastCompile) {
-      this.compileDatRfvar(value & BigInt(0x1fffffff)); // 29 bits
+      this.compileRfvarDat(value & BigInt(0x1fffffff)); // 29 bits
     }
   }
 
-  private compileDatRfvar(value: bigint) {
+  private compileRfvarDat(value: bigint) {
     // generates 1-4 bytes (unsigned)
     const masks = [BigInt(0x1fffff80), BigInt(0x1fffc000), BigInt(0x1fe00000)];
     for (let i = 0; i < masks.length; i++) {
@@ -5841,9 +5886,8 @@ export class SpinResolver {
             const baseByteCode: eByteCode = this.currElement.byteCode;
             this.getEqual(); // skip our equal sign
             this.compileExpression();
-            variableReturn.operation = eVariableOperation.VO_ASSIGN;
-            variableReturn.assignmentBytecode = baseByteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write);
-            this.compileVariable(variableReturn);
+            const finalByteCode = baseByteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write);
+            this.compileVariableAssign(variableReturn, finalByteCode);
           } else {
             // here is @@notbin:
             this.backElement(); // backup to variable
@@ -5933,6 +5977,7 @@ export class SpinResolver {
     const isInlineMode: boolean = true;
     // compile inline section
     this.logMessage(`  -- compile inline section`);
+    this.hubMode = false;
     this.compile_dat_blocks(isInlineMode, inlineOrigin << 2, inlineLimit << 2);
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -5952,7 +5997,44 @@ export class SpinResolver {
   }
 
   private compileOrgh() {
+    // PNut compile_orgh:
+    // Compile ORGH inline assembly section
     // XYZZY add code here compileOrgh()
+    this.logMessage(`* compileOrgh() - ENTRY`);
+    this.getEndOfLine();
+    // this is @@org:
+    this.objImage.appendByte(eByteCode.bc_hub_bytecode);
+    this.objImage.appendByte(eByteCode.bc_orgh);
+    this.objImage.appendWord(0); // enter placeholder for length in longs
+    const patchLocation: number = this.objImage.offset;
+
+    const isInlineMode: boolean = true;
+    const inlineOrigin: number = 0;
+    const inlineLimit: number = 0x1f8;
+
+    // compile inline section
+    this.logMessage(`  -- compile inline section`);
+    this.hubMode = true;
+    this.compile_dat_blocks(isInlineMode, inlineOrigin << 2, inlineLimit << 2);
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if ((this.objImage.offset ^ patchLocation) & 0b11) {
+        this.objImage.appendByte(0);
+      } else {
+        break;
+      }
+    }
+    const lengthInLongs: number = (this.objImage.offset - patchLocation) >> 2;
+    if (lengthInLongs == 0) {
+      // [error_isie]
+      throw new Error('Inline section is empty');
+    }
+    if (lengthInLongs > 0xffff) {
+      // [error_isil]
+      throw new Error('ORGH inline section exceeds $FFFF longs (including the added RET instruction)');
+    }
+    this.objImage.replaceWord(lengthInLongs, patchLocation - 2); // replace the placeholder with length
+    this.logMessage(`* compileOrgh() - EXIT`);
   }
 
   private ci_next_quit() {
@@ -7000,9 +7082,8 @@ export class SpinResolver {
         const opByteCode: number = this.currElement.byteCode;
         this.getElement(); // get the equal
         this.compileExpression();
-        variableResult.operation = eVariableOperation.VO_ASSIGN;
-        variableResult.assignmentBytecode = opByteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write_push);
-        this.compileVariable(variableResult);
+        const finalByteCode = opByteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write_push);
+        this.compileVariableAssign(variableResult, finalByteCode);
       } else {
         // here is @@notbin:
         this.backElement();
@@ -8727,7 +8808,6 @@ private checkDec(): boolean {
 
   private compileVariable(variable: iVariableReturn) {
     // PNut compile_var:
-    // XYZZY Update compileVariable()
     this.logMessage(`*==* compileVariable()`);
     const resumeIndex: number = this.logSavedElementLocation();
     let workIsComplete: boolean = false;
@@ -9071,10 +9151,8 @@ private checkDec(): boolean {
     // PNut: compile_var_clrset_term:
     const bytecode: eByteCode = mode == eCompOp.CO_Clear ? eByteCode.bc_con_n + 1 : eByteCode.bc_con_n;
     this.objImage.appendByte(bytecode);
-    variable.operation = eVariableOperation.VO_ASSIGN;
     // uses post assignment to effect var~ // var~~
-    variable.assignmentBytecode = eByteCode.bc_var_swap; // this is \value post assignment
-    this.compileVariable(variable);
+    this.compileVariableAssign(variable, eByteCode.bc_var_swap);
   }
 
   private compileVariableRead() {
@@ -9094,17 +9172,13 @@ private checkDec(): boolean {
   private compileVariableExpression(variable: iVariableReturn, bytecode: eByteCode) {
     // PNut: compile_var_exp:
     this.compileExpression(); // cause constant to be written
-    variable.operation = eVariableOperation.VO_ASSIGN;
-    variable.assignmentBytecode = bytecode;
-    this.compileVariable(variable);
+    this.compileVariableAssign(variable, bytecode);
   }
 
   private compileVariablePre(bytecode: eByteCode) {
     // PNut: compile_var_pre:
     const variable: iVariableReturn = this.getVariable();
-    variable.operation = eVariableOperation.VO_ASSIGN;
-    variable.assignmentBytecode = bytecode;
-    this.compileVariable(variable);
+    this.compileVariableAssign(variable, bytecode);
   }
 
   private compileVariableAssign(variable: iVariableReturn, bytecode: eByteCode) {

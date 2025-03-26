@@ -957,6 +957,43 @@ enum SYMBOLS_V43 {
   LSTRING = 'LSTRING'
 }
 
+enum SYMBOLS_V44 {
+  BYTESWAP = 'BYTESWAP',
+  BYTECOMP = 'BYTECOMP',
+  WORDSWAP = 'WORDSWAP',
+  WORDCOMP = 'WORDCOMP',
+  LONGSWAP = 'LONGSWAP',
+  LONGCOMP = 'LONGCOMP',
+  BOOL = 'BOOL',
+  BOOL_ = 'BOOL_'
+}
+
+enum SYMBOLS_V45 {
+  STRUCT = 'STRUCT',
+  SIZEOF = 'SIZEOF'
+}
+
+enum SYMBOLS_V46 {
+  C_Z = 'C_Z'
+}
+
+enum SYMBOLS_V47 {
+  TASKSPIN = 'TASKSPIN',
+  TASKNEXT = 'TASKNEXT',
+  TASKSTOP = 'TASKSTOP',
+  TASKHALT = 'TASKHALT',
+  TASKCONT = 'TASKCONT',
+  TASKCHK = 'TASKCHK',
+  TASKID = 'TASKID',
+  NEWTASK = 'NEWTASK',
+  THISTASK = 'THISTASK',
+  TASKHLT = 'TASKHLT'
+}
+
+enum SYMBOLS_V50 {
+  DITTO = 'DITTO'
+}
+
 function setAsmcodeValue(v1: number, v2: number, v3: number): number {
   // calculate the actual asm code value from given parts
   //
@@ -1007,6 +1044,11 @@ export class SpinSymbolTables {
   private isLogging: boolean = false;
   private automatic_symbols = new Map<string, iBaseSymbolInfo>();
   private automatic_symbols_v43 = new Map<string, iBaseSymbolInfo>();
+  private automatic_symbols_v44 = new Map<string, iBaseSymbolInfo>();
+  private automatic_symbols_v45 = new Map<string, iBaseSymbolInfo>();
+  private automatic_symbols_v46 = new Map<string, iBaseSymbolInfo>();
+  private automatic_symbols_v47 = new Map<string, iBaseSymbolInfo>();
+  private automatic_symbols_v50 = new Map<string, iBaseSymbolInfo>();
   private flexcodeValues = new Map<eFlexcode, number>();
   private asmcodeValues = new Map<eAsmcode, number>();
   private opcodeValues = new Map<eOpcode, number>();
@@ -1161,6 +1203,7 @@ export class SpinSymbolTables {
 
     this.find_symbol_s3 = [
       // find_symbol_s3
+      { symbol: ':=:', type: eElementType.type_swap, value: 0 },
       { symbol: '+//', type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_remu) },
       { symbol: '+<=', type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_lteu) },
       { symbol: '+>=', type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_gteu) },
@@ -1690,7 +1733,7 @@ export class SpinSymbolTables {
 
     this.automatic_symbols.set(SYMBOLS.FILE, { type: eElementType.type_file, value: 0 }); // file-related
 
-    this.automatic_symbols.set(SYMBOLS.IF, { type: eElementType.type_if, value: 0 }); // high-level structures
+    this.automatic_symbols.set(SYMBOLS.IF, { type: eElementType.type_if, value: 0 }); // high-level flow-control structures
     this.automatic_symbols.set(SYMBOLS.IFNOT, { type: eElementType.type_ifnot, value: 0 });
     this.automatic_symbols.set(SYMBOLS.ELSEIF, { type: eElementType.type_elseif, value: 0 });
     this.automatic_symbols.set(SYMBOLS.ELSEIFNOT, { type: eElementType.type_elseifnot, value: 0 });
@@ -2766,6 +2809,48 @@ export class SpinSymbolTables {
     // ---------------------------------------------------------------------------------------
     this.automatic_symbols_v43.set(SYMBOLS_V43.LSTRING, { type: eElementType.type_conlstr, value: 0 });
 
+    //
+    // HAND generated Automatic symbols table load v44
+    // ---------------------------------------------------------------------------------------
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BYTESWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_byteswap });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BYTECOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_bytecomp });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.WORDSWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_wordswap });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.WORDCOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_wordcomp });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.LONGSWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_longswap });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.LONGCOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_longcomp });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL, { type: eElementType.type_debug_cmd, value: 0b00100000 });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL_, { type: eElementType.type_debug_cmd, value: 0b00100010 });
+
+    //
+    // HAND generated Automatic symbols table load v45
+    // ---------------------------------------------------------------------------------------
+    this.automatic_symbols_v45.set(SYMBOLS_V45.STRUCT, { type: eElementType.type_struct, value: 0 });
+    this.automatic_symbols_v45.set(SYMBOLS_V45.SIZEOF, { type: eElementType.type_sizeof, value: 0 });
+
+    //
+    // HAND generated Automatic symbols table load v46
+    // ---------------------------------------------------------------------------------------
+    this.automatic_symbols_v46.set(SYMBOLS_V46.C_Z, { type: eElementType.type_debug_cmd, value: eValueType.dc_c_z_pre });
+
+    //
+    // HAND generated Automatic symbols table load v47
+    // ---------------------------------------------------------------------------------------
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKSPIN, { type: eElementType.type_i_taskspin, value: eByteCode.bc_taskspin });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKNEXT, { type: eElementType.type_i_flex, value: eFlexcode.fc_tasknext });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKSTOP, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskstop });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKHALT, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskhalt });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKCONT, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskcont });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKCHK, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskchk });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKID, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskid });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.NEWTASK, { type: eElementType.type_con_int, value: 0xffffffff });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.THISTASK, { type: eElementType.type_con_int, value: 0xffffffff });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKHLT, { type: eElementType.type_register, value: eValueType.taskhlt_reg });
+
+    //
+    // HAND generated Automatic symbols table load v50
+    // ---------------------------------------------------------------------------------------
+    this.automatic_symbols_v50.set(SYMBOLS_V50.DITTO, { type: eElementType.type_asm_dir, value: eValueType.dir_ditto });
+
     // Populate the reverse map
     for (const [fcValue, value] of this.flexcodeValues) {
       const bcValue: number = value & 0xff;
@@ -2826,6 +2911,56 @@ export class SpinSymbolTables {
         const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v43.get(symbolName);
         if (symbolInfo !== undefined) {
           this.logMessage(`- builtInSymbolV43(${symbolName}) = (${symbolInfo.value})`);
+          findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
+        }
+      }
+    }
+
+    if (this.currSpinVersion >= 44) {
+      if (this.automatic_symbols_v44.has(symbolName)) {
+        const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v44.get(symbolName);
+        if (symbolInfo !== undefined) {
+          this.logMessage(`- builtInSymbolV44(${symbolName}) = (${symbolInfo.value})`);
+          findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
+        }
+      }
+    }
+
+    if (this.currSpinVersion >= 45) {
+      if (this.automatic_symbols_v45.has(symbolName)) {
+        const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v45.get(symbolName);
+        if (symbolInfo !== undefined) {
+          this.logMessage(`- builtInSymbolV45(${symbolName}) = (${symbolInfo.value})`);
+          findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
+        }
+      }
+    }
+
+    if (this.currSpinVersion >= 46) {
+      if (this.automatic_symbols_v46.has(symbolName)) {
+        const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v46.get(symbolName);
+        if (symbolInfo !== undefined) {
+          this.logMessage(`- builtInSymbolV46(${symbolName}) = (${symbolInfo.value})`);
+          findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
+        }
+      }
+    }
+
+    if (this.currSpinVersion >= 47) {
+      if (this.automatic_symbols_v47.has(symbolName)) {
+        const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v47.get(symbolName);
+        if (symbolInfo !== undefined) {
+          this.logMessage(`- builtInSymbolV47(${symbolName}) = (${symbolInfo.value})`);
+          findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
+        }
+      }
+    }
+
+    if (this.currSpinVersion >= 50) {
+      if (this.automatic_symbols_v50.has(symbolName)) {
+        const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v50.get(symbolName);
+        if (symbolInfo !== undefined) {
+          this.logMessage(`- builtInSymbolV50(${symbolName}) = (${symbolInfo.value})`);
           findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
         }
       }
