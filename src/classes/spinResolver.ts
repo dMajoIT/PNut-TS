@@ -921,6 +921,20 @@ export class SpinResolver {
       }
     }
 
+    // if no symbol, use default mode
+    if (criticalSymbolsFound == 0b00000) {
+      // if NOT compile w/Debug ...
+      if (this.context.compileOptions.enableDebug == false) {
+        //  force use of _RCFAST
+        criticalSymbolsFound = 0b00010;
+      } else {
+        // else force to 20Mhz,
+        _xtlFreq = 20000000;
+        //  force use of _XTLFREQ
+        criticalSymbolsFound = 0b01000;
+      }
+    }
+
     switch (criticalSymbolsFound) {
       case 0b10000: // _CLKFREQ ?            + _ERRFREQ optional
         [this.clkMode, this.clkFreq] = this.pllCalc(20000000, _clkFreq, _errFreq);
@@ -5856,6 +5870,7 @@ export class SpinResolver {
   private compileInstruction() {
     // Instruction Compiler
     // PNut compile_inst: or new compile_instruction:
+    //  XYZZY add structure stuff
     this.logMessage(`*==* compileInstruction() at elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_back) {
       this.ct_try(eResultRequirements.RR_None, eByteCode.bc_drop_trap);
@@ -7057,6 +7072,7 @@ export class SpinResolver {
 
   private compileTerm() {
     // PNut compile_term:
+    //  XYZZY add structure stuff
     const elementType: eElementType = this.currElement.type;
     this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}])`);
     const elementValue: number = Number(this.currElement.bigintValue);
@@ -7628,6 +7644,7 @@ export class SpinResolver {
   private ct_cogspin(byteCode: eByteCode) {
     // Compile term - COGSPIN(cog,method(parameters),stackadr)
     // PNut ct_cogspin:
+    // XYZZY add taskspin  at ct_cogspin_taskspin:
     this.getLeftParen();
     this.compileExpression();
     this.getComma();

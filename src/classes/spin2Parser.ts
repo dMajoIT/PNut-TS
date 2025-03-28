@@ -726,41 +726,61 @@ export class Spin2Parser {
     this.objImage.replaceLong(checkSum, _checksum_);
   }
 
+  private checkClockSetterInsert(): boolean {
+    // PNut part of insert_clock_setter:
+    // Return T/F where T means  _AUTOCLK not defined or _AUTOCLK <> 0
+    const symlAutoclk = '_AUTOCLK';
+    let foundAutoclkStatus: boolean = true;
+    const [symbolFound, isConstInteger, value] = this.checkDebugSymbol(symlAutoclk);
+    if (symbolFound) {
+      if (isConstInteger) {
+        foundAutoclkStatus = value == 0n ? false : true;
+      } else {
+        // [error_acobd]
+        throw new Error('_AUTOCLK can only be defined as an integer constant');
+      }
+    }
+    return foundAutoclkStatus;
+  }
+
   public P2InsertClockSetter() {
     // PNut insert_clock_setter:
-    if (this.spinResolver.clockMode != 0b00) {
-      const _ext1_ = 0x0;
-      const _ext2_ = 0x004;
-      const _ext3_ = 0x008;
-      const _rcslow_ = 0x028;
-      const _clkmode1_ = 0x034;
-      const _clkmode2_ = 0x038;
-      const _appblocks_ = 0x03c;
-      const _NOP_INSTRU_ = 0;
+    // if _AUTOCLK not defined or _AUTOCLK <> 0 then insert clock setter
+    if (this.checkClockSetterInsert()) {
+      if (this.spinResolver.clockMode != 0b00) {
+        const _ext1_ = 0x0;
+        const _ext2_ = 0x004;
+        const _ext3_ = 0x008;
+        const _rcslow_ = 0x028;
+        const _clkmode1_ = 0x034;
+        const _clkmode2_ = 0x038;
+        const _appblocks_ = 0x03c;
+        const _NOP_INSTRU_ = 0;
 
-      const clockSetterLength = this.externalFiles.clockSetterLength;
-      // move object upwards to accommodate interpreter
-      this.logMessage(`  -- move object up - clockSetterLength=(${clockSetterLength}) bytes`);
-      this.moveObjectUp(this.objImage, clockSetterLength, 0, this.objImage.offset);
-      // install clock setter
-      this.logMessage(`  -- load clock setter`);
-      this.objImage.rawUint8Array.set(this.externalFiles.clockSetter, 0);
-      // NOP unneeded instructions
-      if (this.spinResolver.clockMode == 0b01) {
-        this.objImage.replaceLong(_NOP_INSTRU_, _ext1_);
-        this.objImage.replaceLong(_NOP_INSTRU_, _ext2_);
-        this.objImage.replaceLong(_NOP_INSTRU_, _ext3_);
-      } else {
-        // here is @@notrcslow:
-        this.objImage.replaceLong(_NOP_INSTRU_, _rcslow_);
+        const clockSetterLength = this.externalFiles.clockSetterLength;
+        // move object upwards to accommodate interpreter
+        this.logMessage(`  -- move object up - clockSetterLength=(${clockSetterLength}) bytes`);
+        this.moveObjectUp(this.objImage, clockSetterLength, 0, this.objImage.offset);
+        // install clock setter
+        this.logMessage(`  -- load clock setter`);
+        this.objImage.rawUint8Array.set(this.externalFiles.clockSetter, 0);
+        // NOP unneeded instructions
+        if (this.spinResolver.clockMode == 0b01) {
+          this.objImage.replaceLong(_NOP_INSTRU_, _ext1_);
+          this.objImage.replaceLong(_NOP_INSTRU_, _ext2_);
+          this.objImage.replaceLong(_NOP_INSTRU_, _ext3_);
+        } else {
+          // here is @@notrcslow:
+          this.objImage.replaceLong(_NOP_INSTRU_, _rcslow_);
+        }
+        // install _clkmode1_
+        this.objImage.replaceLong(this.spinResolver.clockMode & 0xfffffffc, _clkmode1_);
+        // install _clkmode2_
+        this.objImage.replaceLong(this.spinResolver.clockMode, _clkmode2_);
+        // install _appblocks_
+        const numberOfBlocks = (this.objImage.offset >> (9 + 2)) + 1;
+        this.objImage.replaceLong(numberOfBlocks, _appblocks_);
       }
-      // install _clkmode1_
-      this.objImage.replaceLong(this.spinResolver.clockMode & 0xfffffffc, _clkmode1_);
-      // install _clkmode2_
-      this.objImage.replaceLong(this.spinResolver.clockMode, _clkmode2_);
-      // install _appblocks_
-      const numberOfBlocks = (this.objImage.offset >> (9 + 2)) + 1;
-      this.objImage.replaceLong(numberOfBlocks, _appblocks_);
     }
   }
 
