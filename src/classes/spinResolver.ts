@@ -47,6 +47,9 @@ interface iVariableReturn {
   operation: eVariableOperation;
   assignmentBytecode: eByteCode; // used iff VO_ASSIGN
   modifierBytecode: eByteCode; // used iff pre/post inc/dec
+  // if structure
+  structIsBWL: boolean;
+  structSize: number; // 1,2,4, or structure size
 }
 
 enum eStructureType { // enum for bc_casefast() and blockCasefast() methods
@@ -3219,12 +3222,40 @@ export class SpinResolver {
     return foundBlocksStatus;
   }
 
+  private get_struct_and_size(): number {
+    let desiredSize: number = 0;
+    this.getElementObj();
+    if (this.currElement.type == eElementType.type_con_struct) {
+      if (!this.checkLeftBracket()) {
+        const structureID: number = this.currElement.numberValue;
+        desiredSize = this.objectStructureSet.getStructureSizeForID(structureID);
+      } else {
+        this.backElement();
+      }
+    }
+    if (desiredSize == 0) {
+      this.backElement();
+      desiredSize = this.get_struct_variable();
+    }
+    return desiredSize;
+  }
+
+  private get_struct_variable(): number {
+    const variableReturn: iVariableReturn = this.getVariable();
+    // if not a structure or we have structure with leaf of BYTE/WORD/LONG
+    if (!this.isStruct(variableReturn.type) || variableReturn.structIsBWL) {
+      // [error_easn]
+      throw new Error('Expected a structure name');
+    }
+    return variableReturn.structSize;
+  }
+
   private check_con_struct_size(): [boolean, number] {
     let structFoundStatus: boolean = false;
     let structureSize: number = 0;
     if (this.currElement.type == eElementType.type_con_struct) {
       structFoundStatus = true;
-      const structureID: number = this.currElement.numberValue >> 20;
+      const structureID: number = this.currElement.numberValue;
       structureSize = this.objectStructureSet.getStructureSizeForID(structureID);
     }
     return [structFoundStatus, structureSize];
@@ -3627,7 +3658,7 @@ export class SpinResolver {
         this.getElement(); // skip 'other'
         // save this index for 2nd loop
         // NOTE: get current element index, NOT next element index
-        otherCaseElementIndex = this.logSavedElementLocation() - 1; // [source_start]
+        otherCaseElementIndex = this.logSavedElementLocation(-1); // [source_start]
       } else {
         // here is @@notother1:
         if (++caseCount > this.case_limit) {
@@ -5870,7 +5901,7 @@ export class SpinResolver {
   private compileInstruction() {
     // Instruction Compiler
     // PNut compile_inst: or new compile_instruction:
-    //  XYZZY add structure stuff
+    //  XYZZY add structure stuff - compile_inst
     this.logMessage(`*==* compileInstruction() at elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_back) {
       this.ct_try(eResultRequirements.RR_None, eByteCode.bc_drop_trap);
@@ -5891,10 +5922,10 @@ export class SpinResolver {
       this.ci_abort();
     } else if (this.currElement.type == eElementType.type_i_cogspin) {
       // instruction 'COGSPIN' ?
-      this.ct_cogspin(eByteCode.bc_coginit);
+      this.ct_cogspin_taskspin(eByteCode.bc_coginit);
     } else if (this.currElement.type == eElementType.type_i_taskspin) {
       // instruction 'TASKSPIN' ?
-      this.ct_cogspin(eByteCode.bc_taskspin);
+      this.ct_cogspin_taskspin(eByteCode.bc_taskspin, false);
     } else if (this.currElement.type == eElementType.type_debug) {
       // DEBUG()?
       this.ci_debug();
@@ -5930,7 +5961,7 @@ export class SpinResolver {
       } else {
         // remember this element
         // NOTE: get current element index, NOT next element index
-        const savedNextElementIndex: number = this.logSavedElementLocation() - 1; // [source_start]
+        const savedNextElementIndex: number = this.logSavedElementLocation(-1); // [source_start]
         if (this.currElement.type == eElementType.type_under) {
           // _,... := param(s),... ?
           this.getComma(); // this works since we are at the beginning of line!
@@ -7072,37 +7103,40 @@ export class SpinResolver {
 
   private compileTerm() {
     // PNut compile_term:
-    //  XYZZY add structure stuff
+    //  XYZZY add structure stuff - compile_term FINISHED? AUDIT
     const elementType: eElementType = this.currElement.type;
     this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}])`);
     const elementValue: number = Number(this.currElement.bigintValue);
     if (this.currElement.isConstantInt || this.currElement.isConstantFloat) {
       // constant integer? or constant float?
       this.compileConstant(this.currElement.bigintValue);
+    } else if (this.currElement.type == eElementType.type_sizeof) {
+      // SIZEOF() ?
+      this.ct_sizeof();
     } else if (this.currElement.type == eElementType.type_constr) {
-      // STRING?
+      // STRING() ?
       this.compileConString();
     } else if (this.currElement.type == eElementType.type_conlstr) {
-      // LSTRING?
+      // LSTRING() ?
       this.compileConLString();
     } else if (this.currElement.type == eElementType.type_size && this.checkLeftParen()) {
-      // BYTE/WORD/LONG?
+      // BYTE/WORD/LONG() ?
       this.compileConData(elementValue);
     } else if (this.currElement.type == eElementType.type_float) {
-      // FLOAT?
+      // FLOAT() ?
       this.compileFlex(eFlexcode.fc_float);
     } else if (this.currElement.type == eElementType.type_round) {
-      // ROUND?
+      // ROUND() ?
       this.compileFlex(eFlexcode.fc_round);
     } else if (this.currElement.type == eElementType.type_trunc) {
-      // TRUNC?
+      // TRUNC() ?
       this.compileFlex(eFlexcode.fc_trunc);
     } else if (this.currElement.type == eElementType.type_back) {
       // \obj{[]}.method({param,...}), \method({param,...}), \var({param,...}){:results} ?
       this.ct_try(eResultRequirements.RR_None, eByteCode.bc_drop_trap_push);
     } else if (this.currElement.type == eElementType.type_obj) {
       // obj{[]}.method({param,...}) : ? or obj.con ?
-      this.ct_objpubcon(eResultRequirements.RR_One, eByteCode.bc_drop_push);
+      this.ct_objpub(eResultRequirements.RR_One, eByteCode.bc_drop_push);
     } else if (this.currElement.type == eElementType.type_method) {
       // method({param,...}) : ?
       this.ct_method(eResultRequirements.RR_One, eByteCode.bc_drop_push);
@@ -7111,7 +7145,10 @@ export class SpinResolver {
       this.ct_look();
     } else if (this.currElement.type == eElementType.type_i_cogspin) {
       // instruction COGSPIN ?
-      this.ct_cogspin(eByteCode.bc_coginit_push);
+      this.ct_cogspin_taskspin(eByteCode.bc_coginit_push);
+    } else if (this.currElement.type == eElementType.type_i_taskspin) {
+      // instruction TASKSPIN ?
+      this.ct_cogspin_taskspin(eByteCode.bc_taskspin, true);
     } else if (this.currElement.type == eElementType.type_i_flex) {
       // flex instruction?
       if (this.currElement.flexByteCode == eByteCode.bc_coginit) {
@@ -7141,51 +7178,72 @@ export class SpinResolver {
       this.compileVariablePre(eByteCode.bc_var_rnd_push);
     } else {
       // NOTE: get current element index, NOT next element index
-      const startElementIndex = this.logSavedElementLocation() - 1; // [source_start]
+      let workComplete: boolean = false;
+      const startElementIndex = this.logSavedElementLocation(-1); // [source_start]
       const variableResult: iVariableReturn = this.checkVariable(); // var ?
       if (variableResult.isVariable == false) {
         // [error_eaet]
         throw new Error('Expected an expression term (m092)');
       }
-      this.currElement = this.getElement(); // get element after variable
-      if (this.currElement.type == eElementType.type_left) {
-        // var({param,...}){:results} ?
-        this.ct_method_ptr(startElementIndex, eResultRequirements.RR_One, eByteCode.bc_drop_push);
-      } else if (this.currElement.type == eElementType.type_inc) {
-        // var++ ?
-        this.compileVariableAssign(variableResult, eByteCode.bc_var_postinc_push);
-      } else if (this.currElement.type == eElementType.type_dec) {
-        // var-- ?
-        this.compileVariableAssign(variableResult, eByteCode.bc_var_postdec_push);
-      } else if (this.currElement.isLogNot) {
-        // var!! ?
-        this.compileVariableAssign(variableResult, eByteCode.bc_var_lognot_push);
-      } else if (this.currElement.isBitNot) {
-        // var! ?
-        this.compileVariableAssign(variableResult, eByteCode.bc_var_bitnot_push);
-      } else if (this.currElement.type == eElementType.type_back) {
-        // var\x ?
-        this.compileVariableExpression(variableResult, eByteCode.bc_var_swap);
-      } else if (this.currElement.type == eElementType.type_til) {
-        // var~ ?
-        this.compileVariableClearSetTerm(variableResult, eCompOp.CO_Clear);
-      } else if (this.currElement.type == eElementType.type_tiltil) {
-        // var~~ ?
-        this.compileVariableClearSetTerm(variableResult, eCompOp.CO_Set);
-      } else if (this.currElement.type == eElementType.type_assign) {
-        // var := x ?
-        this.compileVariableExpression(variableResult, eByteCode.bc_write_push);
-      } else if (this.currElement.isBinary && this.currElement.isAssignable && this.nextElementType() == eElementType.type_equal) {
-        const opByteCode: number = this.currElement.byteCode;
-        this.getElement(); // get the equal
-        this.compileExpression();
-        const finalByteCode = opByteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write_push);
-        this.compileVariableAssign(variableResult, finalByteCode);
-      } else {
-        // here is @@notbin:
-        this.backElement();
-        variableResult.operation = eVariableOperation.VO_READ;
-        this.compileVariable(variableResult);
+      if (this.isStruct(variableResult.type) && !variableResult.structIsBWL) {
+        if (variableResult.structSize <= 4) {
+          variableResult.operation = eVariableOperation.VO_READ;
+          this.compileVariable(variableResult);
+          // skip rest of following logic....
+          workComplete = true;
+        } else {
+          this.getElement();
+          if (
+            (this.currElement.type == eElementType.type_op &&
+              (this.currElement.operation == eOperationType.op_e || this.currElement.operation == eOperationType.op_ne)) == false
+          ) {
+            // [error_eeone]
+            throw new Error('Expected "==" or "<>"');
+          }
+          this.compile_struct_compare(this.currElement.operation);
+        }
+      }
+      if (!workComplete) {
+        this.currElement = this.getElement(); // get element after variable
+        if (this.currElement.type == eElementType.type_left) {
+          // var({param,...}){:results} ?
+          this.ct_method_ptr(startElementIndex, eResultRequirements.RR_One, eByteCode.bc_drop_push);
+        } else if (this.currElement.type == eElementType.type_inc) {
+          // var++ ?
+          this.compileVariableAssign(variableResult, eByteCode.bc_var_postinc_push);
+        } else if (this.currElement.type == eElementType.type_dec) {
+          // var-- ?
+          this.compileVariableAssign(variableResult, eByteCode.bc_var_postdec_push);
+        } else if (this.currElement.isLogNot) {
+          // var!! ?
+          this.compileVariableAssign(variableResult, eByteCode.bc_var_lognot_push);
+        } else if (this.currElement.isBitNot) {
+          // var! ?
+          this.compileVariableAssign(variableResult, eByteCode.bc_var_bitnot_push);
+        } else if (this.currElement.type == eElementType.type_back) {
+          // var\x ?
+          this.compileVariableExpression(variableResult, eByteCode.bc_var_swap);
+        } else if (this.currElement.type == eElementType.type_til) {
+          // var~ ?
+          this.compileVariableClearSetTerm(variableResult, eCompOp.CO_Clear);
+        } else if (this.currElement.type == eElementType.type_tiltil) {
+          // var~~ ?
+          this.compileVariableClearSetTerm(variableResult, eCompOp.CO_Set);
+        } else if (this.currElement.type == eElementType.type_assign) {
+          // var := x ?
+          this.compileVariableExpression(variableResult, eByteCode.bc_write_push);
+        } else if (this.currElement.isBinary && this.currElement.isAssignable && this.nextElementType() == eElementType.type_equal) {
+          const opByteCode: number = this.currElement.byteCode;
+          this.getElement(); // get the equal
+          this.compileExpression();
+          const finalByteCode = opByteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write_push);
+          this.compileVariableAssign(variableResult, finalByteCode);
+        } else {
+          // here is @@notbin:
+          this.backElement();
+          variableResult.operation = eVariableOperation.VO_READ;
+          this.compileVariable(variableResult);
+        }
       }
     }
   }
@@ -7450,6 +7508,14 @@ export class SpinResolver {
     return compiledParameterCount;
   }
 
+  private ct_sizeof() {
+    // PNut ct_sizeof:
+    this.getLeftParen();
+    const structureSize: number = this.get_struct_and_size();
+    this.compileConstant(BigInt(structureSize));
+    this.getRightParen();
+  }
+
   private ct_try(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
     // Compile term - \obj{[]}.method({param,...}), \method({param,...}), \var({param,...}){:results}
     // PNut ct_try:
@@ -7463,7 +7529,7 @@ export class SpinResolver {
       this.ct_method(resultsNeeded, byteCode);
     } else {
       // NOTE: get current element index, NOT next element index
-      const savedElementIndex: number = this.logSavedElementLocation() - 1; // [source_start]
+      const savedElementIndex: number = this.logSavedElementLocation(-1); // [source_start]
       const variableResult: iVariableReturn = this.checkVariable();
       if (variableResult.isVariable) {
         // \var({param,...}){:results} ?
@@ -7641,44 +7707,52 @@ export class SpinResolver {
     //this.logMessageOutline('');
   }
 
-  private ct_cogspin(byteCode: eByteCode) {
+  private ct_cogspin_taskspin(byteCode: eByteCode, needPush: boolean = false) {
     // Compile term - COGSPIN(cog,method(parameters),stackadr)
-    // PNut ct_cogspin:
-    // XYZZY add taskspin  at ct_cogspin_taskspin:
+    //   on entry: cl = bc_coginit / bc_coginit_push
+    //
+    // Compile term - TASKSPIN(task,method(parameters),stackadr)
+    //   on entry: cl = bc_taskspin, c=1 for result push
+    //
+    // PNut ct_cogspin_taskspin:
+    const isTaskSpin: boolean = byteCode == eByteCode.bc_taskspin;
     this.getLeftParen();
     this.compileExpression();
     this.getComma();
-    this.getElement(); // method/obj/var
+    this.getElementObj(); // method/obj/var/struct - methods are not changed
     // NOTE: get current element index, NOT next element index
-    const startElementIndex = this.logSavedElementLocation() - 1; // [source_start]
+    const startElementIndex = this.logSavedElementLocation(-1); // [source_start]
     let parameterCount: number = 0;
     if (this.currElement.type == eElementType.type_obj) {
-      const savedElement: SpinElement = this.currElement;
+      const objectElement: SpinElement = this.currElement;
       this.checkIndex();
       this.getDot();
-      let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
+      let [objSymType, objSymValue] = this.getObjSymbol(objectElement.numberValue);
       if (objSymType != eElementType.type_obj_pub) {
         // [error_eamn]
         throw new Error('Expected a method name (m0A0)');
       }
       // here is @@method:
-      parameterCount = (Number(objSymValue) >> 24) & 0x7f;
+      parameterCount = Number(objSymValue) >> 24;
       this.compileParameters(parameterCount);
-      // compile a method point without affecting nextElementIndex
+      // compile method as pointer without affecting nextElementIndex
       const savedElementIndex = this.logSavedElementLocation(); // push
       this.logRestoredElementLocation(startElementIndex);
       this.ct_at();
       this.logRestoredElementLocation(savedElementIndex); // pop
+      // off to @@finish:...
     } else if (this.currElement.type == eElementType.type_method) {
-      parameterCount = this.currElement.methodParameterCount;
+      // here is @@method:, too
+      parameterCount = this.currElement.methodParameterCount; // already shifted
       this.compileParameters(parameterCount);
-      // compile a method point without affecting nextElementIndex
+      // compile method as pointer without affecting nextElementIndex
       const savedElementIndex = this.logSavedElementLocation(); // push
       this.logRestoredElementLocation(startElementIndex);
       this.ct_at();
       this.logRestoredElementLocation(savedElementIndex); // pop
+      // off to @@finish:...
     } else {
-      // method_ptr
+      // check for do we have a variable containing ptr to method
       const variableReturn: iVariableReturn = this.checkVariable();
       if (variableReturn.isVariable == false) {
         // [error_eamomp]
@@ -7698,9 +7772,17 @@ export class SpinResolver {
     this.compileExpression();
     this.getRightParen();
     this.objImage.appendByte(eByteCode.bc_hub_bytecode);
-    this.objImage.appendByte(eByteCode.bc_cogspin);
-    this.objImage.appendByte(parameterCount);
-    this.objImage.appendByte(byteCode);
+    if (!isTaskSpin) {
+      // have COGSPIN
+      this.objImage.appendByte(eByteCode.bc_cogspin);
+      this.objImage.appendByte(parameterCount);
+      this.objImage.appendByte(byteCode);
+    } else {
+      // have TASKSPIN
+      this.objImage.appendByte(byteCode);
+      const bytecodePossiblePush = parameterCount | (needPush ? 0x80 : 0);
+      this.objImage.appendByte(bytecodePossiblePush);
+    }
   }
 
   private ct_at() {
@@ -7778,11 +7860,12 @@ export class SpinResolver {
     }
   }
 
-  private ct_objpubcon(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
+  private ct_objpub_OLD(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
     // Compile term - obj{[]}.method({param,...}) or obj.con
-    // PNut ct_objpubcon:
+    // PNut ct_objpub:
     // NOTE: get current element index, NOT next element index
-    const savedElementIndex: number = this.logSavedElementLocation() - 1; // [source_start]
+    //  XYZZY CAN WE REMOVE THIS? ct_objpub_OLD()
+    const savedElementIndex: number = this.logSavedElementLocation(-1); // [source_start]
     const savedElement: SpinElement = this.currElement; // our type_obj element on entry
     const [foundIndex, nextElementIndex] = this.checkIndex();
     if (foundIndex) {
@@ -7809,6 +7892,7 @@ export class SpinResolver {
   private ct_objpub(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
     // Compile term - obj{[]}.method({param,...})
     // PNut ct_objpub:
+    //  XYZZY add structure stuff - ct_objpub() - AUDIT THIS!!!
     this.objImage.appendByte(byteCode);
     const savedElement: SpinElement = this.currElement;
     const [foundIndex, elementIndexOfIndex] = this.checkIndex();
@@ -9010,7 +9094,10 @@ private checkDec(): boolean {
         bitfieldConstantFlag: false,
         operation: variable.modifierBytecode == 0 ? eVariableOperation.VO_READ : eVariableOperation.VO_ASSIGN,
         assignmentBytecode: variable.modifierBytecode,
-        modifierBytecode: 0
+        modifierBytecode: 0,
+        // if structure
+        structIsBWL: false,
+        structSize: 0 // 1,2,4, or structure size
       };
       this.compileVariable(tempVariable); // compile read/assign of pointer variable
       if (variable.sizeOverrideFlag == true) {
@@ -9533,7 +9620,10 @@ private checkDec(): boolean {
       bitfieldConstantFlag: false,
       operation: eVariableOperation.VO_Unknown,
       assignmentBytecode: 0,
-      modifierBytecode: 0
+      modifierBytecode: 0,
+      // if structure
+      structIsBWL: false,
+      structSize: 0 // 1,2,4, or structure size
     };
 
     this.logMessage(`* checkVariable() elem=[${this.currElement.toString()}]`);
@@ -9624,6 +9714,8 @@ private checkDec(): boolean {
         // PNUt @@notpreptr:
         if (this.isStruct(this.currElement.type)) {
           const compiledStructureInfo: iStructureReturn = this.skip_struct_setup(resultVariable);
+          resultVariable.structIsBWL = compiledStructureInfo.flags == eStructureType.ST_ResolvedAsBWL;
+          resultVariable.structSize = compiledStructureInfo.size;
           if (compiledStructureInfo.flags == eStructureType.ST_ResolvedAsBWL) {
             // PNut @@chkbitfield:
             this.checkVariableBitfield(resultVariable);
@@ -9753,6 +9845,10 @@ private checkDec(): boolean {
     return resultVariable;
   }
 
+  private compile_struct_compare(operation: eOperationType) {
+    // XYZZY add code compile_struct_compare:
+  }
+
   private skip_struct_setup(variable: iVariableReturn): iStructureReturn {
     // PNut skip_struct_setup:
     const savedObjPtr: number = this.objImage.offset;
@@ -9858,7 +9954,10 @@ private checkDec(): boolean {
       bitfieldConstantFlag: false,
       operation: eVariableOperation.VO_Unknown,
       assignmentBytecode: 0,
-      modifierBytecode: 0
+      modifierBytecode: 0,
+      // if structure
+      structIsBWL: false,
+      structSize: 0 // 1,2,4, or structure size
     };
 
     let structureRecord: ObjectStructureRecord = new ObjectStructureRecord(this.context, 'DUMMY Record', new Uint8Array(0));
@@ -10395,9 +10494,9 @@ private checkDec(): boolean {
     return Number(element.value);
   }
 
-  private logSavedElementLocation(): number {
+  private logSavedElementLocation(negOffset: number = 0): number {
     // return current index for later restore
-    const elementIndex: number = this.nextElementIndex;
+    const elementIndex: number = this.nextElementIndex + negOffset;
     this.logMessage(`*** SAVEd Element Index (${elementIndex})`);
     return elementIndex;
   }

@@ -81,23 +81,37 @@ TODO's from PNut Zoom 250303++:
 					- compileOrgh() @done(2025-03-26)
 					
 	Day17: Thu:
-			- Finish v50 changes
-				- SPIN blocks (PUB, PRI)
-					- Update compile_sub_blocks() @done(2025-03-27)
-					- Update insert_clock_setter: @done(2025-03-27)
-					- Updatedetermine_clock() @done(2025-03-27)
-	Day18: Thu:
-			- Finish v50 changes
-				- SPIN blocks (PUB, PRI)
-					- update ct_cogspin() Adding taskspin...
-					- Add compile_Struct_***() methods and hook them in...
-					- Update compileInstruction()
-					- Update compileTerm()
-					- update misc other routines showing in diff
-			- Audit all deltas n change log
-			- Add code deltatfrom v50 to v51
-			- Adjust existing regression tests to work
-			- Add new regressions tests for v45 - v51 
+		- Finish v50 changes
+			- SPIN blocks (PUB, PRI)
+				- Update compile_sub_blocks() @done(2025-03-27)
+				- Update insert_clock_setter: @done(2025-03-27)
+				- Updatedetermine_clock() @done(2025-03-27)
+	Day18: Fri:
+		- Finish v50 changes
+			- SPIN blocks (PUB, PRI)
+				- update ct_cogspin() Adding taskspin... @done(2025-03-28)
+				- Add check_con_struct_size() @done(2025-03-28)
+				- Add get_struct_and_size() @done(2025-03-28)
+				- Add get_struct_variable() @done(2025-03-28)
+				- Add ct_sizeof() @done(2025-03-28)
+				- Update compileTerm() @done(2025-03-28)
+				- Start rename of ct_objpubcon() -> ct_objpub() @done(2025-03-28)
+				- add structure return fields to checkVariable() @done(2025-03-28)
+				- adjust logSavedElementLocation() adding passed index adjustment @done(2025-03-28)
+	Day18: Mon:
+		- Finish v50 changes
+			- SPIN blocks (PUB, PRI)
+				- Add compile_struct_compare()
+				- Can we REMOVE ct_objpub_OLD()?
+				- AUDIT ct_objpub()
+				- AUDIT compileTerm()
+				- Update compileInstruction()
+				- Add more compile_struct_***() methods and hook them in...
+				- update misc other routines showing in diff
+		- Audit all deltas n change log
+		- Add code deltatfrom v50 to v51
+		- Adjust existing regression tests to work
+		- Add new regressions tests for v45 - v51 
 		
 	
 Upcoming:
