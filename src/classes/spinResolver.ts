@@ -3081,12 +3081,17 @@ export class SpinResolver {
         // here is @@param:
         do {
           this.getElementObj();
+          let needNameElement: boolean = false;
           let paramSizeInLongs: number = 1; // in longs
           const [isStructure, structSize] = this.check_con_struct_size();
           if (isStructure) {
             paramSizeInLongs = (structSize + 3) >> 2; // nbr longs
+            needNameElement = true;
           }
           if (this.checkPtr()) {
+            needNameElement = true;
+          }
+          if (needNameElement) {
             this.getElementObj();
           }
           if (this.currElement.type != eElementType.type_undefined) {
@@ -3106,12 +3111,17 @@ export class SpinResolver {
         // here is @@result:
         do {
           this.getElementObj();
+          let needNameElement: boolean = false;
           let resultSizeInLongs: number = 1; // in longs
           const [isStructure, structSize] = this.check_con_struct_size();
           if (isStructure) {
             resultSizeInLongs = (structSize + 3) >> 2; // nbr longs
+            needNameElement = true;
           }
           if (this.checkPtr()) {
+            needNameElement = true;
+          }
+          if (needNameElement) {
             this.getElementObj();
           }
           if (this.currElement.type != eElementType.type_undefined) {
@@ -3129,9 +3139,10 @@ export class SpinResolver {
       // do we have any local variables...
       if (this.getPipeOrEnd()) {
         // have locals
-        let havePointer: boolean = false;
         do {
           // here is @@local:
+          let havePointer: boolean = false;
+          let needNameElement: boolean = false;
           this.currElement = this.getElementObj(); // assignment gets past lint warning
           const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?
           if (foundAlign) {
@@ -3143,13 +3154,16 @@ export class SpinResolver {
           } else {
             const [isStructure, structSize] = this.check_con_struct_size();
             if (isStructure) {
-              this.getElementObj(); // skip CON STRUCT mame (to parameter name)
+              needNameElement = true;
             } else {
               if (this.checkPtr()) {
                 havePointer = true;
-                this.getElementObj(); // skip ^ type (to parameter name)
+                needNameElement = true;
               }
             }
+          }
+          if (needNameElement) {
+            this.getElementObj();
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
@@ -3205,7 +3219,6 @@ export class SpinResolver {
   private compile_sub_blocks() {
     // Compile sub blocks
     // PNut compile_sub_blocks:
-    // XYZZY update compile_sub_blocks()
     if (this.pasmMode == false) {
       this.logMessageOutline('++ compile_sub_blocks()');
       // compile PUB blocks
@@ -3246,15 +3259,40 @@ export class SpinResolver {
         // have parameters
         // here is @@parameter:
         do {
-          this.getElement();
+          let needNameElement: boolean = false;
+          let paramSizeInBytes: number = 4; // in bytes
+          let paramType: eElementType = eElementType.type_loc_long;
+          let structID: number = 0;
+          this.getElementObj();
+          const [isStructure, structSize] = this.check_con_struct_size();
+          if (isStructure) {
+            paramSizeInBytes = ((structSize + 3) >> 2) << 2; // nbr bytes rounded up to long
+            paramType = eElementType.type_loc_struct;
+            structID = this.currElement.numberValue;
+            needNameElement = true;
+          }
+          // maybe not a structure, is pointer?
+          if (this.checkPtr()) {
+            if (this.currElement.type == eElementType.type_size) {
+              paramType = eElementType.type_loc_byte_ptr + this.currElement.numberValue;
+            } else {
+              paramType = eElementType.type_loc_struct_ptr;
+              structID = this.currElement.numberValue;
+            }
+            needNameElement = true;
+          }
+          // PNut @@paramchk:
+          if (needNameElement) {
+            this.getElementObj();
+          }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaupn]
             throw new Error('Expected a unique parameter name (m0C1)');
           }
-          const newParameterSymbol: iSymbol = { name: this.currElement.stringValue, type: eElementType.type_loc_long, value: BigInt(localOffset) };
+          const newParameterSymbol: iSymbol = { name: this.currElement.stringValue, type: paramType, value: BigInt((structID << 20) | localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);
           this.recordSymbol(newParameterSymbol); // parameter symbol name
-          localOffset += 4; // we wrote LONG
+          localOffset += paramSizeInBytes; // we wrote this size...
         } while (this.getCommaOrRightParen());
       }
       // no parameters
@@ -3262,15 +3300,39 @@ export class SpinResolver {
       if (this.checkColon()) {
         // here is @@result:
         do {
-          this.getElement();
+          let needNameElement: boolean = false;
+          let resultSizeInBytes: number = 4; // in bytes
+          let resultType: eElementType = eElementType.type_loc_long;
+          let structID: number = 0;
+          this.getElementObj();
+          const [isStructure, structSize] = this.check_con_struct_size();
+          if (isStructure) {
+            resultSizeInBytes = ((structSize + 3) >> 2) << 2; // nbr bytes rounded up to long
+            resultType = eElementType.type_loc_struct;
+            structID = this.currElement.numberValue;
+            needNameElement = true;
+          }
+          // maybe not a structure, is pointer?
+          if (this.checkPtr()) {
+            if (this.currElement.type == eElementType.type_size) {
+              resultType = eElementType.type_loc_byte_ptr + this.currElement.numberValue;
+            } else {
+              resultType = eElementType.type_loc_struct_ptr;
+              structID = this.currElement.numberValue;
+            }
+            needNameElement = true;
+          }
+          if (needNameElement) {
+            this.getElementObj();
+          }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaurn]
             throw new Error('Expected a unique result name (m0D1)');
           }
-          const newReturnSymbol: iSymbol = { name: this.currElement.stringValue, type: eElementType.type_loc_long, value: BigInt(localOffset) };
+          const newReturnSymbol: iSymbol = { name: this.currElement.stringValue, type: resultType, value: BigInt((structID << 20) | localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);
           this.recordSymbol(newReturnSymbol); // return symbol name
-          localOffset += 4; // we wrote LONG
+          localOffset += resultSizeInBytes; // we wrote LONG
         } while (this.checkComma());
       }
       // here is @@noresult
@@ -3280,27 +3342,50 @@ export class SpinResolver {
         // have locals
         do {
           // here is @@variable:
-          this.currElement = this.getElement(); // assignment gets past lint warning
+          let needNameElement: boolean = false;
+          let localSizeInBytes: number = 4; // in bytes
+          let localType: eElementType = eElementType.type_loc_long;
+          let structID: number = 0;
+          this.currElement = this.getElementObj(); // assignment gets past lint warning
           const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?
           if (foundAlign) {
             if (localOffset & alignMask) {
               localOffset = (localOffset | alignMask) + 1;
             }
             // here is @@aligned:
-            this.getElement(); // skip alignw/alignl
+            this.getElementObj(); // skip alignw/alignl
           }
           // here is @@noalign:
-          let currSize: eWordSize = eWordSize.WS_Long;
           if (this.currElement.type == eElementType.type_size) {
-            currSize = Number(this.currElement.bigintValue);
-            this.getElement(); // skip BYTE/WORD/LONG
+            localSizeInBytes = Number(1 << this.currElement.numberValue); // 0, 1, or 2
+            localType = eElementType.type_loc_byte + this.currElement.numberValue;
+            needNameElement = true;
           }
-          const currType: eElementType = eElementType.type_loc_byte + currSize;
+          const [isStructure, structSize] = this.check_con_struct_size();
+          if (isStructure) {
+            localSizeInBytes = structSize; // nbr bytes
+            localType = eElementType.type_loc_struct;
+            structID = this.currElement.numberValue;
+            needNameElement = true;
+          }
+          // maybe not a structure, is pointer?
+          if (this.checkPtr()) {
+            if (this.currElement.type == eElementType.type_size) {
+              localType = eElementType.type_loc_byte_ptr + this.currElement.numberValue;
+            } else {
+              localType = eElementType.type_loc_struct_ptr;
+              structID = this.currElement.numberValue;
+            }
+            needNameElement = true;
+          }
+          if (needNameElement) {
+            this.getElementObj();
+          }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
             throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E2)');
           }
-          const newLocalSymbol: iSymbol = { name: this.currElement.stringValue, type: currType, value: BigInt(localOffset) };
+          const newLocalSymbol: iSymbol = { name: this.currElement.stringValue, type: localType, value: BigInt((structID << 20) | localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);
           this.recordSymbol(newLocalSymbol); // return symbol name
           let currArraySize: number = 1;
@@ -3310,7 +3395,7 @@ export class SpinResolver {
             currArraySize = Number(valueReturn.value);
             this.getRightBracket();
           }
-          localOffset += (1 << currSize) * currArraySize;
+          localOffset += localSizeInBytes * currArraySize;
           if (localOffset > this.locals_limit) {
             // [error_loxlve]
             throw new Error('Limit of 64KB of local variables exceeded');
@@ -3323,10 +3408,7 @@ export class SpinResolver {
       const currLongValue: number = this.objImage.readLong(longAddress);
       this.objImage.replaceLong(currLongValue | this.objImage.offset, longAddress);
       let localSize: number = localOffset - localVariableOffset;
-      if (localSize & 0b11) {
-        localSize += 4; // add a long (we'll round extra off later)
-      }
-      this.compileRfvar(BigInt(localSize >> 2));
+      this.compileRfvar(BigInt((localSize + 3) >> 2));
       const methodResultCount: number = (methodDetails >> 20) & 0x0f;
       this.subResults = methodResultCount;
       this.compileTopBlock(); // compile top instruction block
@@ -5999,7 +6081,6 @@ export class SpinResolver {
   private compileOrgh() {
     // PNut compile_orgh:
     // Compile ORGH inline assembly section
-    // XYZZY add code here compileOrgh()
     this.logMessage(`* compileOrgh() - ENTRY`);
     this.getEndOfLine();
     // this is @@org:

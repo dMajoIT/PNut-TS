@@ -83,7 +83,7 @@ TODO's from PNut Zoom 250303++:
 	Day17: Thu:
 			- Finish v50 changes
 				- SPIN blocks (PUB, PRI)
-					- update compile_sub_blocks()
+					- update compile_sub_blocks() @done(2025-03-27)
 					- update misc other routines showing in diff
 			- Audit all deltas n change log
 			- Add code deltatfrom v50 to v51
