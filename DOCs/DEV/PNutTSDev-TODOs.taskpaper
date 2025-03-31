@@ -101,18 +101,23 @@ TODO's from PNut Zoom 250303++:
 	Day18: Mon:
 		- Finish v50 changes
 			- SPIN blocks (PUB, PRI)
-				- Add compile_struct_compare()
-				- Can we REMOVE ct_objpub_OLD()?
-				- AUDIT ct_objpub()
-				- AUDIT compileTerm()
-				- Update compileInstruction()
-				- Add more compile_struct_***() methods and hook them in...
+				- Add compile_struct_compare() @done(2025-03-31)
+				- Can we REMOVE ct_objpub_OLD()? @done(2025-03-31)
+				- AUDIT ct_objpub()- skipped - catch at regression @done(2025-03-31)
+				- AUDIT compileTerm() @done(2025-03-31)
+				- Update compileInstruction() @done(2025-03-31)
+				- Update compile_var_multi: @done(2025-03-31)
+		
+	Day19: Tue:
+		- Finish v50 changes
+			- SPIN blocks (PUB, PRI)
+				- Update compileParametersNoParens()
+				- Update compileParameter()
 				- update misc other routines showing in diff
 		- Audit all deltas n change log
 		- Add code deltatfrom v50 to v51
 		- Adjust existing regression tests to work
 		- Add new regressions tests for v45 - v51 
-		
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support

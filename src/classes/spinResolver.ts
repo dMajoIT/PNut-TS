@@ -3235,19 +3235,20 @@ export class SpinResolver {
     }
     if (desiredSize == 0) {
       this.backElement();
-      desiredSize = this.get_struct_variable();
+      const variableReturn: iVariableReturn = this.get_struct_variable();
+      desiredSize = variableReturn.structSize;
     }
     return desiredSize;
   }
 
-  private get_struct_variable(): number {
+  private get_struct_variable(): iVariableReturn {
     const variableReturn: iVariableReturn = this.getVariable();
     // if not a structure or we have structure with leaf of BYTE/WORD/LONG
     if (!this.isStruct(variableReturn.type) || variableReturn.structIsBWL) {
       // [error_easn]
       throw new Error('Expected a structure name');
     }
-    return variableReturn.structSize;
+    return variableReturn;
   }
 
   private check_con_struct_size(): [boolean, number] {
@@ -5901,7 +5902,6 @@ export class SpinResolver {
   private compileInstruction() {
     // Instruction Compiler
     // PNut compile_inst: or new compile_instruction:
-    //  XYZZY add structure stuff - compile_inst
     this.logMessage(`*==* compileInstruction() at elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_back) {
       this.ct_try(eResultRequirements.RR_None, eByteCode.bc_drop_trap);
@@ -5964,10 +5964,13 @@ export class SpinResolver {
         const savedNextElementIndex: number = this.logSavedElementLocation(-1); // [source_start]
         if (this.currElement.type == eElementType.type_under) {
           // _,... := param(s),... ?
+          this.backElement();
+          // FIXME: the following return values are NOT used
+          const [foundUnderScore, longCount] = this.checkWriteSkip();
           this.getComma(); // this works since we are at the beginning of line!
           this.compileVariableMultiple(savedNextElementIndex); // this handles the rest of the line
         } else {
-          // @@notunder:
+          // @@notwriteskip:
           //this.logMessage(`  -- compInstru() at elem=[${this.currElement.toString()}]`);
           const variableReturn: iVariableReturn = this.checkVariable(); // variable ?
           if (variableReturn.isVariable == false) {
@@ -5977,6 +5980,29 @@ export class SpinResolver {
           this.currElement = this.getElementObj(); // get element after variable- obj due to better error flagging
           if (this.currElement.type == eElementType.type_comma) {
             // var,... := param(s),... ?
+            this.compileVariableMultiple(savedNextElementIndex);
+          } else if (this.isStruct(this.currElement.type) && !variableReturn.structIsBWL) {
+            // Handle structure operations here...
+            if (this.currElement.type == eElementType.type_assign) {
+              // structure := ?
+              if (variableReturn.structSize <= 15 * 4) {
+                // if 15 longs or less, do stack assignment
+                this.compileVariableMultiple(savedNextElementIndex);
+              }
+              this.compile_struct_copy(eByteCode.bc_bytemove, variableReturn);
+            } else if (this.currElement.type == eElementType.type_swap) {
+              // structure :=: ?
+              this.compile_struct_copy(eByteCode.bc_byteswap, variableReturn);
+            } else if (this.currElement.type == eElementType.type_til) {
+              this.compile_struct_fill(eByteCode.bc_con_n + 1, variableReturn);
+            } else if (this.currElement.type == eElementType.type_tiltil) {
+              this.compile_struct_fill(eByteCode.bc_con_n + 0, variableReturn);
+            } else {
+              // [error_eastott]
+              throw new Error('Expected ":=", ":=:", "~", or "~~"');
+            }
+          } else if (this.currElement.type == eElementType.type_assign) {
+            // var := ?
             this.compileVariableMultiple(savedNextElementIndex);
           } else if (this.currElement.type == eElementType.type_left) {
             // var({param,...}){:results} ?
@@ -5999,11 +6025,6 @@ export class SpinResolver {
           } else if (this.currElement.type == eElementType.type_tiltil) {
             // var~~ ?
             this.compileVariableClearSetInst(variableReturn, eCompOp.CO_Set);
-          } else if (this.currElement.type == eElementType.type_assign) {
-            // var := ?
-            this.compileExpression();
-            variableReturn.operation = eVariableOperation.VO_WRITE;
-            this.compileVariable(variableReturn);
           } else if (this.currElement.isBinary && this.nextElementType() == eElementType.type_equal) {
             // var binary op assign (w/push)?
             if (this.currElement.isAssignable == false) {
@@ -6030,22 +6051,36 @@ export class SpinResolver {
   private compileVariableMultiple(startElementIndex: number) {
     // Compile multi-variable assignment - var,... := param(s),...
     // PNut compile_var_multi:
+    // XYZZY update compile_var_multi:
     const elementIndexStack: number[] = [];
     //this.logMessage(`  -- compileVariableMultiple() elem=[${this.nextElementIndex}] - ENTRY`);
     //this.logMessage();
     this.logRestoredElementLocation(startElementIndex);
     let parameterCount: number = 0;
+    let longCount: number = 0;
     // eslint-disable-next-line no-constant-condition
     do {
       this.logMessage(`* pushed element index... have ${elementIndexStack.length} now...`);
-      elementIndexStack.push(this.logSavedElementLocation());
-      if (this.checkUnderscore() == false) {
-        this.getVariable();
+      elementIndexStack.push(this.logSavedElementLocation()); // equiv PNut push [source_ptr]
+      // if '_{(type_con_int|type_con_struct)}', got long count
+      const [foundUnderScore, longsFound] = this.checkWriteSkip();
+      if (foundUnderScore) {
+        longCount += longsFound;
+      } else {
+        // not '_{(type_con_int|type_con_struct)}', get variable
+        const variable: iVariableReturn = this.getVariable();
+        let longsFound: number = 1;
+        if (this.isStruct(variable.type) && !variable.structIsBWL) {
+          this.check_struct_stack_fit(variable.structSize);
+          longsFound += (variable.structSize + 3) >> 2;
+        }
+        longCount += longsFound;
       }
       parameterCount++;
     } while (this.checkComma());
+
     this.getAssign();
-    this.compileParametersNoParens(parameterCount);
+    this.compileParametersNoParens(longCount);
     // capture ending index
     const endElementIndex = this.logSavedElementLocation();
     // set up for count down...
@@ -6058,9 +6093,16 @@ export class SpinResolver {
       } else {
         throw new Error('ERROR: [CODE] compileVariableMultiple() underflowed internal stack');
       }
-      if (this.checkUnderscore()) {
-        this.objImage.appendByte(eByteCode.bc_pop);
+      const [foundUnderScore, longCount] = this.checkWriteSkip();
+      if (foundUnderScore) {
+        if (longCount == 1) {
+          this.objImage.appendByte(eByteCode.bc_pop);
+        } else {
+          this.objImage.appendByte(eByteCode.bc_pop_rfvar);
+          this.compileRfvar(BigInt((longCount - 1) << 2));
+        }
       } else {
+        // PNut @@var:
         this.compileVariableWrite();
       }
     } while (--remainingParameterCount);
@@ -7103,7 +7145,6 @@ export class SpinResolver {
 
   private compileTerm() {
     // PNut compile_term:
-    //  XYZZY add structure stuff - compile_term FINISHED? AUDIT
     const elementType: eElementType = this.currElement.type;
     this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}])`);
     const elementValue: number = Number(this.currElement.bigintValue);
@@ -7200,7 +7241,7 @@ export class SpinResolver {
             // [error_eeone]
             throw new Error('Expected "==" or "<>"');
           }
-          this.compile_struct_compare(this.currElement.operation);
+          this.compile_struct_compare(this.currElement.operation, variableResult);
         }
       }
       if (!workComplete) {
@@ -7421,6 +7462,7 @@ export class SpinResolver {
 
   private compileParametersNoParens(parameterCount: number) {
     // PNut compile_parameters_np:
+    // XYZZY update this code compile_parameters_np:
     this.logMessage(`* compileParametersNoParens(${parameterCount}) - ENTRY`);
     let parametersRemaining: number = parameterCount;
     // eslint-disable-next-line no-constant-condition
@@ -7449,6 +7491,7 @@ export class SpinResolver {
     //  var({params,...}):2+
     //
     // PNut compile_parameter:
+    // XYZZY update this code compile_parameter:
     this.logMessage(`*--* compileParameter() elem=[${this.currElement.toString()}]`);
     let compiledParameterCount: number = -1; // flag saying we need to compile expression
     const savedElementIndex: number = this.logSavedElementLocation();
@@ -7860,39 +7903,9 @@ export class SpinResolver {
     }
   }
 
-  private ct_objpub_OLD(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
-    // Compile term - obj{[]}.method({param,...}) or obj.con
-    // PNut ct_objpub:
-    // NOTE: get current element index, NOT next element index
-    //  XYZZY CAN WE REMOVE THIS? ct_objpub_OLD()
-    const savedElementIndex: number = this.logSavedElementLocation(-1); // [source_start]
-    const savedElement: SpinElement = this.currElement; // our type_obj element on entry
-    const [foundIndex, nextElementIndex] = this.checkIndex();
-    if (foundIndex) {
-      // compile obj{[]}.method({param,...})
-      this.logRestoredElementLocation(savedElementIndex);
-      this.getElement();
-      this.ct_objpub(resultsNeeded, byteCode);
-    } else {
-      // could be object constant OR object method
-      this.getDot();
-      const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-      if (objSymType == eElementType.type_obj_pub) {
-        // compile obj.method({param,...})
-        this.logRestoredElementLocation(savedElementIndex);
-        this.getElement();
-        this.ct_objpub(resultsNeeded, byteCode);
-      } else {
-        // compile obj.constant (integer or float)
-        this.compileConstant(BigInt(objSymValue));
-      }
-    }
-  }
-
   private ct_objpub(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
     // Compile term - obj{[]}.method({param,...})
     // PNut ct_objpub:
-    //  XYZZY add structure stuff - ct_objpub() - AUDIT THIS!!!
     this.objImage.appendByte(byteCode);
     const savedElement: SpinElement = this.currElement;
     const [foundIndex, elementIndexOfIndex] = this.checkIndex();
@@ -8795,6 +8808,33 @@ export class SpinResolver {
     return undefinedStatus;
   }
 
+  private checkWriteSkip(): [boolean, number] {
+    // PNut check_write_skip:
+    let foundUnderScore: boolean = false;
+    let longCount: number = 1;
+    if (this.checkUnderscore()) {
+      foundUnderScore = true;
+      if (this.checkLeftBracket()) {
+        this.getElementObj();
+        if (this.currElement.type == eElementType.type_con_int) {
+          longCount = this.currElement.numberValue;
+          if (longCount < 1 || longCount > 15) {
+            // [error_cmbf1t15]
+            throw new Error(`Constant must be from 1 to 15`);
+          }
+        } else {
+          // PNut @@notint:
+          this.backElement();
+          const structureSize: number = this.get_struct_and_size();
+          this.check_struct_stack_fit(structureSize);
+          longCount = (structureSize + 3) >> 2;
+        }
+        this.getRightBracket();
+      }
+    }
+    return [foundUnderScore, longCount];
+  }
+
   private checkLeftParen(): boolean {
     return this.checkElementType(eElementType.type_left);
   }
@@ -9143,10 +9183,7 @@ private checkDec(): boolean {
           this.objImage.appendByte(0);
         }
         // PNut @@structnotass:
-        if (structureReturn.size > 15 * 4) {
-          // [error_stosmne]
-          throw new Error('Structures transferred on the stack must not exceed 15 longs');
-        }
+        this.check_struct_stack_fit(structureReturn.size);
         const flaggedStructSize: number = structureReturn.size | (variable.operation == eVariableOperation.VO_WRITE ? 0 : 0x80);
         this.objImage.appendByte(flaggedStructSize);
         workIsComplete = true; // DONE
@@ -9322,6 +9359,13 @@ private checkDec(): boolean {
       // NOTE: possible post optimization did we wind up in one of our 16 vars
     }
     this.logRestoredElementLocation(resumeIndex); // return to location at entry
+  }
+
+  private check_struct_stack_fit(structureSize: number) {
+    if (structureSize > 15 * 4) {
+      // [error_stosmne]
+      throw new Error('Structures transferred on the stack must not exceed 15 longs');
+    }
   }
 
   private compileVariableClearSetInst(variable: iVariableReturn, mode: eCompOp) {
@@ -9845,8 +9889,52 @@ private checkDec(): boolean {
     return resultVariable;
   }
 
-  private compile_struct_compare(operation: eOperationType) {
-    // XYZZY add code compile_struct_compare:
+  private compile_struct_compare(operation: eOperationType, variable: iVariableReturn) {
+    // PNut compile_struct_compare:
+    // Compile 'struct1 == struct2' or 'struct1 <> struct2'
+    // on entry, operation=op_e or operation=op_ne
+    this.compileVariableAssign(variable, eByteCode.bc_get_addr);
+    const variableReturn: iVariableReturn = this.get_struct_variable();
+    if (variableReturn.structSize != variable.structSize) {
+      // [error_smbss]
+      throw new Error('Structures must be same size');
+    }
+    this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
+    this.compileConstant(BigInt(variable.structSize));
+    this.objImage.appendByte(eByteCode.bc_bytecomp);
+    if (operation == eOperationType.op_ne) {
+      this.objImage.appendByte(eByteCode.bc_lognot);
+    }
+  }
+
+  private compile_struct_copy(byteCode: eByteCode, variable: iVariableReturn) {
+    // PNut compile_struct_copy:
+    // Compile 'struct1 := struct2' or 'struct1 :=: struct2'
+    // on entry, byteCode=bc_bytemove or byteCode=bc_byteswap
+    this.compileVariableAssign(variable, eByteCode.bc_get_addr);
+    const variableReturn: iVariableReturn = this.get_struct_variable();
+    if (variableReturn.structSize != variable.structSize) {
+      // [error_smbss]
+      throw new Error('Structures must be same size');
+    }
+    this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
+    // compile common struct size
+    this.compileConstant(BigInt(variable.structSize));
+    // enter hub bytecode bc_bytemove or bc_byteswap
+    this.objImage.appendByte(byteCode);
+  }
+
+  private compile_struct_fill(operation: eOperationType, variable: iVariableReturn) {
+    // PNut compile_struct_fill:
+    // Compile struct~ or struct~~
+    // on entry, operation is bc_con_n for 0 or -1
+    this.compileVariableAssign(variable, eByteCode.bc_get_addr);
+    // enter bc_con_n for 0 or -1
+    this.objImage.appendByte(operation);
+    // compile struct size
+    this.compileConstant(BigInt(variable.structSize));
+    // enter hub bytecode bc_bytefill
+    this.objImage.appendByte(eByteCode.bc_bytefill);
   }
 
   private skip_struct_setup(variable: iVariableReturn): iStructureReturn {
