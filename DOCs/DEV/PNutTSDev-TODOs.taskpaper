@@ -113,11 +113,10 @@ TODO's from PNut Zoom 250303++:
 			- SPIN blocks (PUB, PRI)
 				- Update compileParametersNoParens()
 				- Update compileParameter()
-				- update misc other routines showing in diff
-		- Audit all deltas n change log
-		- Add code deltatfrom v50 to v51
+		- Review DIFF for anything else we missed
+		- Add code delta from v50 to v51
 		- Adjust existing regression tests to work
-		- Add new regressions tests for v45 - v51 
+		- Add new regressions tests for v45 - v51 features
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support
