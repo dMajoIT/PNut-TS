@@ -1081,7 +1081,7 @@ export class SpinResolver {
           this.debugDisable = true;
         }
       } else {
-        // [error_downbaud]
+        // [error_ddcobd]
         throw new Error('DEBUG_DISABLE can only be defined as an integer constant');
       }
     }
@@ -1094,7 +1094,7 @@ export class SpinResolver {
       if (isConstInteger) {
         this.debugMask = Number(value);
       } else {
-        // [error_downbaud]
+        // [error_dmcobd]
         throw new Error('DEBUG_MASK can only be defined as an integer constant');
       }
     }
@@ -6494,6 +6494,7 @@ export class SpinResolver {
     //  NOTE: debug(`...) is BackTickDebug
     // enter string, returning indication if end of line
     // NOTE: the following method always sets debug_first
+    // XYZZY: processBackTickDebug()
     let brkCode: number = 0;
     this.logMessage(` -- processBackTickDbg(${this.currElement.toString()}) - ENTRY`);
     const anotherTickFollows: boolean = this.debugTickString();
@@ -6526,6 +6527,12 @@ export class SpinResolver {
           // go to @@checknext
           // logically if there is a next tick loop, else bail
           // goto @@ticknext to test for tick, if found go to @@tickcommand
+        } else if (this.currElement.type == eElementType.type_op && this.currElement.operation == eOperationType.op_ternary) {
+          // here is @@tickbool:
+          this.tickCmd(0b00100011, isPasmMode); // '?', do BOOL_
+        } else if (this.currElement.type == eElementType.type_dot) {
+          // here is @@tickfdec:
+          this.tickCmd(0b00101111, isPasmMode); // '.', do FDEC_
         } else if (this.currElement.type == eElementType.type_left) {
           // here is @@tickdec
           this.backElement(); // backup so we start with paren immediately after the tic of "`(...)"
@@ -6558,8 +6565,8 @@ export class SpinResolver {
             // je	   @@tickchrlp
           } while (this.getCommaOrRightParen());
         } else {
-          // [error_eldppodc]
-          throw new Error('Expected "(", "$", "%", "#", or DEBUG command');
+          // [error_ebackcmd]
+          throw new Error('Expected "?", ".", "(", "$", "%", "#", or DEBUG command');
         }
         // if white space before next tic emit it
         // UNGH! back up, go forward to allow compile of the following if!
@@ -6583,6 +6590,7 @@ export class SpinResolver {
     // here is ci_debug::@@nottick:
     //  NOTE: NOT THIS: debug(`...)    (this is BackTickDebug, above)
     //        but THIS: debug("...) or e.g., debug(uhex_long()) is nonTickDebug
+    // XYZZY: processNonTickDebug()
     let brkCode: number = 0;
     let didFirstPass: boolean = false;
     this.logMessage(` -- processNonTickDbg(${this.currElement.toString()}) - ENTRY`);
@@ -6683,7 +6691,11 @@ export class SpinResolver {
         }
       } else {
         // here is ci_debug:@@notdkm
-        if (cmdValue & 0x10) {
+        if (cmdValue == eValueType.dc_c_z_pre) {
+          cmdValue += this.debug_first ? 1 : 0;
+          cmdValue = this.debugEnterByteFlag(cmdValue);
+          this.debug_first = false;
+        } else if (cmdValue & 0x10) {
           // here is @@dualparam
           this.dualParamCheck(cmdValue);
         } else {
@@ -6837,7 +6849,7 @@ export class SpinResolver {
   private debugExpSource(isPasmMode: boolean = false): [number, number] {
     // PNut debug_exp_source:
     const savedElementIndex = this.logSavedElementLocation();
-    this.getElement(); // skip paren
+    this.getElementObj(); // skip paren
     this.logMessage(
       `* debugExpSource(isPasm=(${isPasmMode})) - ENTRY elem=[${this.currElement.toString()}](${this.currElement.sourceCharacterOffset},?)`
     );
@@ -6939,7 +6951,7 @@ export class SpinResolver {
     let stringLength: number = 0;
     const savedElementIndex = this.logSavedElementLocation();
     do {
-      this.getElement();
+      this.getElementObj();
       if (this.currElement.type != eElementType.type_con_int) {
         break;
       }
@@ -6958,7 +6970,7 @@ export class SpinResolver {
     } else {
       this.debugEnterByte(eValueType.dc_str);
       for (let index = 0; index < stringLength; index++) {
-        this.getElement();
+        this.getElementObj();
         let chrByte: number = this.currElement.numberValue;
         this.debugEnterByte(chrByte);
         if (index < stringLength - 1) {
@@ -9452,7 +9464,7 @@ private checkDec(): boolean {
   private getVariable(): iVariableReturn {
     // PNut: get_variable:
     this.logMessage(`*==* getVariable()`);
-    this.getElement();
+    this.getElementObj();
     const variableResult: iVariableReturn = this.checkVariable();
     if (variableResult.isVariable == false) {
       // [error_eav]

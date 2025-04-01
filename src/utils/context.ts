@@ -64,6 +64,8 @@ export interface CompileOptions {
   writeBin: boolean; // write binary file (.bin file)
   listFilename: string; // write compile report to this file
   propPlug: string; // selected deviceNode for PropPlug
+  writeFlashImageFile: boolean; // write flash file (.flash file)
+  flashFilename: string; // write flash image to this file
 }
 
 export interface CompileData {
@@ -172,7 +174,9 @@ export class Context {
       writeBin: false,
       listFilename: '',
       v44FormatListing: false,
-      propPlug: ''
+      propPlug: '',
+      writeFlashImageFile: false,
+      flashFilename: ''
     };
     this.compileData = {
       objectData: new ChildObjectsImage(this, 'ObjData'), // pascal P2.ObjData

@@ -102,6 +102,7 @@ export class PNutInTypeScript {
       .option('-o, --output <name>', 'Specify output file basename')
       .option('-i, --intermediate', 'Generate *-pre.spin2 after preprocessing')
       .option('-q, --quiet', 'Quiet mode (suppress banner and non-error text)')
+      .option('-F, --flashfile', 'Generate FLASH image file (.flash) suitable for writing to flash chip')
       .option('-O, --obj', 'Generate object files (.obj) from compilation')
       .option('-D, --Define <symbol...>', 'Define (add) preprocessor symbol(s)')
       .option('-U, --Undefine <symbol...>', 'Undefine (remove) preprocessor symbol(s)')
@@ -219,6 +220,9 @@ export class PNutInTypeScript {
     }
     if (this.options.intermediate) {
       this.context.preProcessorOptions.writeIntermediateSpin2 = true;
+    }
+    if (this.options.flashfile) {
+      this.context.compileOptions.writeFlashImageFile = true;
     }
     if (this.options.list) {
       this.context.compileOptions.writeListing = true;
@@ -491,6 +495,8 @@ export class PNutInTypeScript {
         // set up output filespec in case we are writing a listing file
         const lstFilespec = filename.replace('.spin2', '.lst');
         this.context.compileOptions.listFilename = lstFilespec;
+        const flashFilespec = filename.replace('.spin2', '.flash');
+        this.context.compileOptions.flashFilename = flashFilespec;
         if (this.options.list) {
           this.context.logger.verboseMsg(`* Write listing file: ${lstFilespec}`);
         }

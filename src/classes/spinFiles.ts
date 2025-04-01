@@ -10,8 +10,8 @@ import { locateDataFile, locateSpin2File } from '../utils/files';
 import { SymbolTable } from './symbolTable';
 import { eElementType } from './types';
 
-const FILE_LIMIT: number = 32; // DAT and OBJ limit is same
-const PARAM_LIMIT: number = 16; // OBJ override limit - PMut obj_param_limit
+const FILE_LIMIT: number = 255; // DAT and OBJ limit is same
+const PARAM_LIMIT: number = 16; // OBJ override limit - PNut obj_param_limit
 const ALLOW_LIBRARY_SEARCH: boolean = true;
 
 interface iPossibleSymbolTable {

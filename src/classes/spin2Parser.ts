@@ -110,9 +110,24 @@ export class Spin2Parser {
     this.logMessage(`* P2Compile2(isTopLevel=(${isTopLevel})) - EXIT`);
   }
 
+  public P2MakeFlashFile() {
+    if (this.context.compileOptions.writeFlashImageFile) {
+      this.logMessage('* P2MakeFlashFile() - write flash image file');
+      this.P2MakeFlashFileImage(); // convert image to flash image
+      const outFilename = this.context.compileOptions.flashFilename;
+      // Create a write stream
+      this.logMessage(`  -- writing flash image to ${outFilename}`);
+      const stream = fs.createWriteStream(outFilename);
+      this.writeObjectFile(this.objImage, 0, this.objImage.offset, outFilename); // full
+      // Close the stream
+      stream.end();
+      this.context.logger.progressMsg(`Wrote ${outFilename}`);
+    }
+  }
+
   public P2List() {
-    this.logMessage('* P2List() - write list file');
     if (this.context.compileOptions.writeListing) {
+      this.logMessage('* P2List() - write list file');
       const outFilename = this.context.compileOptions.listFilename;
       // Create a write stream
       this.logMessage(`  -- writing report to ${outFilename}`);
@@ -689,6 +704,59 @@ export class Spin2Parser {
       symValue = symbolFound.value;
     }
     return [definedStatus, isConStatus, symValue];
+  }
+
+  public P2MakeFlashFileImage() {
+    // PNut make_flash_file:
+
+    const _loader_offset_ = 0x160;
+    const _loader_size_ = 0x1f0 - _loader_offset_;
+
+    const _appLongs_ = _loader_size_ - 0x10;
+    const _appLongs2_ = _loader_size_ - 0x0c;
+    const _appSum_ = _loader_size_ - 0x08;
+    const _loaderSum_ = _loader_size_ - 0x04;
+
+    // pad object to next long
+    while (this.objImage.offset & 0b11) {
+      this.objImage.appendByte(0);
+    }
+
+    const appLongCount = this.objImage.offset >> 2;
+    // move object upwards to accommodate flash loader
+    this.logMessage(`  -- move object up - _loader_size_=(${_loader_size_}) bytes`);
+    this.moveObjectUp(this.objImage, _loader_size_, 0, this.objImage.offset);
+    // install flash loader
+    this.logMessage(`  -- load flash loader`);
+    // now path the loader
+    const loaderSubset: Uint8Array = this.externalFiles.flashLoader.subarray(_loader_offset_, 0x1f0 - 1);
+    this.objImage.rawUint8Array.set(loaderSubset, 0);
+    // get app longs
+    this.objImage.replaceLong(appLongCount, _appLongs_);
+    this.objImage.replaceLong(appLongCount, _appLongs2_);
+    //
+    // compute negative sum of all object image
+    let checkSum: number = 0;
+    for (let offset = 0 + _loader_size_; offset < this.objImage.offset; offset += 4) {
+      checkSum -= this.objImage.readLong(offset);
+    }
+    // insert checksum after object
+    this.objImage.replaceLong(checkSum, _appSum_);
+    //
+    // compute negative sum of flash loader
+    checkSum = 0;
+    for (let offset = 0; offset < 0x100; offset += 4) {
+      checkSum -= this.objImage.readLong(offset);
+    }
+    // insert checksum after loader
+    this.objImage.replaceLong(checkSum, _loaderSum_);
+
+    // pad fullimage to 0x100 if shorter
+    if (this.objImage.offset < 0x100) {
+      for (let offset = this.objImage.offset; offset < 0x100; offset++) {
+        this.objImage.replaceByte(0, offset);
+      }
+    }
   }
 
   public P2InsertFlashLoader() {

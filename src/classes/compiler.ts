@@ -80,6 +80,7 @@ export class Compiler {
         const needFLash: boolean = this.context.compileOptions.writeFlash;
         const ramDownload: boolean = this.context.compileOptions.writeRAM || needFLash; // we need download when flashing too!
         this.spin2Parser.ComposeRam(needFLash, ramDownload);
+        this.spin2Parser.P2MakeFlashFile();
       } catch (error: unknown) {
         if (error instanceof Error) {
           const sourceFileID: number = this.spin2Parser.failingFileID;
