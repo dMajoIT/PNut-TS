@@ -6051,7 +6051,6 @@ export class SpinResolver {
   private compileVariableMultiple(startElementIndex: number) {
     // Compile multi-variable assignment - var,... := param(s),...
     // PNut compile_var_multi:
-    // XYZZY update compile_var_multi:
     const elementIndexStack: number[] = [];
     //this.logMessage(`  -- compileVariableMultiple() elem=[${this.nextElementIndex}] - ENTRY`);
     //this.logMessage();
@@ -7462,7 +7461,6 @@ export class SpinResolver {
 
   private compileParametersNoParens(parameterCount: number) {
     // PNut compile_parameters_np:
-    // XYZZY update this code compile_parameters_np:
     this.logMessage(`* compileParametersNoParens(${parameterCount}) - ENTRY`);
     let parametersRemaining: number = parameterCount;
     // eslint-disable-next-line no-constant-condition
@@ -7485,60 +7483,94 @@ export class SpinResolver {
     // Compile a parameter - accommodates instructions/methods with multiple return values
     // on exit, eax holds number of actual parameters compiled
     //
+    //  structure{[]}{.substructure{[]}}	- must be 15 or fewer longs, else error
     //  rotxy/polxy/xypol
     //  obj{[]}.method({params,...})
     //  method({params,...})
     //  var({params,...}):2+
     //
     // PNut compile_parameter:
-    // XYZZY update this code compile_parameter:
+    let skipFollowingTypeChecks: boolean = false;
     this.logMessage(`*--* compileParameter() elem=[${this.currElement.toString()}]`);
     let compiledParameterCount: number = -1; // flag saying we need to compile expression
     const savedElementIndex: number = this.logSavedElementLocation();
-    this.getElement();
-    if (this.currElement.type == eElementType.type_i_flex) {
-      const flexResultCount: number = this.currElement.flexResultCount;
-      if (flexResultCount >= 2) {
-        const flexCode: eFlexcode = this.spinSymbolTables.getFlexcodeFromBytecode(this.currElement.flexByteCode);
-        this.compileFlex(flexCode);
-        compiledParameterCount = flexResultCount;
+    this.getElementObj();
+    const tmpSavedElementIndex: number = this.logSavedElementLocation();
+    const variable: iVariableReturn = this.checkVariable(); // variable ?
+    if (variable.isVariable) {
+      if (this.isStruct(variable.type)) {
+        if (variable.structIsBWL || variable.structSize <= 4) {
+          skipFollowingTypeChecks = true;
+        } else {
+          this.getElement();
+          if (
+            this.currElement.type == eElementType.type_op &&
+            (this.currElement.operation == eOperationType.op_e || this.currElement.operation == eOperationType.op_ne)
+          ) {
+            skipFollowingTypeChecks = true;
+          } else {
+            // PNut @@notstructcmp:
+            this.backElement();
+            compiledParameterCount = (variable.structSize + 3) >> 2;
+            variable.operation = eVariableOperation.VO_READ;
+            this.compileVariable(variable);
+            skipFollowingTypeChecks = true;
+          }
+        }
+      } else {
+        this.logRestoredElementLocation(tmpSavedElementIndex);
       }
-    } else if (this.currElement.type == eElementType.type_obj) {
-      const savedElement: SpinElement = this.currElement;
-      this.checkIndex();
-      this.getDot();
-      let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
-      if (objSymType == eElementType.type_obj_pub) {
-        // remember ct_objpub()
-        // here is @@checkmult:
-        const returnValueCount: number = (Number(objSymValue) >> 20) & 0x0f;
+    } else {
+      this.logRestoredElementLocation(tmpSavedElementIndex);
+    }
+    if (!skipFollowingTypeChecks) {
+      if (this.currElement.type == eElementType.type_i_flex) {
+        const flexResultCount: number = this.currElement.flexResultCount;
+        if (flexResultCount >= 2) {
+          const flexCode: eFlexcode = this.spinSymbolTables.getFlexcodeFromBytecode(this.currElement.flexByteCode);
+          this.compileFlex(flexCode);
+          compiledParameterCount = flexResultCount;
+        }
+      } else if (this.currElement.type == eElementType.type_obj) {
+        const savedElement: SpinElement = this.currElement;
+        this.checkIndex();
+        this.getDot();
+        let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
+        if (objSymType == eElementType.type_obj_pub) {
+          // remember ct_objpub()
+          // here is @@checkmult:
+          const returnValueCount: number = (Number(objSymValue) >> 20) & 0x0f;
+          // PNut @@checkmult2:
+          if (returnValueCount >= 2) {
+            this.logRestoredElementLocation(savedElementIndex);
+            this.getElementObj();
+            this.ct_objpub(eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
+            compiledParameterCount = returnValueCount;
+          }
+        } else {
+          // [error_oiina]
+          throw new Error('Object index is not allowed before constants and structures');
+        }
+      } else if (this.currElement.type == eElementType.type_method) {
+        // remember ct_method()
+        // here is @@checkmult: (just coded differently)
+        const returnValueCount: number = this.currElement.methodResultCount;
         // PNut @@checkmult2:
         if (returnValueCount >= 2) {
           this.logRestoredElementLocation(savedElementIndex);
-          this.getElement();
-          this.ct_objpub(eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
+          this.getElementObj();
+          this.ct_method(eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
           compiledParameterCount = returnValueCount;
         }
-      }
-    } else if (this.currElement.type == eElementType.type_method) {
-      // remember ct_method()
-      // here is @@checkmult: (just coded differently)
-      const returnValueCount: number = this.currElement.methodResultCount;
-      // PNut @@checkmult2:
-      if (returnValueCount >= 2) {
-        this.logRestoredElementLocation(savedElementIndex);
-        this.getElement();
-        this.ct_method(eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
-        compiledParameterCount = returnValueCount;
-      }
-    } else {
-      // remember ct_method_ptr()
-      const [isMethod, returnCount] = this.checkVariableMethod();
-      if (isMethod && returnCount >= 2) {
-        this.logRestoredElementLocation(savedElementIndex);
-        this.getElement();
-        this.ct_method_ptr(savedElementIndex, eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
-        compiledParameterCount = returnCount;
+      } else {
+        // remember ct_method_ptr()
+        const [isMethod, returnCount] = this.checkVariableMethod();
+        if (isMethod && returnCount >= 2) {
+          this.logRestoredElementLocation(savedElementIndex);
+          this.getElementObj();
+          this.ct_method_ptr(savedElementIndex, eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
+          compiledParameterCount = returnCount;
+        }
       }
     }
     // if no count found so far then treat it as 1 and compile the expression

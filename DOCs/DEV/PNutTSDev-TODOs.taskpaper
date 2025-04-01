@@ -111,8 +111,8 @@ TODO's from PNut Zoom 250303++:
 	Day19: Tue:
 		- Finish v50 changes
 			- SPIN blocks (PUB, PRI)
-				- Update compileParametersNoParens()
-				- Update compileParameter()
+				- Update compileParametersNoParens() @done(2025-04-01)
+				- Update compileParameter() @done(2025-04-01)
 		- Review DIFF for anything else we missed
 		- Add code delta from v50 to v51
 		- Adjust existing regression tests to work
