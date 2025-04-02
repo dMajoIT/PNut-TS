@@ -26,6 +26,7 @@ import { eTextSub, SpinDocument } from './spinDocument';
 import { hexByte, hexLong, hexWord } from '../utils/formatUtils';
 import { eMemberType, ObjectStructures } from './objectStructures';
 import { ObjectStructureRecord } from './objectStructureRecord';
+import { timeStamp } from 'console';
 
 // Internal types used for passing complex values
 interface iValueReturn {
@@ -247,23 +248,25 @@ export class SpinResolver {
   private objectStructureSet: ObjectStructures;
 
   // registers / constants
-  private readonly inlineLimit: number = 0x120; // address
   private readonly taskhltReg: number = 0x1cc; // address
   private readonly mrecvReg: number = 0x1d1; // address
   private readonly msendReg: number = 0x1d2; // address
-  private readonly pasmRegs: number = 0x1d8; // address
-  private readonly inlineLocalsStart: number = 0x1e0; // address
+  private readonly prxRegs: number = 0x1d8; // address PNut prx_regs
+  private readonly inlineLocalsBase: number = 0x1e0; // address PNut inline_locals_base
   private readonly clkfreqAddress: number = 0x44; // address
-  private readonly results_limit: number = 15; // max return value LONGs
-  private readonly params_limit: number = 127; // max parameter value LONGs
+
+  private readonly inline_org_limit: number = 0x120; // address PNut inline_limit
+  private readonly method_results_limit: number = 15; // max return value LONGs
+  private readonly method_params_limit: number = 127; // max parameter value LONGs
   private readonly if_limit: number = 256; // max if-chain length
   private readonly case_limit: number = 256; // max cases
   private readonly case_fast_limit: number = 256; // max cases
   private readonly subs_limit: number = 1024; // max PUB/PRI count
   private readonly objs_limit: number = 1024; // max object count
   private readonly distiller_limit: number = 0x10000; // max distiller limit
-  private readonly locals_limit: number = 0x10000 + this.params_limit * 4 + this.results_limit * 4;
+  private readonly method_locals_limit: number = 0x10000 + this.method_params_limit * 4 + this.method_results_limit * 4;
   private readonly obj_limit = 0x100000;
+
   // VAR processing support data
   private varPtr: number = 4;
 
@@ -3116,9 +3119,9 @@ export class SpinResolver {
             throw new Error('Expected a unique parameter name (m0C0)');
           }
           parameterCount += paramSizeInLongs;
-          if (parameterCount > this.params_limit) {
+          if (parameterCount > this.method_params_limit) {
             // [error_loxpe]
-            throw new Error(`Limit of ${this.params_limit} parameters exceeded`);
+            throw new Error(`Limit of ${this.method_params_limit} parameters exceeded`);
           }
         } while (this.getCommaOrRightParen());
       }
@@ -3146,9 +3149,9 @@ export class SpinResolver {
             throw new Error('Expected a unique result name (m0D0)');
           }
           resultCount += resultSizeInLongs;
-          if (resultCount > this.results_limit) {
+          if (resultCount > this.method_results_limit) {
             // [error_loxre]
-            throw new Error(`Limit of ${this.results_limit} results exceeded`);
+            throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
           }
         } while (this.checkComma());
       }
@@ -3442,7 +3445,7 @@ export class SpinResolver {
             this.getRightBracket();
           }
           localOffset += localSizeInBytes * currArraySize;
-          if (localOffset > this.locals_limit) {
+          if (localOffset > this.method_locals_limit) {
             // [error_loxlve]
             throw new Error('Limit of 64KB of local variables exceeded');
           }
@@ -4626,11 +4629,11 @@ export class SpinResolver {
             {
               // have PUB
               const methodParameterCount: number = this.objectData.readByte();
-              if (methodParameterCount > this.params_limit) {
+              if (methodParameterCount > this.method_params_limit) {
                 this.errorBadObjectImage(objFileRecords[objFileIndex]);
               }
               const methodResultCount: number = this.objectData.readByte();
-              if (methodResultCount > this.results_limit) {
+              if (methodResultCount > this.method_results_limit) {
                 this.errorBadObjectImage(objFileRecords[objFileIndex]);
               }
               const symbolValue = (methodParameterCount << 24) | (methodResultCount << 20) | pubIndex++; // pubIndex is PNut [@@pub]
@@ -6115,24 +6118,24 @@ export class SpinResolver {
     // PNut compile_inline:
     this.logMessage(`* compileOrg() - ENTRY`);
     let inlineOrigin: number = 0;
-    let inlineLimit: number = this.inlineLimit;
+    let inline_org_limit: number = this.inline_org_limit;
     // handle inline:  ORG {start{,limit}}
     if (this.checkEndOfLine() == false) {
       const startValueReturn: iValueReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
-      if (startValueReturn.value > BigInt(inlineLimit)) {
+      if (startValueReturn.value > BigInt(inline_org_limit)) {
         // [error_icaexl]
         //throw new Error('Inline cog address exceeds $120 limit');
-        throw new Error(`Inline cog address exceeds $${this.inlineLimit.toString(16)} limit (m190)`);
+        throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m190)`);
       }
       inlineOrigin = Number(startValueReturn.value);
       if (this.checkComma()) {
         const limitValueReturn: iValueReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
-        if (limitValueReturn.value > BigInt(inlineLimit)) {
+        if (limitValueReturn.value > BigInt(inline_org_limit)) {
           // [error_icaexl]
           //throw new Error('Inline cog address exceeds $120 limit');
-          throw new Error(`Inline cog address exceeds $${this.inlineLimit.toString(16)} limit (m191)`);
+          throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m191)`);
         }
-        inlineLimit = Number(limitValueReturn.value);
+        inline_org_limit = Number(limitValueReturn.value);
       }
       // this is @@orgend:
       this.getEndOfLine();
@@ -6147,7 +6150,7 @@ export class SpinResolver {
     // compile inline section
     this.logMessage(`  -- compile inline section`);
     this.hubMode = false;
-    this.compile_dat_blocks(isInlineMode, inlineOrigin << 2, inlineLimit << 2);
+    this.compile_dat_blocks(isInlineMode, inlineOrigin << 2, inline_org_limit << 2);
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if ((this.objImage.offset ^ patchLocation) & 0b11) {
@@ -6178,12 +6181,12 @@ export class SpinResolver {
 
     const isInlineMode: boolean = true;
     const inlineOrigin: number = 0;
-    const inlineLimit: number = 0x1f8;
+    const inline_org_limit: number = 0x1f8;
 
     // compile inline section
     this.logMessage(`  -- compile inline section`);
     this.hubMode = true;
-    this.compile_dat_blocks(isInlineMode, inlineOrigin << 2, inlineLimit << 2);
+    this.compile_dat_blocks(isInlineMode, inlineOrigin << 2, inline_org_limit << 2);
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if ((this.objImage.offset ^ patchLocation) & 0b11) {
@@ -7873,38 +7876,23 @@ export class SpinResolver {
   }
 
   private ct_at() {
-    // Compile term - @"string", @obj{[]}.method, @method, or @hubvar
+    // Compile term - @"string", @\"string", @obj{[]}.method, @method, or @hubvar
     // PNut ct_at:
-    this.getElement();
+    // XYZZY update ct_at() for v50
+    this.getElementObj();
     this.logMessage(`* ct_at() get then elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_con_int) {
       // here is @@string:
-      this.objImage.appendByte(eByteCode.bc_string);
-      const patchLocation: number = this.objImage.offset;
-      this.objImage.appendByte(0); // placeholder for now
-      let stringLength: number = 1;
-      this.backElement();
-      do {
-        const valueReturn: iValueReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
-        if (valueReturn.value < 1n || valueReturn.value > 255n) {
-          // [error_scmrf]
-          throw new Error('STRING characters must range from 1 to 255 (m210)');
-        }
-        this.objImage.appendByte(Number(valueReturn.value));
-        if (++stringLength > 255) {
-          // [error_sdcx]
-          throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m220)');
-        }
-        this.logMessage(`* ct_at() post getValue elem=[${this.currElement.toString()}]`);
-        this.getElement();
-        if (this.currElement.isMidStringComma == false) {
-          break; // this could be comma (not mid), right-paren or EOL
-        }
-        // eslint-disable-next-line no-constant-condition
-      } while (true);
-      this.backElement();
-      this.objImage.appendByte(0); // emit string terminator
-      this.objImage.replaceByte(stringLength, patchLocation); // replace the placeholder with length
+      this.ct_at_emit_string(false); // without string escapes
+    } else if (this.currElement.type == eElementType.type_back) {
+      // PNut @@string_esc:
+      this.currElement = this.getElementObj();
+      if (this.currElement.type != eElementType.type_con_int) {
+        // [error_esc]
+        throw new Error('Expected a string character');
+      }
+      // process string in escape mode
+      this.ct_at_emit_string(true); // with string escapes
     } else if (this.currElement.type == eElementType.type_obj) {
       // here is @@object:
       const savedElement: SpinElement = this.currElement;
@@ -7934,6 +7922,7 @@ export class SpinResolver {
         // [error_easvmoo]
         throw new Error('Expected a string, variable, method, or object');
       }
+
       // here is @@var:
       if (variableReturn.type == eElementType.type_register) {
         // [error_arina]
@@ -7945,6 +7934,129 @@ export class SpinResolver {
       }
       this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
     }
+  }
+
+  private ct_at_emit_string(escapeMode: boolean) {
+    // here is @@string:
+    this.objImage.appendByte(eByteCode.bc_string);
+    const patchLocation: number = this.objImage.offset;
+    this.objImage.appendByte(0); // placeholder for now
+    let stringLength: number = 1;
+    this.backElement();
+    do {
+      const valueReturn: iValueReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
+      if (valueReturn.value < 1n || valueReturn.value > 255n) {
+        // [error_scmrf]
+        throw new Error('STRING characters must range from 1 to 255 (m210)');
+      }
+      // PNut @@chrok:
+      let stringByte: number = Number(valueReturn.value);
+      if (escapeMode) {
+        stringByte = this.handleEscapeChr(stringByte, escapeMode);
+      }
+      this.objImage.appendByte(stringByte);
+      if (++stringLength > 255) {
+        // [error_sdcx]
+        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m220)');
+      }
+      this.logMessage(`* ct_at() post getValue elem=[${this.currElement.toString()}]`);
+      this.getElementObj();
+      if (this.currElement.isMidStringComma == false) {
+        break; // this could be comma (not mid), right-paren or EOL
+      }
+      // eslint-disable-next-line no-constant-condition
+    } while (true);
+    this.backElement();
+    this.objImage.appendByte(0); // emit string terminator
+    this.objImage.replaceByte(stringLength, patchLocation); // replace the placeholder with length
+  }
+
+  private handleEscapeChr(char: number, escapeMode: boolean): number {
+    //  \a = 7, alarm bell
+    //  \b = 8, backspace
+    //  \t = 9, tab
+    //  \n = 10, new line
+    //  \f = 12, form feed
+    //  \r = 13, carriage return
+    //  \\ = 92, \ (backslash)
+    //  \x01 to \xFF = $01 to $FF (0 is not allowed, as it would terminate the string)
+    let character: number = char;
+    if (escapeMode && char == '\\'.charCodeAt(0)) {
+      const charStr = this.getCharacter();
+      switch (charStr) {
+        case 'A':
+          character = 7;
+          break;
+        case 'B':
+          character = 8;
+          break;
+        case 'T':
+          character = 9;
+          break;
+        case 'N':
+          character = 10;
+          break;
+        case 'F':
+          character = 12;
+          break;
+        case 'R':
+          character = 13;
+          break;
+        case '\\':
+          character = '\\'.charCodeAt(0);
+          break;
+        case 'X':
+          {
+            const hexDigit1: string = this.getCharacter().toUpperCase();
+            if (!this.isHexDigit(hexDigit1)) {
+              // [error_iec]
+              throw new Error('Invalid escape character');
+            }
+            const hexDigit2: string = this.getCharacter().toUpperCase();
+            if (!this.isHexDigit(hexDigit2)) {
+              // [error_iec]
+              throw new Error('Invalid escape character');
+            }
+            const upperDigit: number = hexDigit1.charCodeAt(0);
+            const lowerDigit: number = hexDigit2.charCodeAt(0);
+            character = (hexDigit1 >= 'A' ? upperDigit - 0x41 + 10 : upperDigit - 0x30) << 4;
+            character |= hexDigit2 >= 'A' ? lowerDigit - 0x41 + 10 : lowerDigit - 0x30;
+          }
+          break;
+        default:
+          this.backElement(); // replace unknown char
+          character = '\\'.charCodeAt(0);
+          break;
+      }
+    }
+    return character;
+  }
+
+  private isHexDigit(char: string): boolean {
+    return /^[0-9A-Fa-f]$/.test(char);
+  }
+
+  private getCharacter(): string {
+    const nextElement: SpinElement = this.peekNextElement();
+    if (!nextElement.midStringComma) {
+      // [error_esc]
+      throw new Error('Expected a string character');
+    }
+    this.getComma();
+    this.getElementObj();
+    if (this.currElement.type != eElementType.type_con_int) {
+      // [error_esc]
+      throw new Error('Expected a string character');
+    }
+    if (this.currElement.numberValue < 1 || this.currElement.numberValue > 255) {
+      // [error_scmrf]
+      throw new Error('STRING characters must range from 1 to 255 (m211)');
+    }
+    let charCode = this.currElement.numberValue;
+    if (charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0)) {
+      charCode -= 0x20;
+    }
+    return String.fromCharCode(charCode);
   }
 
   private ct_objpub(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
@@ -8016,9 +8128,9 @@ export class SpinResolver {
       let returnValueCount: number = 0;
       if (this.checkColon()) {
         returnValueCount = this.getConInt();
-        if (returnValueCount > this.results_limit) {
+        if (returnValueCount > this.method_results_limit) {
           // [error_loxre]
-          throw new Error(`Limit of ${this.results_limit} results exceeded`);
+          throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
         }
       }
       // this is @@noresults:
@@ -8053,9 +8165,9 @@ export class SpinResolver {
     if (this.checkRightParen() == false) {
       do {
         parameterCount += this.compileParameter();
-        if (parameterCount > this.params_limit) {
+        if (parameterCount > this.method_params_limit) {
           // [error_loxpe]
-          throw new Error(`Limit of ${this.params_limit} parameters exceeded`);
+          throw new Error(`Limit of ${this.method_params_limit} parameters exceeded`);
         }
       } while (this.getCommaOrRightParen());
     }
@@ -8733,7 +8845,7 @@ export class SpinResolver {
                 this.currElement.type == eElementType.type_loc_struct_ptr)
             ) {
               // return address of local var
-              resultStatus.value = (this.currElement.bigintValue >> 2n) + BigInt(this.inlineLocalsStart);
+              resultStatus.value = (this.currElement.bigintValue >> 2n) + BigInt(this.inlineLocalsBase);
             } else if (this.currElement.type == eElementType.type_at) {
               // HANDLE address of DAT symbol
               this.checkIntMode();
@@ -9253,8 +9365,8 @@ private checkDec(): boolean {
     //  REG[register][index]{.[bitfield]}
     //  (or actual register name constants)
     if (variable.type == eElementType.type_register) {
-      if (variable.address >= this.pasmRegs && variable.address <= this.pasmRegs + 7 && variable.indexFlag == false) {
-        this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - this.pasmRegs));
+      if (variable.address >= this.prxRegs && variable.address <= this.prxRegs + 7 && variable.indexFlag == false) {
+        this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - this.prxRegs));
       } else if (variable.address >= 0x1f8 && variable.address <= 0x1ff && variable.indexFlag == false) {
         this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - 0x1f8 + 8));
       } else {
@@ -10333,7 +10445,7 @@ private checkDec(): boolean {
           foundMethodStatus = true;
           if (this.checkColon()) {
             returnValueCount = this.getConInt();
-            if (returnValueCount > this.results_limit) {
+            if (returnValueCount > this.method_results_limit) {
               // [error_loxre]
               throw new Error('Limit of 15 results exceeded');
             }
