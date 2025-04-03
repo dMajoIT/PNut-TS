@@ -117,7 +117,13 @@ TODO's from PNut Zoom 250303++:
 			- check processBackTickDebug() @done(2025-04-01)
 			- check processNonTickDebug() @done(2025-04-01)
 			- account for new exception messages @done(2025-04-01)
-		- Add code delta from v50 to v51
+	Day20: Wed:
+		- added escape string processing @done(2025-04-02)
+		- updated some limit variables @done(2025-04-02)
+		- update/regenerate tables @done(2025-04-02)
+		- update exception message content @done(2025-04-02)
+	Day21: Thu:
+		- Add code delta from v50 to v51 (starting from compile1)
 		- Adjust existing regression tests to work
 		- Add new regressions tests for v45 - v51 features
 	

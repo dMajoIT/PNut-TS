@@ -1527,7 +1527,7 @@ export class SpinResolver {
               }
               if (this.dittoIsActive) {
                 // [error_onawads]
-                throw new Error('ORG not allowed within a DITTO section');
+                throw new Error('ORG not allowed within a DITTO block');
               }
               this.errorIfSymbol();
               // reset cog address and limit
@@ -1622,7 +1622,7 @@ export class SpinResolver {
               }
             } else if (this.dittoIsActive) {
               // [error_ohnawads]
-              throw new Error('ORGH not allowed within a DITTO section');
+              throw new Error('ORGH not allowed within a DITTO block');
             }
             // ensure this gets to end-of-line check (throw error if not)
             this.getEndOfLine();
@@ -6162,7 +6162,7 @@ export class SpinResolver {
     const lengthInLongs: number = (this.objImage.offset - patchLocation) >> 2;
     if (lengthInLongs == 0) {
       // [error_isie]
-      throw new Error('Inline section is empty');
+      throw new Error('ORG/ORGH inline block is empty');
     }
     this.objImage.replaceWord(lengthInLongs - 1, patchLocation - 2); // replace the placeholder with length
     this.logMessage(`* compileOrg() - EXIT`);
@@ -6198,11 +6198,11 @@ export class SpinResolver {
     const lengthInLongs: number = (this.objImage.offset - patchLocation) >> 2;
     if (lengthInLongs == 0) {
       // [error_isie]
-      throw new Error('Inline section is empty');
+      throw new Error('ORG/ORGH inline block is empty');
     }
     if (lengthInLongs > 0xffff) {
       // [error_isil]
-      throw new Error('ORGH inline section exceeds $FFFF longs (including the added RET instruction)');
+      throw new Error('ORGH inline block exceeds $FFFF longs (including the added RET instruction)');
     }
     this.objImage.replaceWord(lengthInLongs, patchLocation - 2); // replace the placeholder with length
     this.logMessage(`* compileOrgh() - EXIT`);
@@ -8272,7 +8272,7 @@ export class SpinResolver {
         throw new Error('This method returns no results');
       } else if (numberResults > 1 && resultsNeeded == eResultRequirements.RR_One) {
         // [error_tmrmr]
-        throw new Error('This method returns multiple results');
+        throw new Error('This method returns multiple result longs');
       }
     }
   }
@@ -9454,29 +9454,17 @@ private checkDec(): boolean {
 
     // handle hub byte/word/long with possible index
     if (variable.type == eElementType.type_hub_byte) {
-      // special handling for CLKFREQ read
-      if (
-        variable.wordSize == eWordSize.WS_Long &&
-        variable.operation === eVariableOperation.VO_READ &&
-        variable.address == this.clkfreqAddress &&
-        variable.indexFlag == false &&
-        variable.bitfieldFlag == false
-      ) {
-        this.objImage.appendByte(eByteCode.bc_hub_bytecode);
-        this.objImage.appendByte(eByteCode.bc_read_clkfreq);
+      // just a read
+      this.logMessage(`  -- compileVariable() variable.wordSize=(${variable.wordSize})`);
+      this.compileConstant(BigInt(variable.address));
+      if (variable.indexFlag == true) {
+        this.compileIndex();
+        this.objImage.appendByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize);
       } else {
-        // not a CLKFREQ read
-        this.logMessage(`  -- compileVariable() variable.wordSize=(${variable.wordSize})`);
-        this.compileConstant(BigInt(variable.address));
-        if (variable.indexFlag == true) {
-          this.compileIndex();
-          this.objImage.appendByte(eByteCode.bc_setup_byte_pb_pi + variable.wordSize);
-        } else {
-          this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
-        }
-        this.compileVariableBitfield(variable);
-        this.compileVariableReadWriteAssign(variable);
+        this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
       }
+      this.compileVariableBitfield(variable);
+      this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
     }
 

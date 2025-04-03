@@ -1068,8 +1068,8 @@ export class SpinSymbolTables {
 
     //		oc		op		prec	bytecode	ternary	binary	unary	assign	float	alias	hubcode
     this.opcodeValues.set(eOpcode.oc_bitnot, setOpcodeValue(eOperationType.op_bitnot, 0, eByteCode.bc_bitnot, 0, 0, 1, 1, 0, 0, 0)); //  !
-    this.opcodeValues.set(eOpcode.oc_neg, setOpcodeValue(eOperationType.op_neg, 0, eByteCode.bc_neg, 0, 0, 1, 1, 1, 0, 0)); //  -	(uses op_sub sym)
-    this.opcodeValues.set(eOpcode.oc_fneg, setOpcodeValue(eOperationType.op_fneg, 0, eByteCode.bc_fneg, 0, 0, 1, 0, 1, 0, 1)); //  -.	(uses op_fsub sym)
+    this.opcodeValues.set(eOpcode.oc_neg, setOpcodeValue(eOperationType.op_neg, 0, eByteCode.bc_neg, 0, 0, 1, 1, 1, 0, 0)); //  -	(uses op_sub symbol)
+    this.opcodeValues.set(eOpcode.oc_fneg, setOpcodeValue(eOperationType.op_fneg, 0, eByteCode.bc_fneg, 0, 0, 1, 0, 1, 0, 1)); //  -.	(uses op_fsub symbol)
     this.opcodeValues.set(eOpcode.oc_abs, setOpcodeValue(eOperationType.op_abs, 0, eByteCode.bc_abs, 0, 0, 1, 1, 1, 0, 0)); //  ABS
     this.opcodeValues.set(eOpcode.oc_fabs, setOpcodeValue(eOperationType.op_fabs, 0, eByteCode.bc_fabs, 0, 0, 1, 0, 1, 0, 1)); //  FABS
     this.opcodeValues.set(eOpcode.oc_encod, setOpcodeValue(eOperationType.op_encod, 0, eByteCode.bc_encod, 0, 0, 1, 1, 0, 0, 0)); //  ENCOD
@@ -1080,6 +1080,12 @@ export class SpinSymbolTables {
     this.opcodeValues.set(eOpcode.oc_fsqrt, setOpcodeValue(eOperationType.op_fsqrt, 0, eByteCode.bc_fsqrt, 0, 0, 1, 0, 1, 0, 1)); //  FSQRT
     this.opcodeValues.set(eOpcode.oc_qlog, setOpcodeValue(eOperationType.op_qlog, 0, eByteCode.bc_qlog, 0, 0, 1, 1, 0, 0, 0)); //  QLOG
     this.opcodeValues.set(eOpcode.oc_qexp, setOpcodeValue(eOperationType.op_qexp, 0, eByteCode.bc_qexp, 0, 0, 1, 1, 0, 0, 0)); //  QEXP
+    this.opcodeValues.set(eOpcode.oc_log2, setOpcodeValue(eOperationType.op_log2, 0, eByteCode.bc_log2, 0, 0, 1, 0, 1, 0, 1)); //  LOG2
+    this.opcodeValues.set(eOpcode.oc_log10, setOpcodeValue(eOperationType.op_log10, 0, eByteCode.bc_log10, 0, 0, 1, 0, 1, 0, 1)); //  LOG10
+    this.opcodeValues.set(eOpcode.oc_log, setOpcodeValue(eOperationType.op_log, 0, eByteCode.bc_log, 0, 0, 1, 0, 1, 0, 1)); //  LOG
+    this.opcodeValues.set(eOpcode.oc_exp2, setOpcodeValue(eOperationType.op_exp2, 0, eByteCode.bc_exp2, 0, 0, 1, 0, 1, 0, 1)); //  EXP2
+    this.opcodeValues.set(eOpcode.oc_exp10, setOpcodeValue(eOperationType.op_exp10, 0, eByteCode.bc_exp10, 0, 0, 1, 0, 1, 0, 1)); //  EXP10
+    this.opcodeValues.set(eOpcode.oc_exp, setOpcodeValue(eOperationType.op_exp, 0, eByteCode.bc_exp, 0, 0, 1, 0, 1, 0, 1)); //  EXP
     this.opcodeValues.set(eOpcode.oc_shr, setOpcodeValue(eOperationType.op_shr, 1, eByteCode.bc_shr, 0, 1, 0, 1, 0, 0, 0)); //  >>
     this.opcodeValues.set(eOpcode.oc_shl, setOpcodeValue(eOperationType.op_shl, 1, eByteCode.bc_shl, 0, 1, 0, 1, 0, 0, 0)); //  <<
     this.opcodeValues.set(eOpcode.oc_sar, setOpcodeValue(eOperationType.op_sar, 1, eByteCode.bc_sar, 0, 1, 0, 1, 0, 0, 0)); //  SAR
@@ -1105,6 +1111,7 @@ export class SpinSymbolTables {
     this.opcodeValues.set(eOpcode.oc_fadd, setOpcodeValue(eOperationType.op_fadd, 6, eByteCode.bc_fadd, 0, 1, 0, 0, 1, 0, 1)); //  +.
     this.opcodeValues.set(eOpcode.oc_sub, setOpcodeValue(eOperationType.op_sub, 6, eByteCode.bc_sub, 0, 1, 0, 1, 1, 0, 0)); //  -
     this.opcodeValues.set(eOpcode.oc_fsub, setOpcodeValue(eOperationType.op_fsub, 6, eByteCode.bc_fsub, 0, 1, 0, 0, 1, 0, 1)); //  -.
+    this.opcodeValues.set(eOpcode.oc_pow, setOpcodeValue(eOperationType.op_pow, 6, eByteCode.bc_pow, 0, 1, 0, 0, 1, 0, 1));
     this.opcodeValues.set(eOpcode.oc_fge, setOpcodeValue(eOperationType.op_fge, 7, eByteCode.bc_fge, 0, 1, 0, 1, 1, 0, 0)); //  #>
     this.opcodeValues.set(eOpcode.oc_fle, setOpcodeValue(eOperationType.op_fle, 7, eByteCode.bc_fle, 0, 1, 0, 1, 1, 0, 0)); //  <#
     this.opcodeValues.set(eOpcode.oc_addbits, setOpcodeValue(eOperationType.op_addbits, 8, eByteCode.bc_addbits, 0, 1, 0, 1, 0, 0, 0)); //  ADDBITS
@@ -1664,10 +1671,10 @@ export class SpinSymbolTables {
     this.flexcodeValues.set(eFlexcode.fc_rotxy, setFlexcodeValue(eByteCode.bc_rotxy, 3, 2, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_polxy, setFlexcodeValue(eByteCode.bc_polxy, 2, 2, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_xypol, setFlexcodeValue(eByteCode.bc_xypol, 2, 2, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_nan, setFlexcodeValue(eByteCode.bc_nan, 1, 1, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_float, setFlexcodeValue(eByteCode.bc_float, 1, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_round, setFlexcodeValue(eByteCode.bc_round, 1, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_trunc, setFlexcodeValue(eByteCode.bc_trunc, 1, 1, 0, 1));
-    this.flexcodeValues.set(eFlexcode.fc_float, setFlexcodeValue(eByteCode.bc_float, 1, 1, 0, 1));
+    this.flexcodeValues.set(eFlexcode.fc_nan, setFlexcodeValue(eByteCode.bc_nan, 1, 1, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_tasknext, setFlexcodeValue(eByteCode.bc_tasknext, 0, 0, 0, 0));
     this.flexcodeValues.set(eFlexcode.fc_taskstop, setFlexcodeValue(eByteCode.bc_taskstop, 1, 0, 0, 1));
     this.flexcodeValues.set(eFlexcode.fc_taskhalt, setFlexcodeValue(eByteCode.bc_taskhalt, 1, 0, 0, 1));
@@ -3573,6 +3580,12 @@ export enum eOpcode {
   oc_fsqrt,
   oc_qlog,
   oc_qexp,
+  oc_log2,
+  oc_log10,
+  oc_log,
+  oc_exp2,
+  oc_exp10,
+  oc_exp,
   oc_shr,
   oc_shl,
   oc_sar,
@@ -3598,6 +3611,7 @@ export enum eOpcode {
   oc_fadd,
   oc_sub,
   oc_fsub,
+  oc_pow,
   oc_fge,
   oc_fle,
   oc_addbits,

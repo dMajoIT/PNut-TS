@@ -356,12 +356,12 @@ count		bc_setup_bfield_rfvar
 counti		bc_setup_bfield_0_31,32
 
 
-count2n		bc_hubset		,54h	;hub bytecodes, miscellaneous (step by 2)
+count2n		bc_hubset		,54h	;hub bytecodes, miscellaneous routines (step by 2)
 count2		bc_clkset
-count2		bc_read_clkfreq
 count2		bc_cogspin
 count2		bc_cogchk
 count2		bc_org
+count2		bc_orgh
 count2		bc_regexec
 count2		bc_regload
 count2		bc_call
@@ -393,35 +393,41 @@ count2		bc_qcos
 count2		bc_rotxy
 count2		bc_polxy
 count2		bc_xypol
+count2		bc_pinread
+count2		bc_pinwrite
+count2		bc_pinstart
+count2		bc_pinclear
 
-count2		bc_float			;hub bytecodes, floating point
-count2		bc_trunc
+count2		bc_float			;hub bytecodes, floating point routines
 count2		bc_round
+count2		bc_trunc
+count2		bc_nan
 count2		bc_fneg
 count2		bc_fabs
-count2		bc_fsqrt
-count2		bc_fadd
-count2		bc_fsub
-count2		bc_fmul
-count2		bc_fdiv
 count2		bc_flt
 count2		bc_fgt
 count2		bc_fne
 count2		bc_fe
 count2		bc_flte
 count2		bc_fgte
-count2		bc_nan
+count2		bc_fadd
+count2		bc_fsub
+count2		bc_fmul
+count2		bc_fdiv
+count2		bc_pow
+count2		bc_log2
+count2		bc_log10
+count2		bc_log
+count2		bc_exp2
+count2		bc_exp10
+count2		bc_exp
+count2		bc_fsqrt
 
-count2		bc_pinread			;hub bytecodes, miscellaneous
-count2		bc_pinwrite
-count2		bc_pinstart
-count2		bc_pinclear
-count2		bc_taskspin
+count2		bc_taskspin			;hub bytecodes, multitasking routines
 count2		bc_taskstop
 count2		bc_taskhalt
 count2		bc_taskcont
 count2		bc_taskchk
 count2		bc_taskid
 count2		bc_task_return
-count2		bc_orgh
 ;

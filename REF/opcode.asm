@@ -13,6 +13,12 @@ opcode		oc_sqrt,	op_sqrt,	0,	bc_sqrt,	0,	0,	1,	1,	0,	0,	0	; SQRT
 opcode		oc_fsqrt,	op_fsqrt,	0,	bc_fsqrt,	0,	0,	1,	0,	1,	0,	1	; FSQRT
 opcode		oc_qlog,	op_qlog,	0,	bc_qlog,	0,	0,	1,	1,	0,	0,	0	; QLOG
 opcode		oc_qexp,	op_qexp,	0,	bc_qexp,	0,	0,	1,	1,	0,	0,	0	; QEXP
+opcode		oc_log2,	op_log2,	0,	bc_log2,	0,	0,	1,	0,	1,	0,	1	; LOG2
+opcode		oc_log10,	op_log10,	0,	bc_log10,	0,	0,	1,	0,	1,	0,	1	; LOG10
+opcode		oc_log,		op_log,		0,	bc_log,		0,	0,	1,	0,	1,	0,	1	; LOG
+opcode		oc_exp2,	op_exp2,	0,	bc_exp2,	0,	0,	1,	0,	1,	0,	1	; EXP2
+opcode		oc_exp10,	op_exp10,	0,	bc_exp10,	0,	0,	1,	0,	1,	0,	1	; EXP10
+opcode		oc_exp,		op_exp,		0,	bc_exp,		0,	0,	1,	0,	1,	0,	1	; EXP
 opcode		oc_shr,		op_shr,		1,	bc_shr,		0,	1,	0,	1,	0,	0,	0	; >>
 opcode		oc_shl,		op_shl,		1,	bc_shl,		0,	1,	0,	1,	0,	0,	0	; <<
 opcode		oc_sar,		op_sar,		1,	bc_sar,		0,	1,	0,	1,	0,	0,	0	; SAR
@@ -38,6 +44,7 @@ opcode		oc_add,		op_add,		6,	bc_add,		0,	1,	0,	1,	1,	0,	0	; +
 opcode		oc_fadd,	op_fadd,	6,	bc_fadd,	0,	1,	0,	0,	1,	0,	1	; +.
 opcode		oc_sub,		op_sub,		6,	bc_sub,		0,	1,	0,	1,	1,	0,	0	; -
 opcode		oc_fsub,	op_fsub,	6,	bc_fsub,	0,	1,	0,	0,	1,	0,	1	; -.
+opcode		oc_pow,		op_pow,		6,	bc_pow,		0,	1,	0,	0,	1,	0,	1
 opcode		oc_fge,		op_fge,		7,	bc_fge,		0,	1,	0,	1,	1,	0,	0	; #>
 opcode		oc_fle,		op_fle,		7,	bc_fle,		0,	1,	0,	1,	1,	0,	0	; <#
 opcode		oc_addbits,	op_addbits,	8,	bc_addbits,	0,	1,	0,	1,	0,	0,	0	; ADDBITS
@@ -68,3 +75,4 @@ opcode		oc_logxor_name,	op_logxor,	12,	bc_logxor,	0,	1,	0,	1,	0,	0,	0	; XOR
 opcode		oc_logor,	op_logor,	13,	bc_logor,	0,	1,	0,	1,	0,	1,	0	; ||
 opcode		oc_logor_name,	op_logor,	13,	bc_logor,	0,	1,	0,	1,	0,	0,	0	; OR
 opcode		oc_ternary,	op_ternary,	14,	0,		1,	0,	0,	1,	0,	0,	0	; ?
+;

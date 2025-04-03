@@ -140,91 +140,98 @@ export enum eOperationType {
   //
   // Operators
   //
-  //	Operator precedence (highest to lowest)
+  //    Operator precedence (highest to lowest)
   //
-  //	0	!, -, ABS, FABS, ENCOD, DECOD, BMASK, ONES, SQRT, FSQRT, QLOG, QEXP	(unary)
-  //	1	>>, <<, SAR, ROR, ROL, REV, ZEROX, SIGNX				(binary)
-  //	2	&									(binary)
-  //	3	^									(binary)
-  //	4	|									(binary)
-  //	5	*, *., /, /., +/, //, +//, SCA, SCAS, FRAC				(binary)
-  //	6	+, +., -, -.								(binary)
-  //	7	#>, <#									(binary)
-  //	8	ADDBITS, ADDPINS							(binary)
-  //	9	<, <., +<, <=, <=., +<=, ==, ==., <>, <>., >=, >=., +>=, >, >., +>, <=>	(binary)
-  //	10	!!, NOT									(unary)
-  //	11	&&, AND									(binary)
-  //	12	^^, XOR									(binary)
-  //	13	||, OR									(binary)
-  //	14	? :									(ternary)
+  //    !, -, ABS, FABS, ENCOD, DECOD, BMASK, ONES, SQRT, FSQRT, QLOG, QEXP,...         (unary)
+  //    1       >>, <<, SAR, ROR, ROL, REV, ZEROX, SIGNX                                (binary)
+  //    2       &                                                                       (binary)
+  //    3       ^                                                                       (binary)
+  //    4       |                                                                       (binary)
+  //    5       *, *., /, /., +/, //, +//, SCA, SCAS, FRAC                              (binary)
+  //    6       +, +., -, -., POW                                                       (binary)
+  //    7       #>, <#                                                                  (binary)
+  //    8       ADDBITS, ADDPINS                                                        (binary)
+  //    9       <, <., +<, <=, <=., +<=, ==, ==., <>, <>., >=, >=., +>=, >, >., +>, <=> (binary)
+  //    10      !!, NOT                                                                 (unary)
+  //    11      &&, AND                                                                 (binary)
+  //    12      ^^, XOR                                                                 (binary)
+  //    13      ||, OR                                                                  (binary)
+  //    14      ? :                                                                     (ternary)
   //
   //
-  //					oper		type		prec	float
+  //                                    oper            type            prec    float
   //
-  op_bitnot = 0, // 0x00 !		unary		0	-
-  op_neg = 1, // 0x01 -		unary		0	yes
-  op_fneg = 2, // 0x02 -.		unary		0	-
-  op_abs = 3, // 0x03 ABS		unary		0	yes
-  op_fabs = 4, // 0x04 FABS		unary		0	-
-  op_encod = 5, // 0x05 ENCOD		unary		0	-
-  op_decod = 6, // 0x06 DECOD		unary		0	-
-  op_bmask = 7, // 0x07 BMASK		unary		0	-
-  op_ones = 8, // 0x08 ONES		unary		0	-
-  op_sqrt = 9, // 0x09 SQRT		unary		0	-
-  op_fsqrt = 10, // 0x0a FSQRT		unary		0	-
-  op_qlog = 11, // 0x0b QLOG		unary		0	-
-  op_qexp = 12, // 0x0c QEXP		unary		0	-
-  op_shr = 13, // 0x0d >>		binary		1	-
-  op_shl = 14, // 0x0e <<		binary		1	-
-  op_sar = 15, // 0x0f SAR		binary		1	-
-  op_ror = 16, // 0x10 ROR		binary		1	-
-  op_rol = 17, // 0x11 ROL		binary		1	-
-  op_rev = 18, // 0x12 REV		binary		1	-
-  op_zerox = 19, // 0x13 ZEROX		binary		1	-
-  op_signx = 20, // 0x14 SIGNX		binary		1	-
-  op_bitand = 21, // 0x15 &		binary		2	-
-  op_bitxor = 22, // 0x16 ^		binary		3	-
-  op_bitor = 23, // 0x17 |		binary		4	-
-  op_mul = 24, // 0x18 *		binary		5	yes
-  op_fmul = 25, // 0x19 *.		binary		5	-
-  op_div = 26, // 0x1a /		binary		5	yes
-  op_fdiv = 27, // 0x1b /.		binary		5	-
-  op_divu = 28, // 0x1c +/		binary		5	-
-  op_rem = 29, // 0x1d //		binary		5	-
-  op_remu = 30, // 0x1e +//		binary		5	-
-  op_sca = 31, // 0x1f SCA		binary		5	-
-  op_scas = 32, // 0x20 SCAS		binary		5	-
-  op_frac = 33, // 0x21 FRAC		binary		5	-
-  op_add = 34, // 0x22 +		binary		6	yes
-  op_fadd = 35, // 0x23 +.		binary		6	-
-  op_sub = 36, // 0x24 -		binary		6	yes
-  op_fsub = 37, // 0x25 -.		binary		6	-
-  op_fge = 38, // 0x26 #>		binary		7	yes
-  op_fle = 39, // 0x27 <#		binary		7	yes
-  op_addbits = 40, // 0x28 ADDBITS		binary		8	-
-  op_addpins = 41, // 0x29 ADDPINS		binary		8	-
-  op_lt = 42, // 0x2a <		binary		9	yes
-  op_flt = 43, // 0x2b <.		binary		9	-
-  op_ltu = 44, // 0x2c +<		binary		9	-
-  op_lte = 45, // 0x2d <=		binary		9	yes
-  op_flte = 46, // 0x2e <=.		binary		9	-
-  op_lteu = 47, // 0x2f +<=		binary		9	-
-  op_e = 48, // 0x30 ==		binary		9	yes
-  op_fe = 49, // 0x31 ==.		binary		9	-
-  op_ne = 50, // 0x32 <>		binary		9	yes
-  op_fne = 51, // 0x33 <>.		binary		9	-
-  op_gte = 52, // 0x34 >=		binary		9	yes
-  op_fgte = 53, // 0x35 >=.		binary		9	-
-  op_gteu = 54, // 0x36 +>=		binary		9	-
-  op_gt = 55, // 0x37 >		binary		9	yes
-  op_fgt = 56, // 0x38 >.		binary		9	-
-  op_gtu = 57, // 0x39 +>		binary		9	-
-  op_ltegt = 58, // 0x3a <=>		binary		9	yes
-  op_lognot = 59, // 0x3b !!, NOT		unary		10	-
-  op_logand = 60, // 0x3c &&, AND		binary		11	-
-  op_logxor = 61, // 0x3d ^^, XOR		binary		12	-
-  op_logor = 62, // 0x3e ||, OR		binary		13	-
-  op_ternary = 63 // 0x3f ? (:)		ternary		14	-
+  op_bitnot = 0, // 0x00 !              unary           0       -
+  op_neg = 1, // 0x01 -                 unary           0       yes
+  op_fneg = 2, // 0x02 -.               unary           0       -
+  op_abs = 3, // 0x03 ABS               unary           0       yes
+  op_fabs = 4, // 0x04 FABS             unary           0       -
+  op_encod = 5, // 0x05 ENCOD           unary           0       -
+  op_decod = 6, // 0x06 DECOD           unary           0       -
+  op_bmask = 7, // 0x07 BMASK           unary           0       -
+  op_ones = 8, // 0x08 ONES             unary           0       -
+  op_sqrt = 9, // 0x09 SQRT             unary           0       -
+  op_fsqrt = 10, // 0x0a FSQRT          unary           0       -
+  op_qlog = 11, // 0x0b QLOG            unary           0       -
+  op_qexp = 12, // 0x0c QEXP            unary           0       -
+  op_log2 = 13, // 0x0d LOG2            unary           0       -
+  op_log10 = 14, // 0x0e LOG10          unary           0       -
+  op_log = 15, // 0x0f LOG              unary           0       -
+  op_exp2 = 16, // 0x10 EXP2            unary           0       -
+  op_exp10 = 17, // 0x11 EXP10          unary           0       -
+  op_exp = 18, // 0x12 EXP              unary           0       -
+  op_shr = 19, // 0x13 >>               binary          1       -
+  op_shl = 20, // 0x14 <<               binary          1       -
+  op_sar = 21, // 0x15 SAR              binary          1       -
+  op_ror = 22, // 0x16 ROR              binary          1       -
+  op_rol = 23, // 0x17 ROL              binary          1       -
+  op_rev = 24, // 0x18 REV              binary          1       -
+  op_zerox = 25, // 0x19 ZEROX          binary          1       -
+  op_signx = 26, // 0x1a SIGNX          binary          1       -
+  op_bitand = 27, // 0x1b &             binary          2       -
+  op_bitxor = 28, // 0x1c ^             binary          3       -
+  op_bitor = 29, // 0x1d |              binary          4       -
+  op_mul = 30, // 0x1e *                binary          5       yes
+  op_fmul = 31, // 0x1f *.              binary          5       -
+  op_div = 32, // 0x20 /                binary          5       yes
+  op_fdiv = 33, // 0x21 /.              binary          5       -
+  op_divu = 34, // 0x22 +/              binary          5       -
+  op_rem = 35, // 0x23 //               binary          5       -
+  op_remu = 36, // 0x24 +//             binary          5       -
+  op_sca = 37, // 0x25 SCA              binary          5       -
+  op_scas = 38, // 0x26 SCAS            binary          5       -
+  op_frac = 39, // 0x27 FRAC            binary          5       -
+  op_add = 40, // 0x28 +                binary          6       yes
+  op_fadd = 41, // 0x29 +.              binary          6       -
+  op_sub = 42, // 0x2a -                binary          6       yes
+  op_fsub = 43, // 0x2b -.              binary          6       -
+  op_pow = 44, // 0x2c POW              binary          6       yes
+  op_fge = 45, // 0x2d #>               binary          7       yes
+  op_fle = 46, // 0x2e <#               binary          7       yes
+  op_addbits = 47, // 0x2f ADDBITS      binary          8       -
+  op_addpins = 48, // 0x30 ADDPINS      binary          8       -
+  op_lt = 49, // 0x31 <                 binary          9       yes
+  op_flt = 50, // 0x32 <.               binary          9       -
+  op_ltu = 51, // 0x33 +<               binary          9       -
+  op_lte = 52, // 0x34 <=               binary          9       yes
+  op_flte = 53, // 0x35 <=.             binary          9       -
+  op_lteu = 54, // 0x36 +<=             binary          9       -
+  op_e = 55, // 0x37 ==                 binary          9       yes
+  op_fe = 56, // 0x38 ==.               binary          9       -
+  op_ne = 57, // 0x39 <>                binary          9       yes
+  op_fne = 58, // 0x3a <>.              binary          9       -
+  op_gte = 59, // 0x3b >=               binary          9       yes
+  op_fgte = 60, // 0x3c >=.             binary          9       -
+  op_gteu = 61, // 0x3d +>=             binary          9       -
+  op_gt = 62, // 0x3e >                 binary          9       yes
+  op_fgt = 63, // 0x3f >.               binary          9       -
+  op_gtu = 64, // 0x40 +>               binary          9       -
+  op_ltegt = 65, // 0x41 <=>            binary          9       yes
+  op_lognot = 66, // 0x42 !!, NOT       unary           10      -
+  op_logand = 67, // 0x43 &&, AND       binary          11      -
+  op_logxor = 68, // 0x44 ^^, XOR       binary          12      -
+  op_logor = 69, // 0x45 ||, OR         binary          13      -
+  op_ternary = 70 // 0x46 ? (:)         ternary         14      -
 }
 
 export enum eBlockType {
@@ -283,10 +290,10 @@ export enum eValueType {
   //
   // Assembly push/pops
   //
-  pp_pusha = 0, // 0x00 PUSHA	D/#	-->	WRLONG	D/#,PTRA++
-  pp_pushb = 1, // 0x01 PUSHB	D/#	-->	WRLONG	D/#,PTRB++
-  pp_popa = 2, // 0x02 POPA	D	-->	RDLONG	D,--PTRA
-  pp_popb = 3, // 0x03 POPB	D	-->	RDLONG	D,--PTRB
+  pp_pusha = 0, // 0x00 PUSHA   D/#     -->     WRLONG  D/#,PTRA++
+  pp_pushb = 1, // 0x01 PUSHB   D/#     -->     WRLONG  D/#,PTRB++
+  pp_popa = 2, // 0x02 POPA     D       -->     RDLONG  D,--PTRA
+  pp_popb = 3, // 0x03 POPB     D       -->     RDLONG  D,--PTRB
   //
   // lower DEBUG commands
   //
@@ -350,7 +357,7 @@ export enum eValueType {
   // ************************************************************************
   // *  DEBUG Display Parser                                                *
   // ************************************************************************
-  dd_end = 0, // (0x00)   end of line	elements
+  dd_end = 0, // (0x00)   end of line   elements
   dd_dis = 1, // (0x01)   display type
   dd_nam = 2, // (0x02)   display name
   dd_key = 3, // (0x03)   display command
@@ -358,7 +365,7 @@ export enum eValueType {
   dd_str = 5, // (0x05)   string, 'text'
   dd_unk = 6, // (0x06)   unknown symbol
 
-  dd_dis_logic = 0, // (0x00)   LOGIC		displays
+  dd_dis_logic = 0, // (0x00)   LOGIC           displays
   dd_dis_scope = 1, // (0x01)   SCOPE
   dd_dis_scope_xy = 2, // (0x02)   SCOPE_XY
   dd_dis_fft = 3, // (0x03)   FFT
@@ -368,7 +375,7 @@ export enum eValueType {
   dd_dis_bitmap = 7, // (0x07)   BITMAP
   dd_dis_midi = 8, // (0x08)   MIDI
 
-  dd_key_black = 0, // (0x00)   BLACK		color group
+  dd_key_black = 0, // (0x00)   BLACK           color group
   dd_key_white = 1, // (0x01)   WHITE
   dd_key_orange = 2, // (0x02)   ORANGE
   dd_key_blue = 3, // (0x03)   BLUE
@@ -379,7 +386,7 @@ export enum eValueType {
   dd_key_yellow = 8, // (0x08)   YELLOW
   dd_key_gray = 9, // (0x09)   GRAY
 
-  dd_key_lut1 = 10, // (0x0a)   LUT1		color-mode group
+  dd_key_lut1 = 10, // (0x0a)   LUT1            color-mode group
   dd_key_lut2 = 11, // (0x0b)   LUT2
   dd_key_lut4 = 12, // (0x0c)   LUT4
   dd_key_lut8 = 13, // (0x0d)   LUT8
@@ -399,7 +406,7 @@ export enum eValueType {
   dd_key_rgb16 = 27, // (0x1b)   RGB16
   dd_key_rgb24 = 28, // (0x1c)   RGB24
 
-  dd_key_longs_1bit = 29, // (0x1d)   LONGS_1BIT	pack-data group
+  dd_key_longs_1bit = 29, // (0x1d)   LONGS_1BIT        pack-data group
   dd_key_longs_2bit = 30, // (0x1e)   LONGS_2BIT
   dd_key_longs_4bit = 31, // (0x1f)   LONGS_4BIT
   dd_key_longs_8bit = 32, // (0x20)   LONGS_8BIT
@@ -412,7 +419,7 @@ export enum eValueType {
   dd_key_bytes_2bit = 39, // (0x27)   BYTES_2BIT
   dd_key_bytes_4bit = 40, // (0x28)   BYTES_4BIT
 
-  dd_key_alt = 41, // (0x29)   ALT		keywords
+  dd_key_alt = 41, // (0x29)   ALT              keywords
   dd_key_auto = 42, // (0x2a)   AUTO
   dd_key_backcolor = 43, // (0x2b)   BACKCOLOR
   dd_key_box = 44, // (0x2c)   BOX
@@ -677,10 +684,6 @@ export enum eByteCode {
   bc_setup_local_0_15 = 208, // 0xd0
   bc_read_local_0_15 = 224, // 0xe0
   bc_write_local_0_15 = 240, // 0xf0
-
-  //
-  // reset! counter resets to =0079
-  //
   bc_set_incdec = 121, // 0x79 variable operator bytecodes
   bc_repeat_var_init_n = 122, // 0x7a
   bc_repeat_var_init_1 = 123, // 0x7b
@@ -785,16 +788,12 @@ export enum eByteCode {
   bc_setup_bfield_pop = 222, // 0xde
   bc_setup_bfield_rfvar = 223, // 0xdf
   bc_setup_bfield_0_31 = 224, // 0xe0
-
-  //
-  // reset! counter resets to =0054
-  //
-  bc_hubset = 84, // 0x54 hub bytecodes, miscellaneous (step by 2)
+  bc_hubset = 84, // 0x54 hub bytecodes, miscellaneous routines (step by 2)
   bc_clkset = 86, // 0x56
-  bc_read_clkfreq = 88, // 0x58
-  bc_cogspin = 90, // 0x5a
-  bc_cogchk = 92, // 0x5c
-  bc_org = 94, // 0x5e
+  bc_cogspin = 88, // 0x58
+  bc_cogchk = 90, // 0x5a
+  bc_org = 92, // 0x5c
+  bc_orgh = 94, // 0x5e
   bc_regexec = 96, // 0x60
   bc_regload = 98, // 0x62
   bc_call = 100, // 0x64
@@ -826,35 +825,41 @@ export enum eByteCode {
   bc_rotxy = 152, // 0x98
   bc_polxy = 154, // 0x9a
   bc_xypol = 156, // 0x9c
-  bc_float = 158, // 0x9e hub bytecodes, floating point
-  bc_trunc = 160, // 0xa0
-  bc_round = 162, // 0xa2
-  bc_fneg = 164, // 0xa4
-  bc_fabs = 166, // 0xa6
-  bc_fsqrt = 168, // 0xa8
-  bc_fadd = 170, // 0xaa
-  bc_fsub = 172, // 0xac
-  bc_fmul = 174, // 0xae
-  bc_fdiv = 176, // 0xb0
+  bc_pinread = 158, // 0x9e
+  bc_pinwrite = 160, // 0xa0
+  bc_pinstart = 162, // 0xa2
+  bc_pinclear = 164, // 0xa4
+  bc_float = 166, // 0xa6 hub bytecodes, floating point routines
+  bc_round = 168, // 0xa8
+  bc_trunc = 170, // 0xaa
+  bc_nan = 172, // 0xac
+  bc_fneg = 174, // 0xae
+  bc_fabs = 176, // 0xb0
   bc_flt = 178, // 0xb2
   bc_fgt = 180, // 0xb4
   bc_fne = 182, // 0xb6
   bc_fe = 184, // 0xb8
   bc_flte = 186, // 0xba
   bc_fgte = 188, // 0xbc
-  bc_nan = 190, // 0xbe
-  bc_pinread = 192, // 0xc0 hub bytecodes, miscellaneous
-  bc_pinwrite = 194, // 0xc2
-  bc_pinstart = 196, // 0xc4
-  bc_pinclear = 198, // 0xc6
-  bc_taskspin = 200, // 0xc8
-  bc_taskstop = 202, // 0xca
-  bc_taskhalt = 204, // 0xcc
-  bc_taskcont = 206, // 0xce
-  bc_taskchk = 208, // 0xd0
-  bc_taskid = 210, // 0xd2
-  bc_task_return = 212, // 0xd4
-  bc_orgh = 214 // 0xd6
+  bc_fadd = 190, // 0xbe
+  bc_fsub = 192, // 0xc0
+  bc_fmul = 194, // 0xc2
+  bc_fdiv = 196, // 0xc4
+  bc_pow = 198, // 0xc6
+  bc_log2 = 200, // 0xc8
+  bc_log10 = 202, // 0xca
+  bc_log = 204, // 0xcc
+  bc_exp2 = 206, // 0xce
+  bc_exp10 = 208, // 0xd0
+  bc_exp = 210, // 0xd2
+  bc_fsqrt = 212, // 0xd4
+  bc_taskspin = 214, // 0xd6 hub bytecodes, multitasking routines
+  bc_taskstop = 216, // 0xd8
+  bc_taskhalt = 218, // 0xda
+  bc_taskcont = 220, // 0xdc
+  bc_taskchk = 222, // 0xde
+  bc_taskid = 224, // 0xe0
+  bc_task_return = 226 // 0xe2
 }
 
 export enum eFlexcode {

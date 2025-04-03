@@ -179,18 +179,17 @@ count		type_objcon_float	;	user object.constant float
 count		type_method		;	user method
 count		type_end		;	end-of-line c=0, end-of-file c=1
 
-;
 ; Operators
 ;
 ;	Operator precedence (highest to lowest)
 ;
-;	0	!, -, ABS, FABS, ENCOD, DECOD, BMASK, ONES, SQRT, FSQRT, QLOG, QEXP	(unary)
+;	0	!, -, ABS, FABS, ENCOD, DECOD, BMASK, ONES, SQRT, FSQRT, QLOG, QEXP,...	(unary)
 ;	1	>>, <<, SAR, ROR, ROL, REV, ZEROX, SIGNX				(binary)
 ;	2	&									(binary)
 ;	3	^									(binary)
 ;	4	|									(binary)
 ;	5	*, *., /, /., +/, //, +//, SCA, SCAS, FRAC				(binary)
-;	6	+, +., -, -.								(binary)
+;	6	+, +., -, -., POW							(binary)
 ;	7	#>, <#									(binary)
 ;	8	ADDBITS, ADDPINS							(binary)
 ;	9	<, <., +<, <=, <=., +<=, ==, ==., <>, <>., >=, >=., +>=, >, >., +>, <=>	(binary)
@@ -216,6 +215,12 @@ count		op_sqrt		;	SQRT		unary		0	-
 count		op_fsqrt	;	FSQRT		unary		0	-
 count		op_qlog		;	QLOG		unary		0	-
 count		op_qexp		;	QEXP		unary		0	-
+count		op_log2		;	LOG2		unary		0	-
+count		op_log10	;	LOG10		unary		0	-
+count		op_log		;	LOG		unary		0	-
+count		op_exp2		;	EXP2		unary		0	-
+count		op_exp10	;	EXP10		unary		0	-
+count		op_exp		;	EXP		unary		0	-
 count		op_shr		;	>>		binary		1	-
 count		op_shl		;	<<		binary		1	-
 count		op_sar		;	SAR		binary		1	-
@@ -241,6 +246,7 @@ count		op_add		;	+		binary		6	yes
 count		op_fadd		;	+.		binary		6	-
 count		op_sub		;	-		binary		6	yes
 count		op_fsub		;	-.		binary		6	-
+count		op_pow		;	POW		binary		6	yes
 count		op_fge		;	#>		binary		7	yes
 count		op_fle		;	<#		binary		7	yes
 count		op_addbits	;	ADDBITS		binary		8	-
