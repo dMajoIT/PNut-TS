@@ -13,6 +13,11 @@ Work to appear in upcoming releases:
 - Add TASK support as in PNut_v47.exe
 - Preprocessor support is superset of that in PNut_v48.exe (no need to add)
 
+## [1.51.0] 2025-04-??
+
+- ...
+- Compatible with PNut versions thru PNut_v51.exe
+
 ## [1.43.3] 2024-12-14
 
 - Allow empty VAR ([#6](https://github.com/ironsheep/PNut-TS/issues/6))
