@@ -7527,7 +7527,8 @@ export class SpinResolver {
     // Compile a parameter - accommodates instructions/methods with multiple return values
     // on exit, eax holds number of actual parameters compiled
     //
-    //  structure{[]}{.substructure{[]}}	- must be 15 or fewer longs, else error
+    //  structure{[]}{.substructure{[]}}				- must be 15 or fewer longs, else error
+    //  structure{[]}{.substructure{[]}}.long{[]}({params,...}):2+
     //  rotxy/polxy/xypol
     //  obj{[]}.method({params,...})
     //  method({params,...})
@@ -10561,15 +10562,6 @@ private checkDec(): boolean {
     const constantReturn = this.compileExpressionCheckCon();
     this.objImage.setOffsetTo(savedObjOffset);
     return constantReturn;
-  }
-
-  private getConInt(): number {
-    this.getElement();
-    if (this.currElement.type != eElementType.type_con_int) {
-      // [error_eicon]
-      throw new Error('Expected integer constant (m112)');
-    }
-    return Number(this.currElement.bigintValue);
   }
 
   private getLeftParen() {

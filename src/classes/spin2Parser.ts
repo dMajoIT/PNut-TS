@@ -150,13 +150,16 @@ export class Spin2Parser {
           let symbolType: string;
           switch (symbol.type) {
             case eElementType.type_con_int:
-              symbolType = 'CON';
+              symbolType = 'CON_INT';
               break;
             case eElementType.type_con_float:
               symbolType = 'CON_FLOAT';
               break;
+            case eElementType.type_con_struct:
+              symbolType = 'CON_STRUCT';
+              break;
             case eElementType.type_register:
-              symbolType = 'REG';
+              symbolType = 'REGISTER';
               break;
             case eElementType.type_loc_byte:
               symbolType = 'LOC_BYTE';
@@ -167,6 +170,21 @@ export class Spin2Parser {
             case eElementType.type_loc_long:
               symbolType = 'LOC_LONG';
               break;
+            case eElementType.type_loc_struct:
+              symbolType = 'LOC_STRUCT';
+              break;
+            case eElementType.type_loc_byte_ptr:
+              symbolType = 'LOC_BYTE_PTR';
+              break;
+            case eElementType.type_loc_word_ptr:
+              symbolType = 'LOC_WORD_PTR';
+              break;
+            case eElementType.type_loc_long_ptr:
+              symbolType = 'LOC_LONG_PTR';
+              break;
+            case eElementType.type_loc_struct_ptr:
+              symbolType = 'LOC_STRUCT_PTR';
+              break;
             case eElementType.type_var_byte:
               symbolType = 'VAR_BYTE';
               break;
@@ -176,6 +194,21 @@ export class Spin2Parser {
             case eElementType.type_var_long:
               symbolType = 'VAR_LONG';
               break;
+            case eElementType.type_var_struct:
+              symbolType = 'VAR_STRUCT';
+              break;
+            case eElementType.type_var_byte_ptr:
+              symbolType = 'VAR_BYTE_PTR';
+              break;
+            case eElementType.type_var_word_ptr:
+              symbolType = 'VAR_WORD_PTR';
+              break;
+            case eElementType.type_var_long_ptr:
+              symbolType = 'VAR_LONG_PTR';
+              break;
+            case eElementType.type_var_struct_ptr:
+              symbolType = 'VAR_STRUCT_PTR';
+              break;
             case eElementType.type_dat_byte:
               symbolType = 'DAT_BYTE';
               break;
@@ -184,6 +217,9 @@ export class Spin2Parser {
               break;
             case eElementType.type_dat_long:
               symbolType = 'DAT_LONG';
+              break;
+            case eElementType.type_dat_struct:
+              symbolType = 'DAT_STRUCT';
               break;
             case eElementType.type_dat_long_res:
               symbolType = 'DAT_LONG_RES';
@@ -201,13 +237,16 @@ export class Spin2Parser {
               symbolType = 'OBJ';
               break;
             case eElementType.type_obj_pub:
-              symbolType = 'OBJPUB';
+              symbolType = 'OBJ_PUB';
               break;
             case eElementType.type_obj_con_int:
-              symbolType = 'OBJCON';
+              symbolType = 'OBJ_CON_INT';
               break;
             case eElementType.type_obj_con_float:
-              symbolType = 'OBJCON_FLOAT';
+              symbolType = 'OBJ_CON_FLOAT';
+              break;
+            case eElementType.type_obj_con_struct:
+              symbolType = 'OBJ_CON_STRUCT';
               break;
             case eElementType.type_method:
               symbolType = 'METHOD';

@@ -89,7 +89,7 @@ export class PNutInTypeScript {
         this.options.filename = filename;
       })
       //.option('-b, --both', 'Compile with DEBUG, download to FLASH and run')
-      .option('-44, --ver44', 'Listings compatible with PNut_v44 and later')
+      //.option('-44, --ver44', 'Listings compatible with PNut_v44 and later')
       .option('-d, --debug', 'Compile with DEBUG')
       //      .option('-f, --flash', 'Download to FLASH and run')
       //      .option('-r, --ram', 'Download to RAM and run')
@@ -227,9 +227,10 @@ export class PNutInTypeScript {
     if (this.options.list) {
       this.context.compileOptions.writeListing = true;
     }
-    if (this.options.ver44) {
-      this.context.compileOptions.v44FormatListing = true;
-    }
+    //if (this.options.ver44) {
+    // always true from here out...
+    this.context.compileOptions.v44FormatListing = true;
+    //}
 
     if (this.options.altbin) {
       this.context.compileOptions.binarySuffix = 'binary'; // use binary vs bin
