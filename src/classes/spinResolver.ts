@@ -302,7 +302,8 @@ export class SpinResolver {
   private dittoObjectIndex: number = 0; // PNut ditto_obj_ptr
 
   // allow registers in CON blocks
-  private inConBlock: boolean = false;
+  private inConBlock: boolean = false; // PNut con_block_flag
+  private inObjBlock: boolean = false; // PNut obj_block_flag
 
   // Debug()  support
   // debug mode support
@@ -479,11 +480,13 @@ export class SpinResolver {
     this.objImage.reset();
     this.distillPtr = 0;
     this.distiller = [];
+    this.inConBlock = false;
+    this.inObjBlock = false;
     this.pasmMode = this.determinePasmMode();
     this.spinFiles.setPasmMode(this.pasmMode); // publish to top level
     this.compile_con_blocks_1st();
     if (this.context.passOptions.afterConBlock == false) {
-      this.compile_obj_blocks_id();
+      this.compile_obj_blocks_id(); // inhibit SIZEOF within here
       this.compile_dat_blocks_fn();
     }
   }
@@ -539,21 +542,17 @@ export class SpinResolver {
     // true here means very-first pass!
     const FIRST_PASS: boolean = true;
     this.objectStructureSet.reset();
-    this.inConBlock = true;
     this.logMessage('*==* COMPILE_con_blocks_1st() 1of2');
     this.compile_con_blocks(eResolve.BR_Try, FIRST_PASS);
     this.logMessage('*==* COMPILE_con_blocks_1st() 2of2');
     this.compile_con_blocks(eResolve.BR_Try);
-    this.inConBlock = false;
   }
 
   private compile_con_blocks_2nd() {
-    this.inConBlock = true;
     this.logMessage('*==* COMPILE_con_blocks_2nd() 1of2');
     this.compile_con_blocks(eResolve.BR_Try);
     this.logMessage('*==* COMPILE_con_blocks_2nd() 2of2');
     this.compile_con_blocks(eResolve.BR_Must);
-    this.inConBlock = false;
   }
 
   private determinePasmMode(): boolean {
@@ -3225,6 +3224,29 @@ export class SpinResolver {
     return foundBlocksStatus;
   }
 
+  private get_colon_result_count(): number {
+    let returnValueLongCount: number = 0;
+    if (this.checkColon()) {
+      this.getElement();
+      if (this.currElement.type == eElementType.type_con_int) {
+        returnValueLongCount = Number(this.currElement.bigintValue);
+      } else {
+        const [isStructure, structSize] = this.check_con_struct_size();
+        if (isStructure) {
+          returnValueLongCount = (structSize + 3) >> 2;
+        } else {
+          // [error_eiconos]
+          throw new Error(`Expected integer constant or structure (for size)`);
+        }
+      }
+      if (returnValueLongCount > this.method_results_limit) {
+        // [error_loxre]
+        throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
+      }
+    }
+    return returnValueLongCount;
+  }
+
   private get_struct_and_size(): number {
     let desiredSize: number = 0;
     this.getElementObj();
@@ -4387,6 +4409,7 @@ export class SpinResolver {
   private compile_obj_blocks_id() {
     // PNut compile_obj_blocks_id:
     this.logMessage('*==* COMPILE_obj_blocks_id()');
+    this.inObjBlock = true;
     this.objImage.setOffsetTo(0);
     this.spinFiles.clearObjFiles();
     this.objectInstanceInMemoryCount = 0;
@@ -4469,6 +4492,7 @@ export class SpinResolver {
         }
       }
     }
+    this.inObjBlock = false;
   }
 
   // ------------------------------------------------------------------------
@@ -5326,7 +5350,9 @@ export class SpinResolver {
   private compile_con_blocks(resolve: eResolve, firstPass: boolean = false) {
     // compile all CON blocks in file
     // PNut compile_con_blocks:
-    this.logMessage(`*==* COMPILE_con_blocks(firstPass=(${firstPass}))`);
+    this.inConBlock = true;
+    const lastPass: boolean = resolve == eResolve.BR_Must;
+    this.logMessage(`*==* COMPILE_con_blocks(firstPass=(${firstPass})) lastPass=${lastPass}`);
     this.logRestoredElementLocation(0); // start from first in list
     this.logMessage(`  -- restore to nextType=[${eElementType[this.nextElementType()]}]`);
 
@@ -5340,6 +5366,7 @@ export class SpinResolver {
 
     // if the File is Empty we are done!
     if (this.nextElementType() == eElementType.type_end_file) {
+      this.inConBlock = false;
       return;
     }
 
@@ -5507,10 +5534,10 @@ export class SpinResolver {
             // PNut :@@struct
             this.getElement(); // move to structure name
             if (!this.currElement.isTypeUndefined) {
-              // [error_error_eausn]
+              // [error_eausn]
               throw new Error('Expected a unique STRUCT name');
             }
-            if (firstPass) {
+            if (!lastPass) {
               // skip to end of structure decl.
               //  structure def'ns are not nested, so we don't have nested parens!
               if (this.nextElementType() == eElementType.type_left) {
@@ -5560,6 +5587,7 @@ export class SpinResolver {
         }
       } while (this.nextElementType() != eElementType.type_block);
     } while (this.nextBlock(eBlockType.block_con));
+    this.inConBlock = false;
   }
 
   private buildStructureRecord(): number {
@@ -6064,12 +6092,12 @@ export class SpinResolver {
     do {
       this.logMessage(`* pushed element index... have ${elementIndexStack.length} now...`);
       elementIndexStack.push(this.logSavedElementLocation()); // equiv PNut push [source_ptr]
-      // if '_{(type_con_int|type_con_struct)}', got long count
+      // if '_{[type_con_int|type_con_struct]}', got long count
       const [foundUnderScore, longsFound] = this.checkWriteSkip();
       if (foundUnderScore) {
         longCount += longsFound;
       } else {
-        // not '_{(type_con_int|type_con_struct)}', get variable
+        // not '_{[type_con_int|type_con_struct]}', get variable
         const variable: iVariableReturn = this.getVariable();
         let longsFound: number = 1;
         if (this.isStruct(variable.type) && !variable.structIsBWL) {
@@ -6455,7 +6483,8 @@ export class SpinResolver {
     this.debug_stack_depth = 0;
     const notPasmMode: boolean = false;
 
-    if (this.context.compileOptions.enableDebug == false) {
+    // we have to skip debug() statement if not -d or DEBUG_DISABLE is set
+    if (this.context.compileOptions.enableDebug == false || this.debugDisable == true) {
       // remove all but end of line
       this.logMessage(`*--* ci_debug(${this.currElement.toString()}) - Debug() processing disabled`);
       this.skipToEndOfLine();
@@ -7402,7 +7431,7 @@ export class SpinResolver {
     this.objImage.appendByte(bytecode);
   }
 
-  private getMethodPointer(): iVariableReturn {
+  private getMethodPointerVariable(): iVariableReturn {
     // Get method pointer variable - must be long/reg without bitfield
     // PNut get_method_ptr:
     const variableReturn: iVariableReturn = this.getVariable();
@@ -7850,7 +7879,7 @@ export class SpinResolver {
       }
       /// here is @@method_ptr:
       this.logRestoredElementLocation(startElementIndex);
-      this.getMethodPointer();
+      this.getMethodPointerVariable();
       parameterCount = this.compileParametersMethodPtr();
       const savedElementIndex = this.logSavedElementLocation(); // push
       this.logRestoredElementLocation(startElementIndex);
@@ -8103,7 +8132,7 @@ export class SpinResolver {
     // PNut ct_method_ptr:
     this.logMessage(`*==* ct_method_ptr(elemIdx=${nextElementIndex})`);
     this.logRestoredElementLocation(nextElementIndex); // start from passed nextElementIndex
-    const methodResult: iVariableReturn = this.getMethodPointer();
+    const methodResult: iVariableReturn = this.getMethodPointerVariable();
     if (methodResult.type == eElementType.type_register && methodResult.address == this.mrecvReg) {
       // have  RECV()
       if (byteCode != eByteCode.bc_drop_push) {
@@ -8125,14 +8154,7 @@ export class SpinResolver {
       // this is @@notsend:
       this.objImage.appendByte(byteCode);
       const parameterCount: number = this.compileParametersMethodPtr();
-      let returnValueCount: number = 0;
-      if (this.checkColon()) {
-        returnValueCount = this.getConInt();
-        if (returnValueCount > this.method_results_limit) {
-          // [error_loxre]
-          throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
-        }
-      }
+      let returnValueCount: number = this.get_colon_result_count();
       // this is @@noresults:
       this.confirmResult(resultsNeeded, returnValueCount << 20);
       // this is @@varread:
@@ -8771,6 +8793,21 @@ export class SpinResolver {
             //this.logMessage(`* getCon() round/trunc roundedUInt32=[0x${roundedUInt32.toString(16).toUpperCase().padStart(8, '0')}]`);
             // return the converted result
             resultStatus.value = BigInt(roundedUInt32);
+          } else if (origElementType == eElementType.type_sizeof) {
+            if (this.inConBlock || this.inObjBlock) {
+              // [error_soioa]
+              throw new Error('SIZEOF() is only allowed in DAT, VAR, PUB, and PRI blocks');
+            }
+            this.checkIntMode();
+            this.getLeftParen();
+            this.getElementObj();
+            const [isStructure, structSize] = this.check_con_struct_size();
+            if (!isStructure) {
+              // [error_easn]
+              throw new Error('Expected a structure name');
+            }
+            this.getRightParen();
+            resultStatus.value = BigInt(structSize);
           }
         } else {
           // DAT section handling
@@ -8965,6 +9002,7 @@ export class SpinResolver {
   }
 
   private checkWriteSkip(): [boolean, number] {
+    // Check for '_' or '_[type_con_int|type_con_struct]'
     // PNut check_write_skip:
     let foundUnderScore: boolean = false;
     let longCount: number = 1;
@@ -10431,13 +10469,7 @@ private checkDec(): boolean {
           this.scanToRightParen();
           // if no following colon then return 0 (0 is default!)
           foundMethodStatus = true;
-          if (this.checkColon()) {
-            returnValueCount = this.getConInt();
-            if (returnValueCount > this.method_results_limit) {
-              // [error_loxre]
-              throw new Error('Limit of 15 results exceeded');
-            }
-          }
+          returnValueCount = this.get_colon_result_count();
         }
       }
     } else {
@@ -11008,6 +11040,84 @@ private checkDec(): boolean {
         a = BigInt(Math.trunc(Math.pow(2, Number(a) / Math.pow(2, 27)) + 0.25));
         break;
 
+      case eOperationType.op_log2: //  LOG2
+        {
+          if (a > msb32Bit) {
+            // [error_fpcmbp]
+            throw new Error(`Floating-point constant must be positive`);
+          }
+          // convert to internal from float32
+          const internalFloat64: number = bigIntFloat32ToNumber(a);
+          // get log base 2
+          const internalLogBase2_64: number = Math.log2(internalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalLogBase2_64);
+        }
+        break;
+
+      case eOperationType.op_log10: //  LOG10
+        {
+          if (a > msb32Bit) {
+            // [error_fpcmbp]
+            throw new Error(`Floating-point constant must be positive`);
+          }
+          // convert to internal from float32
+          const internalFloat64: number = bigIntFloat32ToNumber(a);
+          // get log base 10
+          const internalLogBase10_64: number = Math.log10(internalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalLogBase10_64);
+        }
+        break;
+
+      case eOperationType.op_log: //  LOG
+        {
+          if (a > msb32Bit) {
+            // [error_fpcmbp]
+            throw new Error(`Floating-point constant must be positive`);
+          }
+          // convert to internal from float32
+          const internalFloat64: number = bigIntFloat32ToNumber(a);
+          // get log natural
+          const internalLogNatural64: number = Math.log(internalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalLogNatural64);
+        }
+        break;
+
+      case eOperationType.op_exp2: //  EXP2
+        {
+          // convert to internal from float32
+          const internalFloat64: number = bigIntFloat32ToNumber(a);
+          // get 2 to the x power
+          const internalExp2_64: number = Math.pow(2, internalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalExp2_64);
+        }
+        break;
+
+      case eOperationType.op_exp10: //  EXP10
+        {
+          // convert to internal from float32
+          const internalFloat64: number = bigIntFloat32ToNumber(a);
+          // get 10 to the x power
+          const internalExp10_64: number = Math.pow(10, internalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalExp10_64);
+        }
+        break;
+
+      case eOperationType.op_exp: //  EXP
+        {
+          // convert to internal from float32
+          const internalFloat64: number = bigIntFloat32ToNumber(a);
+          // get e to the x power
+          const internalExp64: number = Math.exp(internalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalExp64);
+        }
+        break;
+
       case eOperationType.op_shr: //  >>
         a = a >> bitCountFromB;
         break;
@@ -11245,6 +11355,19 @@ private checkDec(): boolean {
           // convert back to float32
           a = numberToBigIntFloat32(aInternalFloat64);
           this.checkOverflow(a);
+        }
+        break;
+
+      case eOperationType.op_pow: //  POW
+        {
+          // Floating-point power (fp A to-the-power-of fp B --> fp A)
+          // convert a,b to internal from float32
+          let aInternalFloat64: number = bigIntFloat32ToNumber(a);
+          const bInternalFloat64: number = bigIntFloat32ToNumber(b);
+          // a to power of b
+          const internalPow_64: number = Math.pow(aInternalFloat64, bInternalFloat64);
+          // convert back to float32
+          a = numberToBigIntFloat32(internalPow_64);
         }
         break;
 

@@ -123,9 +123,11 @@ TODO's from PNut Zoom 250303++:
 		- update/regenerate tables @done(2025-04-02)
 		- update exception message content @done(2025-04-02)
 	Day21: Thu:
-		- Add code delta from v50 to v51 (starting from compile1)
-		- Adjust existing regression tests to work
-		- Add new regressions tests for v45 - v51 features
+		- Add code delta from v50 to v51 (starting from compile1, Ended at compile_parameter:) @done(2025-04-03)
+	Day22: Fri:
+	- Add code delta from v50 to v51 (starting from compile_parameter:)
+	- Adjust existing regression tests to work
+	- Add new regressions tests for v45 - v51 features
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support

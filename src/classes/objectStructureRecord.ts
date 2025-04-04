@@ -11,7 +11,7 @@ import { eMemberType } from './objectStructures';
 // 	struct record
 // 	-------------
 // 	word: size_of_struct_record (including this word)
-// 	long: size_of_struct
+// 	long: size_of_struct_memory
 // 	member record(s)
 // 	    long: member offset address
 // 	    byte: type (0=byte, 1=word, 2=long, 3=struct + struct_record)

@@ -487,7 +487,7 @@ export class Spin2Parser {
     const var_longs = 0x3c;
     const clkmode_hub = 0x40;
     const clkfreq_hub = 0x44;
-    const _debugnop_ = 0xf20; // this changes with interpreter changes
+    const _debugnop_ = 0xf2c; // this changes with interpreter changes
 
     //const objImage: ObjectImage = this.context.compileData.objImage;
     //objImage.setOffsetTo(this.spinResolver.executableSize + 8); // move this...

@@ -10,8 +10,8 @@ import { locateDataFile, locateSpin2File } from '../utils/files';
 import { SymbolTable } from './symbolTable';
 import { eElementType } from './types';
 
-const FILE_LIMIT: number = 255; // DAT and OBJ limit is same
-const PARAM_LIMIT: number = 16; // OBJ override limit - PNut obj_param_limit
+const FILES_LIMIT: number = 255; // DAT and OBJ limit is same PNut files_limit
+const OBJ_PARAMS_LIMIT: number = 16; // OBJ override limit - PNut obj_params_limit
 const ALLOW_LIBRARY_SEARCH: boolean = true;
 
 interface iPossibleSymbolTable {
@@ -83,9 +83,9 @@ export class ObjFile {
       addedSymbolTable = true;
     } else {
       // have existing symbol table, make sure we don't overflow
-      if (possibleSymbolTable.overrides.length >= PARAM_LIMIT) {
+      if (possibleSymbolTable.overrides.length >= OBJ_PARAMS_LIMIT) {
         // [error_tmop]
-        throw new Error(`Too many object parameters, exceeded limit of ${PARAM_LIMIT}`);
+        throw new Error(`Too many object parameters, exceeded limit of ${OBJ_PARAMS_LIMIT}`);
       }
     }
     this.logMessage(`* recordOverride() ADD symbol [${constantName}]`);
@@ -279,9 +279,9 @@ export class SpinFiles {
   public addObjFile(fileName: string, elementIndex: number = 0): ObjFile {
     let desiredFile: ObjFile | undefined = undefined;
     const spin2fileName: string = fileName.toLowerCase().endsWith('.spin2') ? fileName : `${fileName}.spin2`;
-    if (this._objFiles.length >= FILE_LIMIT) {
+    if (this._objFiles.length >= FILES_LIMIT) {
       // [error_loxuoe]
-      throw new Error(`Limit of ${FILE_LIMIT} unique objects exceeded`);
+      throw new Error(`Limit of ${FILES_LIMIT} unique objects exceeded`);
     }
     let fileSpec: string | undefined = undefined;
     if (this.objFileExists(spin2fileName)) {
