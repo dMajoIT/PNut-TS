@@ -244,3 +244,4 @@ TEST/LARGE-tests/TOF/Error.txt
 src/f1.ts
 src/utils/f2.ts
 TEST/DAT-PASM-tests/Error.txt
+TEST/COV-tests/Error.txt

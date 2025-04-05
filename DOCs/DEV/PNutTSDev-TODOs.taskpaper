@@ -125,13 +125,16 @@ TODO's from PNut Zoom 250303++:
 	Day21: Thu:
 		- Add code delta from v50 to v51 (starting from compile1, Ended at compile_parameter:) @done(2025-04-03)
 	Day22: Fri:
-	- Add code delta from v50 to v51 (starting from compile_parameter:) @done(2025-04-04)
+		- STEPHEN   get couple of regression tests updated to v51 @done(2025-04-05)
+		- Add code delta from v50 to v51 (starting from compile_parameter:) @done(2025-04-04)
+	Weekend:
+		- STEPHEN   Adjust existing regression tests to work (recompile w/v51)
+		- STEPHEN   Add .flash regression test
+		- CHIP           Create a new file for each new version to add to regression tests
+		- STEPHEN  Add new regressions tests for v44 - v51 features (files from chip)
 	Day23: Mon:
-	- STEPHEN   Adjust existing regression tests to work (recompile w/v51)
-	- CHIP           Create a new file for each new version 
-	- STEPHEN  Add new regressions tests for v44 - v51 features
-	- Fix any failing regression tests
-	- After all regression tests pass, run coverage and add code to test any missing areas
+		- Fix any failing regression tests
+		- After all regression tests pass, run coverage and add code to test any missing areas
 	
 	
 Upcoming:
