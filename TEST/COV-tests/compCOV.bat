@@ -2,9 +2,9 @@
 for %%f in (*.spin2) do (
     echo Processing file: %%f
     if /i "%%~nf"=="isp_" (
-        PNut_shell_v51 -c -d %%f
+        PNut_shell_v51 -cd %%f
     ) else if /i "%%~nf"=="debug_" (
-        PNut_shell_v51 -c -d %%f
+        PNut_shell_v51 -cd %%f
     ) else (
         PNut_shell_v51 -c %%f
     )
