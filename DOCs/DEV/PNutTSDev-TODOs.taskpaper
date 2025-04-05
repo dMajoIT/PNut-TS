@@ -141,9 +141,9 @@ TODO's from PNut Zoom 250303++:
 			- OBJ-tests
 			- PREPROC-tests
 			- SHORT
-			- SPIN-tests
-			- VAR-tests
-		- STEPHEN   Add .flash regression test
+			- SPIN-tests @done(2025-04-05)
+			- VAR-tests @done(2025-04-05)
+		- STEPHEN   Add .flash regression test @done(2025-04-05)
 		- CHIP           Create a new file for each new version to add to regression tests
 		- STEPHEN  Add new regressions tests for v44 - v51 features (files from chip)
 	Day23: Mon:
