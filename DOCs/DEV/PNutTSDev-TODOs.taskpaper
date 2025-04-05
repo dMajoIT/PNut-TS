@@ -129,6 +129,20 @@ TODO's from PNut Zoom 250303++:
 		- Add code delta from v50 to v51 (starting from compile_parameter:) @done(2025-04-04)
 	Weekend:
 		- STEPHEN   Adjust existing regression tests to work (recompile w/v51)
+			- CON-tests @done(2025-04-05)
+			- COV-tests @done(2025-04-05)
+			- DAT-PASM-tests @done(2025-04-05)
+			- DBG-tests @done(2025-04-05)
+			- EXCEPT-tests
+			- EXT-tests @done(2025-04-05)
+			- FULL
+			- LARGE-tests
+			- LOADER-tests
+			- OBJ-tests
+			- PREPROC-tests
+			- SHORT
+			- SPIN-tests
+			- VAR-tests
 		- STEPHEN   Add .flash regression test
 		- CHIP           Create a new file for each new version to add to regression tests
 		- STEPHEN  Add new regressions tests for v44 - v51 features (files from chip)
