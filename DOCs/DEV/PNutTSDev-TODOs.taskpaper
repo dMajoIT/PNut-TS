@@ -125,9 +125,14 @@ TODO's from PNut Zoom 250303++:
 	Day21: Thu:
 		- Add code delta from v50 to v51 (starting from compile1, Ended at compile_parameter:) @done(2025-04-03)
 	Day22: Fri:
-	- Add code delta from v50 to v51 (starting from compile_parameter:)
-	- Adjust existing regression tests to work
-	- Add new regressions tests for v45 - v51 features
+	- Add code delta from v50 to v51 (starting from compile_parameter:) @done(2025-04-04)
+	Day23: Mon:
+	- STEPHEN   Adjust existing regression tests to work (recompile w/v51)
+	- CHIP           Create a new file for each new version 
+	- STEPHEN  Add new regressions tests for v44 - v51 features
+	- Fix any failing regression tests
+	- After all regression tests pass, run coverage and add code to test any missing areas
+	
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support
