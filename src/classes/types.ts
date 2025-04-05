@@ -312,7 +312,7 @@ export enum eValueType {
 
   // discrete values
   taskhlt_reg = 460, // 0x1CC
-  pasm_regs = 472, // 0x1D8
+  prx_regs = 472, // 0x1D8
 
   // operands
   operand_ds = 0, // 0x00

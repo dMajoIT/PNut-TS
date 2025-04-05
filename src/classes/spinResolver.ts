@@ -6588,7 +6588,6 @@ export class SpinResolver {
             } else {
               // pasm debug
               //this.logMessage(`  -- processBackTicDbg() hand off to compParamPasm() elem=[${this.currElement.toString()}]`);
-              //this.compileParameter();
               this.compileParameterAsm(); // new TESTING
               //this.logMessage(`  -- processBackTicDbg() back from compParamPasm() elem=[${this.currElement.toString()}]`);
             }
@@ -6665,7 +6664,6 @@ export class SpinResolver {
               this.incStack();
             } else {
               //this.logMessage(`  -- processNonTicDbg() hand off to compParamPasm() elem=[${this.currElement.toString()}]`);
-              //this.compileParameter();
               this.compileParameterAsm(); // new TESTING
               //this.logMessage(`  -- processNonTicDbg() back from compParamPasm() elem=[${this.currElement.toString()}]`);
             }
@@ -7433,12 +7431,20 @@ export class SpinResolver {
 
   private getMethodPointerVariable(): iVariableReturn {
     // Get method pointer variable - must be long/reg without bitfield
-    // PNut get_method_ptr:
+    // PNut get_method_ptr_var:
     const variableReturn: iVariableReturn = this.getVariable();
-    if (
-      variableReturn.bitfieldFlag == true ||
-      (variableReturn.wordSize == eWordSize.WS_Long || variableReturn.type == eElementType.type_register) == false
-    ) {
+    let isGoodStatus: boolean = false;
+
+    // if structure, must be BWL (LONG)
+    if (this.isStruct(variableReturn.type)) {
+      isGoodStatus ||= variableReturn.structIsBWL && variableReturn.structSize == 4;
+    }
+    // or can be HUB LONG or register
+    isGoodStatus ||= variableReturn.wordSize == eWordSize.WS_Long;
+    isGoodStatus ||= variableReturn.type == eElementType.type_register;
+
+    // but must NOT have bitfield
+    if (!isGoodStatus || variableReturn.bitfieldFlag == true) {
       // [error_mpmblv]
       throw new Error('Method pointers must be long variables without bitfields');
     }
@@ -7540,11 +7546,31 @@ export class SpinResolver {
     let compiledParameterCount: number = -1; // flag saying we need to compile expression
     const savedElementIndex: number = this.logSavedElementLocation();
     this.getElementObj();
-    const tmpSavedElementIndex: number = this.logSavedElementLocation();
-    const variable: iVariableReturn = this.checkVariable(); // variable ?
-    if (variable.isVariable) {
-      if (this.isStruct(variable.type)) {
-        if (variable.structIsBWL || variable.structSize <= 4) {
+    if (this.isStruct(this.currElement.type)) {
+      // have STRUCT
+      const structVariable: iVariableReturn = this.checkVariable(); // variable ?
+      if (structVariable.structIsBWL) {
+        if (this.checkLeftParen()) {
+          this.logRestoredElementLocation(savedElementIndex);
+          this.getElement();
+          // (copied @@chkvarmethod to here...)
+          const [isMethod, returnCount] = this.checkVariableMethod();
+          if (isMethod && returnCount >= 2) {
+            this.logRestoredElementLocation(savedElementIndex);
+            this.getElementObj();
+            this.ct_method_ptr(savedElementIndex, eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
+            compiledParameterCount = returnCount;
+          } else {
+            // fall into PNut @@single:
+          }
+        } else {
+          // fall into PNut @@single:
+        }
+        skipFollowingTypeChecks = true;
+      } else {
+        // PNut @@struct:
+        if (structVariable.structSize <= 4) {
+          // fall into PNut @@single:
           skipFollowingTypeChecks = true;
         } else {
           this.getElement();
@@ -7554,20 +7580,16 @@ export class SpinResolver {
           ) {
             skipFollowingTypeChecks = true;
           } else {
-            // PNut @@notstructcmp:
             this.backElement();
-            compiledParameterCount = (variable.structSize + 3) >> 2;
-            variable.operation = eVariableOperation.VO_READ;
-            this.compileVariable(variable);
+            compiledParameterCount = (structVariable.structSize + 3) >> 2;
+            structVariable.operation = eVariableOperation.VO_READ;
+            this.compileVariable(structVariable);
             skipFollowingTypeChecks = true;
           }
         }
-      } else {
-        this.logRestoredElementLocation(tmpSavedElementIndex);
       }
-    } else {
-      this.logRestoredElementLocation(tmpSavedElementIndex);
     }
+    // not STRUCT
     if (!skipFollowingTypeChecks) {
       if (this.currElement.type == eElementType.type_i_flex) {
         const flexResultCount: number = this.currElement.flexResultCount;
@@ -9404,7 +9426,7 @@ private checkDec(): boolean {
     //  REG[register][index]{.[bitfield]}
     //  (or actual register name constants)
     if (variable.type == eElementType.type_register) {
-      if (variable.address >= this.prxRegs && variable.address <= this.prxRegs + 7 && variable.indexFlag == false) {
+      if (variable.address >= this.prxRegs + 0 && variable.address <= this.prxRegs + 7 && variable.indexFlag == false) {
         this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - this.prxRegs));
       } else if (variable.address >= 0x1f8 && variable.address <= 0x1ff && variable.indexFlag == false) {
         this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - 0x1f8 + 8));
@@ -10438,7 +10460,7 @@ private checkDec(): boolean {
         // have variable as index
         indexReturn.foundLiveIndex = true;
         if (liveIndexCount >= 3) {
-          // [error_loxriee]
+          // [error_loxrs]
           throw new Error('Limit of 3 runtime structure index expressions exceeded');
         }
       }

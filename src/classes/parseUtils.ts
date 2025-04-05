@@ -994,6 +994,16 @@ enum SYMBOLS_V50 {
   DITTO = 'DITTO'
 }
 
+enum SYMBOLS_V51 {
+  POW = 'POW',
+  LOG2 = 'LOG2',
+  LOG10 = 'LOG10',
+  LOG = 'LOG',
+  EXP2 = 'EXP2',
+  EXP10 = 'EXP10',
+  EXP = 'EXP'
+}
+
 function setAsmcodeValue(v1: number, v2: number, v3: number): number {
   // calculate the actual asm code value from given parts
   //
@@ -1049,6 +1059,7 @@ export class SpinSymbolTables {
   private automatic_symbols_v46 = new Map<string, iBaseSymbolInfo>();
   private automatic_symbols_v47 = new Map<string, iBaseSymbolInfo>();
   private automatic_symbols_v50 = new Map<string, iBaseSymbolInfo>();
+  private automatic_symbols_v51 = new Map<string, iBaseSymbolInfo>();
   private flexcodeValues = new Map<eFlexcode, number>();
   private asmcodeValues = new Map<eAsmcode, number>();
   private opcodeValues = new Map<eOpcode, number>();
@@ -2526,14 +2537,14 @@ export class SpinSymbolTables {
 
     this.automatic_symbols.set(SYMBOLS.REG, { type: eElementType.type_reg, value: 0 }); // reg
 
-    this.automatic_symbols.set(SYMBOLS.PR0, { type: eElementType.type_register, value: eValueType.pasm_regs + 0 }); // pasm regs
-    this.automatic_symbols.set(SYMBOLS.PR1, { type: eElementType.type_register, value: eValueType.pasm_regs + 1 });
-    this.automatic_symbols.set(SYMBOLS.PR2, { type: eElementType.type_register, value: eValueType.pasm_regs + 2 });
-    this.automatic_symbols.set(SYMBOLS.PR3, { type: eElementType.type_register, value: eValueType.pasm_regs + 3 });
-    this.automatic_symbols.set(SYMBOLS.PR4, { type: eElementType.type_register, value: eValueType.pasm_regs + 4 });
-    this.automatic_symbols.set(SYMBOLS.PR5, { type: eElementType.type_register, value: eValueType.pasm_regs + 5 });
-    this.automatic_symbols.set(SYMBOLS.PR6, { type: eElementType.type_register, value: eValueType.pasm_regs + 6 });
-    this.automatic_symbols.set(SYMBOLS.PR7, { type: eElementType.type_register, value: eValueType.pasm_regs + 7 });
+    this.automatic_symbols.set(SYMBOLS.PR0, { type: eElementType.type_register, value: eValueType.prx_regs + 0 }); // pasm regs
+    this.automatic_symbols.set(SYMBOLS.PR1, { type: eElementType.type_register, value: eValueType.prx_regs + 1 });
+    this.automatic_symbols.set(SYMBOLS.PR2, { type: eElementType.type_register, value: eValueType.prx_regs + 2 });
+    this.automatic_symbols.set(SYMBOLS.PR3, { type: eElementType.type_register, value: eValueType.prx_regs + 3 });
+    this.automatic_symbols.set(SYMBOLS.PR4, { type: eElementType.type_register, value: eValueType.prx_regs + 4 });
+    this.automatic_symbols.set(SYMBOLS.PR5, { type: eElementType.type_register, value: eValueType.prx_regs + 5 });
+    this.automatic_symbols.set(SYMBOLS.PR6, { type: eElementType.type_register, value: eValueType.prx_regs + 6 });
+    this.automatic_symbols.set(SYMBOLS.PR7, { type: eElementType.type_register, value: eValueType.prx_regs + 7 });
 
     this.automatic_symbols.set(SYMBOLS.IJMP3, { type: eElementType.type_register, value: 0x1f0 }); // interrupt vectors
     this.automatic_symbols.set(SYMBOLS.IRET3, { type: eElementType.type_register, value: 0x1f1 });
@@ -2858,6 +2869,17 @@ export class SpinSymbolTables {
     // ---------------------------------------------------------------------------------------
     this.automatic_symbols_v50.set(SYMBOLS_V50.DITTO, { type: eElementType.type_asm_dir, value: eValueType.dir_ditto });
 
+    //
+    // HAND generated Automatic symbols table load v51
+    // ---------------------------------------------------------------------------------------
+    this.automatic_symbols_v51.set(SYMBOLS_V51.POW, { type: eElementType.type_op, value: eOpcode.oc_pow });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG2, { type: eElementType.type_op, value: eOpcode.oc_log2 });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG10, { type: eElementType.type_op, value: eOpcode.oc_log10 });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG, { type: eElementType.type_op, value: eOpcode.oc_log });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP2, { type: eElementType.type_op, value: eOpcode.oc_exp2 });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP10, { type: eElementType.type_op, value: eOpcode.oc_exp10 });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP, { type: eElementType.type_op, value: eOpcode.oc_exp });
+
     // Populate the reverse map
     for (const [fcValue, value] of this.flexcodeValues) {
       const bcValue: number = value & 0xff;
@@ -2968,6 +2990,16 @@ export class SpinSymbolTables {
         const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v50.get(symbolName);
         if (symbolInfo !== undefined) {
           this.logMessage(`- builtInSymbolV50(${symbolName}) = (${symbolInfo.value})`);
+          findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
+        }
+      }
+    }
+
+    if (this.currSpinVersion >= 51) {
+      if (this.automatic_symbols_v51.has(symbolName)) {
+        const symbolInfo: iBaseSymbolInfo | undefined = this.automatic_symbols_v51.get(symbolName);
+        if (symbolInfo !== undefined) {
+          this.logMessage(`- builtInSymbolV51(${symbolName}) = (${symbolInfo.value})`);
           findResult = { symbol: symbolName, type: symbolInfo.type, value: symbolInfo.value };
         }
       }

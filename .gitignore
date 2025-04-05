@@ -243,3 +243,4 @@ TEST/LARGE-tests/TOF/Error.txt
 /prebuilds
 src/f1.ts
 src/utils/f2.ts
+TEST/DAT-PASM-tests/Error.txt
