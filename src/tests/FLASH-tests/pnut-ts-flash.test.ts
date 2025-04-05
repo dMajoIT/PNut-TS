@@ -11,7 +11,7 @@ import { sync as globSync } from 'glob';
 import { appendDiagnosticString, compareListingFiles, compareObjOrBinFiles, removeExistingFile, topLevel } from '../testUtils';
 
 // test lives in <rootDir>/src/tests/FULL
-const testDirPath = path.resolve(__dirname, '../../../TEST/DBG-tests');
+const testDirPath = path.resolve(__dirname, '../../../TEST/FLASH-tests');
 const toolPath = path.resolve(__dirname, '../../../dist');
 
 const directories = [
@@ -41,19 +41,21 @@ describe('PNut_ts compiles .spin2 w/debug() correctly', () => {
   }
   files.forEach((file) => {
     test(`Compile file: ${path.basename(file)}`, () => {
-      const options: string = '-d -v -l -O --regression element --';
+      const options: string = '-d -v -l -O -F --regression element --';
       const basename = path.basename(file, '.spin2');
 
       const listingFSpec = path.join(testDirPath, `${basename}.lst`);
       const objectFSpec = path.join(testDirPath, `${basename}.obj`);
       const binaryFSpec = path.join(testDirPath, `${basename}.bin`);
       const elementsFSpec = path.join(testDirPath, `${basename}.elem`);
+      const flashFSpec = path.join(testDirPath, `${basename}.flash`);
 
       // Remove existing files
       removeExistingFile(listingFSpec);
       removeExistingFile(objectFSpec);
       removeExistingFile(binaryFSpec);
       removeExistingFile(elementsFSpec);
+      removeExistingFile(flashFSpec);
 
       // compile our file generating output files
       try {
@@ -87,6 +89,14 @@ describe('PNut_ts compiles .spin2 w/debug() correctly', () => {
       filesMatch = compareObjOrBinFiles(binaryFSpec, goldenBinFSpec);
       if (!filesMatch) {
         whatFailed = appendDiagnosticString(whatFailed, 'Binary Files', ', ');
+      }
+
+      // ID the golden .flash file
+      const goldenFLashFSpec = path.join(testDirPath, `${basename}.flash.GOLD`);
+      // Compare binary files
+      filesMatch = compareObjOrBinFiles(flashFSpec, goldenFLashFSpec);
+      if (!filesMatch) {
+        whatFailed = appendDiagnosticString(whatFailed, 'Flash Files', ', ');
       }
 
       if (whatFailed.length > 0) {

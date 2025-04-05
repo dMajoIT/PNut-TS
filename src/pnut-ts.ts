@@ -100,7 +100,7 @@ export class PNutInTypeScript {
       //.option('-B, --bin', 'Generate binary files (.bin) suitable for download')
       .option('-a, --altbin', 'Use alternate .binary name vs. .bin')
       .option('-o, --output <name>', 'Specify output file basename')
-      .option('-i, --intermediate', 'Generate *-pre.spin2 after preprocessing')
+      .option('-i, --intermediate', 'Generate *__pre.spin2 after preprocessing')
       .option('-q, --quiet', 'Quiet mode (suppress banner and non-error text)')
       .option('-F, --flashfile', 'Generate FLASH image file (.flash) suitable for writing to flash chip')
       .option('-O, --obj', 'Generate object files (.obj) from compilation')

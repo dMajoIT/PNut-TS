@@ -34,6 +34,7 @@ PNut-TS has a pre-processor that understands a few primitive directives:
 - `#elseifdef / #elseifndef`
 - `#error / #warn`
 - `#include`
+- `#pragma`
 
 Here's more detail on each of the supported directives
 
@@ -142,6 +143,46 @@ Removes the user-defined symbol FOO if it was defined.
 
 Note that #undef will not do anything if one of our built-in symbols was named.
 
+### \#pragma statements
+
+**Background: \#pragma** is a preprocessor directive that provides a way to give additional instructions to the compiler. It's used for compiler-specific or operating-system-specific actions, allowing control over compilation behavior beyond what's available in the standard language. Pragmas are implementation-defined, meaning their effects can vary between compilers.
+
+The following \#pragma(s) are supported in PNut_TS:
+
+#### \#pragma exportdef {SYMNAME}
+
+The `exportdef` \#pragma exports the definition of the macro `SYMNAME` to other files. Normally a preprocessor macro only takes effect in the single source file in which it was defined. `#pragma exportdef` applied to the macro causes it to be exported to the global namespace, so that it will be in effect in all subsequent files, including objects.
+
+Note that macros exported to other files by `#pragma exportdef` have lower priority than macros defined on the command line, that is, `#pragma exportdef SYMNAME ` has lower priority than `-DSYMNAME`. 
+
+Example of `#pragma exportdef ...` use:
+
+Top level file main.spin2:
+
+```
+#define MEMDRIVER "driver2.spin2"
+#pragma exportdef MEMDRIVER
+
+' instantiate flash.spin2 with the
+' default memory driver overridden by
+' MEMDRIVER
+
+OBJ flash : "flash.spin2"
+```
+
+Subobject obj.spin2:
+
+```
+#ifndef MEMDRIVER
+#define MEMDRIVER "default_driver"
+#endif
+
+OBJ driver : MEMDRIVER
+```
+
+**Note** that if there are multiple uses of `#pragma exportdef` for the same symbol, only the first one will actually be used -- that is, a macro may be exported from a file only once. 
+
+Similarly if SYMBOL was defined on the command line (`-DSYMBOL`), then a `#pragma exportdef SYMBOL` will not have any effect.
 
 ## Predefined Symbols
 

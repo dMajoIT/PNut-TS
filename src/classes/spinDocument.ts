@@ -210,7 +210,7 @@ export class SpinDocument {
 
   public writeProprocessedSrc(dirName: string, fileName: string, lines: TextLine[]) {
     const fileBasename = path.basename(fileName, '.spin2');
-    const outFilename = path.join(dirName, `${fileBasename}-pre.spin2`);
+    const outFilename = path.join(dirName, `${fileBasename}__pre.spin2`);
     // Create a write stream
     this.logMessage(`* writing preprocessed source to ${outFilename}`);
     const stream = fs.createWriteStream(outFilename);
