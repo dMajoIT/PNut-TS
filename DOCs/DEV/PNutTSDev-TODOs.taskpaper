@@ -136,10 +136,10 @@ TODO's from PNut Zoom 250303++:
 			- EXCEPT-tests
 			- EXT-tests @done(2025-04-05)
 			- FULL
-			- LARGE-tests
+			- LARGE-tests @done(2025-04-05)
 			- LOADER-tests @done(2025-04-05)
 			- OBJ-tests @done(2025-04-05)
-			- PREPROC-tests
+			- PREPROC-tests @done(2025-04-05)
 			- SHORT
 			- SPIN-tests @done(2025-04-05)
 			- VAR-tests @done(2025-04-05)

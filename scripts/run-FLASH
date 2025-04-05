@@ -1,0 +1,8 @@
+#!/bin/bash
+#  the following should abort if the compile fails
+
+#  Equiv of PNut -cid (when avail.)
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O -F --log compiler resolver parser --regression element -v TEST/FLASH-tests/isp_dummy_flash.spin2)
+
+#  Equiv of PNut -ci:
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -v -l -O -F --log compiler resolver parser --regression element -v TEST/FLASH-tests/isp_dummy_flash.spin2)
