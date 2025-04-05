@@ -50,7 +50,7 @@ describe('PNut_ts preprocesses files correctly', () => {
   }
   // Filter out files with the debug extensions
   files = files.filter((file) => !file.endsWith('.byHandPre.spin2'));
-  files = files.filter((file) => !file.endsWith('__pre.spin2'));
+  files = files.filter((file) => !file.endsWith('__pre.spin2') && !file.endsWith('-pre.spin2'));
 
   if (files.length > 1) {
     files.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));

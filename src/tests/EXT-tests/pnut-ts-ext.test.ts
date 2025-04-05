@@ -37,7 +37,7 @@ describe('PNut_ts builds our EXTernal files (.obj) correctly', () => {
   // Filter out files that were our v44 attempt
   files = files.filter((file) => !file.includes('v44'));
   // Filter out files that match the *__pre.spin2 pattern (-i output files)
-  files = files.filter((file) => !file.endsWith('__pre.spin2'));
+  files = files.filter((file) => !file.endsWith('__pre.spin2') && !file.endsWith('-pre.spin2'));
   if (files.length > 1) {
     files.sort();
   }
