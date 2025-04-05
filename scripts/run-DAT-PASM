@@ -1,0 +1,12 @@
+#!/bin/bash
+#  the following should abort if the compile fails
+(set -x;npm run build)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/HDMI_Spiral_Demo_800_x_480.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/Spin2_debugger.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/blink_pasm.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/blink_pasm0.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/blink_single_pasm.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/flash_loader.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/fs_inline_pasm.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/loader_demo.spin2)
+(./scripts/doit ./dist/pnut-ts.js  -v -l -O   --log compiler resolver parser --regression element -v TEST/DAT-PASM-tests/spin2_interpreter.spin2)
