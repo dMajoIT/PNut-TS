@@ -620,6 +620,31 @@ export class SpinDocument {
           } else {
             this.reportError(`Filename missing from #include statement!`, lineIdx, 0);
           }
+        } else if (currLine.startsWith('#pragma')) {
+          // handle #pragma {comand} {symbol}
+          const [command, symbol, value] = this.getPragmaSymbolValue(currLine);
+          if (command.length > 0 && command.toUpperCase() == 'EXPORTDEF') {
+            if (symbol !== undefined) {
+              const foundUndefine: boolean = this.context.preProcessorOptions.undefSymbols.includes(symbol);
+              const canAdd = (this.thisSideKeepsCode() || !this.inIfDef()) && !foundUndefine;
+              replaceCurrent = this.commentOut(currLine);
+              if (canAdd) {
+                this.logMessage(`SpinPP: #pragam ${command}: force -D of symbol [${symbol}]=[${value}]`);
+                this.context.preProcessorOptions.defSymbols.push(symbol.toUpperCase());
+              } else if (foundUndefine) {
+                this.logMessage(`SpinPP: #pragma ${command} [${symbol}] prevented by "-U ${symbol}" on command line`);
+                insertTextLines = [
+                  new TextLine(this.fileId, `' NOTE: #pragma ${command} ${symbol} prevented by command line "-U ${symbol}"`, lineIdx)
+                ];
+              }
+            } else {
+              // ERROR bad statement
+              this.reportError(`#pragma ${command} is missing symbol name`, lineIdx, 0);
+            }
+          } else {
+            // ERROR bad statement
+            this.reportError(`#pragma [${command}] UNSUPPORTED!`, lineIdx, 0);
+          }
         } else if (currLine.match(/^#-*[0-9%$]+\s*,*|^#_*[A-Za-z_]+\s*,*/)) {
           // ignore these enumeration starts, they are not meant to be directives
           this.logMessage(`SpinPP: SKIP ENUM [${currLine}]`);
@@ -888,6 +913,20 @@ export class SpinDocument {
       }
     }
     return [symbol, value];
+  }
+
+  private getPragmaSymbolValue(line: string): [string, string | undefined, string] {
+    const lineParts = this.splitLineOnWhiteSpace(line);
+    // handle #pragma {command} {symbol}
+    let symbol: string | undefined = undefined;
+    let command: string = '';
+    const value: string = '1';
+    if (lineParts.length > 2) {
+      // internally all Preprocessor symbols are UPPER CASE
+      command = lineParts[1].toUpperCase();
+      symbol = lineParts[2].toUpperCase();
+    }
+    return [command, symbol, value];
   }
 
   private splitLineOnWhiteSpace(line: string): string[] {
