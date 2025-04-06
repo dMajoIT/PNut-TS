@@ -450,9 +450,6 @@ export class SpinDocument {
             if (canAdd) {
               this.logMessage(`SpinPP: add new symbol [${symbol}]=[${value}]`);
               this.defineSymbol(symbol, value, eTextSub.SA_TEXT_YES); // this should work?!!
-            } else if (foundUndefine) {
-              this.logMessage(`SpinPP: #define of [${symbol}] prevented by "-U ${symbol}" on command line`);
-              insertTextLines = [new TextLine(this.fileId, `' NOTE: #define of ${symbol} prevented by command line "-U ${symbol}"`, lineIdx)];
             }
           } else {
             // ERROR bad statement
