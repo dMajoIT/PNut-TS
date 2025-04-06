@@ -445,8 +445,7 @@ export class SpinDocument {
           // parse #define {symbol} {value}
           const [symbol, value] = this.getSymbolValue(currLine);
           if (symbol) {
-            const foundUndefine: boolean = this.context.preProcessorOptions.undefSymbols.includes(symbol);
-            const canAdd = (this.thisSideKeepsCode() || !this.inIfDef()) && !foundUndefine;
+            const canAdd = this.thisSideKeepsCode() || !this.inIfDef();
             replaceCurrent = this.commentOut(currLine);
             if (canAdd) {
               this.logMessage(`SpinPP: add new symbol [${symbol}]=[${value}]`);
@@ -626,7 +625,8 @@ export class SpinDocument {
           if (command.length > 0 && command.toUpperCase() == 'EXPORTDEF') {
             if (symbol !== undefined) {
               const foundUndefine: boolean = this.context.preProcessorOptions.undefSymbols.includes(symbol);
-              const canAdd = (this.thisSideKeepsCode() || !this.inIfDef()) && !foundUndefine;
+              const alreadyDefined: boolean = this.context.preProcessorOptions.defSymbols.includes(symbol);
+              const canAdd = (this.thisSideKeepsCode() || !this.inIfDef()) && !foundUndefine && !alreadyDefined;
               replaceCurrent = this.commentOut(currLine);
               if (canAdd) {
                 this.logMessage(`SpinPP: #pragam ${command}: force -D of symbol [${symbol}]=[${value}]`);
@@ -635,6 +635,15 @@ export class SpinDocument {
                 this.logMessage(`SpinPP: #pragma ${command} [${symbol}] prevented by "-U ${symbol}" on command line`);
                 insertTextLines = [
                   new TextLine(this.fileId, `' NOTE: #pragma ${command} ${symbol} prevented by command line "-U ${symbol}"`, lineIdx)
+                ];
+              } else if (alreadyDefined) {
+                this.logMessage(`SpinPP: #pragma ${command} [${symbol}] IGNORED, already defined by "-D ${symbol}" on command line`);
+                insertTextLines = [
+                  new TextLine(
+                    this.fileId,
+                    `' NOTE: #pragma ${command} ${symbol} IGNORED, already defined by "-D ${symbol}" on command line`,
+                    lineIdx
+                  )
                 ];
               }
             } else {

@@ -18,7 +18,8 @@ Work to appear in upcoming releases:
 - Add lanuage version support through `{Spin2_v51}`.
 - Add `-F` which, when specified, causes the .flash file to be written (PNut -ci equiv.)
 - Preprocessor intermediate files now end with `__pre.spin2` (vs. '-pre.spin2') 
-- Added `#pragma exportdef SYMBOL` which make SYMBOL present as if added with `-DSYMBOL` on command line
+- Preprocessor: #define is no longer affected by command-line -U options
+- Added `#pragma exportdef SYMBOL` which make SYMBOL present as if added with `-DSYMBOL` on command line but affects all files compiled after file containing the #pragma (*place in top-most file for best results*)
 - {Spin2_v44} is no longer supported due to changes in data structures beginning in v45
 - Compatible with PNut versions thru PNut_v51.exe (except for PNut_v44.exe which is no longer supported)
 

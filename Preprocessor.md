@@ -16,13 +16,13 @@ A couple of command line options affect the preprocessing:
 
 | Option | Effect |
 | --- | --- |
-| <PRE>-D \<symbol></PRE> | Defines a symbol that can be tested with the `#ifdef`, `#ifndef`,  `#elseifdef` or `#elseifndef` statements |
-| <PRE>-U \<symbol></PRE>  | Prevents a subsequent `#define <symbol>` found in the .spin2 code from having any effect
-| <PRE>-I \<directory></PRE>  | Specify the folder to search within for `#include "filename(.spin2)" statements
+| <PRE>-D \<symbolName></PRE> | Defines a symbol that can be tested with the `#ifdef`, `#ifndef`,  `#elseifdef` or `#elseifndef` statements. Equivalent to `#define SYMBOL` but affects all files in the compilation effort. |
+| <PRE>-U \<symbolName></PRE>  | The -U option can undefine a symbol that was previously defined by using the -D option. <Br>**NOTE:** The -U option can not undefine a symbol created by a #define directive.
+| <PRE>-I \<directory></PRE>  | Specify the folder to search within for `#include "filename(.spin2)"` statements
 | -- **Diagnostic Use** -- |
-| <PRE>-i, --intermediate | Generate *-pre.spin2 after preprocessing - so you can review what preprocessed source was fed to the compiler
+| <PRE>-i, --intermediate | Generate `*__pre.spin2` file after preprocessing - so you can review what preprocessed source was fed to the compiler
 
-**NOTE:** These directives apply to all .spin2 files processed in the compile effort, not just the top-level file.  This means that the compilation of all #included files and all files specified in the OBJ block of each object will be affected by these -D and -U options.
+**NOTE:** The above directives apply to all .spin2 files processed in the compile effort, not just the top-level file.  This means that the compilation of all #included files and all files specified in the OBJ block of each object will be affected by these -D and -U options.
 
 ## Preprocessor Directives
 
