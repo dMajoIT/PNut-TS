@@ -7546,47 +7546,54 @@ export class SpinResolver {
     let compiledParameterCount: number = -1; // flag saying we need to compile expression
     const savedElementIndex: number = this.logSavedElementLocation();
     this.getElementObj();
-    if (this.isStruct(this.currElement.type)) {
-      // have STRUCT
-      const structVariable: iVariableReturn = this.checkVariable(); // variable ?
-      if (structVariable.structIsBWL) {
-        if (this.checkLeftParen()) {
-          this.logRestoredElementLocation(savedElementIndex);
-          this.getElement();
-          // (copied @@chkvarmethod to here...)
-          const [isMethod, returnCount] = this.checkVariableMethod();
-          if (isMethod && returnCount >= 2) {
+    const structVariable: iVariableReturn = this.checkVariable(); // variable ?
+    if (structVariable.isVariable) {
+      if (this.isStruct(this.currElement.type)) {
+        // have STRUCT
+        if (structVariable.structIsBWL) {
+          if (this.checkLeftParen()) {
             this.logRestoredElementLocation(savedElementIndex);
-            this.getElementObj();
-            this.ct_method_ptr(savedElementIndex, eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
-            compiledParameterCount = returnCount;
+            this.getElement();
+            // (copied @@chkvarmethod to here...)
+            const [isMethod, returnCount] = this.checkVariableMethod();
+            if (isMethod && returnCount >= 2) {
+              this.logRestoredElementLocation(savedElementIndex);
+              this.getElementObj();
+              this.ct_method_ptr(savedElementIndex, eResultRequirements.RR_OneOrMore, eByteCode.bc_drop_push);
+              compiledParameterCount = returnCount;
+            } else {
+              // fall into PNut @@single:
+            }
           } else {
             // fall into PNut @@single:
           }
-        } else {
-          // fall into PNut @@single:
-        }
-        skipFollowingTypeChecks = true;
-      } else {
-        // PNut @@struct:
-        if (structVariable.structSize <= 4) {
-          // fall into PNut @@single:
           skipFollowingTypeChecks = true;
         } else {
-          this.getElement();
-          if (
-            this.currElement.type == eElementType.type_op &&
-            (this.currElement.operation == eOperationType.op_e || this.currElement.operation == eOperationType.op_ne)
-          ) {
+          // PNut @@struct:
+          if (structVariable.structSize <= 4) {
+            // fall into PNut @@single:
             skipFollowingTypeChecks = true;
           } else {
-            this.backElement();
-            compiledParameterCount = (structVariable.structSize + 3) >> 2;
-            structVariable.operation = eVariableOperation.VO_READ;
-            this.compileVariable(structVariable);
-            skipFollowingTypeChecks = true;
+            this.getElement();
+            if (
+              this.currElement.type == eElementType.type_op &&
+              (this.currElement.operation == eOperationType.op_e || this.currElement.operation == eOperationType.op_ne)
+            ) {
+              // fall into PNut @@single:
+              skipFollowingTypeChecks = true;
+            } else {
+              this.backElement();
+              compiledParameterCount = (structVariable.structSize + 3) >> 2;
+              structVariable.operation = eVariableOperation.VO_READ;
+              this.compileVariable(structVariable);
+              skipFollowingTypeChecks = true;
+            }
           }
         }
+      } else {
+        // PNut @@notstruct2
+        this.logRestoredElementLocation(savedElementIndex);
+        this.getElementObj();
       }
     }
     // not STRUCT
