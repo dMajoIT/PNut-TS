@@ -144,12 +144,15 @@ TODO's from PNut Zoom 250303++:
 			- SPIN-tests @done(2025-04-05)
 			- VAR-tests @done(2025-04-05)
 		- STEPHEN   Add .flash regression test @done(2025-04-05)
-		- CHIP           Create a new file for each new version to add to regression tests
-		- STEPHEN  Add new regressions tests for v44 - v51 features (files from chip)
+		- CHIP           Create a new file for each new version to add to regression tests @done(2025-04-07)
+		- STEPHEN  Add new regressions tests for v44 - v51 features (files from chip) @done(2025-04-07)
 	Day23: Mon:
-		- Fix any failing regression tests
+		- Run all regression tests to see what to fix @done(2025-04-07)
+		- Fix some failing regression tests @done(2025-04-07)
+	Day24: Tue (a):
+		- Run all regression tests to see what to fix
+		- Fix more failing regression tests
 		- After all regression tests pass, run coverage and add code to test any missing areas
-	
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support
