@@ -1,0 +1,9 @@
+#!/bin/bash
+#  the following should abort if the compile fails
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v45_step.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v46_step.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v47_step.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v49_step_child.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v49_step.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v50_step.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O   --log compiler resolver parser --regression element -v TEST/LANG-VER-tests/Spin2_v51_step.spin2)
