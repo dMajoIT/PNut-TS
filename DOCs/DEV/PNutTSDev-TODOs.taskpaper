@@ -151,6 +151,7 @@ TODO's from PNut Zoom 250303++:
 		- Fix some failing regression tests @done(2025-04-07)
 	Day24: Tue (a):
 		- Run all regression tests to see what to fix
+		- TODO: add regression test ensuring the col/scope is being handled correct for objects
 		- Fix more failing regression tests
 		- After all regression tests pass, run coverage and add code to test any missing areas
 	

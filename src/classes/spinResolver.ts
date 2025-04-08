@@ -8125,6 +8125,7 @@ export class SpinResolver {
   private ct_objpub(resultsNeeded: eResultRequirements, byteCode: eByteCode) {
     // Compile term - obj{[]}.method({param,...})
     // PNut ct_objpub:
+    this.logMessage(`*-- ct_objpub(${eResultRequirements[resultsNeeded]}, ${eByteCode[byteCode]}) at [${this.currElement.toString()}]`);
     this.objImage.appendByte(byteCode);
     const savedElement: SpinElement = this.currElement;
     const [foundIndex, elementIndexOfIndex] = this.checkIndex();
@@ -10810,42 +10811,44 @@ private checkDec(): boolean {
   //
   private getElementObj(): SpinElement {
     // if we are found an OBJ trio and found a constant return leaf element resolved as non-obj constant
-    let exitWithCurrElement: boolean = false; // if true we already did the getElement() (and backs) so exit with current
-    if (this.nextElementType() != eElementType.type_end) {
+    this.logMessage(`  *-- GETeleObj() ENTRY at [${this.currElement.toString()}]`);
+    this.getElement(); // now have OBJECT as current
+    this.logMessage(`   -- GETeleObj() at [${this.currElement.toString()}]`);
+    if (this.currElement.type != eElementType.type_end) {
       // have object reference?
-      if (this.nextElementType() == eElementType.type_obj) {
+      if (this.currElement.type == eElementType.type_obj) {
         // found OBJ check next
-        exitWithCurrElement = true;
-        this.getElement(); // now have OBJECT as current
-        if (this.nextElementType() == eElementType.type_dot) {
-          this.getElement(); // now have DOT as current
-          const nextType: eElementType = this.nextElementType();
-          if (
-            nextType == eElementType.type_obj_con_int ||
-            nextType == eElementType.type_obj_con_float ||
-            nextType == eElementType.type_obj_con_struct ||
-            nextType == eElementType.type_obj_pub
-          ) {
-            let [objSymType, objSymValue] = this.getObjSymbol(this.nextElementValue());
-            // if public method of object then back out and let compiler
-            if (objSymType == eElementType.type_obj_pub) {
-              // let compiler discover OBJ.PUB
-              this.backElement(); // move from DOT back to OBJ
-            } else {
-              // we have obj type_obj_con_int, type_obj_con_float, or type_obj_con_struct
-              // mark our DOT as part
-              this.currElement.partOfObjReference = true; // mark dot for skip when backing up
-              this.nextElementIndex++;
-              this.currElement = new SpinElement(0, objSymType, '', 0, 0, this.spinElements[this.nextElementIndex]);
-            }
-          } else {
-            // let compiler discover OBJ
+        const savedElement: SpinElement = this.currElement;
+        this.currElement = this.getElement(); // now have DOT as current
+        this.logMessage(`   -- GETeleObj() at [${this.currElement.toString()}]`);
+        if (this.currElement.type == eElementType.type_dot) {
+          const savedDotElement: SpinElement = this.currElement;
+          let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
+          // if public method of object then back out and let compiler
+          if (objSymType == eElementType.type_obj_pub) {
+            // let compiler discover OBJ.PUB
+            this.backElement(); // move from Symbol back to DOT
             this.backElement(); // move from DOT back to OBJ
+            this.backElement();
+            this.getElement(); // to do type_obj insertion
+          } else {
+            // we have obj type_obj_con_int, type_obj_con_float, or type_obj_con_struct
+            // mark our DOT as part
+            this.logMessage(`   -- GETeleObj() objSymType=[${eElementType[objSymType]}]`);
+            savedDotElement.partOfObjReference = true; // mark dot for skip when backing up
+            this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.spinElements[this.nextElementIndex - 1]);
+            this.currElement.setType(objSymType); // for new type
+            this.currElement.setValue(objSymValue); // for new type
           }
+        } else {
+          this.backElement(); // move from dot back to obj
+          this.backElement();
+          this.getElement(); // to do type_obj insertion
         }
       }
     }
-    return exitWithCurrElement ? this.currElement : this.getElement(); // NOTE: (WARNING!) this is a reference into our active element list
+    this.logMessage(`  *-- GETeleObj() EXIT at [${this.currElement.toString()}]`);
+    return this.currElement;
   }
 
   private getElement(): SpinElement {
@@ -10869,21 +10872,21 @@ private checkDec(): boolean {
       if (foundSymbol !== undefined) {
         this.replacedName = element.stringValue;
         const symbolLength = element.getSymbolLength();
-        this.logMessage(`* GETele REPLACING element=[${element.toString()}]`);
+        this.logMessage(`  * GETele REPLACING element=[${element.toString()}]`);
         element = new SpinElement(-1, eElementType.type_undefined, '', -1, -1, element);
         element.setType(foundSymbol.type);
         element.setValue(foundSymbol.value);
         element.setSymbolLength(symbolLength);
-        this.logMessage(`*       with element=[${element.toString()}]`);
+        this.logMessage(`  *       with element=[${element.toString()}]`);
         element.setSourceElementWasUndefined(); // mark this NEW symbol as replacing an undefined symbol
       }
     }
     //*
-    this.logMessage(`* GETele GOT i#${this.nextElementIndex - 1}, e=[${element.toString()}]`);
+    this.logMessage(`  * GETele GOT i#${this.nextElementIndex - 1}, e=[${element.toString()}]`);
     if (element.type != eElementType.type_end_file) {
       //this.logMessage(`*        NEXT i#${this.nextElementIndex}, e=[${this.spinElements[this.nextElementIndex].toString()}]`);
     } else {
-      this.logMessage(`*        NEXT -- at EOF --`);
+      this.logMessage(`  *        NEXT -- at EOF --`);
     }
     //*/
 
