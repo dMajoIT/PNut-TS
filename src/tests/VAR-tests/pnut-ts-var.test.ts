@@ -39,10 +39,10 @@ describe('PNut_ts builds our VAR test files (.lst) correctly', () => {
   }
   files.forEach((file) => {
     test(`Compile file: ${path.basename(file)}`, () => {
-      let fileNeedsDebug: boolean = false;
-      if (file.includes('var_empty_test')) {
-        fileNeedsDebug = true;
-      }
+      const fileNeedsDebug: boolean = false;
+      //if (file.includes('var_empty_test')) {
+      //  fileNeedsDebug = true;
+      //}
       let options: string = '-v -l -O --regression element --';
       if (fileNeedsDebug) {
         options = `-d ${options}`;

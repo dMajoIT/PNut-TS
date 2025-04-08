@@ -8710,7 +8710,7 @@ export class SpinResolver {
     // PNut check_constant:
     //  this 'check_constant', now 'get_constant' in Pnut v44 and later
     const resultStatus: iConstantReturn = { value: 0n, foundConstant: true };
-    this.logMessage(`* getCon mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${(this, this.currElement.toString())}]`);
+    this.logMessage(`*--* getCON() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${(this, this.currElement.toString())}]`);
 
     if (mode == eMode.BM_Spin2) {
       // trying to resolve spin2 constant
@@ -8803,7 +8803,7 @@ export class SpinResolver {
           // have TRUNC() or ROUND()
           const origElementType: eElementType = this.currElement.type;
           // TODO: determine if we care about overflow checking... because we don't do any here
-          //this.logMessage(`* getCon() type=[${eElementType[this.currElement.type]}]`);
+          //this.logMessage(` - getCON()  type=[${eElementType[this.currElement.type]}]`);
           this.checkIntMode();
           this.getLeftParen();
           this.mathMode = eMathMode.MM_FloatMode;
@@ -8815,7 +8815,7 @@ export class SpinResolver {
           const float32Value = this.numberStack.pop(); // get result
           // convert uint32 to float
           const float64Value = Number(bigIntFloat32ToNumber(BigInt(float32Value)));
-          //this.logMessage(`* getCon() round/trunc float64Value=[0x${float64Value.toString(16).toUpperCase().padStart(8, '0')}]`);
+          //this.logMessage(` - getCON()  round/trunc float64Value=[0x${float64Value.toString(16).toUpperCase().padStart(8, '0')}]`);
           if (origElementType == eElementType.type_trunc) {
             // truncate our float value
             const truncatedUInt32 = Math.trunc(float64Value) & 0xffffffff;
@@ -8824,7 +8824,7 @@ export class SpinResolver {
           } else if (origElementType == eElementType.type_round) {
             // truncate our float value
             const roundedUInt32 = Math.round(float64Value) & 0xffffffff;
-            //this.logMessage(`* getCon() round/trunc roundedUInt32=[0x${roundedUInt32.toString(16).toUpperCase().padStart(8, '0')}]`);
+            //this.logMessage(` - getCON()  round/trunc roundedUInt32=[0x${roundedUInt32.toString(16).toUpperCase().padStart(8, '0')}]`);
             // return the converted result
             resultStatus.value = BigInt(roundedUInt32);
           } else if (origElementType == eElementType.type_sizeof) {
@@ -8845,13 +8845,13 @@ export class SpinResolver {
           }
         } else {
           // DAT section handling
-          this.logMessage(`* getCon DAT section handling`);
+          this.logMessage(` - getCON()  DAT section handling`);
           let didFindLocal: boolean = false;
           let symbol: iSymbol = { name: '', type: eElementType.type_undefined, value: 0n };
           if (mode == eMode.BM_OperandIntOnly || mode == eMode.BM_OperandIntOrFloat) {
             [didFindLocal, symbol] = this.checkLocalSymbol();
             if (didFindLocal) {
-              this.logMessage(`* getCon FOUND local symbol value=[${hexString(symbol.value)}]`);
+              this.logMessage(` - getCON()  FOUND local symbol value=[${hexString(symbol.value)}]`);
               // we have a local symbol... (must be undef or is storage type)
             }
           }
@@ -8859,7 +8859,7 @@ export class SpinResolver {
           // PNut here is @@notop:
           const haveUndefinedSymbol = this.checkUndefined(resolve, didFindLocal, symbol.type);
           if (haveUndefinedSymbol == false) {
-            this.logMessage(`* getCON our symbol is DEFINED`);
+            this.logMessage(` - getCON()  our symbol is DEFINED`);
             // FIXME: TODO: handle DAT symbols
             if (this.currElement.type == eElementType.type_dollar) {
               // HANDLE an origin symbol
@@ -8878,7 +8878,7 @@ export class SpinResolver {
               resultStatus.value = BigInt(this.dittoIndex);
             } else if (this.currElement.type == eElementType.type_register) {
               // PNut here is @@notorg:
-              this.logMessage(`* getCON() type_register`);
+              this.logMessage(` - getCON()  type_register`);
               // HANDLE a cog register (the inConBlock check allows registers in CON block)
               //   if not in CON block and NOT in operand mode...
               if (this.inConBlock == false && mode != eMode.BM_OperandIntOnly && mode != eMode.BM_OperandIntOrFloat) {
@@ -8892,7 +8892,7 @@ export class SpinResolver {
               (this.currElement.type == eElementType.type_loc_byte || this.currElement.type == eElementType.type_loc_word)
             ) {
               // above is @@notreg:
-              this.logMessage(`* getCON() inlineModeForGetConstant=(true)`);
+              this.logMessage(` - getCON()  inlineModeForGetConstant=(true)`);
               // if inline mode, remap local longs
               //  HANDLE DAT Local variable now in register for inline access
               // [error_lvmb]
@@ -8925,7 +8925,7 @@ export class SpinResolver {
                 // we have DAT variable address
                 // here is @@trim:
                 resultStatus.value = this.currElement.bigintValue & BigInt(0xfffff);
-                this.logMessage(`* getConstant() have @ e=[${this.currElement.toString()}, value=(${hexString(resultStatus.value)})]`);
+                this.logMessage(` - getCON()  have @ e=[${this.currElement.toString()}, value=(${hexString(resultStatus.value)})]`);
               } else {
                 if (this.checkUndefined(resolve) == false) {
                   // [error_eads]
@@ -8938,10 +8938,10 @@ export class SpinResolver {
               this.checkIntMode();
               if (mode == eMode.BM_OperandIntOnly || mode == eMode.BM_OperandIntOrFloat) {
                 // within pasm instruction
-                this.logMessage(`* getCON DAT symbol currElement=[${this.currElement.toString()}]`);
+                this.logMessage(` - getCON()  DAT symbol currElement=[${this.currElement.toString()}]`);
                 if (this.currElement.bigintValue >= BigInt(0xfff00000)) {
                   // here is @@orghsymbol:
-                  this.logMessage(`* getCON DAT symbol have hub address this.pasmMode=(${this.pasmMode})`);
+                  this.logMessage(` - getCON()  DAT symbol have hub address this.pasmMode=(${this.pasmMode})`);
                   this.locOrghSymbolFlag = true;
                   resultStatus.value = this.currElement.bigintValue + BigInt(this.pasmMode ? 0 : this.orghOffset);
                 } else {
@@ -8954,7 +8954,7 @@ export class SpinResolver {
               }
               // here is @@trim: (again)
               resultStatus.value &= BigInt(0xfffff);
-              this.logMessage(`* getCON DAT symbol elem=[${this.currElement.toString()}] value=0x${resultStatus.value.toString(16)}`);
+              this.logMessage(` - getCON()  DAT symbol elem=[${this.currElement.toString()}] value=0x${resultStatus.value.toString(16)}`);
             } else {
               // we didn't find a constant
               resultStatus.foundConstant = false;
@@ -8963,7 +8963,7 @@ export class SpinResolver {
         }
       }
     }
-    this.logMessage(`* getConstant() EXIT w/foundConstant=(${resultStatus.foundConstant})`);
+    this.logMessage(`*--* getCon() EXIT w/foundConstant=(${resultStatus.foundConstant})`);
     return resultStatus;
   }
 
@@ -8977,7 +8977,7 @@ export class SpinResolver {
       this.currElement.type == eElementType.type_dat_byte ||
       this.currElement.type == eElementType.type_dat_word ||
       this.currElement.type == eElementType.type_dat_long;
-    this.logMessage(`* checkDat() status=(${dataStatus})`);
+    this.logMessage(`  -- checkDat(${eMode[mode]}) status=(${dataStatus})`);
     return dataStatus;
   }
 
@@ -9031,7 +9031,7 @@ export class SpinResolver {
       }
       undefinedStatus = true;
     }
-    this.logMessage(`* checkUndefined(elem=[${this.currElement.toString()}]) undefinedStatus=(${undefinedStatus})`);
+    this.logMessage(`  -- checkUndefined(elem=[${this.currElement.toString()}]) undefinedStatus=(${undefinedStatus})`);
     return undefinedStatus;
   }
 
