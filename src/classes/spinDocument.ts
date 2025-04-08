@@ -135,7 +135,7 @@ export class SpinDocument {
   private nonDocNestCount: number = 0;
   // PNut-ts version number handling for this .spin2 file
   private defaultVersion: number = 41;
-  private legalVersions: number[] = [41, 43];
+  private legalVersions: number[] = [41, 43, 44, 45, 46, 47, 48, 49, 50, 51];
   private requiredVersion: number = 0;
   // errors reported while processing file
   private errorsfound: iError[] = [];
@@ -386,7 +386,7 @@ export class SpinDocument {
       let currLine = this.rawLines[lineIdx];
       this.logMessage(`SpinPP: currLine[${lineIdx}]: [${currLine}](${currLine.length})`);
       if (currLine.startsWith("'")) {
-        // have single line non-doc or doc comment
+        // have single line non-doc (') or doc ('') comment
         this.recordComment(currLine);
         // check for nonDoc comments (generally looking for '} patterns) in single line comment (only if already in nonDoc Comment)
         if (this.inNonDocComment) {
@@ -669,6 +669,7 @@ export class SpinDocument {
           this.inDocComment = true;
         }
         if (this.gatheringHeaderComment) {
+          this.logMessage(`SpinPP: hdrCmt++[${currLine}]`);
           this.headerComments.push(currLine);
         }
       } else if (currLine.startsWith('{')) {
@@ -689,12 +690,16 @@ export class SpinDocument {
         this.logMessage(
           `SpinPP: SRT-{: tmpLine=[${tmpLine}], openCt=(${openCt}), closeCt=(${closeCt}), depth=(${this.nonDocNestCount}), isNonDocCmt=(${this.inNonDocComment})`
         );
+        if (this.gatheringHeaderComment) {
+          this.logMessage(`SpinPP: hdrCmt++[${currLine}]`);
+          this.headerComments.push(currLine);
+        }
         if (this.inNonDocComment) {
           // entire line is within open but no close...
           this.logMessage(`SpinPP: STRT-{: Line is comment [${currLine}]`);
           skipThisline = true; // is comment but let's skip emitting it
         } else {
-          this.logMessage(`SpinPP: STRT-{: comment ended [${currLine}]`);
+          this.logMessage(`SpinPP: STRT-{: comment ended with } [${currLine}]`);
           currLine = tmpLine.trimEnd();
           if (currLine.length == 0) {
             continue;
@@ -763,7 +768,7 @@ export class SpinDocument {
       const reporter: RegressionReporter = new RegressionReporter(this.context);
       reporter.writeProprocessResults(this.dirName, this.fileName, this.allPreprocessedLines);
     }
-    this.logMessage(`SpinPP: preProcess() file=[${this.fileBaseName}], id=(${this.fileId})- EXIT`);
+    this.logMessage(`SpinPP: preProcess() file=[${this.fileBaseName}], ver=(v${this.versionNumber}) id=(${this.fileId})- EXIT`);
   }
 
   private dumpErrors() {
@@ -778,6 +783,7 @@ export class SpinDocument {
 
   private recordComment(line: string) {
     if (this.gatheringHeaderComment) {
+      this.logMessage(`SpinPP: hdrCmt++[${line}]`);
       this.headerComments.push(line);
     } else if (this.gatheringTrailerComment) {
       this.trailerComments.push(line);
@@ -958,8 +964,13 @@ export class SpinDocument {
     }
   }
 
+  private forceLogMessage(message: string): void {
+    this.context.logger.logMessage(message);
+  }
+
   private getVersionFromHeader(headerComments: string[]): void {
     const spinLangVersionRegEx = /\{Spin2_v(\d{2,3})\}/;
+    //this.forceLogMessage(`* SpinPP: headerComments=[${this.headerComments}]`);
     for (let index = 0; index < headerComments.length; index++) {
       const headerLine = headerComments[index];
       const symbolMatch = headerLine.match(spinLangVersionRegEx);
@@ -974,6 +985,7 @@ export class SpinDocument {
         }
       }
     }
+    //this.forceLogMessage(`* found ${this.requiredVersion}`);
   }
 
   private preloadSymbolTable() {

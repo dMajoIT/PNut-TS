@@ -98,16 +98,19 @@ export class ObjectStructures {
       const record: Uint8Array = this.readRecord(recordId);
       desiredSizeInBytes = this.readLongAt(2, record);
     }
+    this.logMessage(`* OBJSTRUCT: getStructureSizeForID(RCD#${recordId}) -> (${desiredSizeInBytes})`);
     return desiredSizeInBytes;
   }
 
   public getStructureRecord(recordId: number): ObjectStructureRecord {
+    this.logMessage(`* OBJSTRUCT: getStructureRecord(RCD#${recordId})`);
     const recordImage = this.readRecord(recordId);
     return new ObjectStructureRecord(this.context, `RCD#${recordId}`, recordImage);
   }
 
   public readRecord(recordId: number): Uint8Array {
     // retrieve the record from the set of structure-definition records
+    this.logMessage(`* OBJSTRUCT: readRecord(RCD#${recordId})`);
     let desiredRecord: Uint8Array = new Uint8Array();
     let desiredRcdLen: number = 0;
     if (recordId >= 0 && recordId < this._objStructRecordOffsets.length) {
@@ -119,7 +122,7 @@ export class ObjectStructures {
       }
     } else {
       // [error_ PNut TS new]
-      throw new Error(`ERROR: couldn't find existing structure record id=${recordId}`);
+      throw new Error(`ERROR: couldn't find existing structure RCD#${recordId}`);
     }
     return desiredRecord;
   }
@@ -141,8 +144,23 @@ export class ObjectStructures {
     this.replaceWord(this._structStartOffset, this._structRecordSize);
     this.replaceLong(this._structStartOffset + 2, this._structMemorySize);
     this._structIdNext++;
-    const latestRecordId = this._objStructureSet.length - 1;
+    const latestRecordId = this._objStructRecordOffsets.length - 1;
+    this.logMessage(
+      `* OBJSTRUCT: endRecord() -> RCD#${latestRecordId}, _objStructRecordOffsets=[${this._objStructRecordOffsets}](${this._objStructRecordOffsets.length})`
+    );
     return latestRecordId;
+  }
+
+  public beginMemberRecord() {
+    // begnin our structure member record
+    this.enterLong(BigInt(this._structMemorySize));
+  }
+
+  public endMemberRecord(nbrInstances: number, objectLimit: number, flagValue: number) {
+    // end our structure member record
+    const memorySize: number = this.finalizeStructElement(nbrInstances, objectLimit);
+    this._objStructureOffset += memorySize;
+    this.enterByte(flagValue);
   }
 
   public enterSymbolName(name: string) {
@@ -168,6 +186,7 @@ export class ObjectStructures {
 
   public enterAssignedStructure(recordId: number) {
     // PNut @@enter_struct:
+    this.logMessage(`* OBJSTRUCT: enterAssignedStructure(RCD#${recordId})`);
     const existingRecord = this.readRecord(recordId);
     for (let index = 0; index < existingRecord.length; index++) {
       this.enterByte(existingRecord[index]);
@@ -197,8 +216,9 @@ export class ObjectStructures {
 
   public recordStructWithinStruct(recordId: number) {
     // register a structure within structure being defined
-    const existingRecord = this.readRecord(recordId);
-    const structSize = this.readLongAt(2, existingRecord);
+    this.logMessage(`* OBJSTRUCT: recordStructWithinStruct(RCD#${recordId})`);
+    const existingRecord: Uint8Array = this.readRecord(recordId);
+    const structSize: number = this.readLongAt(2, existingRecord);
     this._lastSizeRecorded = structSize;
     this._lastTypeRecorded = eMemberType.MT_STRUCT;
     this.enterByte(this._lastTypeRecorded);
@@ -212,6 +232,7 @@ export class ObjectStructures {
     // lastly record the composite size
     this._lastSizeRecorded = 1 << typeSize; // 1,2,4
     this.enterByte(typeSize);
+    //this._structMemorySize += this._lastSizeRecorded;
   }
 
   public finalizeStructElement(nbrInstances: number, objectLimit: number) {
@@ -232,6 +253,7 @@ export class ObjectStructures {
       // [error_sehr]
       throw new Error('Structure exceeds hub range of $FFFFF');
     }
+    return this._structMemorySize;
   }
 
   public enterLong(uint32Value: bigint) {

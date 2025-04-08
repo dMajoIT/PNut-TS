@@ -1,6 +1,6 @@
 #!/bin/bash
 #  the following should abort if the compile fails
-(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -O -d -l --log resolver parser --regression element -v TEST/VAR-tests/var_empty_test.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -O -l --log resolver parser --regression element -v TEST/VAR-tests/var_empty_test.spin2)
 # run and generate .binary file
 #(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -a -v -O -d -l --log resolver parser --regression element -v TEST/VAR-tests/var_empty_test.spin2)
 # run and generate .binary file

@@ -606,13 +606,15 @@ export class SpinResolver {
         let structId: number = 0; // not yet a structure
         let variableType: eElementType = eElementType.type_var_long;
         let variableSize: number = 4;
+        this.backElement();
         do {
+          this.getElementObj();
+          // WITHIN line loop (looping muntil end of line)
           // is this ALIGNW or ALIGNL?
           const [foundAlign, alignMask] = this.checkAlign(); // alignw, alignl?
           if (foundAlign) {
             this.alignVar(alignMask);
-            this.getElementObj();
-            continue; // allow consective aligns?!
+            continue; // skip to get comma or EOL
           }
 
           // is this a size (BYTE, WORD, LONG)?
@@ -4474,7 +4476,7 @@ export class SpinResolver {
               this.getElementObj();
               if (!this.currElement.isTypeUndefined) {
                 // [error_eas]
-                throw new Error('Expected a symbol');
+                throw new Error('Expected a symbol [eas00]');
               }
               const overrideName: string = this.currElement.stringValue;
               this.getEqual();
@@ -5542,7 +5544,8 @@ export class SpinResolver {
               //  structure def'ns are not nested, so we don't have nested parens!
               if (this.nextElementType() == eElementType.type_left) {
                 // then skip ahead to right paren
-                this.scanToRightParen();
+                this.getElement(); // skip past the left (
+                this.scanToRightParen(); // now skip past rest of structure def'n
               } else if (this.nextElementType() == eElementType.type_equal) {
                 // else skip to , (end of decl) or end (end of line)
                 this.skipToCommaOrEndOfLine();
@@ -5551,7 +5554,7 @@ export class SpinResolver {
                 throw new Error('Expected "(" or "="');
               }
             } else {
-              // process structure
+              // process structure (last pass only)
               // PNut @@structenter:
               const symbolName: string = getSourceSymbol(this.context, this.currElement); // PNut backup_symbol
               if (this.objectStructureSet.haveMaxStructures) {
@@ -5616,6 +5619,8 @@ export class SpinResolver {
       this.objectStructureSet.beginRecord();
       let foundComma: boolean = false;
       do {
+        // PNut  @@member:
+        this.objectStructureSet.beginMemberRecord();
         this.getElementObj();
         if (this.currElement.type == eElementType.type_size) {
           const elemSize: number = this.currElement.numberValue;
@@ -5627,16 +5632,16 @@ export class SpinResolver {
         } else {
           // PNut @@notstruct:
           this.objectStructureSet.recordStructElement(eMemberType.MT_LONG);
-          this.backElement(); // back up to name
+          //this.backElement(); // back up to name
         }
         // PNut @@getname:
         const symbolName: string = this.currElement.stringValue;
-        const symbolFound: iSymbol | undefined = this.getSymbol(symbolName);
-        if (!symbolFound) {
+        this.logMessage(` BSRcd: nm=[${symbolName}],  at=[${this.currElement.toString()}]`);
+        if (symbolName.length == 0) {
           // [error_eas]
-          throw new Error('Expected a symbol');
+          throw new Error('Expected a symbol [eas01]');
         }
-        this.objectStructureSet.recordStructElementName(symbolFound.name);
+        this.objectStructureSet.recordStructElementName(symbolName);
         let instanceCount: number = 1; // default
         if (this.checkLeftBracket()) {
           // have multiplier
@@ -5653,11 +5658,10 @@ export class SpinResolver {
             instanceCount = tempInstanceCount;
           }
         }
-        this.objectStructureSet.finalizeStructElement(instanceCount, this.obj_limit);
         foundComma = this.getCommaOrRightParen();
         const flagValue: number = foundComma ? 1 : 0;
-        // record more or done byte value
-        this.objectStructureSet.enterByte(flagValue);
+        // check sizes and record more or done byte value
+        this.objectStructureSet.endMemberRecord(instanceCount, this.obj_limit, flagValue);
       } while (foundComma);
       // patch structure record
       newStructId = this.objectStructureSet.endRecord();
@@ -6484,7 +6488,7 @@ export class SpinResolver {
     const notPasmMode: boolean = false;
 
     // we have to skip debug() statement if not -d or DEBUG_DISABLE is set
-    if (this.context.compileOptions.enableDebug == false || this.debugDisable == true) {
+    if (!this.debugStatementWillEmitCode()) {
       // remove all but end of line
       this.logMessage(`*--* ci_debug(${this.currElement.toString()}) - Debug() processing disabled`);
       this.skipToEndOfLine();
@@ -11312,15 +11316,19 @@ private checkDec(): boolean {
         break;
 
       case eOperationType.op_frac: //  FRAC
-        if (b == 0n) {
-          // [error_dbz]
-          throw new Error(`Divide by zero (m054)`);
-        }
-        // our testing shows that this BigInt behavior is behaving like it's larger than 64 bits...
-        a = (a << 32n) / b;
-        if ((a >> 32n) & mask32Bit) {
-          // [error_divo]
-          throw new Error(`Division overflow`);
+        {
+          const origA = a;
+          if (b == 0n) {
+            // [error_dbz]
+            throw new Error(`Divide by zero (m054)`);
+          }
+          // our testing shows that this BigInt behavior is behaving like it's larger than 64 bits...
+          a = (a << 32n) / b;
+          if ((a >> 32n) & mask32Bit) {
+            // [error_divo]
+            throw new Error(`Division overflow`);
+          }
+          this.logMessage(` *** op_frac a(${origA}), b(${b}) = (${a})`);
         }
         break;
 
@@ -11387,6 +11395,7 @@ private checkDec(): boolean {
           const bInternalFloat64: number = bigIntFloat32ToNumber(b);
           // a to power of b
           const internalPow_64: number = Math.pow(aInternalFloat64, bInternalFloat64);
+          this.logMessage(` *** op_pow a(${aInternalFloat64}), b(${bInternalFloat64}) = (${internalPow_64})`);
           // convert back to float32
           a = numberToBigIntFloat32(internalPow_64);
         }

@@ -1122,7 +1122,7 @@ export class SpinSymbolTables {
     this.opcodeValues.set(eOpcode.oc_fadd, setOpcodeValue(eOperationType.op_fadd, 6, eByteCode.bc_fadd, 0, 1, 0, 0, 1, 0, 1)); //  +.
     this.opcodeValues.set(eOpcode.oc_sub, setOpcodeValue(eOperationType.op_sub, 6, eByteCode.bc_sub, 0, 1, 0, 1, 1, 0, 0)); //  -
     this.opcodeValues.set(eOpcode.oc_fsub, setOpcodeValue(eOperationType.op_fsub, 6, eByteCode.bc_fsub, 0, 1, 0, 0, 1, 0, 1)); //  -.
-    this.opcodeValues.set(eOpcode.oc_pow, setOpcodeValue(eOperationType.op_pow, 6, eByteCode.bc_pow, 0, 1, 0, 0, 1, 0, 1));
+    this.opcodeValues.set(eOpcode.oc_pow, setOpcodeValue(eOperationType.op_pow, 6, eByteCode.bc_pow, 0, 1, 0, 0, 1, 0, 1)); // POW
     this.opcodeValues.set(eOpcode.oc_fge, setOpcodeValue(eOperationType.op_fge, 7, eByteCode.bc_fge, 0, 1, 0, 1, 1, 0, 0)); //  #>
     this.opcodeValues.set(eOpcode.oc_fle, setOpcodeValue(eOperationType.op_fle, 7, eByteCode.bc_fle, 0, 1, 0, 1, 1, 0, 0)); //  <#
     this.opcodeValues.set(eOpcode.oc_addbits, setOpcodeValue(eOperationType.op_addbits, 8, eByteCode.bc_addbits, 0, 1, 0, 1, 0, 0, 0)); //  ADDBITS

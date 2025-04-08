@@ -260,8 +260,16 @@ export class Spin2Parser {
           const symbolTypeFixed = `${symbolType.padEnd(padWidth, ' ')}`;
           const hexValue: string = float32ToHexString(BigInt(symbol.value)).replace('0x', '').padStart(8, '0');
           const symNameParts: string[] = symbol.name.split(ID_SEPARATOR_STRING);
-          const nonUniqueName: string = symNameParts[0];
-          stream.write(`TYPE: ${symbolTypeFixed} VALUE: ${hexValue}          NAME: ${nonUniqueName}\n`);
+          let nonUniqueName: string = symNameParts[0];
+          let instanceNumber: number = nonUniqueName.charCodeAt(nonUniqueName.length - 1);
+          if (instanceNumber > 32) {
+            instanceNumber = 0;
+          } else {
+            nonUniqueName = nonUniqueName.slice(0, -1);
+          }
+          const symWithInstanceNbr = instanceNumber != 0 ? `${nonUniqueName},${instanceNumber.toString().padStart(2, '0')}` : `${nonUniqueName}`;
+          this.logMessage(`LST: symNameParts=[${symNameParts}], nonUniqueName=[${nonUniqueName}], instanceNumber=(${instanceNumber})`);
+          stream.write(`TYPE: ${symbolTypeFixed} VALUE: ${hexValue}          NAME: ${symWithInstanceNbr}\n`);
         }
       }
       // emit spin version
