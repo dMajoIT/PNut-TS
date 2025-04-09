@@ -1,0 +1,5 @@
+PUB Register ( x )
+    debug("Register: ", sdec_(x))
+
+PUB Register_End ( x )
+    debug("Register End at: ", sdec_(x))

@@ -1,6 +1,6 @@
 {Spin2_v51}
 
-CON struct x(a,b,c) ', struct y(x xcopy[3])
+CON struct x(a,b,c), struct y(x xcopy[3])
 
 
 PUB go() | a,b,c,m

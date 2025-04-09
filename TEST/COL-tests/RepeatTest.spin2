@@ -1,0 +1,19 @@
+{Spin2_v51}
+OBJ
+    mq:         "RepeatTest_Child"
+
+PUB go () | i
+
+    repeat i from 1 to 4
+        mq.Register(i) 'runs 4 times
+        debug(sdec(i))
+    mq.Register_End(i) 'shoud run 1 time at the end. But runs 4 times in the loop
+
+
+{
+PUB Register ( x )
+    debug("Register: ", sdec_(x))
+
+PUB Register_End ( x )
+    debug("Register End at: ", sdec_(x))
+}
