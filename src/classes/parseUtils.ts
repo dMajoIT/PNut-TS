@@ -2832,12 +2832,12 @@ export class SpinSymbolTables {
     //
     // HAND generated Automatic symbols table load v44
     // ---------------------------------------------------------------------------------------
-    this.automatic_symbols_v44.set(SYMBOLS_V44.BYTESWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_byteswap });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.BYTECOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_bytecomp });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.WORDSWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_wordswap });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.WORDCOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_wordcomp });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.LONGSWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_longswap });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.LONGCOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_longcomp });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BYTESWAP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_byteswap) });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BYTECOMP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_bytecomp) });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.WORDSWAP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_wordswap) });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.WORDCOMP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_wordcomp) });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.LONGSWAP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_longswap) });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.LONGCOMP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_longcomp) });
     this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL, { type: eElementType.type_debug_cmd, value: 0b00100000 });
     this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL_, { type: eElementType.type_debug_cmd, value: 0b00100010 }); // ?? 00100011in CODE! ci_debug:@@tickbool:
 
@@ -2856,12 +2856,12 @@ export class SpinSymbolTables {
     // HAND generated Automatic symbols table load v47
     // ---------------------------------------------------------------------------------------
     this.automatic_symbols_v47.set(SYMBOLS_V47.TASKSPIN, { type: eElementType.type_i_taskspin, value: eByteCode.bc_taskspin });
-    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKNEXT, { type: eElementType.type_i_flex, value: eFlexcode.fc_tasknext });
-    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKSTOP, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskstop });
-    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKHALT, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskhalt });
-    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKCONT, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskcont });
-    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKCHK, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskchk });
-    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKID, { type: eElementType.type_i_flex, value: eFlexcode.fc_taskid });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKNEXT, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_tasknext) });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKSTOP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_taskstop) });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKHALT, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_taskhalt) });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKCONT, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_taskcont) });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKCHK, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_taskchk) });
+    this.automatic_symbols_v47.set(SYMBOLS_V47.TASKID, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_taskid) });
     this.automatic_symbols_v47.set(SYMBOLS_V47.NEWTASK, { type: eElementType.type_con_int, value: 0xffffffff });
     this.automatic_symbols_v47.set(SYMBOLS_V47.THISTASK, { type: eElementType.type_con_int, value: 0xffffffff });
     this.automatic_symbols_v47.set(SYMBOLS_V47.TASKHLT, { type: eElementType.type_register, value: eValueType.taskhlt_reg });
@@ -2874,13 +2874,13 @@ export class SpinSymbolTables {
     //
     // HAND generated Automatic symbols table load v51
     // ---------------------------------------------------------------------------------------
-    this.automatic_symbols_v51.set(SYMBOLS_V51.POW, { type: eElementType.type_op, value: eOpcode.oc_pow });
-    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG2, { type: eElementType.type_op, value: eOpcode.oc_log2 });
-    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG10, { type: eElementType.type_op, value: eOpcode.oc_log10 });
-    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG, { type: eElementType.type_op, value: eOpcode.oc_log });
-    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP2, { type: eElementType.type_op, value: eOpcode.oc_exp2 });
-    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP10, { type: eElementType.type_op, value: eOpcode.oc_exp10 });
-    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP, { type: eElementType.type_op, value: eOpcode.oc_exp });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.POW, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_pow) });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG2, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_log2) });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG10, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_log10) });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.LOG, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_log) });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP2, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_exp2) });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP10, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_exp10) });
+    this.automatic_symbols_v51.set(SYMBOLS_V51.EXP, { type: eElementType.type_op, value: this.opcodeValue(eOpcode.oc_exp) });
 
     // Populate the reverse map
     for (const [fcValue, value] of this.flexcodeValues) {

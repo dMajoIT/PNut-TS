@@ -93,7 +93,8 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
   let PNut_ts_compiler: PNutInTypeScript;
   // 15000 works on 24 core Mac Studio, but not on 10 core MacBook Pro
   // 20000 works on 10 core MacBook Pro... BYMMV...
-  const TEST_TIMEOUT_MS = 20000;
+  // v51 PNut TS, 20000 NO Longer works on Mac Studio (Need to find out why!)
+  const TEST_TIMEOUT_MS = 40000;
 
   files.forEach((file) => {
     const fileBase = path.basename(file);

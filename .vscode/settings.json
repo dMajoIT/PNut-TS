@@ -10,5 +10,6 @@
   "[typescript]": {
     "github.copilot.enableInlineCompletions": false,
     "editor.suggest.showInlineCompletions": false
-  }
+  },
+  "cSpell.words": ["PASM"]
 }
