@@ -250,7 +250,7 @@ export class SpinElement {
     let desiredValue: number = -1;
     if (this._type == eElementType.type_i_flex && typeof this._value === 'bigint') {
       // macro (params shl 8) 3-bits
-      desiredValue = Number((BigInt(this._value) >> 8n) & BigInt(0b111)); // 3 ls-bits
+      desiredValue = Number((BigInt(this._value) >> 8n) & 7n); // 3 ls-bits
     }
     return desiredValue;
   }
@@ -260,7 +260,7 @@ export class SpinElement {
     let desiredValue: number = -1;
     if (this._type == eElementType.type_i_flex && typeof this._value === 'bigint') {
       // macro (results shl 11) 3 bits
-      desiredValue = Number((BigInt(this._value) >> 11n) & BigInt(0b111)); // 3 ls-bits
+      desiredValue = Number((BigInt(this._value) >> 11n) & 7n); // 7 = ls-3bits
     }
     return desiredValue;
   }
@@ -270,7 +270,7 @@ export class SpinElement {
     let desiredValue: boolean = false;
     if (this._type == eElementType.type_i_flex && typeof this._value === 'bigint') {
       // macro (pinfld shl 14) 1-bit
-      desiredValue = Number((BigInt(this._value) >> 14n) & BigInt(0b1)) ? true : false;
+      desiredValue = Number((BigInt(this._value) >> 14n) & 1n) ? true : false;
     }
     return desiredValue;
   }
@@ -280,7 +280,7 @@ export class SpinElement {
     let desiredValue: boolean = false;
     if (this._type == eElementType.type_i_flex && typeof this._value === 'bigint') {
       // macro (hubcode shl 15) 1-bit
-      desiredValue = Number((BigInt(this._value) >> 15n) & BigInt(0b1)) ? true : false;
+      desiredValue = Number((BigInt(this._value) >> 15n) & 1n) ? true : false;
     }
     return desiredValue;
   }

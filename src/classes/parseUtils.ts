@@ -1020,7 +1020,9 @@ function setFlexcodeValue(bytecode: number, params: number, results: number, pin
   // symbol		=		bytecode + (params shl 8) + (results shl 11) + (pinfld shl 14) + (hubcode shl 15)
   //         endm
 
-  return bytecode + (params << 8) + (results << 11) + (pinfld << 14) + (hubcode << 15);
+  //   [h f rrr ppp bbbbbbbb] - 16 bits
+
+  return bytecode + ((params & 7) << 8) + ((results & 7) << 11) + ((pinfld & 1) << 14) + ((hubcode & 1) << 15);
 }
 
 function setOpcodeValue(
@@ -2837,7 +2839,7 @@ export class SpinSymbolTables {
     this.automatic_symbols_v44.set(SYMBOLS_V44.LONGSWAP, { type: eElementType.type_i_flex, value: eFlexcode.fc_longswap });
     this.automatic_symbols_v44.set(SYMBOLS_V44.LONGCOMP, { type: eElementType.type_i_flex, value: eFlexcode.fc_longcomp });
     this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL, { type: eElementType.type_debug_cmd, value: 0b00100000 });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL_, { type: eElementType.type_debug_cmd, value: 0b00100010 });
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL_, { type: eElementType.type_debug_cmd, value: 0b00100010 }); // ?? 00100011in CODE! ci_debug:@@tickbool:
 
     //
     // HAND generated Automatic symbols table load v45
@@ -2909,7 +2911,7 @@ export class SpinSymbolTables {
     let tbleIdx: number = 0;
     for (const [bcValue, fcValue] of this.byteCodeToFlexCodeMap) {
       const fullFlexValue: number | undefined = this.flexcodeValues.get(fcValue);
-      const flexValueInterp = fullFlexValue ? hexWord(fullFlexValue, '0x') : '??---??';
+      const flexValueInterp = fullFlexValue !== undefined ? hexWord(fullFlexValue, '0x') : '??---??';
       this.logMessage(
         `- [${tbleIdx++}] fc=(${fcValue}, ${hexByte(fcValue, '0x')}), bc=(${bcValue}, ${hexByte(bcValue, '0x')}), [${eFlexcode[fcValue]}]=(${flexValueInterp})`
       );
@@ -3122,7 +3124,7 @@ export class SpinSymbolTables {
       const enumKey = eAsmcode[stringKey as keyof typeof eAsmcode];
       const value: number | undefined = this.asmcodeValues.get(enumKey);
       //this.logMessage(`- got ${enumKey} = ${value}`);
-      if (value) {
+      if (value !== undefined) {
         resultStrings.push(this.regressionString(stringKey, value));
         //this.logMessage(`- returning [${newPair}]`);
       }
@@ -3158,7 +3160,7 @@ export class SpinSymbolTables {
       const enumKey = eOpcode[stringKey as keyof typeof eOpcode];
       const value: number | undefined = this.opcodeValues.get(enumKey);
       //this.logMessage(`- got ${enumKey} = ${value}`);
-      if (value) {
+      if (value !== undefined) {
         resultStrings.push(this.regressionString(stringKey, value));
         //this.logMessage(`- returning [${newPair}]`);
       }
@@ -3207,7 +3209,7 @@ export class SpinSymbolTables {
     let returnValue: number = 0;
     if (this.opcodeValues.has(opcodeId)) {
       const tmpReturnValue = this.opcodeValues.get(opcodeId);
-      if (tmpReturnValue) {
+      if (tmpReturnValue !== undefined) {
         this.logMessage(`  --  opcodeValue(${opcodeId}) tmpReturnValue=[${tmpReturnValue}]`);
         returnValue = tmpReturnValue;
       }
@@ -3220,7 +3222,7 @@ export class SpinSymbolTables {
     let returnValue: number = 0;
     if (this.asmcodeValues.has(asmcodeId)) {
       const tmpReturnValue = this.asmcodeValues.get(asmcodeId);
-      if (tmpReturnValue) {
+      if (tmpReturnValue !== undefined) {
         returnValue = tmpReturnValue;
       }
     }
@@ -3232,7 +3234,7 @@ export class SpinSymbolTables {
     let returnValue: number = 0;
     if (this.flexcodeValues.has(flexId)) {
       const tmpReturnValue = this.flexcodeValues.get(flexId);
-      if (tmpReturnValue) {
+      if (tmpReturnValue !== undefined) {
         returnValue = tmpReturnValue;
       }
     }

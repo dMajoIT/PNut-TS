@@ -5966,7 +5966,7 @@ export class SpinResolver {
       this.ci_debug();
     } else if (this.currElement.type == eElementType.type_i_flex) {
       // flex instruction?
-      this.logMessage(`* compileInstruction() flexCode=(${this.currElement.flexByteCode})[${eByteCode[this.currElement.flexByteCode]}]`);
+      this.logMessage(`* compileInstruction() flexCode=(${this.currElement.flexByteCode}), bc=[${eByteCode[this.currElement.flexByteCode]}]`);
       if (this.currElement.flexResultCount > 0) {
         // [error_ticobu]
         throw new Error('This instruction can only be used as an expression term, since it returns results');
@@ -7240,6 +7240,7 @@ export class SpinResolver {
       if (this.currElement.flexByteCode == eByteCode.bc_coginit) {
         this.compileFlex(eFlexcode.fc_coginit_push);
       } else {
+        this.logMessage(`  -- compileTerm() at [${this.currElement.toString()}], flexResultCount=(${this.currElement.flexResultCount})`);
         if (this.currElement.flexResultCount != 1) {
           // [error_etmrasr]
           throw new Error('Expression terms must return a single result');
