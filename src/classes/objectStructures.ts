@@ -131,6 +131,7 @@ export class ObjectStructures {
     // starting new record, record offset into table for new ID
     //  reset accumulated record size and memory size
     //const newRecordId: number = this._objStructRecordOffsets.length;
+    this.logMessage(`* OBJSTRUCT: beginRecord()`);
     this._structStartOffset = this._objStructureOffset;
     this._objStructRecordOffsets.push(this._structStartOffset);
     this._structRecordSize = 0;
@@ -141,6 +142,7 @@ export class ObjectStructures {
 
   public endRecord(): number {
     // record accumulated record size and memory size into record
+    this.logMessage(`* OBJSTRUCT: endRecord()`);
     this.replaceWord(this._structStartOffset, this._structRecordSize);
     this.replaceLong(this._structStartOffset + 2, this._structMemorySize);
     this._structIdNext++;
@@ -152,12 +154,14 @@ export class ObjectStructures {
   }
 
   public beginMemberRecord() {
-    // begnin our structure member record
+    // begin our structure member record
+    this.logMessage(`* OBJSTRUCT: beginMemberRecord()`);
     this.enterLong(BigInt(this._structMemorySize));
   }
 
   public endMemberRecord(nbrInstances: number, objectLimit: number, flagValue: number) {
     // end our structure member record
+    this.logMessage(`* OBJSTRUCT: endMemberRecord(flag=(${flagValue}))`);
     const memorySize: number = this.finalizeStructElement(nbrInstances, objectLimit);
     this._objStructureOffset += memorySize;
     this.enterByte(flagValue);
@@ -165,6 +169,7 @@ export class ObjectStructures {
 
   public enterSymbolName(name: string) {
     // record name into record, length first
+    this.logMessage(`* OBJSTRUCT: enterSymbolName('${name}')`);
     if (name !== undefined && name.length > 0 && name.length < 32) {
       this.enterByte(name.length);
       for (let index = 0; index < name.length; index++) {
@@ -196,6 +201,7 @@ export class ObjectStructures {
   public enterStructureAsNew(structData: Uint8Array): number {
     // adding existing record, record offset into table for new ID
     //  accumulated record size and memory size are already in bytes
+    this.logMessage(`* OBJSTRUCT: enterStructureAsNew(${structData.length} bytes)`);
     this._structStartOffset = this._objStructureOffset;
     this._objStructRecordOffsets.push(this._structStartOffset);
     for (let index = 0; index < structData.length; index++) {
@@ -208,6 +214,7 @@ export class ObjectStructures {
 
   public recordStructElementName(name: string) {
     // record name found within structure declaration
+    this.logMessage(`* OBJSTRUCT: recordStructElementName('${name}')`);
     this.enterByte(name.length);
     for (let index = 0; index < name.length; index++) {
       this.enterByte(name.charCodeAt(index));
@@ -228,6 +235,7 @@ export class ObjectStructures {
   }
 
   public recordStructElement(typeSize: eMemberType) {
+    this.logMessage(`* OBJSTRUCT: recordStructElement([${eMemberType[typeSize]}])`);
     this._lastTypeRecorded = typeSize; // 0,1,2
     // lastly record the composite size
     this._lastSizeRecorded = 1 << typeSize; // 1,2,4

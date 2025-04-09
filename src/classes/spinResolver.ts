@@ -27,6 +27,7 @@ import { hexByte, hexLong, hexWord } from '../utils/formatUtils';
 import { eMemberType, ObjectStructures } from './objectStructures';
 import { ObjectStructureRecord } from './objectStructureRecord';
 import { timeStamp } from 'console';
+import { type OptionValues } from 'commander';
 
 // Internal types used for passing complex values
 interface iValueReturn {
@@ -630,7 +631,8 @@ export class SpinResolver {
             structId = this.currElement.numberValue;
             // get struct size in bytes
             variableSize = this.objectStructureSet.getStructureSizeForID(structId);
-            variableType = eElementType.type_var_struct_ptr;
+            variableType = eElementType.type_var_struct;
+            this.getElementObj(); // move to name
           }
 
           // handle ^var  pointer variable
@@ -5622,6 +5624,7 @@ export class SpinResolver {
         // PNut  @@member:
         this.objectStructureSet.beginMemberRecord();
         this.getElementObj();
+        this.logMessage(`  -- at [${this.currElement.toString()}]`);
         if (this.currElement.type == eElementType.type_size) {
           const elemSize: number = this.currElement.numberValue;
           // record 0,1,2 byte, word, long
@@ -5632,9 +5635,11 @@ export class SpinResolver {
         } else {
           // PNut @@notstruct:
           this.objectStructureSet.recordStructElement(eMemberType.MT_LONG);
-          //this.backElement(); // back up to name
+          this.backElement(); // back up to name
         }
         // PNut @@getname:
+        this.getElementObj();
+        this.logMessage(`  -- at [${this.currElement.toString()}]`);
         const symbolName: string = this.currElement.stringValue;
         this.logMessage(` BSRcd: nm=[${symbolName}],  at=[${this.currElement.toString()}]`);
         if (symbolName.length == 0) {
@@ -6012,19 +6017,22 @@ export class SpinResolver {
             // [error_eaiov]
             throw new Error('Expected an instruction or variable');
           }
+          this.logMessage(`  -- compInst() variableReturn=[${JSON.stringify(variableReturn, null, 2)}]`);
           this.currElement = this.getElementObj(); // get element after variable- obj due to better error flagging
           if (this.currElement.type == eElementType.type_comma) {
             // var,... := param(s),... ?
             this.compileVariableMultiple(savedNextElementIndex);
-          } else if (this.isStruct(this.currElement.type) && !variableReturn.structIsBWL) {
+          } else if (this.isStruct(variableReturn.type) && !variableReturn.structIsBWL) {
+            this.logMessage(`  -- compInst() have structure, NOT BWL`);
             // Handle structure operations here...
             if (this.currElement.type == eElementType.type_assign) {
               // structure := ?
               if (variableReturn.structSize <= 15 * 4) {
                 // if 15 longs or less, do stack assignment
                 this.compileVariableMultiple(savedNextElementIndex);
+              } else {
+                this.compile_struct_copy(eByteCode.bc_bytemove, variableReturn);
               }
-              this.compile_struct_copy(eByteCode.bc_bytemove, variableReturn);
             } else if (this.currElement.type == eElementType.type_swap) {
               // structure :=: ?
               this.compile_struct_copy(eByteCode.bc_byteswap, variableReturn);
@@ -6081,6 +6089,7 @@ export class SpinResolver {
         }
       }
     }
+    this.logMessage(`*==* compileInstruction() EXIT`);
   }
 
   private compileVariableMultiple(startElementIndex: number) {
@@ -6106,7 +6115,7 @@ export class SpinResolver {
         let longsFound: number = 1;
         if (this.isStruct(variable.type) && !variable.structIsBWL) {
           this.check_struct_stack_fit(variable.structSize);
-          longsFound += (variable.structSize + 3) >> 2;
+          longsFound = (variable.structSize + 3) >> 2;
         }
         longCount += longsFound;
       }
@@ -6530,7 +6539,6 @@ export class SpinResolver {
     //  NOTE: debug(`...) is BackTickDebug
     // enter string, returning indication if end of line
     // NOTE: the following method always sets debug_first
-    // XYZZY: processBackTickDebug()
     let brkCode: number = 0;
     this.logMessage(` -- processBackTickDbg(${this.currElement.toString()}) - ENTRY`);
     const anotherTickFollows: boolean = this.debugTickString();
@@ -6625,7 +6633,6 @@ export class SpinResolver {
     // here is ci_debug::@@nottick:
     //  NOTE: NOT THIS: debug(`...)    (this is BackTickDebug, above)
     //        but THIS: debug("...) or e.g., debug(uhex_long()) is nonTickDebug
-    // XYZZY: processNonTickDebug()
     let brkCode: number = 0;
     let didFirstPass: boolean = false;
     this.logMessage(` -- processNonTickDbg(${this.currElement.toString()}) - ENTRY`);
@@ -7942,7 +7949,6 @@ export class SpinResolver {
   private ct_at() {
     // Compile term - @"string", @\"string", @obj{[]}.method, @method, or @hubvar
     // PNut ct_at:
-    // XYZZY update ct_at() for v50
     this.getElementObj();
     this.logMessage(`* ct_at() get then elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_con_int) {
@@ -9872,7 +9878,7 @@ private checkDec(): boolean {
     //PNut check_var:
     let resultVariable: iVariableReturn = {
       isVariable: true,
-      type: eElementType.type_undefined,
+      type: eElementType.type_undefined, // default
       address: 0,
       nextElementIndex: 0,
       wordSize: 0,
@@ -9888,7 +9894,7 @@ private checkDec(): boolean {
       structSize: 0 // 1,2,4, or structure size
     };
 
-    this.logMessage(`* checkVariable() elem=[${this.currElement.toString()}]`);
+    this.logMessage(`* checkVariable() at [${this.currElement.toString()}]`);
 
     // preserve initial values (PNut al,ebx)
     let variableType: eElementType = this.currElement.type;
@@ -9908,6 +9914,7 @@ private checkDec(): boolean {
     resultVariable.address = variableAddress;
     resultVariable.nextElementIndex = this.nextElementIndex; // next to be gotten
     resultVariable.address &= 0xfffff; // forecast for structure stuff
+    resultVariable.type = variableType;
 
     if (this.isPtr(variableType)) {
       if (this.checkLeftBracket()) {
@@ -9982,6 +9989,7 @@ private checkDec(): boolean {
             // PNut @@chkbitfield:
             this.checkVariableBitfield(resultVariable);
           }
+          this.logMessage(`  -- chkVar() compiledStructureInfo=[${JSON.stringify(compiledStructureInfo, null, 2)}]`);
           // PNut @@isvar: this is really an exit
         } else {
           // PNut @@notstruct:
@@ -10222,6 +10230,7 @@ private checkDec(): boolean {
     //      obj_ptr         = compiled_struct_obj_ptr
     //
     // PNut compile_struct_setup:
+    this.logMessage(`  -- compStructSetup() at [${this.currElement.toString()}]`);
     const structureType: eElementType = this.currElement.type; // @@struct_type
     let structureId: number = this.currElement.numberValue;
     let address: number = 0;
@@ -10286,6 +10295,7 @@ private checkDec(): boolean {
       offsetInStructure = address;
       // get entire structure record for this StructureID
       structureRecord = this.objectStructureSet.getStructureRecord(structureId);
+      resultStructure.size = structureRecord.memoryLength; // XYZZY
     }
     // PNut @@gotsetup:
     // eslint-disable-next-line no-constant-condition
@@ -10316,6 +10326,7 @@ private checkDec(): boolean {
         this.backElement(); // Leave period
         break; // let's break out of @@structloop (off to @@compile)
       }
+      this.getElementObj(); //  (for PNut get_symbol: which we don't do)
       resultStructure.flags |= eStructureType.ST_IndexOrSubStructure; // index or '.' (MOVE)
       // FIXME: UNDONE: verify thru regression test that the following line is correct
       const srcSymbolName: string = this.replacedName.length > 0 ? this.replacedName : this.currElement.stringValue;
@@ -10335,6 +10346,7 @@ private checkDec(): boolean {
           if (foundStruct) {
             // have sub-Structure (memberType == 3)
             structureRecord = structureRecord.recordWithinStructureRecord(savedStructOffset);
+            resultStructure.size = structureRecord.memoryLength; // XYZZY
           } else {
             // have BYTE, WORD or LONG (memberType == 0,1, or 2)
             // PNut @@notstruct2:
@@ -10401,6 +10413,7 @@ private checkDec(): boolean {
     if (this.isStructPtr(structureType)) {
       this.compileVariable(structPtrVariable);
     }
+
     // PNut @@notptr:
     let byteCode: eByteCode;
     if (structureType == eElementType.type_loc_struct) {

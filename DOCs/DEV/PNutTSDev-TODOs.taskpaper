@@ -153,9 +153,13 @@ TODO's from PNut Zoom 250303++:
 		- Run all regression tests to see what to fix @done(2025-04-08)
 		- Fix what we can... getElementObj() code!!! @done(2025-04-08)
 	Day24: Tue (b):
-		- Run all regression tests to see what to fix
+		- Run all regression tests to see what to fix @done(2025-04-08)
 		- Fix what we can... @done(2025-04-08)
-		- TODO: add regression test ensuring the col/scope is being handled correct for objects
+		- TODO: add regression test ensuring the col/scope is being handled correct for objects @done(2025-04-08)
+	Day25: Thu:
+		- Embellish version regression tests with more code so all locations can be checked
+		- Resume fixing issues found in v45 test
+		- Run all regression tests to see what to fix (49,50,51)
 		- Fix more failing regression tests
 		- After all regression tests pass, run coverage and add code to test any missing areas
 	

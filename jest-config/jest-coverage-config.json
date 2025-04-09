@@ -2,11 +2,11 @@
   "displayName": "Run all test compiles",
   "roots": [
     "<rootDir>/dist/tests/CON-tests/",
+    "<rootDir>/dist/tests/COL-tests/",
     "<rootDir>/dist/tests/DAT-PASM-tests/",
     "<rootDir>/dist/tests/DBG-tests/",
     "<rootDir>/dist/tests/EXT-tests/",
     "<rootDir>/dist/tests/LANG-VER-tests/",
-    "<rootDir>/dist/tests/LARGE-tests/",
     "<rootDir>/dist/tests/LOADER-tests/",
     "<rootDir>/dist/tests/OBJ-tests/",
     "<rootDir>/dist/tests/SPIN-tests/",
