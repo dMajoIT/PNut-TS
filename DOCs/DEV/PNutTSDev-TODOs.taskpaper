@@ -157,11 +157,19 @@ TODO's from PNut Zoom 250303++:
 		- Fix what we can... @done(2025-04-08)
 		- TODO: add regression test ensuring the col/scope is being handled correct for objects @done(2025-04-08)
 	Day25: Thu:
-		- Embellish version regression tests with more code so all locations can be checked
+		- Embellish version regression tests with more code so all locations can be checked @done(2025-04-11)
+			get_symbol:
+				- build_struct_record:   get_symbol  @@get_name: @done(2025-04-11)
+				- check_constant:  get_symbol  @@checkundef: @done(2025-04-11)
+				- check_local:  get_symbol  @@is: @done(2025-04-11)
+				- get_obj_symbol: get_symbol @done(2025-04-11)
+				- compile_struct_setup:  get_symbol  @@notbitfield: @done(2025-04-11)
+		- Resume fixing issues found in v45 test @done(2025-04-11)
+	Day26: Fri:
 		- Resume fixing issues found in v45 test
 		- Run all regression tests to see what to fix (49,50,51)
 		- Fix more failing regression tests
-		- After all regression tests pass, run coverage and add code to test any missing areas
+		- After all regression tests pass, run coverage and add code to test any missing area
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support

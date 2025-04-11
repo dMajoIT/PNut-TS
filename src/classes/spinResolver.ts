@@ -193,6 +193,7 @@ interface ObjectRecord {
 }
 
 export class SpinResolver {
+  readonly IGNORE_SYMBOL_TABLE = false; // parameter value affecting getElement()
   private context: Context;
   private isLogging: boolean = false;
   private isLoggingOutline: boolean = false;
@@ -370,8 +371,7 @@ export class SpinResolver {
     this.spinElements = this.srcFile.elementList;
   }
 
-  public getSymbol(symbolName: string): iSymbol | undefined {
-    // PNut get_symbol:
+  public lookupMainSymbol(symbolName: string): iSymbol | undefined {
     return this.mainSymbols.get(symbolName);
   }
 
@@ -1132,7 +1132,7 @@ export class SpinResolver {
     let definedStatus: boolean = false;
     let isConStatus: boolean = false;
     let symValue: bigint | string = 0n;
-    const symbolFound: iSymbol | undefined = this.getSymbol(smbolName);
+    const symbolFound: iSymbol | undefined = this.lookupMainSymbol(smbolName);
     if (symbolFound) {
       definedStatus = true;
       if (symbolFound.type == eElementType.type_con_int) {
@@ -1236,6 +1236,7 @@ export class SpinResolver {
     // PNut compile_dat_blocks:
     //const startTime = Date.now();
     //this.logMessageOutline(`++ compile_dat_blocks(inLineMode=(${inLineMode})) - ENTRY`);
+    //  XYZZY factor in use of check_local (NEW) compile_dat_blocks
     this.logMessage(`*==* COMPILE_dat_blocks() inLineMode=(${inLineMode})`);
     this.inlineModeForGetConstant = inLineMode;
     if (inLineMode) {
@@ -5638,15 +5639,13 @@ export class SpinResolver {
           this.backElement(); // back up to name
         }
         // PNut @@getname:
-        this.getElementObj();
+        const [isSymbol, symbolString] = this.getSymbol();
         this.logMessage(`  -- at [${this.currElement.toString()}]`);
-        const symbolName: string = this.currElement.stringValue;
-        this.logMessage(` BSRcd: nm=[${symbolName}],  at=[${this.currElement.toString()}]`);
-        if (symbolName.length == 0) {
+        if (isSymbol == false) {
           // [error_eas]
           throw new Error('Expected a symbol [eas01]');
         }
-        this.objectStructureSet.recordStructElementName(symbolName);
+        this.objectStructureSet.recordStructElementName(symbolString);
         let instanceCount: number = 1; // default
         if (this.checkLeftBracket()) {
           // have multiplier
@@ -7198,7 +7197,7 @@ export class SpinResolver {
   private compileTerm() {
     // PNut compile_term:
     const elementType: eElementType = this.currElement.type;
-    this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}])`);
+    this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}]) - ENTRY`);
     const elementValue: number = Number(this.currElement.bigintValue);
     if (this.currElement.isConstantInt || this.currElement.isConstantFloat) {
       // constant integer? or constant float?
@@ -7296,7 +7295,13 @@ export class SpinResolver {
           }
           this.compile_struct_compare(this.currElement.operation, variableResult);
         }
+      } else if (variableResult.structIsBWL) {
+        this.logMessage(`  -- compileTerm() have BWL compile a read var`);
+        variableResult.operation = eVariableOperation.VO_READ;
+        this.compileVariable(variableResult);
+        workComplete = true;
       }
+      this.logMessage(`  -- compileTerm() workComplete=(${workComplete})`);
       if (!workComplete) {
         this.currElement = this.getElement(); // get element after variable
         if (this.currElement.type == eElementType.type_left) {
@@ -7334,12 +7339,14 @@ export class SpinResolver {
           this.compileVariableAssign(variableResult, finalByteCode);
         } else {
           // here is @@notbin:
+          this.logMessage(`  -- compileTerm() compile a read var`);
           this.backElement();
           variableResult.operation = eVariableOperation.VO_READ;
           this.compileVariable(variableResult);
         }
       }
     }
+    this.logMessage(`*--* compileTerm() - EXIT`);
   }
 
   private compileFlex(flexCode: eFlexcode) {
@@ -7554,7 +7561,7 @@ export class SpinResolver {
     //
     // PNut compile_parameter:
     let skipFollowingTypeChecks: boolean = false;
-    this.logMessage(`*--* compileParameter() elem=[${this.currElement.toString()}]`);
+    this.logMessage(`*--* compileParameter() - ENTRY at [${this.currElement.toString()}]`);
     let compiledParameterCount: number = -1; // flag saying we need to compile expression
     const savedElementIndex: number = this.logSavedElementLocation();
     this.getElementObj();
@@ -7666,6 +7673,7 @@ export class SpinResolver {
       this.compileExpression();
       compiledParameterCount = 1;
     }
+    this.logMessage(`*--* compileParameter() - EXIT with compiledParameterCount=(${compiledParameterCount})`);
     return compiledParameterCount;
   }
 
@@ -8211,7 +8219,7 @@ export class SpinResolver {
   private ct_upat() {
     // Compile term - ^@var
     // PNut ct_upat:
-    this.logMessage(`*==* ct_upat()`);
+    this.logMessage(`*==* ct_upat() - ENTRY`);
     this.getElement();
     const variableReturn: iVariableReturn = this.checkVariable();
     if (variableReturn.isVariable == false) {
@@ -8219,6 +8227,7 @@ export class SpinResolver {
       throw new Error('Expected a variable (m0F0)');
     }
     this.compileVariableAssign(variableReturn, eByteCode.bc_get_field);
+    this.logMessage(`*==* ct_upat() - EXIT`);
   }
 
   private compileParametersMethodPtr(): number {
@@ -8717,6 +8726,7 @@ export class SpinResolver {
   private getConstant(mode: eMode, resolve: eResolve): iConstantReturn {
     // PNut check_constant:
     //  this 'check_constant', now 'get_constant' in Pnut v44 and later
+    //  XYZZY factor in use of check_local (NEW) check_constant
     const resultStatus: iConstantReturn = { value: 0n, foundConstant: true };
     this.logMessage(`*--* getCON() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${(this, this.currElement.toString())}]`);
 
@@ -8995,22 +9005,24 @@ export class SpinResolver {
     let desiredValue: bigint | string = 0n;
     const objectId: number = elementValue >> 24;
     this.logMessage(`  -- getObjSymbol(obj Id=${objectId}) at elem=[${this.currElement.toString()}]`);
-    this.getElement(); // get element after dot...
-    const symbolNameDebug: string = this.replacedName.length > 0 ? this.replacedName : this.currElement.stringValue;
-    const symbolName: string = symbolNameDebug + String.fromCharCode(objectId + 1);
-    this.logMessage(`  -- getObjSymbol() looking up srch=[${symbolName}] objectId=(${objectId}) elem=${this.currElement.toString()}`);
-    const foundSymbol: iSymbol = this.findSymbol(symbolName);
-    this.logMessage(`  -- found sym.name=[${foundSymbol.name}] type=[${eElementType[foundSymbol.type]}]`);
-    desiredValue = foundSymbol.value;
-    if (foundSymbol.type == eElementType.type_obj_pub) {
-      desiredType = foundSymbol.type;
-    } else if (foundSymbol.type == eElementType.type_obj_con_int) {
-      desiredType = eElementType.type_con_int;
-    } else if (foundSymbol.type == eElementType.type_obj_con_float) {
-      desiredType = eElementType.type_con_float;
-    } else if (foundSymbol.type == eElementType.type_obj_con_struct) {
-      desiredType = eElementType.type_con_struct;
-    } else {
+    const [isSymbol, symbolString] = this.getSymbol(); // get element after dot...
+    if (isSymbol == true) {
+      const symbolName: string = symbolString + String.fromCharCode(objectId + 1);
+      this.logMessage(`  -- getObjSymbol() looking up srch=[${symbolName}] objectId=(${objectId}) elem=${this.currElement.toString()}`);
+      const foundSymbol: iSymbol = this.findSymbol(symbolName);
+      this.logMessage(`  -- found sym.name=[${foundSymbol.name}] type=[${eElementType[foundSymbol.type]}]`);
+      desiredValue = foundSymbol.value;
+      if (foundSymbol.type == eElementType.type_obj_pub) {
+        desiredType = eElementType.type_obj_pub;
+      } else if (foundSymbol.type == eElementType.type_obj_con_int) {
+        desiredType = eElementType.type_con_int;
+      } else if (foundSymbol.type == eElementType.type_obj_con_float) {
+        desiredType = eElementType.type_con_float;
+      } else if (foundSymbol.type == eElementType.type_obj_con_struct) {
+        desiredType = eElementType.type_con_struct;
+      }
+    }
+    if (desiredType == eElementType.type_undefined) {
       // [error_eaocsom]
       throw new Error('Expected an object constant, structure, or method');
     }
@@ -9021,13 +9033,13 @@ export class SpinResolver {
     // for obj.con references ... and ...
     let undefinedStatus: boolean = false;
     if (this.currElement.isTypeUndefined || (haveLocalType && localType == eElementType.type_undefined)) {
-      this.numberStack.setUnresolved();
+      this.numberStack.setUnresolved(); // PNut or	[exp_flags],100b
       // do we have a '.' preceeding a user name?
       if (this.checkDot()) {
         // is the next element a user undefined symbol?
         // TODO: COVERAGE test me
-        this.getElement(); // position to bad element! so "throw" line-number is correct -OR- caller doesn't see this again
-        if (!(this.currElement.isTypeUndefined || this.currElement.sourceElementWasUndefined)) {
+        const [isSymbol, symbolString] = this.getSymbol();
+        if (isSymbol == false) {
           // [error_eacn]
           throw new Error('Expected a constant name (m081)');
         }
@@ -9894,7 +9906,7 @@ private checkDec(): boolean {
       structSize: 0 // 1,2,4, or structure size
     };
 
-    this.logMessage(`* checkVariable() at [${this.currElement.toString()}]`);
+    this.logMessage(`* checkVariable() ENTRY at [${this.currElement.toString()}]`);
 
     // preserve initial values (PNut al,ebx)
     let variableType: eElementType = this.currElement.type;
@@ -9989,7 +10001,7 @@ private checkDec(): boolean {
             // PNut @@chkbitfield:
             this.checkVariableBitfield(resultVariable);
           }
-          this.logMessage(`  -- chkVar() compiledStructureInfo=[${JSON.stringify(compiledStructureInfo, null, 2)}]`);
+          //this.logMessage(`  -- chkVar() compiledStructureInfo=[${JSON.stringify(compiledStructureInfo, null, 2)}]`);
           // PNut @@isvar: this is really an exit
         } else {
           // PNut @@notstruct:
@@ -10112,6 +10124,7 @@ private checkDec(): boolean {
       }
     }
 
+    this.logMessage(`* checkVariable() EXIT with [${JSON.stringify(resultVariable, null, 2)}]`);
     return resultVariable;
   }
 
@@ -10230,7 +10243,7 @@ private checkDec(): boolean {
     //      obj_ptr         = compiled_struct_obj_ptr
     //
     // PNut compile_struct_setup:
-    this.logMessage(`  -- compStructSetup() at [${this.currElement.toString()}]`);
+    this.logMessage(`  -- CSR() ENTRY at [${this.currElement.toString()}]`);
     const structureType: eElementType = this.currElement.type; // @@struct_type
     let structureId: number = this.currElement.numberValue;
     let address: number = 0;
@@ -10295,7 +10308,7 @@ private checkDec(): boolean {
       offsetInStructure = address;
       // get entire structure record for this StructureID
       structureRecord = this.objectStructureSet.getStructureRecord(structureId);
-      resultStructure.size = structureRecord.memoryLength; // XYZZY
+      resultStructure.size = structureRecord.memoryLength;
     }
     // PNut @@gotsetup:
     // eslint-disable-next-line no-constant-condition
@@ -10326,28 +10339,30 @@ private checkDec(): boolean {
         this.backElement(); // Leave period
         break; // let's break out of @@structloop (off to @@compile)
       }
-      this.getElementObj(); //  (for PNut get_symbol: which we don't do)
       resultStructure.flags |= eStructureType.ST_IndexOrSubStructure; // index or '.' (MOVE)
-      // FIXME: UNDONE: verify thru regression test that the following line is correct
-      const srcSymbolName: string = this.replacedName.length > 0 ? this.replacedName : this.currElement.stringValue;
-      if (srcSymbolName.length == 0) {
+      const [isSymbol, symbolString] = this.getSymbol();
+      if (isSymbol == false) {
         // [error_easmn]
         throw new Error('Expected a structure member name');
       }
+      this.logMessage(`  -- CSR() Hunting for name=[${symbolString}]`);
+
       // eslint-disable-next-line no-constant-condition
       while (true) {
         // PNut @@checkmember:
         const memberOffset: number = structureRecord.nextLong(); // get structure offset
         const [foundStruct, memberType, savedStructOffset] = structureRecord.skipToName(); // skips type or type & record
         const memberSymbol: string = structureRecord.readString();
-        if (srcSymbolName === memberSymbol) {
+        if (symbolString === memberSymbol) {
           // have symbol matching member name
           offsetInStructure += memberOffset;
           if (foundStruct) {
+            this.logMessage(`  -- CSR() [${symbolString}] is structure`);
             // have sub-Structure (memberType == 3)
             structureRecord = structureRecord.recordWithinStructureRecord(savedStructOffset);
-            resultStructure.size = structureRecord.memoryLength; // XYZZY
+            resultStructure.size = structureRecord.memoryLength;
           } else {
+            this.logMessage(`  -- CSR() [${symbolString}] is BWL`);
             // have BYTE, WORD or LONG (memberType == 0,1, or 2)
             // PNut @@notstruct2:
             memberSize = 1 << memberType; // 0,1,2 -> 1,2,4
@@ -10436,7 +10451,23 @@ private checkDec(): boolean {
       }
     }
     // PNut @@noindexexp2:
+    this.logMessage(`  -- CSR() EXIT with resultStructure=[${JSON.stringify(resultStructure, null, 2)}]`);
     return resultStructure;
+  }
+
+  private getSymbol(): [boolean, string] {
+    // PNut get_symbol:
+    this.getElement(this.IGNORE_SYMBOL_TABLE);
+    const symbolName: string = this.replacedName.length > 0 ? this.replacedName : this.currElement.stringValue;
+    const isSymbolNameRegEx = /^([A-Z_a-z]+[A-Z_a-z0-9]*)/;
+    let foundStatus: boolean = false;
+    let interpValue: string = '';
+    const symbolMatch = symbolName.match(isSymbolNameRegEx);
+    if (symbolMatch) {
+      foundStatus = true;
+      interpValue = symbolMatch[0].toUpperCase();
+    }
+    return [foundStatus, interpValue];
   }
 
   // cases:
@@ -10865,7 +10896,7 @@ private checkDec(): boolean {
     return this.currElement;
   }
 
-  private getElement(): SpinElement {
+  private getElement(allowSymbolLookup: boolean = true): SpinElement {
     //this.logMessage(`* Element Index=(${this.nextElementIndex + 1})`);
     if (this.spinElements.length == 0) {
       throw new Error(`NO Elements`);
@@ -10881,7 +10912,7 @@ private checkDec(): boolean {
 
     // if the symbol exists, return it instead of undefined
     this.replacedName = '';
-    if (element.isTypeUndefined) {
+    if (element.isTypeUndefined && allowSymbolLookup) {
       const foundSymbol = this.lookupSymbol(element.stringValue);
       if (foundSymbol !== undefined) {
         this.replacedName = element.stringValue;

@@ -742,7 +742,7 @@ export class Spin2Parser {
     let definedStatus: boolean = false;
     let isConStatus: boolean = false;
     let symValue: bigint | string = 0n;
-    const symbolFound: iSymbol | undefined = this.spinResolver.getSymbol(smbolName);
+    const symbolFound: iSymbol | undefined = this.spinResolver.lookupMainSymbol(smbolName);
     if (symbolFound) {
       definedStatus = true;
       if (symbolFound.type == eElementType.type_con_int) {

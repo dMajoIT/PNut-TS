@@ -122,7 +122,9 @@ export class ObjectStructureRecord {
     const stringLength = this.nextByte();
     const subset = this._recordImage.subarray(this.readOffset, this.readOffset + stringLength);
     const desiredString: string = String.fromCharCode(...subset);
+    this.logMessage(`OSRcd: at ofs=(${this.readOffset}), string=[${desiredString}]`);
     this.readOffset += stringLength;
+
     return desiredString;
   }
 
@@ -149,5 +151,11 @@ export class ObjectStructureRecord {
       throw new Error(`OSRcd: readByte() bad read offset ${offset} record-${this._id}`);
     }
     return desiredByte;
+  }
+
+  private logMessage(message: string): void {
+    if (this.isLogging) {
+      this.context.logger.logMessage(message);
+    }
   }
 }
