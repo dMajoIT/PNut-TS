@@ -124,6 +124,7 @@ export class ObjectStructures {
       // [error_ PNut TS new]
       throw new Error(`ERROR: couldn't find existing structure RCD#${recordId}`);
     }
+    this.logMessage(`* OBJSTRUCT: RCD#${recordId} is ${desiredRecord.length}(0x${desiredRecord.length.toString(16)}) bytes`);
     return desiredRecord;
   }
 
@@ -162,8 +163,7 @@ export class ObjectStructures {
   public endMemberRecord(nbrInstances: number, objectLimit: number, flagValue: number) {
     // end our structure member record
     this.logMessage(`* OBJSTRUCT: endMemberRecord(flag=(${flagValue}))`);
-    const memorySize: number = this.finalizeStructElement(nbrInstances, objectLimit);
-    this._objStructureOffset += memorySize;
+    this.finalizeStructElement(nbrInstances, objectLimit);
     this.enterByte(flagValue);
   }
 

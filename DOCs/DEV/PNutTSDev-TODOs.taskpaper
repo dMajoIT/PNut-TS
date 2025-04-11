@@ -166,6 +166,10 @@ TODO's from PNut Zoom 250303++:
 				- compile_struct_setup:  get_symbol  @@notbitfield: @done(2025-04-11)
 		- Resume fixing issues found in v45 test @done(2025-04-11)
 	Day26: Fri:
+		- many struct handling fixes.... @done(2025-04-11)
+		- fixed structure record creation! @done(2025-04-11)
+		- now fixed one more regression test @done(2025-04-11)
+	Day27: Mon:
 		- Resume fixing issues found in v45 test
 		- Run all regression tests to see what to fix (49,50,51)
 		- Fix more failing regression tests
