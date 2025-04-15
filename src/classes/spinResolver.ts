@@ -1352,7 +1352,7 @@ export class SpinResolver {
                 throw new Error('DAT structure must be preceded by a symbol');
               }
               const structId: number = this.currElement.numberValue;
-              const symbolValue: bigint = BigInt((structId << 12) | this.objImage.offset);
+              const symbolValue: bigint = BigInt((structId << 20) | this.objImage.offset);
               const symbolType: eElementType = eElementType.type_dat_struct;
               this.logMessage(`* enterDatSymbol value=(${float32ToHexString(symbolValue)}) upper=(${symbolValue.toString(16).toUpperCase()})`);
               const newSymbol: iSymbol = { name: this.symbolName, type: symbolType, value: symbolValue };
@@ -3220,7 +3220,7 @@ export class SpinResolver {
       // if we have a PUB method...
       if (blockType == eBlockType.block_pub) {
         // record Objects' PUB method details: symbol, number results, number parameters
-        this.pubConList.writePubSymbol(symbolName, parameterCount, resultCount);
+        this.pubConList.writePubMethod(symbolName, parameterCount, resultCount);
       }
       // here is @@notpub:
       foundBlocksStatus = true;
@@ -4612,6 +4612,7 @@ export class SpinResolver {
 
       // now record
       this.objectData.setOffset(offsetToPubConList); // PNut is using [esi]
+      this.logMessage(`* compObjSyms() - pubConList ofs=(${offsetToPubConList})`);
       let foundObjError: boolean = false;
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -4623,11 +4624,17 @@ export class SpinResolver {
           break;
         }
 
+        this.logMessage(`* compObjSyms() - pub rcd ofs=(${this.objectData.offset.toString(16).padStart(5, '0')})`);
         let symbolTypeLength: number = this.objectData.readByte();
         const symbolType: number = symbolTypeLength & 0xe0;
         const symbolLength = symbolTypeLength & 0x1f;
+        const typeValue: string = `0b${symbolType.toString(2).padStart(8, '0').slice(0, -5)}xxxxx`;
+        this.logMessage(
+          `* compObjSyms() - symbolType=(${typeValue}), symbolLength=(${symbolLength}) ofs=(${this.objectData.offset.toString(16).padStart(5, '0')})`
+        );
         // get our symbol
         const objectsSymbolName: string = this.objectData.readSymbolName(symbolLength) + String.fromCharCode(objFileIndex + 1);
+        this.logMessage(`* compObjSyms() - params ofs=(${this.objectData.offset.toString(16).padStart(5, '0')})`);
         switch (symbolType) {
           case ObjectSymbols.objx_con_int:
           case ObjectSymbols.objx_con_float:
@@ -4642,9 +4649,13 @@ export class SpinResolver {
             break;
           case ObjectSymbols.objx_con_struct:
             {
+              const recordOffset: number = this.objectData.offset;
               const actualType: eElementType = eElementType.type_obj_con_struct;
               const structRcdSize: number = this.objectData.peekWord(); // read without moving read offset
               const structBytes: Uint8Array = this.objectData.readBytes(structRcdSize);
+              this.logMessage(
+                `* compObjSyms() - I/F is objx_con_struct: ofs=(${recordOffset.toString(16).padStart(5, '0')}), structRcdSize=(0x${structRcdSize.toString(16)}(${structRcdSize}))`
+              );
               // ensure we have room for new structure
               if (this.objectStructureSet.haveMaxStructures) {
                 // [error_loxdsde]
@@ -5544,6 +5555,7 @@ export class SpinResolver {
               throw new Error('Expected a unique STRUCT name');
             }
             if (!lastPass) {
+              this.logMessage(`* compConBlks() not last pass`);
               // skip to end of structure decl.
               //  structure def'ns are not nested, so we don't have nested parens!
               if (this.nextElementType() == eElementType.type_left) {
@@ -5558,6 +5570,7 @@ export class SpinResolver {
                 throw new Error('Expected "(" or "="');
               }
             } else {
+              this.logMessage(`* compConBlks() LAST PASS`);
               // process structure (last pass only)
               // PNut @@structenter:
               const symbolName: string = getSourceSymbol(this.context, this.currElement); // PNut backup_symbol
@@ -5571,7 +5584,7 @@ export class SpinResolver {
               this.recordSymbol(newObjSymbol);
               // record structure in object public interface
               const structureRecord: Uint8Array = this.objectStructureSet.readRecord(rcdId);
-              this.pubConList.writeStructure(symbolName, structureRecord);
+              this.pubConList.writePubStructure(symbolName, structureRecord);
             }
           } else if (this.currElement.type == eElementType.type_block) {
             // let our outermost loop decide if we should process this next block
@@ -5600,8 +5613,9 @@ export class SpinResolver {
   private buildStructureRecord(): number {
     // PNut build_struct_record:
     // do we have assignment or def'n
+    this.logMessage(`* buildStructureRecord() at [${this.currElement.toString()}]`);
     let newStructId: number;
-    if (this.currElement.type == eElementType.type_equal) {
+    if (this.checkEqual()) {
       // we have structure assignment
       this.currElement = this.getElementObj();
       if (this.currElement.type != eElementType.type_con_struct) {
@@ -5698,7 +5712,7 @@ export class SpinResolver {
         this.objImage.appendByte(byte);
       }
       // We need to inject two longs at head of image...
-      this.objImage.appendLong(0); // open space for move of data
+      this.objImage.appendLong(0); // o0pen space for move of data
       this.objImage.appendLong(0); // open space for move of data
       // move the data up, leaving room for our two longs at front of image
       //   here is the behavior of PNut move_obj_up
@@ -5763,7 +5777,7 @@ export class SpinResolver {
     );
 
     // write info to object pub/con list
-    this.pubConList.writeConstant(symbolName, symbolValue.isFloat, BigInt(adjustedCONSymbol.value));
+    this.pubConList.writePubConstant(symbolName, symbolValue.isFloat, BigInt(adjustedCONSymbol.value));
   }
 
   private checkImportedParam(symbolName: string): iSymbol | undefined {
@@ -9936,14 +9950,15 @@ private checkDec(): boolean {
 
     resultVariable.address = variableAddress;
     resultVariable.structID = variableAddress >> 20;
-    resultVariable.nextElementIndex = this.nextElementIndex; // next to be gotten
     if (!this.isStruct(variableType)) {
       resultVariable.address &= 0xfffff; // do not remove ID from address for Struct
     }
     resultVariable.type = variableType;
+    resultVariable.nextElementIndex = this.nextElementIndex; // next to be gotten
 
     let notStruct: boolean = true; // work done indication
     if (this.isPtr(variableType)) {
+      this.logMessage(`* checkVariable() - have post ptr`);
       if (this.checkLeftBracket()) {
         this.getElement();
         const savedOperationType: eElementType = this.currElement.type;
@@ -9993,6 +10008,7 @@ private checkDec(): boolean {
       }
     } else {
       // PNUt @@notpostptr:
+      this.logMessage(`* checkVariable() - not post ptr`);
       let savedType: eElementType = variableType;
       let savedValue: number = variableAddress;
       if (this.currElement.type == eElementType.type_leftb) {
@@ -10001,6 +10017,7 @@ private checkDec(): boolean {
         savedValue = this.currElement.numberValue;
         this.getRightBracket();
         if (!this.isPtr(savedType)) {
+          this.logMessage(`* checkVariable() - no ptr in []`);
           // we DONT have a ptr
           if (savedType == eElementType.type_inc) {
             // here is @@postinc
@@ -10018,13 +10035,13 @@ private checkDec(): boolean {
             // [error_eptr]
             throw new Error('Expected pointer variable');
           }
-          // PNut @@gotptrB
-          resultVariable.type = this.currElement.type;
+          variableType = resultVariable.type = this.currElement.type;
           resultVariable.address = this.currElement.numberValue;
+          // PNut @@gotptrB
           resultVariable.nextElementIndex = this.nextElementIndex; // after the ptr variable
           // this need to flow into @@notpreptr:
           // PNUt @@notpreptr:
-          if (this.isStruct(this.currElement.type)) {
+          if (this.isStruct(resultVariable.type)) {
             const compiledStructureInfo: iStructureReturn = this.skip_struct_setup(
               resultVariable.type,
               resultVariable.address,
@@ -10047,127 +10064,149 @@ private checkDec(): boolean {
           // PNut @@ptrval:
           resultVariable.type = savedType + 4;
           resultVariable.address = savedValue;
+          resultVariable.nextElementIndex = this.nextElementIndex; // after the ??
           // we are done, no flow into anything (avoid @@notstruct)
           notStruct = false;
         }
+      } else {
+        // PNUt @@notpreptr:
+        if (this.isStruct(this.currElement.type)) {
+          const compiledStructureInfo: iStructureReturn = this.skip_struct_setup(
+            resultVariable.type,
+            resultVariable.address,
+            resultVariable.modifierBytecode
+          );
+          resultVariable.structIsBWL = compiledStructureInfo.flags == eStructureType.ST_ResolvedAsBWL;
+          resultVariable.structSize = compiledStructureInfo.size;
+          if (compiledStructureInfo.flags == eStructureType.ST_ResolvedAsBWL) {
+            // PNut @@chkbitfield:
+            this.checkVariableBitfield(resultVariable);
+          }
+          // we are done, no flow into anything (avoid @@notstruct)
+          notStruct = false;
+        }
+        //this.logMessage(`  -- chkVar() compiledStructureInfo=[${JSON.stringify(compiledStructureInfo, null, 2)}]`);
+        // PNut @@isvar: this is really an exit
       }
-      if (notStruct) {
-        // PNut @@notstruct:
-        switch (variableType) {
-          case eElementType.type_loc_byte:
-          case eElementType.type_loc_word:
-          case eElementType.type_loc_long:
-            resultVariable.type = eElementType.type_loc_byte;
-            resultVariable.wordSize = variableType - eElementType.type_loc_byte;
-            this.checkVariableSizeOverride(resultVariable);
+    }
+    if (notStruct) {
+      // PNut @@notstruct:
+      this.logMessage(`* checkVariable() - don't have structure have=[${eElementType[variableType]}]`);
+      resultVariable.address &= 0xfffff; // remove any ID from address
+      switch (variableType) {
+        case eElementType.type_loc_byte:
+        case eElementType.type_loc_word:
+        case eElementType.type_loc_long:
+          resultVariable.type = eElementType.type_loc_byte;
+          resultVariable.wordSize = variableType - eElementType.type_loc_byte;
+          this.checkVariableSizeOverride(resultVariable);
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
+
+        case eElementType.type_loc_byte_ptr:
+        case eElementType.type_loc_word_ptr:
+        case eElementType.type_loc_long_ptr:
+          resultVariable.type = eElementType.type_loc_byte_ptr;
+          resultVariable.wordSize = variableType - eElementType.type_loc_byte_ptr;
+          this.checkVariableSizeOverride(resultVariable);
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
+
+        case eElementType.type_var_byte:
+        case eElementType.type_var_word:
+        case eElementType.type_var_long:
+          resultVariable.type = eElementType.type_var_byte;
+          resultVariable.wordSize = variableType - eElementType.type_var_byte;
+          this.checkVariableSizeOverride(resultVariable);
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
+
+        case eElementType.type_var_byte_ptr:
+        case eElementType.type_var_word_ptr:
+        case eElementType.type_var_long_ptr:
+          resultVariable.type = eElementType.type_var_byte_ptr;
+          resultVariable.wordSize = variableType - eElementType.type_var_byte_ptr;
+          this.checkVariableSizeOverride(resultVariable);
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
+
+        case eElementType.type_dat_byte:
+        case eElementType.type_dat_word:
+        case eElementType.type_dat_long:
+          resultVariable.type = eElementType.type_dat_byte;
+          resultVariable.wordSize = variableType - eElementType.type_dat_byte;
+          this.checkVariableSizeOverride(resultVariable);
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
+
+        // NOTE: the _byte and _word cases really don't occur, can't coverage test
+        case eElementType.type_hub_byte:
+        case eElementType.type_hub_word:
+        case eElementType.type_hub_long:
+          resultVariable.type = eElementType.type_hub_byte;
+          resultVariable.wordSize = variableType - eElementType.type_hub_byte;
+          this.checkVariableSizeOverride(resultVariable);
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
+
+        case eElementType.type_reg:
+          {
+            // reg[address]?
+            this.getLeftBracket();
+            const registerResult = this.getValue(eMode.BM_OperandIntOnly, eResolve.BR_Must);
+            const registerAddress: number = Number(this.signExtendFrom32Bit(registerResult.value));
+            if (registerAddress < 0 || registerAddress > 511) {
+              // [error_cmbf0t511]
+              throw new Error('Constant must be from 0 to 511 (m041)');
+            }
+            this.getRightBracket();
+            resultVariable.type = eElementType.type_register;
+            resultVariable.address = registerAddress;
+            resultVariable.nextElementIndex = this.nextElementIndex; // after the right bracket
             this.checkVariableIndex(resultVariable);
             this.checkVariableBitfield(resultVariable);
-            break;
+          }
+          break;
 
-          case eElementType.type_loc_byte_ptr:
-          case eElementType.type_loc_word_ptr:
-          case eElementType.type_loc_long_ptr:
-            resultVariable.type = eElementType.type_loc_byte_ptr;
-            resultVariable.wordSize = variableType - eElementType.type_loc_byte_ptr;
-            this.checkVariableSizeOverride(resultVariable);
-            this.checkVariableIndex(resultVariable);
-            this.checkVariableBitfield(resultVariable);
-            break;
+        case eElementType.type_field:
+          // FIELD[memfield]?
+          resultVariable.type = eElementType.type_field;
+          this.skipIndex();
+          this.checkVariableIndex(resultVariable); // this sets the flag if present
+          break;
 
-          case eElementType.type_var_byte:
-          case eElementType.type_var_word:
-          case eElementType.type_var_long:
-            resultVariable.type = eElementType.type_var_byte;
-            resultVariable.wordSize = variableType - eElementType.type_var_byte;
-            this.checkVariableSizeOverride(resultVariable);
-            this.checkVariableIndex(resultVariable);
-            this.checkVariableBitfield(resultVariable);
-            break;
+        case eElementType.type_register:
+          // register?
+          resultVariable.type = eElementType.type_register;
+          this.checkVariableIndex(resultVariable);
+          this.checkVariableBitfield(resultVariable);
+          break;
 
-          case eElementType.type_var_byte_ptr:
-          case eElementType.type_var_word_ptr:
-          case eElementType.type_var_long_ptr:
-            resultVariable.type = eElementType.type_var_byte_ptr;
-            resultVariable.wordSize = variableType - eElementType.type_var_byte_ptr;
-            this.checkVariableSizeOverride(resultVariable);
-            this.checkVariableIndex(resultVariable);
-            this.checkVariableBitfield(resultVariable);
-            break;
-
-          case eElementType.type_dat_byte:
-          case eElementType.type_dat_word:
-          case eElementType.type_dat_long:
-            resultVariable.type = eElementType.type_dat_byte;
-            resultVariable.wordSize = variableType - eElementType.type_dat_byte;
-            this.checkVariableSizeOverride(resultVariable);
-            this.checkVariableIndex(resultVariable);
-            this.checkVariableBitfield(resultVariable);
-            break;
-
-          // NOTE: the _byte and _word cases really don't occur, can't coverage test
-          case eElementType.type_hub_byte:
-          case eElementType.type_hub_word:
-          case eElementType.type_hub_long:
-            resultVariable.type = eElementType.type_hub_byte;
-            resultVariable.wordSize = variableType - eElementType.type_hub_byte;
-            this.checkVariableSizeOverride(resultVariable);
-            this.checkVariableIndex(resultVariable);
-            this.checkVariableBitfield(resultVariable);
-            break;
-
-          case eElementType.type_reg:
-            {
-              // reg[address]?
-              this.getLeftBracket();
-              const registerResult = this.getValue(eMode.BM_OperandIntOnly, eResolve.BR_Must);
-              const registerAddress: number = Number(this.signExtendFrom32Bit(registerResult.value));
-              if (registerAddress < 0 || registerAddress > 511) {
-                // [error_cmbf0t511]
-                throw new Error('Constant must be from 0 to 511 (m041)');
-              }
-              this.getRightBracket();
-              resultVariable.type = eElementType.type_register;
-              resultVariable.address = registerAddress;
-              resultVariable.nextElementIndex = this.nextElementIndex; // after the right bracket
+        case eElementType.type_size:
+          {
+            // BYTE/WORD/LONG?
+            const [foundIndex, nextElementIndex] = this.checkIndex();
+            if (foundIndex == false) {
+              // NOTE coverage: this appears to be an exception case...
+              resultVariable.isVariable = false;
+            } else {
+              resultVariable.type = eElementType.type_size;
+              resultVariable.wordSize = variableAddress;
               this.checkVariableIndex(resultVariable);
               this.checkVariableBitfield(resultVariable);
             }
-            break;
+          }
+          break;
 
-          case eElementType.type_field:
-            // FIELD[memfield]?
-            resultVariable.type = eElementType.type_field;
-            this.skipIndex();
-            this.checkVariableIndex(resultVariable); // this sets the flag if present
-            break;
-
-          case eElementType.type_register:
-            // register?
-            resultVariable.type = eElementType.type_register;
-            this.checkVariableIndex(resultVariable);
-            this.checkVariableBitfield(resultVariable);
-            break;
-
-          case eElementType.type_size:
-            {
-              // BYTE/WORD/LONG?
-              const [foundIndex, nextElementIndex] = this.checkIndex();
-              if (foundIndex == false) {
-                // NOTE coverage: this appears to be an exception case...
-                resultVariable.isVariable = false;
-              } else {
-                resultVariable.type = eElementType.type_size;
-                resultVariable.wordSize = variableAddress;
-                this.checkVariableIndex(resultVariable);
-                this.checkVariableBitfield(resultVariable);
-              }
-            }
-            break;
-
-          default:
-            resultVariable.isVariable = false;
-            break;
-        }
+        default:
+          resultVariable.isVariable = false;
+          break;
       }
     }
 
@@ -10291,7 +10330,7 @@ private checkDec(): boolean {
     //
     // PNut compile_struct_setup:
     this.logMessage(
-      `  -- CSR(${eElementType[type]},0x${value.toString(16).padStart(8, '0')}, ${eByteCode[modifierBytecode]}) ENTRY at [${this.currElement.toString()}]`
+      `  -- CSR(${eElementType[type]},0x${value.toString(16).padStart(8, '0')}, ${eByteCode[modifierBytecode]}(${modifierBytecode})) ENTRY at [${this.currElement.toString()}]`
     );
     const structureType: eElementType = type; // @@struct_type
     let structureId: number = value;
@@ -10340,19 +10379,20 @@ private checkDec(): boolean {
 
     let structureRecord: ObjectStructureRecord = new ObjectStructureRecord(this.context, 'DUMMY Record', new Uint8Array(0));
 
-    if (this.currElement.type == eElementType.type_con_struct) {
+    if (type == eElementType.type_con_struct) {
       // have index
       this.getLeftBracket();
       popExpressionIndex = this.logSavedElementLocation();
       this.skipExpression();
       this.getRightBracket();
-    } else if (this.isStructPtr(this.currElement.type)) {
+    } else if (this.isStructPtr(type)) {
       // have structure pointer
       structPtrVariable.type = type + 4;
       structPtrVariable.assignmentBytecode = modifierBytecode;
       structPtrVariable.operation = structPtrVariable.assignmentBytecode == 0 ? eVariableOperation.VO_READ : eVariableOperation.VO_ASSIGN;
       structPtrVariable.address = value;
       structPtrVariable.nextElementIndex = this.nextElementIndex; // source_ptr (after ptr variable)
+      structureRecord = this.objectStructureSet.getStructureRecord(structureId);
     } else {
       // PNut @@notstructptr:
       offsetInStructure = address;

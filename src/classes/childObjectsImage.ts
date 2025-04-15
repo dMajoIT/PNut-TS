@@ -131,9 +131,8 @@ export class ChildObjectsImage {
     let newName: string = '';
     // eslint-disable-next-line no-constant-condition
     while (length-- > 0) {
-      const symbolChar = this._objImage[this._offset];
+      const symbolChar = this._objImage[this._offset++];
       newName += String.fromCharCode(symbolChar);
-      this._offset++;
     }
     return newName;
   }
@@ -178,7 +177,7 @@ export class ChildObjectsImage {
   public readBytes(sizeInBytes: number): Uint8Array {
     // read next N bytes from data and position at next after
     const desiredBytesArray = new Uint8Array(sizeInBytes);
-    desiredBytesArray.set(this._objImage.subarray(this._offset, sizeInBytes), sizeInBytes);
+    desiredBytesArray.set(this._objImage.subarray(this._offset, sizeInBytes - 1), 0);
     this._offset += sizeInBytes;
     return desiredBytesArray;
   }

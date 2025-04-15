@@ -201,14 +201,14 @@ export class ObjectStructures {
   public enterStructureAsNew(structData: Uint8Array): number {
     // adding existing record, record offset into table for new ID
     //  accumulated record size and memory size are already in bytes
-    this.logMessage(`* OBJSTRUCT: enterStructureAsNew(${structData.length} bytes)`);
     this._structStartOffset = this._objStructureOffset;
     this._objStructRecordOffsets.push(this._structStartOffset);
     for (let index = 0; index < structData.length; index++) {
       this.enterByte(structData[index]);
     }
     this._structIdNext++; // count this structure too for limit checks
-    const latestRecordId = this._objStructureSet.length - 1;
+    const latestRecordId = this._objStructRecordOffsets.length - 1;
+    this.logMessage(`* OBJSTRUCT: enterStructureAsNew(${structData.length} bytes) -> id=(${latestRecordId})`);
     return latestRecordId;
   }
 

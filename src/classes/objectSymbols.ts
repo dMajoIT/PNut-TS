@@ -99,8 +99,9 @@ export class ObjectSymbols {
     }
   }
 
-  public writePubSymbol(name: string, parameterCount: number, resultCount: number) {
+  public writePubMethod(name: string, parameterCount: number, resultCount: number) {
     // add to this objects' public interface symbol store PubConList
+    this.logMessage(`* OBJSYM: wrPubMethd name=[${name}](${name.length}), params=(${parameterCount}, rslts=(0x${resultCount})`);
     const type: number = ObjectSymbols.objx_pub | name.length;
     this.writeByte(type); // tttlllll
     this.writeSymbolName(name);
@@ -108,16 +109,18 @@ export class ObjectSymbols {
     this.writeByte(resultCount);
   }
 
-  public writeConstant(name: string, isFloat: boolean, value: bigint) {
+  public writePubConstant(name: string, isFloat: boolean, value: bigint) {
     // add to this objects' public interface symbol store PubConList
+    this.logMessage(`* OBJSYM: wrPubCon name=[${name}](${name.length}), isFlt=(${isFloat}, value=(0x${value.toString(16)})`);
     const interfaceType: number = (isFloat ? ObjectSymbols.objx_con_float : ObjectSymbols.objx_con_int) | name.length;
     this.writeByte(interfaceType);
     this.writeSymbolName(name);
     this.writeLong(value);
   }
 
-  public writeStructure(name: string, bytes: Uint8Array) {
+  public writePubStructure(name: string, bytes: Uint8Array) {
     // add a public structure def'm to object interface
+    this.logMessage(`* OBJSYM: wrPubStruct name=[${name}](${name.length}), bytes(${bytes.length})`);
     const interfaceType: number = ObjectSymbols.objx_con_struct | name.length;
     this.writeByte(interfaceType);
     this.writeSymbolName(name);

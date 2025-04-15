@@ -1,6 +1,9 @@
 DebuggerUnit w/Chip:
 	- procedure TDebuggerForm.Breakpoint;  is the core! 
 
+TODO's have best encapsulation of?:
+- distiller records
+- debug records
 TODO's from P2LF 250108:
 	- add '#pragma exportdef NAME' which makes symbol appear as if specified as -D on command line.
 	- rename preproc output to __pre.spin2 (dual underscore)
@@ -170,7 +173,13 @@ TODO's from PNut Zoom 250303++:
 		- fixed structure record creation! @done(2025-04-11)
 		- now fixed one more regression test @done(2025-04-11)
 	Day27: Mon:
-		- Resume fixing issues found in v45 test
+		- Resume fixing issues found in v45 test - check_var:
+			- fixed bug in build_struct_record (skip past equals!) @done(2025-04-14)
+			- fixed check_var @done(2025-04-14)
+			- ended at still chasing bug in copying structure from child object!
+	Day28: Tue:
+		- Resume fixing issues found in v45 test - check_var:
+			- still chasing bug in copying structure from child object!
 		- Run all regression tests to see what to fix (49,50,51)
 		- Fix more failing regression tests
 		- After all regression tests pass, run coverage and add code to test any missing area

@@ -204,6 +204,7 @@ export class ObjectImage {
     // effectively empty our image
     this.setOffsetTo(0); // call method, so logs
   }
+
   public dumpBytes(startOffset: number, byteCount: number, dumpId: string) {
     /// dump hex and ascii data
     let displayOffset: number = 0;
