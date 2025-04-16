@@ -17,7 +17,7 @@ import { hexLong } from '../utils/formatUtils';
 
 export class RegressionReporter {
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private spinElements: SpinElement[] = [];
 
   constructor(ctx: Context) {

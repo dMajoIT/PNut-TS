@@ -6,7 +6,7 @@
 'use strict';
 
 import { Context } from '../utils/context';
-import { hexAddress, hexByte } from '../utils/formatUtils';
+import { hexAddress, hexByte, hexWord } from '../utils/formatUtils';
 import { ObjectStructureRecord } from './objectStructureRecord';
 
 // src/classes/objectStructures.ts
@@ -44,11 +44,11 @@ export enum eMemberType {
 
 export class ObjectStructures {
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private _id: string;
 
   static readonly MAX_STRUCTURES: number = 0x1000; // PNut  struct_id_limit := $1000;
-  static readonly INITIAL_SIZE: number = 1024; // Initial size for the Uint8Array
+  static readonly INITIAL_SIZE: number = 2048; // Initial size for the Uint8Array (was 1024)
 
   private _objStructRecordOffsets: number[] = [];
   private _objStructureSet: Uint8Array;
@@ -115,7 +115,7 @@ export class ObjectStructures {
     let desiredRcdLen: number = 0;
     if (recordId >= 0 && recordId < this._objStructRecordOffsets.length) {
       const recordOffset = this._objStructRecordOffsets[recordId];
-      desiredRcdLen = (this._objStructureSet[recordOffset] << 0) | this._objStructureSet[recordOffset + 1];
+      desiredRcdLen = this._objStructureSet[recordOffset + 0] | (this._objStructureSet[recordOffset + 1] << 8);
       desiredRecord = new Uint8Array(desiredRcdLen);
       if (desiredRcdLen > 0) {
         desiredRecord.set(this._objStructureSet.subarray(recordOffset, recordOffset + desiredRcdLen));
@@ -124,7 +124,7 @@ export class ObjectStructures {
       // [error_ PNut TS new]
       throw new Error(`ERROR: couldn't find existing structure RCD#${recordId}`);
     }
-    this.logMessage(`* OBJSTRUCT: RCD#${recordId} is ${desiredRecord.length}(0x${desiredRecord.length.toString(16)}) bytes`);
+    this.logMessage(`* OBJSTRUCT: RCD#${recordId} is ${hexWord(desiredRecord.length)}(${desiredRecord.length}) bytes`);
     return desiredRecord;
   }
 
@@ -310,6 +310,7 @@ export class ObjectStructures {
       const newCapacity = this._objStructureSet.length + ObjectStructures.INITIAL_SIZE;
       const newBuffer = new Uint8Array(newCapacity);
       newBuffer.set(this._objStructureSet);
+      //this._objStructureSet = null; // force prior to be deallocated AUGH doesn't work!
       this._objStructureSet = newBuffer;
     }
   }

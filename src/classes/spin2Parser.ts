@@ -23,7 +23,7 @@ import path from 'path';
 
 export class Spin2Parser {
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private isLoggingOutline: boolean = false;
   private srcFile: SpinDocument | undefined;
   private elementizer: SpinElementizer;
@@ -776,6 +776,7 @@ export class Spin2Parser {
     // install flash loader
     this.logMessage(`  -- load flash loader`);
     // now path the loader
+    // FIXME: XYZZY should following remove the -1?!!
     const loaderSubset: Uint8Array = this.externalFiles.flashLoader.subarray(_loader_offset_, 0x1f0 - 1);
     this.objImage.rawUint8Array.set(loaderSubset, 0);
     // get app longs

@@ -21,7 +21,7 @@ import { eMemberType } from './objectStructures';
 //
 export class ObjectStructureRecord {
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private _id: string;
   private _recordImage: Uint8Array;
   private readOffset: number = 0;

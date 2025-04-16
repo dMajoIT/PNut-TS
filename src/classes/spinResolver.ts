@@ -23,11 +23,10 @@ import { ObjectSymbols } from './objectSymbols';
 import { DistillerList, DistillerRecord } from './distillerList';
 import { DebugData, DebugRecord } from './debugData';
 import { eTextSub, SpinDocument } from './spinDocument';
-import { hexByte, hexLong, hexWord } from '../utils/formatUtils';
+import { hexAddress, hexByte, hexLong, hexWord } from '../utils/formatUtils';
 import { eMemberType, ObjectStructures } from './objectStructures';
 import { ObjectStructureRecord } from './objectStructureRecord';
-import { timeStamp } from 'console';
-import { type OptionValues } from 'commander';
+import { dumpBytes } from '../utils/dumpUtils';
 
 // Internal types used for passing complex values
 interface iValueReturn {
@@ -196,9 +195,9 @@ interface ObjectRecord {
 export class SpinResolver {
   readonly IGNORE_SYMBOL_TABLE = false; // parameter value affecting getElement()
   private context: Context;
-  private isLogging: boolean = false;
-  private isLoggingOutline: boolean = false;
-  private isLoggingDistill: boolean = true;
+  private isLogging: boolean;
+  private isLoggingOutline: boolean;
+  private isLoggingDistill: boolean;
   //private logBlockOptimizeDepth: number = 0;
   // data from our elemtizer and navigation variables
   private spinElements: SpinElement[] = [];
@@ -343,8 +342,11 @@ export class SpinResolver {
     this.isLoggingDistill = this.context.logOptions.logDistiller;
     // get references to the single global data
     this.objImage = ctx.compileData.objImage;
+    this.objImage.refreshLogging();
     this.datFileData = ctx.compileData.datFileData;
+    this.datFileData.refreshLogging();
     this.objectData = ctx.compileData.objectData;
+    this.objectData.refreshLogging();
     this.spinFiles = ctx.compileData.spinFiles;
     this.spinFiles.enableLogging(this.isLogging);
     // allocate our local data
@@ -824,6 +826,7 @@ export class SpinResolver {
         }
       }
     }
+    this.logMessage('*==* COMPILE_dat_blocks_fn() EXIT');
   }
 
   private getFilename(): string {
@@ -1682,7 +1685,7 @@ export class SpinResolver {
                 );
                 this.datFileData.setOffset(offset);
                 for (let byteCount = 0; byteCount < dataLength; byteCount++) {
-                  this.enterDataByte(BigInt(this.datFileData.read()));
+                  this.enterDataByte(BigInt(this.datFileData.nextByte()));
                 }
               }
             } else {
@@ -4557,35 +4560,45 @@ export class SpinResolver {
     //
     const objFileRecords: ObjFile[] = this.spinFiles.objFiles;
     this.activeSymbolTable = eSymbolTableId.STI_MAIN; // for these symbols to our MAIN symbol table
+
+    // log our OBJECT files
     this.logMessage(`* - -------------------------------`);
-    this.logMessage(`* compObjSyms() has ${objFileRecords.length} objFiles in list`);
+    this.logMessage(`* compObjSyms() ENTRY with ${objFileRecords.length} objFiles in list`);
     for (let index = 0; index < objFileRecords.length; index++) {
       const objFile: ObjFile = objFileRecords[index];
-      this.logMessage(`  -- compObjSyms() objIndex[${index}], fName=[${objFile.fileName}]`);
+      this.logMessage(`  -- CompOS() objIndex[${index}], fName=[${objFile.fileName}]`);
     }
     for (let objFileIndex = 0; objFileIndex < this.objectData.objectFileCount; objFileIndex++) {
       const [objOffset, objLength] = this.objectData.getOffsetAndLengthForFile(objFileIndex);
-      this.logMessage(`  -- compObjSyms() fileIdx=[${objFileIndex}], objOffset=(${objOffset}), objLength(${objLength})`);
+      this.logMessage(`  -- CompOS() fileIdx=[${objFileIndex}], objOffset=(${objOffset}), objLength(${objLength})`);
     }
     this.logMessage(`* - -------------------------------`);
+
+    // for each file, do...
     for (let objFileIndex = 0; objFileIndex < objFileRecords.length; objFileIndex++) {
       // here is @@getfile:
       const [objOffset, objLength] = this.objectData.getOffsetAndLengthForFile(objFileIndex);
       this.logMessage(
-        `  -- compObjSyms() objFileIndex=(${objFileIndex}), fName=[${objFileRecords[objFileIndex].fileName}], objOffset=(${objOffset}), objLength=(${objLength})`
+        `  -- CompOS() objFileIndex=(${objFileIndex}), fName=[${objFileRecords[objFileIndex].fileName}], objOffset=(${objOffset}), objLength=(${objLength})`
       );
+
+      // DEBUG: dump the object
+      //this.objectData.setOffset(objOffset); // PNut is using [esi]
+      //this.objectData.dumpBytes(objOffset, objLength, -1, `Entire Child Object`);
+
+      // ensure we have a good object
       this.objectData.setOffset(objOffset); // PNut is using [esi]
       // here is @@checksum:
       if ((this.objectData.checksum(objOffset, objLength) & 0xff) != 0) {
         this.logMessage(`  -- ERROR BAD OBJ checksum`);
         this.errorBadObjectImage(objFileRecords[objFileIndex]);
       }
-      const vsize: number = this.objectData.readLong();
+      const vsize: number = this.objectData.nextLong();
       if ((vsize & 0b11) != 0) {
         this.logMessage(`  -- ERROR BAD OBJ vsize`);
         this.errorBadObjectImage(objFileRecords[objFileIndex]);
       }
-      const psize: number = this.objectData.readLong();
+      const psize: number = this.objectData.nextLong();
       if ((psize & 0b11) != 0) {
         this.logMessage(`  -- ERROR BAD OBJ psize`);
         this.errorBadObjectImage(objFileRecords[objFileIndex]);
@@ -4601,18 +4614,18 @@ export class SpinResolver {
       // eslint-disable-next-line no-constant-condition
       while (true) {
         // here is @@findpub:
-        tableEntry = this.objectData.readLong();
+        tableEntry = this.objectData.nextLong();
         if ((tableEntry & 0x80000000) != 0) {
           break;
         } else {
-          tableEntry = this.objectData.readLong();
+          tableEntry = this.objectData.nextLong();
           pubIndex += 2;
         }
       }
 
       // now record
       this.objectData.setOffset(offsetToPubConList); // PNut is using [esi]
-      this.logMessage(`* compObjSyms() - pubConList ofs=(${offsetToPubConList})`);
+      //this.logMessage(`  -- CompOS() - pubConList ofs=(${hexAddress(offsetToPubConList)})`);
       let foundObjError: boolean = false;
       // eslint-disable-next-line no-constant-condition
       while (true) {
@@ -4624,23 +4637,21 @@ export class SpinResolver {
           break;
         }
 
-        this.logMessage(`* compObjSyms() - pub rcd ofs=(${this.objectData.offset.toString(16).padStart(5, '0')})`);
-        let symbolTypeLength: number = this.objectData.readByte();
+        //this.logMessage(`  -- CompOS() - pub rcd ofs=(${hexAddress(this.objectData.offset)})`);
+        let symbolTypeLength: number = this.objectData.nextByte();
         const symbolType: number = symbolTypeLength & 0xe0;
         const symbolLength = symbolTypeLength & 0x1f;
         const typeValue: string = `0b${symbolType.toString(2).padStart(8, '0').slice(0, -5)}xxxxx`;
-        this.logMessage(
-          `* compObjSyms() - symbolType=(${typeValue}), symbolLength=(${symbolLength}) ofs=(${this.objectData.offset.toString(16).padStart(5, '0')})`
-        );
+        //this.logMessage(`  -- CompOS() - symbolType=(${typeValue}), symbolLength=(${symbolLength}) ofs=(${hexAddress(this.objectData.offset)})`);
         // get our symbol
         const objectsSymbolName: string = this.objectData.readSymbolName(symbolLength) + String.fromCharCode(objFileIndex + 1);
-        this.logMessage(`* compObjSyms() - params ofs=(${this.objectData.offset.toString(16).padStart(5, '0')})`);
+        //this.logMessage(`  -- CompOS() - params ofs=(${hexAddress(this.objectData.offset)})`);
         switch (symbolType) {
           case ObjectSymbols.objx_con_int:
           case ObjectSymbols.objx_con_float:
             {
               // have con or con_float
-              const symbolValue: number = this.objectData.readLong();
+              const symbolValue: number = this.objectData.nextLong();
               const actualType: eElementType =
                 symbolType == ObjectSymbols.objx_con_float ? eElementType.type_obj_con_float : eElementType.type_obj_con_int;
               const newObjConSymbol: iSymbol = { name: objectsSymbolName, type: actualType, value: BigInt(symbolValue) };
@@ -4649,19 +4660,22 @@ export class SpinResolver {
             break;
           case ObjectSymbols.objx_con_struct:
             {
-              const recordOffset: number = this.objectData.offset;
+              //const structRcdOffset: number = this.objectData.offset;
               const actualType: eElementType = eElementType.type_obj_con_struct;
               const structRcdSize: number = this.objectData.peekWord(); // read without moving read offset
-              const structBytes: Uint8Array = this.objectData.readBytes(structRcdSize);
-              this.logMessage(
-                `* compObjSyms() - I/F is objx_con_struct: ofs=(${recordOffset.toString(16).padStart(5, '0')}), structRcdSize=(0x${structRcdSize.toString(16)}(${structRcdSize}))`
-              );
+              //this.objectData.dumpBytes(structRcdOffset, structRcdSize, -1, `Struct Record`);
+              const structRcdBytes: Uint8Array = this.objectData.nextBytes(structRcdSize);
+              //this.logMessage(
+              //  `  -- CompOS() - I/F is objx_con_struct: ofs=(${hexAddress(structRcdOffset)}), structRcdSize=(${hexWord(structRcdSize)}(${structRcdSize}))`
+              //);
+              //dumpBytes(this.context, structRcdBytes, structRcdSize, -1, `Returned Record`);
+              //this.objectData.dumpBytes(structRcdOffset, structRcdSize, -1, `Struct Record - still there?`);
               // ensure we have room for new structure
               if (this.objectStructureSet.haveMaxStructures) {
                 // [error_loxdsde]
                 throw new Error(`Limit of ${ObjectStructures.MAX_STRUCTURES} data structure definitions exceeded`);
               }
-              const structId: number = this.objectStructureSet.enterStructureAsNew(structBytes);
+              const structId: number = this.objectStructureSet.enterStructureAsNew(structRcdBytes);
               const newObjConSymbol: iSymbol = { name: objectsSymbolName, type: actualType, value: BigInt(structId) };
               this.recordSymbol(newObjConSymbol);
             }
@@ -4669,11 +4683,11 @@ export class SpinResolver {
           case ObjectSymbols.objx_pub:
             {
               // have PUB
-              const methodParameterCount: number = this.objectData.readByte();
+              const methodParameterCount: number = this.objectData.nextByte();
               if (methodParameterCount > this.method_params_limit) {
                 this.errorBadObjectImage(objFileRecords[objFileIndex]);
               }
-              const methodResultCount: number = this.objectData.readByte();
+              const methodResultCount: number = this.objectData.nextByte();
               if (methodResultCount > this.method_results_limit) {
                 this.errorBadObjectImage(objFileRecords[objFileIndex]);
               }
@@ -4690,6 +4704,7 @@ export class SpinResolver {
         }
       }
     }
+    this.logMessage(`* compObjSyms() - EXIT`);
   }
 
   private errorBadObjectImage(objFileInfo: ObjFile) {
@@ -4723,13 +4738,13 @@ export class SpinResolver {
         // save offset to where this objects' data will be written in objImage
         objPtr.push(fileStartObjOffset);
         // save VAR size for this object [first long]
-        const varsize: number = this.objectData.readLong();
+        const varsize: number = this.objectData.nextLong();
         objVar.push(varsize);
         // this is the actual length of data we move [second long]
-        const remainingObjLength: number = this.objectData.readLong();
+        const remainingObjLength: number = this.objectData.nextLong();
         // here is @@insert:
         for (let byteCount = 0; byteCount < remainingObjLength; byteCount++) {
-          const uint8byte: number = this.objectData.read();
+          const uint8byte: number = this.objectData.nextByte();
           //this.logMessage(`  -- compObjBlks() uint8byte=(${uint8byte})`);
           this.objImage.appendByte(uint8byte);
         }
@@ -5706,13 +5721,15 @@ export class SpinResolver {
       //  this.objImage.appendByte(byte); // copy the symbol array
       //}
       this.pubConList.setReadOffset(0);
-      this.logMessage(`  -- pubCon list has (${this.pubConList.length}) bytes`);
+      this.logMessage(`  -- pubCon list has (${this.pubConList.length}) bytes objOfs=(0x${this.objImage.offset.toString(16)})`);
       for (let index = 0; index < this.pubConList.length; index++) {
         const byte = this.pubConList.readNext();
         this.objImage.appendByte(byte);
       }
+      this.logMessage(`  -- pubCon written. ends at objOfs=(0x${this.objImage.offset.toString(16)})-1`);
+
       // We need to inject two longs at head of image...
-      this.objImage.appendLong(0); // o0pen space for move of data
+      this.objImage.appendLong(0); // open space for move of data
       this.objImage.appendLong(0); // open space for move of data
       // move the data up, leaving room for our two longs at front of image
       //   here is the behavior of PNut move_obj_up
@@ -5810,7 +5827,6 @@ export class SpinResolver {
 
       if (this.currElement.type == eElementType.type_block && Number(this.currElement.value) == blockType) {
         this.logMessage(`  -- nextBlock() found element=[${this.currElement.toString()}]  Found!`);
-        //this.logMessageOutline(`  -- nextBlock() found element=[${this.currElement.toString()}]  Found!`);
         foundStatus = true;
         break;
       }

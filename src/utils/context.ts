@@ -179,9 +179,9 @@ export class Context {
       flashFilename: ''
     };
     this.compileData = {
-      objectData: new ChildObjectsImage(this, 'ObjData'), // pascal P2.ObjData
-      datFileData: new ChildObjectsImage(this, 'DatData'), // pascal P2.DatData
-      objImage: new ObjectImage(this, 'Obj'), // pascal P2.Obj
+      objectData: new ChildObjectsImage(this, 'GlbObjData'), // pascal P2.ObjData
+      datFileData: new ChildObjectsImage(this, 'GlbDatData'), // pascal P2.DatData
+      objImage: new ObjectImage(this, 'GlbObj'), // pascal P2.Obj
       spinFiles: new SpinFiles(this) // our list of OBJ and DAT files
     };
     let possiblePath = path.join(__dirname, '../lib');

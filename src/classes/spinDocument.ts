@@ -102,8 +102,8 @@ class PreProcState {
  */
 export class SpinDocument {
   private context: Context;
-  private isLogging: boolean = false;
-  private isLoggingOutline: boolean = false;
+  private isLogging: boolean;
+  private isLoggingOutline: boolean;
   // unique document IDs
   static nextDocumentId: number = 0;
   private documentId: number;

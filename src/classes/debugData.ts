@@ -13,7 +13,7 @@ import { hexAddress, hexWord } from '../utils/formatUtils';
 export class DebugRecord {
   static readonly MAX_RECORD_LENGTH: number = 255; // + terminator on each
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private _debugRecord = new Uint8Array(DebugRecord.MAX_RECORD_LENGTH); // total memory size
   private _debugOffset: number = 0; // current index into OBJ image
 
@@ -53,7 +53,7 @@ export class DebugRecord {
 
 export class DebugData {
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
 
   static readonly MAX_ENTRIES: number = 255;
   // static readonly DEBUG_SIZE_IN_BYTES: number = DebugData.MAX_ENTRIES * (DebugRecord.MAX_RECORD_LENGTH + 1);

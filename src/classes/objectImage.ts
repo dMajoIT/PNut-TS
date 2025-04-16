@@ -13,7 +13,7 @@ const SUPPRESS_LOG_MSG: boolean = true;
 
 export class ObjectImage {
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private _id: string;
 
   static readonly MAX_SIZE_IN_BYTES: number = 0x100000;
@@ -25,7 +25,11 @@ export class ObjectImage {
     this.context = ctx;
     this._id = idString;
     this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logResolver;
-    // this.isLogging = true; // this.context.logOptions.logCompile || this.context.logOptions.logResolver;
+    // this.isLogging = this.context.reportOptions.coverageTesting ? false : true;
+  }
+
+  public refreshLogging() {
+    this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logResolver;
     // this.isLogging = this.context.reportOptions.coverageTesting ? false : true;
   }
 
@@ -61,7 +65,7 @@ export class ObjectImage {
     }
     //const savedLogState = this.isLogging;
     //this.isLogging = true;
-    this.logMessage(`OBJ[${this._id}]: calculateChecksum(ofs=(${fromOffset}),len=(${toOffset})) -> ${sumValue & 0xff}`);
+    this.logMessage(`* OBJ[${this._id}]: calculateChecksum(ofs=(${fromOffset}),len=(${toOffset})) -> ${sumValue & 0xff}`);
     //this.isLogging = savedLogState;
     return sumValue & 0xff;
   }

@@ -168,6 +168,7 @@ export class Compiler {
           if (objectFiles > 0) {
             let objDataOffset: number = 0; // pascal p
             this.objectData.clear();
+            // for each child...
             for (let childIdx = 0; childIdx < objectFiles; childIdx++) {
               const fileIdx = objectCountsPerChild[childIdx]; // pascal j
               // pascal inline       s
@@ -175,23 +176,30 @@ export class Compiler {
               this.logMessageOutline(
                 `  -- compRecur(${depth}) obj loop childIdx=(${childIdx}), fileIdx=(${fileIdx}), objOffset=(${objOffset}), objLength=(${objLength})`
               );
+              // for this child, append child image to objectData
               this.childImages.setOffset(objOffset); // set read start
               this.objectData.setOffset(objDataOffset); // set write start
-              for (let byteCount = 0; byteCount < objLength; byteCount++) {
-                this.objectData.write(this.childImages.read());
-              }
+              // OLD WAY
+              //for (let byteCount = 0; byteCount < objLength; byteCount++) {
+              //  this.objectData.writeByte(this.childImages.nextByte());
+              //}
+              // NEW WAY
+              this.objectData.ensureFits(objDataOffset, objLength); // throws exception if bad!
+              this.objectData.rawUint8Array.set(this.childImages.rawUint8Array.subarray(objOffset, objOffset + objLength), objDataOffset);
               this.objectData.recordLengthOffsetForFile(fileIdx, objDataOffset, objLength);
               objDataOffset += objLength;
               // DEBUG dump into .obj file for inspection
               //const newObjFileSpec = this.uniqueObjectName(depth, srcFile.dirName, srcFile.fileName, 'Data'); // REMOVE BEFORE FLIGHT
               //dumpUniqueChildObjectFile(this.objectData, objDataOffset, newObjFileSpec, this.context); // REMOVE BEFORE FLIGHT
               // DEBUG dump object records for inspection
-              this.logMessageOutline(`* - -------------------------------`);
-              for (let objFileIndex = 0; objFileIndex < this.objectData.objectFileCount; objFileIndex++) {
-                const [objOffset, objLength] = this.objectData.getOffsetAndLengthForFile(objFileIndex);
-                this.logMessageOutline(`  -- compObjSyms() fileIdx=[${objFileIndex}], objOffset=(${objOffset}), objLength(${objLength})`);
+              if (this.isLoggingOutline) {
+                this.logMessageOutline(`* - -------------------------------`);
+                for (let objFileIndex = 0; objFileIndex < this.objectData.objectFileCount; objFileIndex++) {
+                  const [objOffset, objLength] = this.objectData.getOffsetAndLengthForFile(objFileIndex);
+                  this.logMessageOutline(`  -- compRecur() fileIdx=[${objFileIndex}], objOffset=(${objOffset}), objLength(${objLength})`);
+                }
+                this.logMessageOutline(`* - -------------------------------`);
               }
-              this.logMessageOutline(`* - -------------------------------`);
             }
           }
           //
@@ -212,7 +220,7 @@ export class Compiler {
                   `++ DAT FILE Compiler [dfd=${this.datFileData.id}]  [${filename}], idx=(${datFileIdx}) len=(${datImage.length})`
                 );
                 for (let byteIndex = 0; byteIndex < datImage.length; byteIndex++) {
-                  this.datFileData.write(datImage[byteIndex]);
+                  this.datFileData.writeByte(datImage[byteIndex]);
                 }
                 this.datFileData.recordLengthOffsetForFilename(filename, fileDataOffset, datImage.length);
                 fileDataOffset += datImage.length;
@@ -233,9 +241,15 @@ export class Compiler {
           //  move P2.OBJ (this.objImage) into ObjFileBuff (this.childImages)
           this.childImages.setOffset(this.objectFileOffset);
           this.objImage.setOffsetTo(0);
-          for (let index = 0; index < objectLength; index++) {
-            this.childImages.write(this.objImage.readNext());
-          }
+          // OLD way
+          //for (let index = 0; index < objectLength; index++) {
+          //  this.childImages.writeByte(this.objImage.readNext());
+          //}
+          // NEW WAY
+          this.childImages.ensureFits(this.objectFileOffset, objectLength); // throws exception if bad!
+          this.childImages.rawUint8Array.set(this.objImage.rawUint8Array.subarray(0, 0 + objectLength), this.objectFileOffset);
+          this.objImage.setOffsetTo(0 + objectLength);
+
           this.childImages.recordLengthOffsetForFile(this.objectFileCount, this.objectFileOffset, objectLength);
           this.objectFileOffset += objectLength;
           this.objectFileCount++;

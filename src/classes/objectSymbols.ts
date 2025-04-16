@@ -6,7 +6,7 @@
 'use strict';
 
 import { Context } from '../utils/context';
-import { hexAddress, hexByte } from '../utils/formatUtils';
+import { hexAddress, hexByte, hexLong } from '../utils/formatUtils';
 
 // src/classes/objectImage.ts
 
@@ -57,7 +57,7 @@ export class ObjectSymbols {
   static objx_pub = 4 << 5;
 
   private context: Context;
-  private isLogging: boolean = false;
+  private isLogging: boolean;
   private _id: string;
 
   static readonly MAX_SIZE_IN_BYTES: number = 0x10000;
@@ -111,7 +111,7 @@ export class ObjectSymbols {
 
   public writePubConstant(name: string, isFloat: boolean, value: bigint) {
     // add to this objects' public interface symbol store PubConList
-    this.logMessage(`* OBJSYM: wrPubCon name=[${name}](${name.length}), isFlt=(${isFloat}, value=(0x${value.toString(16)})`);
+    this.logMessage(`* OBJSYM: wrPubCon name=[${name}](${name.length}), isFlt=(${isFloat}, value=(${hexLong(Number(value))})`);
     const interfaceType: number = (isFloat ? ObjectSymbols.objx_con_float : ObjectSymbols.objx_con_int) | name.length;
     this.writeByte(interfaceType);
     this.writeSymbolName(name);

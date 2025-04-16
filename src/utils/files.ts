@@ -245,7 +245,7 @@ export function loadUint8ArrayFailed(content: Uint8Array): boolean {
 }
 
 export function dumpUniqueChildObjectFile(
-  objImage: ChildObjectsImage,
+  objBytes: ChildObjectsImage,
   byteCount: number,
   fileSpec: string,
   ctx: Context | undefined = undefined
@@ -257,7 +257,7 @@ export function dumpUniqueChildObjectFile(
   const stream = fs.createWriteStream(fileSpec);
   // copy our full buffer becuse it will be over written before the file write completes!
   const buffer = new Uint8Array(byteCount);
-  buffer.set(objImage.rawUint8Array.subarray(0, byteCount));
+  buffer.set(objBytes.rawUint8Array.subarray(0, byteCount));
   //const buffer = Buffer.from(objImage.rawUint8Array.buffer, offset, byteCount);
   stream.write(buffer);
 

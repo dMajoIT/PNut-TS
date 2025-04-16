@@ -39,8 +39,8 @@ enum eDebugStringState {
 
 export class SpinElementizer {
   private context: Context;
-  private isLogging: boolean = false;
-  private isLoggingOutline: boolean = false;
+  private isLogging: boolean;
+  private isLoggingOutline: boolean;
   private srcFile: SpinDocument;
   private currLineIndex: number = -1;
   private currCharacterIndex: number = 0;
