@@ -189,13 +189,18 @@ export class ObjectStructures {
     return longValue;
   }
 
-  public enterAssignedStructure(recordId: number) {
+  public enterAssignedStructure(recordId: number): number {
     // PNut @@enter_struct:
-    this.logMessage(`* OBJSTRUCT: enterAssignedStructure(RCD#${recordId})`);
+    this._structStartOffset = this._objStructureOffset;
+    this._objStructRecordOffsets.push(this._structStartOffset);
     const existingRecord = this.readRecord(recordId);
     for (let index = 0; index < existingRecord.length; index++) {
       this.enterByte(existingRecord[index]);
     }
+    this._structIdNext++; // count this structure too for limit checks
+    const latestRecordId = this._objStructRecordOffsets.length - 1;
+    this.logMessage(`* OBJSTRUCT: enterAssignedStructure(RCD#${recordId}) -> id=(${latestRecordId})`);
+    return latestRecordId;
   }
 
   public enterStructureAsNew(structData: Uint8Array): number {

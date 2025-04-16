@@ -1267,6 +1267,7 @@ export class SpinResolver {
       this.hubOrgLimit = 0x100000; // get constant(getValue) will use this;
       this.wordSize = eWordSize.WS_Byte; // 0=byte, 1=word, 2=long
       this.dittoIsActive = false;
+      this.logMessage(`* compDATblks() DITTO active is ${this.dittoIsActive}`);
 
       if (inLineMode) {
         this.cogOrg = inLineCogOrg;
@@ -1369,6 +1370,7 @@ export class SpinResolver {
 
           // PNut v44+ @@notstruct:
           // HANDLE size
+          let dittoHandledThisGet: boolean = false;
           let fitToSize: boolean = this.currElement.type == eElementType.type_size_fit;
           if (this.currElement.type == eElementType.type_size || fitToSize) {
             this.logMessage(`* HANDLE size found element=[${this.currElement.toString()}]`);
@@ -1431,13 +1433,17 @@ export class SpinResolver {
             const pasmDirective: number = Number(this.currElement.value);
             this.wordSize = eWordSize.WS_Long;
             if (pasmDirective == eValueType.dir_ditto) {
+              dittoHandledThisGet = true;
               // PNut @@dirditto:
               if (this.dittoIsActive) {
                 // DITTO already active
-                if (this.nextElementType() != eElementType.type_asm_end) {
+                //  here is @@dittoactive
+                this.currElement = this.getElement();
+                if (this.currElement.type != eElementType.type_asm_end) {
                   // [error_eend]
                   throw new Error('Expected END');
                 }
+                this.logMessage(`* compDATblks() found ditto end`);
                 this.getEndOfLine();
                 let dittoCompleted: boolean = false;
                 if (this.dittoCount == 0) {
@@ -1454,11 +1460,12 @@ export class SpinResolver {
                 if (dittoCompleted) {
                   // PNut @@dittodone:
                   this.dittoIsActive = false;
+                  this.logMessage(`* compDATblks() DITTO active is ${this.dittoIsActive}`);
                   this.enterDatSymbol(); // process pending symbol
                 }
                 // fall thru to nextline...
               } else {
-                // starting DITTO
+                // starting DITTO (two lines after @@dirditto:)
                 this.enterDatSymbol(); // process pending symbol
                 // retrieve the DITTO repeat count
                 let repeatCountResult = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
@@ -1468,11 +1475,13 @@ export class SpinResolver {
                 }
                 this.getEndOfLine();
                 this.dittoIsActive = true;
+                this.logMessage(`* compDATblks() DITTO active is ${this.dittoIsActive}`);
                 this.dittoIndex = 0;
                 this.dittoCount = Number(repeatCountResult.value);
                 this.dittoElementIndex = this.logSavedElementLocation();
                 this.dittoObjectIndex = this.objImage.offset;
               }
+              //continue; // BAD // already did our getEndOfLine()
             } else if (pasmDirective == eValueType.dir_fit) {
               //
               // ASM dir: FIT {address}
@@ -1633,7 +1642,9 @@ export class SpinResolver {
               throw new Error('ORGH not allowed within a DITTO block');
             }
             // ensure this gets to end-of-line check (throw error if not)
-            this.getEndOfLine();
+            if (!dittoHandledThisGet) {
+              this.getEndOfLine();
+            }
           } else if (this.isThereAnInstruction()) {
             //
             this.logMessage(`  -- have instruction`);
@@ -5638,9 +5649,9 @@ export class SpinResolver {
         throw new Error('Expected an existing STRUCT name');
       }
       const structureId: number = this.currElement.numberValue;
-      this.objectStructureSet.beginRecord();
-      this.objectStructureSet.enterAssignedStructure(structureId);
-      newStructId = this.objectStructureSet.endRecord();
+      //this.objectStructureSet.beginRecord();
+      newStructId = this.objectStructureSet.enterAssignedStructure(structureId);
+      //newStructId = this.objectStructureSet.endRecord();
     } else {
       // PNut @@notassign:
       // we have structure def'n
@@ -5691,6 +5702,7 @@ export class SpinResolver {
             }
             instanceCount = tempInstanceCount;
           }
+          this.getRightBracket();
         }
         foundComma = this.getCommaOrRightParen();
         const flagValue: number = foundComma ? 1 : 0;
@@ -7714,6 +7726,7 @@ export class SpinResolver {
 
   private ct_sizeof() {
     // PNut ct_sizeof:
+    this.logMessage(`*--* ct_sizeof()`);
     this.getLeftParen();
     const structureSize: number = this.get_struct_and_size();
     this.compileConstant(BigInt(structureSize));
@@ -8002,7 +8015,7 @@ export class SpinResolver {
       this.currElement = this.getElementObj();
       if (this.currElement.type != eElementType.type_con_int) {
         // [error_esc]
-        throw new Error('Expected a string character');
+        throw new Error('Expected a string character (m900)');
       }
       // process string in escape mode
       this.ct_at_emit_string(true); // with string escapes
@@ -8093,6 +8106,7 @@ export class SpinResolver {
     //  \r = 13, carriage return
     //  \\ = 92, \ (backslash)
     //  \x01 to \xFF = $01 to $FF (0 is not allowed, as it would terminate the string)
+    this.logMessage(`* handleEscapeChr('${String.fromCharCode(char)}', escapeMode=[${escapeMode}])`);
     let character: number = char;
     if (escapeMode && char == '\\'.charCodeAt(0)) {
       const charStr = this.getCharacter();
@@ -8150,16 +8164,18 @@ export class SpinResolver {
   }
 
   private getCharacter(): string {
-    const nextElement: SpinElement = this.peekNextElement();
-    if (!nextElement.midStringComma) {
+    // here is @@string_esc:
+    this.logMessage(`* getCharacter() at [${this.currElement.toString()}]`);
+    this.getElementObj();
+    if (!this.currElement.isMidStringComma) {
       // [error_esc]
-      throw new Error('Expected a string character');
+      throw new Error('Expected a string character (m901)');
     }
-    this.getComma();
+    //this.getComma();
     this.getElementObj();
     if (this.currElement.type != eElementType.type_con_int) {
       // [error_esc]
-      throw new Error('Expected a string character');
+      throw new Error('Expected a string character (m902)');
     }
     if (this.currElement.numberValue < 1 || this.currElement.numberValue > 255) {
       // [error_scmrf]
@@ -8880,22 +8896,23 @@ export class SpinResolver {
             //this.logMessage(` - getCON()  round/trunc roundedUInt32=[0x${roundedUInt32.toString(16).toUpperCase().padStart(8, '0')}]`);
             // return the converted result
             resultStatus.value = BigInt(roundedUInt32);
-          } else if (origElementType == eElementType.type_sizeof) {
-            if (this.inConBlock || this.inObjBlock) {
-              // [error_soioa]
-              throw new Error('SIZEOF() is only allowed in DAT, VAR, PUB, and PRI blocks');
-            }
-            this.checkIntMode();
-            this.getLeftParen();
-            this.getElementObj();
-            const [isStructure, structSize] = this.check_con_struct_size();
-            if (!isStructure) {
-              // [error_easn]
-              throw new Error('Expected a structure name');
-            }
-            this.getRightParen();
-            resultStatus.value = BigInt(structSize);
           }
+        } else if (this.currElement.type == eElementType.type_sizeof) {
+          this.logMessage(`* getCon() have type_sizeof`);
+          if (this.inConBlock || this.inObjBlock) {
+            // [error_soioa]
+            throw new Error('SIZEOF() is only allowed in DAT, VAR, PUB, and PRI blocks');
+          }
+          this.checkIntMode();
+          this.getLeftParen();
+          this.getElementObj();
+          const [isStructure, structSize] = this.check_con_struct_size();
+          if (!isStructure) {
+            // [error_easn]
+            throw new Error('Expected a structure name');
+          }
+          this.getRightParen();
+          resultStatus.value = BigInt(structSize);
         } else {
           // DAT section handling
           this.logMessage(` - getCON()  DAT section handling`);
@@ -8924,8 +8941,9 @@ export class SpinResolver {
               resultStatus.value = BigInt(this.hubMode ? this.hubOrg : this.cogOrg >> 2);
             } else if (this.currElement.type == eElementType.type_dollar2) {
               // new DITTO support here
-              if (mode != eMode.BM_OperandIntOnly || this.dittoIsActive == false) {
+              if (mode != eMode.BM_OperandIntOrFloat || this.dittoIsActive == false) {
                 // [error_diioa]
+                this.logMessage(`* compDATblks() mode=(${eMode[mode]}), dittoIsActive=(${this.dittoIsActive})`);
                 throw new Error('"$$" (DITTO index) is only allowed within a DITTO block, inside a DAT block');
               }
               resultStatus.value = BigInt(this.dittoIndex);

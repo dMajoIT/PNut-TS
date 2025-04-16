@@ -6,9 +6,15 @@ PUB go() | a,b
   b := 2
 
 	orgh
+
 	add	a,b	wc
   if_nc	debug("No Carry")
   if_c	debug("Is Carry")
+
+  ditto	3
+	long	$66666666+$$
+	ditto	end
+
 	end
 
   debug(sdec(a))
