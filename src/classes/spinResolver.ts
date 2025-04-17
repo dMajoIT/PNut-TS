@@ -6968,12 +6968,33 @@ export class SpinResolver {
     // PNut debug_verbose_string:
     let currSrcLine = this.srcFile?.sourceLineAt(this.currElement.sourceLineIndex).text;
     if (currSrcLine) {
+      //if (currSrcLine && endOffset > startOffset) {
+      this.logMessage(`* dbgVerbStr(startOffset=(${startOffset}), endOffset=(${endOffset})) currSrcLine=[${currSrcLine}](${currSrcLine.length})`);
       // enter string bytes
+      /*
+        const srcMidString: string = currSrcLine.substring(startOffset, endOffset + 1);
+        this.logMessage(`* dbgVerbStr() srcMidString=[${srcMidString}](${srcMidString.length})`);
+        const isDblQuoteInSubstring: boolean = srcMidString.indexOf('"') != -1;
+        if (isDblQuoteInSubstring) {
+          let dblQuotePosn: number = currSrcLine.indexOf('"');
+          while (dblQuotePosn < startOffset) {
+            dblQuotePosn = currSrcLine.indexOf('"', dblQuotePosn + 1);
+          }
+
+          const dblQuoteEndPosn: number = currSrcLine.indexOf('"', dblQuotePosn + 1);
+          if (dblQuotePosn != -1 && dblQuoteEndPosn != -1) {
+            endOffset = dblQuoteEndPosn;
+          }
+        }
+        */
       for (let index = startOffset; index <= endOffset; index++) {
         const currCharCode: number = currSrcLine.charCodeAt(index);
         this.debugEnterByte(currCharCode);
       }
       this.debugEnterByte(0); // zero-terminate string
+      //} else {
+      //  this.logMessage(`* dbgVerbStr(startOffset=(${startOffset}), endOffset=(${endOffset})) currSrcLine=[${currSrcLine}] - bad request!`);
+      //}
     }
   }
 
