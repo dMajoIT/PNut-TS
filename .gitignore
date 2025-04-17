@@ -243,3 +243,5 @@ TEST/LARGE-tests/TOF/isp_hdmi_debug.obj.GOLD
 src/f1.ts
 src/utils/f2.ts
 Error.txt
+*.elemORIG
+*.FIXME
