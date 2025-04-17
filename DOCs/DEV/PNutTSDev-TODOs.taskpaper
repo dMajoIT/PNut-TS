@@ -179,10 +179,21 @@ TODO's from PNut Zoom 250303++:
 			- ended at still chasing bug in copying structure from child object!
 	Day28: Tue:
 		- Resume fixing issues found in v45 test - check_var:
-			- still chasing bug in copying structure from child object!
-		- Run all regression tests to see what to fix (49,50,51)
+			- still chasing bug in copying structure from child object! NOT FOUND
+	Day29: Wed:
+		- Resume fixing issues found in v45 test - check_var:
+			- still chasing bug in copying structure from child object! @done(2025-04-16)
+					- found bad isLogging setup @done(2025-04-16)
+					- found bad record extract from list @done(2025-04-16)
+	Day30: Thu:
+		- Resume fixing issues found in v45 test - check_var:
+			- Fix 45 
+			- Fix 49 parent
+			- Fix 50
+		- Fix elementizer fix cause of failed to regression tests
 		- Fix more failing regression tests
 		- After all regression tests pass, run coverage and add code to test any missing area
+	Day31: Fri:
 	
 Upcoming:
 	- Review each block handling method for STRUCT addition, etc. DITTO Support
