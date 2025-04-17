@@ -6973,6 +6973,8 @@ export class SpinResolver {
       this.logMessage(
         `* dbgVerbStr(${startOffset}-${endOffset}) selectedString=[${selectedString}](${selectedString.length}), currSrcLine=[${currSrcLine}](${currSrcLine.length})`
       );
+      // BUGFIX: caller is mis-calculating string length in some cases. This repairs the endLocation when this happens
+
       // enter string bytes
       let isDblQuoteInSubstring: boolean = false;
       let startQuoteLocn: number = -1;
@@ -6991,22 +6993,6 @@ export class SpinResolver {
         endOffset = endQuoteLocn;
       }
 
-      /*
-        const srcMidString: string = currSrcLine.substring(startOffset, endOffset + 1);
-        this.logMessage(`* dbgVerbStr() srcMidString=[${srcMidString}](${srcMidString.length})`);
-        const isDblQuoteInSubstring: boolean = srcMidString.indexOf('"') != -1;
-        if (isDblQuoteInSubstring) {
-          let dblQuotePosn: number = currSrcLine.indexOf('"');
-          while (dblQuotePosn < startOffset) {
-            dblQuotePosn = currSrcLine.indexOf('"', dblQuotePosn + 1);
-          }
-
-          const dblQuoteEndPosn: number = currSrcLine.indexOf('"', dblQuotePosn + 1);
-          if (dblQuotePosn != -1 && dblQuoteEndPosn != -1) {
-            endOffset = dblQuoteEndPosn;
-          }
-        }
-        */
       for (let index = startOffset; index <= endOffset; index++) {
         const currCharCode: number = currSrcLine.charCodeAt(index);
         this.debugEnterByte(currCharCode);
