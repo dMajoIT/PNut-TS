@@ -6969,8 +6969,28 @@ export class SpinResolver {
     let currSrcLine = this.srcFile?.sourceLineAt(this.currElement.sourceLineIndex).text;
     if (currSrcLine) {
       //if (currSrcLine && endOffset > startOffset) {
-      this.logMessage(`* dbgVerbStr(startOffset=(${startOffset}), endOffset=(${endOffset})) currSrcLine=[${currSrcLine}](${currSrcLine.length})`);
+      const selectedString: string = currSrcLine.substring(startOffset, endOffset + 1);
+      this.logMessage(
+        `* dbgVerbStr(${startOffset}-${endOffset}) selectedString=[${selectedString}](${selectedString.length}), currSrcLine=[${currSrcLine}](${currSrcLine.length})`
+      );
       // enter string bytes
+      let isDblQuoteInSubstring: boolean = false;
+      let startQuoteLocn: number = -1;
+      for (let index = 0; index < 3; index++) {
+        if (selectedString.charAt(index) == '"') {
+          isDblQuoteInSubstring = true;
+          startQuoteLocn = index;
+          break;
+        }
+      }
+      if (isDblQuoteInSubstring) {
+        const endQuoteLocn = currSrcLine.indexOf('"', startOffset + startQuoteLocn + 1);
+        this.logMessage(
+          `* dbgVerbStr() dblQuotesAt (${startOffset + startQuoteLocn}), (${endQuoteLocn}), override (${endOffset}) with (${endQuoteLocn})`
+        );
+        endOffset = endQuoteLocn;
+      }
+
       /*
         const srcMidString: string = currSrcLine.substring(startOffset, endOffset + 1);
         this.logMessage(`* dbgVerbStr() srcMidString=[${srcMidString}](${srcMidString.length})`);
