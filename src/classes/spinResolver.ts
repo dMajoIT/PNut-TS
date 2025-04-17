@@ -9503,6 +9503,7 @@ private checkDec(): boolean {
         variable.type -= 3; // convert to byte
         variable.wordSize = structureReturn.wordSize;
         variable.nextElementIndex = structureReturn.structElemIndex;
+        variable.address = structureReturn.address;
         this.objImage.setOffsetTo(structureReturn.objectPtr);
         // fall thru to tail handling.. by NOT setting DONE
       } else {
@@ -10517,9 +10518,10 @@ private checkDec(): boolean {
             // have BYTE, WORD or LONG (memberType == 0,1, or 2)
             // PNut @@notstruct2:
             memberSize = 1 << memberType; // 0,1,2 -> 1,2,4
-            resultStructure.wordSize = memberType;
-            resultStructure.size = memberSize;
             resultStructure.flags = eStructureType.ST_ResolvedAsBWL; // BYTE, WORD or LONG
+            resultStructure.size = memberSize;
+            resultStructure.address = offsetInStructure;
+            resultStructure.wordSize = memberType;
             resultStructure.structElemIndex = this.logSavedElementLocation(); // elem after name
             const savedIndexCount = liveIndexCount;
             const indexResults: iIndexReturn = this.handleStructureIndex(memberSize, liveIndexCount, offsetInStructure);
