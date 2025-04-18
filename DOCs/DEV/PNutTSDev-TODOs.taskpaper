@@ -190,10 +190,10 @@ TODO's from PNut Zoom 250303++:
 			- Fix 49 parent @done(2025-04-17)
 			- Fix 50 @done(2025-04-17)
 				- add string end search in dbl-quote string cases @done(2025-04-17)
-	Day31: Fri:
-		- Resume fixing issues found in v45 test - check_var:
-			- Fix 45 
-				- found 3-deep recursive call to compileVar()
+	Day30-2: Thu Eve:
+		- Resume fixing issues found in v45 test - check_var: @done(2025-04-17)
+			- Fix 45 @done(2025-04-17)
+				- found 3-deep recursive call to compileVar() @done(2025-04-17)
 		- Fix elementizer fix cause of failed to regression tests
 			- affect only 1 file! let's fix this!
 		- Fix more failing regression tests

@@ -9441,7 +9441,8 @@ private checkDec(): boolean {
       variable.wordSize = eWordSize.WS_Long;
       variable.address &= 0xfffff; // mask away any struct id
       this.logMessage(`  -- compVar() calling self with var.type changed to of [${eElementType[variable.type]}]`);
-      this.compileVariable(variable);
+      this.compileVariable(variable); // XYZZY 1 of 2
+      this.logMessage(`  -- compVar() resume after var.type changed with variable.type [${eElementType[variable.type]}]`);
       if (incDecValue != 1) {
         this.objImage.setOffsetTo(this.objImage.offset - 1); // remove last bytecode
         this.objImage.appendByte(eByteCode.bc_set_incdec);
@@ -9451,8 +9452,8 @@ private checkDec(): boolean {
       workIsComplete = true; // DONE
     }
     // PNut @@notptrval:
-    if (this.isPtr(variable.type) && !this.isStructPtr(variable.type)) {
-      // PNut
+    if (!workIsComplete && this.isPtr(variable.type) && !this.isStructPtr(variable.type)) {
+      // PNut @@notptrval: + 5 lines
       let tempVariable: iVariableReturn = {
         isVariable: true,
         type: variable.type + 4 + variable.wordSize, // changes to *_ptr_val
@@ -9472,7 +9473,8 @@ private checkDec(): boolean {
         structSize: 0 // 1,2,4, or structure size
       };
       this.logMessage(`  -- compVar() calling self with tmpVar of [${eElementType[tempVariable.type]}]`);
-      this.compileVariable(tempVariable); // compile read/assign of pointer variable
+      this.compileVariable(tempVariable); // compile read/assign of pointer variable  // XYZZY 2 of 2
+      this.logMessage(`  -- compVar() resume after compVar(tmpVar) with variable.type [${eElementType[variable.type]}]`);
       if (variable.sizeOverrideFlag == true) {
         this.getDot(); // skip dot
         this.getSize(); // skip size
@@ -9484,13 +9486,14 @@ private checkDec(): boolean {
       } else {
         this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
       }
+      // here is @@entersetup
       this.compileVariableBitfield(variable);
       this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
     }
 
     // PNut @@notptr:
-    if (this.isStruct(variable.type)) {
+    if (!workIsComplete && this.isStruct(variable.type)) {
       this.logMessage(`  -- compVar() is structure`);
       const structureReturn = this.compile_struct_setup(variable.type, variable.address, variable.modifierBytecode);
       if (structureReturn.flags == eStructureType.ST_ResolvedAsBWL) {
@@ -9531,9 +9534,10 @@ private checkDec(): boolean {
       }
     }
 
+    // hare is @@notstruct:
     // field
     //
-    if (variable.type == eElementType.type_field) {
+    if (!workIsComplete && variable.type == eElementType.type_field) {
       this.compileIndex();
       if (variable.indexFlag == true) {
         this.compileIndex();
@@ -9549,7 +9553,7 @@ private checkDec(): boolean {
     // PNut @@notfield:
     //  REG[register][index]{.[bitfield]}
     //  (or actual register name constants)
-    if (variable.type == eElementType.type_register) {
+    if (!workIsComplete && variable.type == eElementType.type_register) {
       if (variable.address >= this.prxRegs + 0 && variable.address <= this.prxRegs + 7 && variable.indexFlag == false) {
         this.objImage.appendByte(eByteCode.bc_setup_reg_1D8_1F8 + (variable.address - this.prxRegs));
       } else if (variable.address >= 0x1f8 && variable.address <= 0x1ff && variable.indexFlag == false) {
@@ -9580,9 +9584,10 @@ private checkDec(): boolean {
       workIsComplete = true; // DONE
     }
 
+    // here is @@notreg
     // type size
     //  [BYTE|WORD|LONG][address][index]{.[bitfield]}
-    if (variable.type == eElementType.type_size) {
+    if (!workIsComplete && variable.type == eElementType.type_size) {
       this.logMessage(`  -- compVar() variable.type == type_size`);
       this.compileIndex();
       if (variable.indexFlag == true) {
@@ -9591,20 +9596,23 @@ private checkDec(): boolean {
       } else {
         this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize); // pop address
       }
+      // here is @@entersetup:
       this.compileVariableBitfield(variable);
       this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
     }
 
+    // here is @@notsize:
     // adjust wordSize if override is present
-    if (variable.sizeOverrideFlag == true) {
+    if (!workIsComplete && variable.sizeOverrideFlag == true) {
       this.getDot();
       this.getSize();
-      variable.wordSize = Number(this.currElement.bigintValue);
     }
 
+    // here is @@nosor:
     // handle var... special case, first 16 longs
     if (
+      !workIsComplete &&
       variable.type == eElementType.type_var_byte &&
       variable.wordSize == eWordSize.WS_Long &&
       (variable.address & 0b11) == 0 &&
@@ -9613,13 +9621,16 @@ private checkDec(): boolean {
     ) {
       this.logMessage(`  -- compVar() 1st 16 longs`);
       this.objImage.appendByte(eByteCode.bc_setup_var_0_15 + (variable.address >> 2)); // one of our first 16
+      // here is @@entersetup:
       this.compileVariableBitfield(variable);
       this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
     }
 
+    // here is @@notvar16:
     // handle loc... special case, first 16 longs
     if (
+      !workIsComplete &&
       variable.type == eElementType.type_loc_byte &&
       variable.wordSize == eWordSize.WS_Long &&
       (variable.address & 0b11) == 0 &&
@@ -9628,19 +9639,24 @@ private checkDec(): boolean {
     ) {
       this.logMessage(`  -- compVar() op=[${eVariableOperation[variable.operation]}] bitfield=(${variable.bitfieldFlag})`);
       if (variable.bitfieldFlag == true || variable.operation == eVariableOperation.VO_ASSIGN) {
+        // assign
         this.objImage.appendByte(eByteCode.bc_setup_local_0_15 + (variable.address >> 2)); // one of our first 16
+        // here is @@entersetup:
         this.compileVariableBitfield(variable);
         this.compileVariableReadWriteAssign(variable);
       } else if (variable.operation == eVariableOperation.VO_WRITE) {
+        // write
         this.objImage.appendByte(eByteCode.bc_write_local_0_15 + (variable.address >> 2)); // one of our first 16
       } else {
+        // write
         this.objImage.appendByte(eByteCode.bc_read_local_0_15 + (variable.address >> 2)); // one of our first 16
       }
       workIsComplete = true; // DONE
     }
 
+    // here is @@notloc16:
     // handle hub byte/word/long with possible index
-    if (variable.type == eElementType.type_hub_byte) {
+    if (!workIsComplete && variable.type == eElementType.type_hub_byte) {
       // just a read
       this.logMessage(`  -- compVar() variable.wordSize=(${variable.wordSize})`);
       this.compileConstant(BigInt(variable.address));
@@ -9650,11 +9666,13 @@ private checkDec(): boolean {
       } else {
         this.objImage.appendByte(eByteCode.bc_setup_byte_pa + variable.wordSize);
       }
+      // here is @@entersetup:
       this.compileVariableBitfield(variable);
       this.compileVariableReadWriteAssign(variable);
       workIsComplete = true; // DONE
     }
 
+    // here is @@nothub:
     // handle leftover cases of variable access (DAT, VAR, PUB/PRI(loc))
     if (workIsComplete == false) {
       let accessBytecode: number = eByteCode.bc_setup_byte_pbase + variable.wordSize * 6;
@@ -9670,6 +9688,7 @@ private checkDec(): boolean {
           accessBytecode += 2;
           break;
       }
+      // here is @@gotbase:
       this.logMessage(`  -- compVar() variable.indexFlag=(${variable.indexFlag}), accessBytecode=(${accessBytecode})`);
       if (variable.indexFlag == true) {
         accessBytecode += 3;
@@ -10500,6 +10519,7 @@ private checkDec(): boolean {
           offsetInStructure = indexResults.offsetInStructure;
         }
       }
+      resultStructure.size = memberSize;
       resultStructure.wordSize = eMemberType.MT_STRUCT; // default to structure
       if (!this.checkDot()) {
         // NOT have member

@@ -6,11 +6,11 @@
     "<rootDir>/dist/tests/DAT-PASM-tests/",
     "<rootDir>/dist/tests/DBG-tests/",
     "<rootDir>/dist/tests/EXT-tests/",
-    "<rootDir>/dist/tests/LANG-VER-tests/",
     "<rootDir>/dist/tests/LOADER-tests/",
     "<rootDir>/dist/tests/OBJ-tests/",
     "<rootDir>/dist/tests/SPIN-tests/",
-    "<rootDir>/dist/tests/VAR-tests/"
+    "<rootDir>/dist/tests/VAR-tests/",
+    "<rootDir>/dist/tests/LANG-VER-tests/"
   ],
   "testMatch": ["**/*.test.js"],
   "verbose": true
