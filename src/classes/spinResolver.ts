@@ -8807,7 +8807,7 @@ export class SpinResolver {
     //  this 'check_constant', now 'get_constant' in Pnut v44 and later
     //  XYZZY factor in use of check_local (NEW) check_constant
     const resultStatus: iConstantReturn = { value: 0n, foundConstant: true };
-    this.logMessage(`*--* getCON() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${(this, this.currElement.toString())}]`);
+    this.logMessage(`*--* getCON() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${this.currElement.toString()}]`);
 
     if (mode == eMode.BM_Spin2) {
       // trying to resolve spin2 constant

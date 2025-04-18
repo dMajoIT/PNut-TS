@@ -836,6 +836,7 @@ export class SpinDocument {
             break;
           }
         } else {
+          // nextOpen is NOT = -1!
           if (nextClosePosn != -1 && nextOpenPosn != -1) {
             // have both
             if (nextClosePosn < nextOpenPosn) {
@@ -852,8 +853,6 @@ export class SpinDocument {
             // have only close
             // no replacement, just move to next open
             currPosn = nextClosePosn + 1;
-          } else if (nextOpenPosn != -1) {
-            // have only nested open, still in comment
           } else {
             // have NO open or close
             break;

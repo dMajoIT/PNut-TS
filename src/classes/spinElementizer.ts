@@ -522,9 +522,9 @@ export class SpinElementizer {
           columnsCount++;
         }
       }
-    }
-    if (line.includes('enter_element')) {
-      this.logMessage(`* calculateColumnToOffset() line-[${line.substring(0, endCharOffset + 1)}], ofs=(${endCharOffset}) -> (${columnsCount})`);
+      if (line.includes('enter_element')) {
+        this.logMessage(`* calculateColumnToOffset() line-[${line.substring(0, endCharOffset + 1)}], ofs=(${endCharOffset}) -> (${columnsCount})`);
+      }
     }
     return columnsCount + 1; // now make it a column number
   }
