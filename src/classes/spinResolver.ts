@@ -10560,7 +10560,6 @@ private checkDec(): boolean {
             memberSize = 1 << memberType; // 0,1,2 -> 1,2,4
             resultStructure.flags = eStructureType.ST_ResolvedAsBWL; // BYTE, WORD or LONG
             resultStructure.size = memberSize;
-            resultStructure.address = offsetInStructure;
             resultStructure.wordSize = memberType;
             resultStructure.structElemIndex = this.logSavedElementLocation(); // elem after name
             const savedIndexCount = liveIndexCount;
@@ -10594,6 +10593,7 @@ private checkDec(): boolean {
         }
         // continue at @@checkmember
       }
+      resultStructure.address = offsetInStructure;
       // if not a match then continue at @@structloop:
     } while (!foundMatch);
 
