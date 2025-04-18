@@ -1081,8 +1081,8 @@ export class SpinSymbolTables {
 
     //		oc		op		prec	bytecode	ternary	binary	unary	assign	float	alias	hubcode
     this.opcodeValues.set(eOpcode.oc_bitnot, setOpcodeValue(eOperationType.op_bitnot, 0, eByteCode.bc_bitnot, 0, 0, 1, 1, 0, 0, 0)); //  !
-    this.opcodeValues.set(eOpcode.oc_neg, setOpcodeValue(eOperationType.op_neg, 0, eByteCode.bc_neg, 0, 0, 1, 1, 1, 0, 0)); //  -	(uses op_sub symbol)
-    this.opcodeValues.set(eOpcode.oc_fneg, setOpcodeValue(eOperationType.op_fneg, 0, eByteCode.bc_fneg, 0, 0, 1, 0, 1, 0, 1)); //  -.	(uses op_fsub symbol)
+    this.opcodeValues.set(eOpcode.oc_neg, setOpcodeValue(eOperationType.op_neg, 0, eByteCode.bc_neg, 0, 0, 1, 1, 1, 0, 0)); // - (use op_sub symb)
+    this.opcodeValues.set(eOpcode.oc_fneg, setOpcodeValue(eOperationType.op_fneg, 0, eByteCode.bc_fneg, 0, 0, 1, 0, 1, 0, 1)); // -. ( op_fsub symb)
     this.opcodeValues.set(eOpcode.oc_abs, setOpcodeValue(eOperationType.op_abs, 0, eByteCode.bc_abs, 0, 0, 1, 1, 1, 0, 0)); //  ABS
     this.opcodeValues.set(eOpcode.oc_fabs, setOpcodeValue(eOperationType.op_fabs, 0, eByteCode.bc_fabs, 0, 0, 1, 0, 1, 0, 1)); //  FABS
     this.opcodeValues.set(eOpcode.oc_encod, setOpcodeValue(eOperationType.op_encod, 0, eByteCode.bc_encod, 0, 0, 1, 1, 0, 0, 0)); //  ENCOD
@@ -2584,7 +2584,7 @@ export class SpinSymbolTables {
     this.automatic_symbols.set(SYMBOLS.HUBEXEC_NEW_PAIR, { type: eElementType.type_con_int, value: 0b110001 });
     this.automatic_symbols.set(SYMBOLS.NEWCOG, { type: eElementType.type_con_int, value: 0b010000 }); // cogspin constant
 
-    this.automatic_symbols.set(SYMBOLS.P_TRUE_A, { type: eElementType.type_con_int, value: 0b00000000000000000000000000000000 }); // smart pin constants
+    this.automatic_symbols.set(SYMBOLS.P_TRUE_A, { type: eElementType.type_con_int, value: 0b00000000000000000000000000000000 }); // smart pin const
     this.automatic_symbols.set(SYMBOLS.P_INVERT_A, { type: eElementType.type_con_int, value: 0b10000000000000000000000000000000 });
 
     this.automatic_symbols.set(SYMBOLS.P_LOCAL_A, { type: eElementType.type_con_int, value: 0b0000000000000000000000000000000 });
@@ -2839,7 +2839,7 @@ export class SpinSymbolTables {
     this.automatic_symbols_v44.set(SYMBOLS_V44.LONGSWAP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_longswap) });
     this.automatic_symbols_v44.set(SYMBOLS_V44.LONGCOMP, { type: eElementType.type_i_flex, value: this.flexValue(eFlexcode.fc_longcomp) });
     this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL, { type: eElementType.type_debug_cmd, value: 0b00100000 });
-    this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL_, { type: eElementType.type_debug_cmd, value: 0b00100010 }); // ?? 00100011in CODE! ci_debug:@@tickbool:
+    this.automatic_symbols_v44.set(SYMBOLS_V44.BOOL_, { type: eElementType.type_debug_cmd, value: 0b00100010 });
 
     //
     // HAND generated Automatic symbols table load v45
@@ -2912,8 +2912,9 @@ export class SpinSymbolTables {
     for (const [bcValue, fcValue] of this.byteCodeToFlexCodeMap) {
       const fullFlexValue: number | undefined = this.flexcodeValues.get(fcValue);
       const flexValueInterp = fullFlexValue !== undefined ? hexWord(fullFlexValue, '0x') : '??---??';
+      const fcvalHex: string = `${hexByte(fcValue, '0x')}`;
       this.logMessage(
-        `- [${tbleIdx++}] fc=(${fcValue}, ${hexByte(fcValue, '0x')}), bc=(${bcValue}, ${hexByte(bcValue, '0x')}), [${eFlexcode[fcValue]}]=(${flexValueInterp})`
+        `- [${tbleIdx++}] fc=(${fcValue}, ${fcvalHex}), bc=(${bcValue}, ${hexByte(bcValue, '0x')}), [${eFlexcode[fcValue]}]=(${flexValueInterp})`
       );
     }
   }
