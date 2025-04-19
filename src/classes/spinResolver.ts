@@ -1695,7 +1695,9 @@ export class SpinResolver {
                   `++ DAT FILE Resolver [dfd=${this.datFileData.id}] [${filename}], idx=(${fileIndex}), ofs=(${offset}), len=(${dataLength})(${hexLong(dataLength, '0x')})`
                 );
                 this.datFileData.setOffset(offset);
+                // FIXME: XYZZY convert to Uint8Array.set() call!
                 for (let byteCount = 0; byteCount < dataLength; byteCount++) {
+                  // NOTE: this is writing to this.objImage.
                   this.enterDataByte(BigInt(this.datFileData.nextByte()));
                 }
               }
@@ -9441,7 +9443,7 @@ private checkDec(): boolean {
       variable.wordSize = eWordSize.WS_Long;
       variable.address &= 0xfffff; // mask away any struct id
       this.logMessage(`  -- compVar() calling self with var.type changed to of [${eElementType[variable.type]}]`);
-      this.compileVariable(variable); // XYZZY 1 of 2
+      this.compileVariable(variable);
       this.logMessage(`  -- compVar() resume after var.type changed with variable.type [${eElementType[variable.type]}]`);
       if (incDecValue != 1) {
         this.objImage.setOffsetTo(this.objImage.offset - 1); // remove last bytecode
@@ -9473,7 +9475,7 @@ private checkDec(): boolean {
         structSize: 0 // 1,2,4, or structure size
       };
       this.logMessage(`  -- compVar() calling self with tmpVar of [${eElementType[tempVariable.type]}]`);
-      this.compileVariable(tempVariable); // compile read/assign of pointer variable  // XYZZY 2 of 2
+      this.compileVariable(tempVariable); // compile read/assign of pointer variable
       this.logMessage(`  -- compVar() resume after compVar(tmpVar) with variable.type [${eElementType[variable.type]}]`);
       if (variable.sizeOverrideFlag == true) {
         this.getDot(); // skip dot

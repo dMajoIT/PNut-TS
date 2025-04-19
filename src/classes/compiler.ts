@@ -214,7 +214,6 @@ export class Compiler {
             //const datFileList: DatFile[] = this.spinFiles.datFiles;
             this.logMessageOutline(`++ DAT FILE Compiler have (${dataFiles}) data files listLen=(${datFileList.length})`);
             for (let datFileIdx = 0; datFileIdx < datFileList.length; datFileIdx++) {
-              this.datFileData.setOffset(fileDataOffset); // set write start
               const datFile: DatFile = datFileList[datFileIdx];
               const datImage: Uint8Array = loadFileAsUint8Array(datFile.fileSpec, this.context);
               const filename: string = path.basename(datFile.fileSpec);
@@ -223,6 +222,8 @@ export class Compiler {
                 this.logMessageOutline(
                   `++ DAT FILE Compiler [dfd=${this.datFileData.id}]  [${filename}], idx=(${datFileIdx}) len=(${datImage.length})`
                 );
+                // FIXME: XYZZY convert to Uint8Array.set() call!
+                this.datFileData.setOffset(fileDataOffset); // set write start
                 for (let byteIndex = 0; byteIndex < datImage.length; byteIndex++) {
                   this.datFileData.writeByte(datImage[byteIndex]);
                 }
