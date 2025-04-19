@@ -1,3 +1,29 @@
 #!/bin/bash
+#
+#  root@190c3e6a0a20:/workspaces/PNut-TS# node -e 'console.log(v8.getHeapStatistics().heap_size_limit/(1024*1024))'
+#  2096
+#
 #  the following should abort if the compile fails
-(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l   --log resolver parser --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+
+#  WAS  (set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l   --log resolver parser --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log outline --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log outline parser --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+
+# CRASH OOM!
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log outline resolver parser --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+#export NODE_OPTIONS="--max-old-space-size=8192"
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log outline resolver parser --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log outline resolver  --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+
+#export NODE_OPTIONS="--max-old-space-size=8192"
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log resolver --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l --log resolver --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+#export NODE_OPTIONS="--max-old-space-size=4096"  # PNut-TS: An error occurred on stdout: "write ENOBUFS", Aborting.
+#export NODE_OPTIONS="--max-old-space-size=8192"  # PNut-TS: An error occurred on stdout: "write ENOBUFS", Aborting.
+#export NODE_OPTIONS="--max-old-space-size=16384"  # PNut-TS: An error occurred on stdout: "write ENOBUFS", Aborting.
+#export NODE_OPTIONS="--max-old-space-size=65536"  # PNut-TS: An error occurred on stdout: "write ENOBUFS", Aborting.
+#export NODE_OPTIONS="--max-old-space-size=8192 --inspect"  # PNut-TS: An error occurred on stdout: "write ENOBUFS", Aborting.
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l   --log resolver  --regression element -v TEST/SPIN-tests/spin_test2.spin2)
+#  MATCH regression test
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js  -v -l -O --log resolver --regression element -v TEST/SPIN-tests/spin_test2.spin2)
