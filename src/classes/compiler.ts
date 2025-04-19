@@ -20,8 +20,8 @@ const OBJ_STACK_LIMIT: number = 16;
 
 export class Compiler {
   private context: Context;
-  private isLogging: boolean = false;
-  private isLoggingOutline: boolean = false;
+  private isLogging: boolean;
+  private isLoggingOutline: boolean;
   private srcFile: SpinDocument | undefined;
   private spin2Parser: Spin2Parser;
   private objectFileCount: number = 0; // from pascal EditUnit.pas ObjFileCount
@@ -44,9 +44,13 @@ export class Compiler {
     this.spin2Parser = new Spin2Parser(ctx);
     // get references to the single global data
     this.objectData = ctx.compileData.objectData;
+    this.objectData.refreshLogging();
     this.datFileData = ctx.compileData.datFileData;
+    this.datFileData.refreshLogging();
     this.objImage = ctx.compileData.objImage;
+    this.objImage.refreshLogging();
     this.spinFiles = ctx.compileData.spinFiles;
+    this.spinFiles.enableLogging(this.isLogging);
     // allocate our local data
     this.childImages = new ChildObjectsImage(ctx, 'childImages');
   }

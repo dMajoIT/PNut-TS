@@ -45,13 +45,15 @@ export enum eMemberType {
 export class ObjectStructures {
   private context: Context;
   private isLogging: boolean;
+  private isLoggingOutline: boolean;
   private _id: string;
 
   static readonly MAX_STRUCTURES: number = 0x1000; // PNut  struct_id_limit := $1000;
-  static readonly INITIAL_SIZE: number = 2048; // Initial size for the Uint8Array (was 1024)
+  static readonly MAX_SIZE_IN_BYTES: number = 2048;
+  static readonly ALLOC_SIZE_IN_BYTES: number = 1024; // Initial size for the Uint8Array
 
   private _objStructRecordOffsets: number[] = [];
-  private _objStructureSet: Uint8Array;
+  private _objStructureByteAr: Uint8Array;
   private _objStructureOffset: number = 0; // current index into OBJ image
   private _objReadStructureOffset: number = 0; // read index into OBJ image
   // structure support
@@ -66,11 +68,25 @@ export class ObjectStructures {
     this.context = ctx;
     this._id = idString;
     this.isLogging = this.context.logOptions.logCompile;
-    this._objStructureSet = new Uint8Array(ObjectStructures.INITIAL_SIZE);
+    this.isLoggingOutline = ctx.logOptions.logOutline;
+    this._objStructureByteAr = new Uint8Array(ObjectStructures.ALLOC_SIZE_IN_BYTES); // initial memory size
+  }
+
+  private ensureCapacity(neededCapacity: number) {
+    if (neededCapacity > this._objStructureByteAr.length && this._objStructureByteAr.length < ObjectStructures.MAX_SIZE_IN_BYTES) {
+      // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time
+      const tmpCapacity: number = Math.ceil(neededCapacity / ObjectStructures.ALLOC_SIZE_IN_BYTES) * ObjectStructures.ALLOC_SIZE_IN_BYTES;
+      const newCapacity: number = tmpCapacity > ObjectStructures.MAX_SIZE_IN_BYTES ? ObjectStructures.MAX_SIZE_IN_BYTES : tmpCapacity;
+      this.logMessageOutline(`++ MEM-ALLOC: OBJSTRUCT grows from (${this._objStructureByteAr.length / 1024} kB) to (${newCapacity / 1024} kB)`);
+      const newBuffer = new Uint8Array(newCapacity);
+      newBuffer.set(this._objStructureByteAr);
+      //this._objStructureByteAr = null; // force prior to be deallocated AUGH doesn't work!
+      this._objStructureByteAr = newBuffer;
+    }
   }
 
   [Symbol.iterator]() {
-    return this._objStructureSet.values();
+    return this._objStructureByteAr.values();
   }
 
   get length(): number {
@@ -87,7 +103,7 @@ export class ObjectStructures {
 
   public readNext(): number {
     let desiredValue: number = 0;
-    desiredValue = this._objStructureSet[this._objReadStructureOffset++];
+    desiredValue = this._objStructureByteAr[this._objReadStructureOffset++];
     this.logMessage(`* OBJSTRUCT: readnext(${hexAddress(this._objReadStructureOffset - 1)}) -> v=(${hexByte(desiredValue)})`);
     return desiredValue;
   }
@@ -115,10 +131,10 @@ export class ObjectStructures {
     let desiredRcdLen: number = 0;
     if (recordId >= 0 && recordId < this._objStructRecordOffsets.length) {
       const recordOffset = this._objStructRecordOffsets[recordId];
-      desiredRcdLen = this._objStructureSet[recordOffset + 0] | (this._objStructureSet[recordOffset + 1] << 8);
+      desiredRcdLen = this._objStructureByteAr[recordOffset + 0] | (this._objStructureByteAr[recordOffset + 1] << 8);
       desiredRecord = new Uint8Array(desiredRcdLen);
       if (desiredRcdLen > 0) {
-        desiredRecord.set(this._objStructureSet.subarray(recordOffset, recordOffset + desiredRcdLen));
+        desiredRecord.set(this._objStructureByteAr.subarray(recordOffset, recordOffset + desiredRcdLen));
       }
     } else {
       // [error_ PNut TS new]
@@ -285,9 +301,29 @@ export class ObjectStructures {
   public enterByte(uint8Value: number) {
     // append byte to end of image
     this.logMessage(`* OBJSTRUCT: append(v=(${hexByte(uint8Value)})) wroteTo(${hexAddress(this._objStructureOffset)})`);
-    this.ensureCapacity(this._objStructureOffset + 1);
-    this._objStructureSet[this._objStructureOffset++] = uint8Value & 0xff;
+    this.ensureCapacity(this._objStructureOffset + 64); // ensure we have room for 63 more bytes...
+    this._objStructureByteAr[this._objStructureOffset++] = uint8Value & 0xff;
     this._structRecordSize++;
+  }
+
+  public read(offset: number): number {
+    // read existing value from image
+    let desiredValue: number = 0;
+    if (offset >= 0 && offset < this._objStructureOffset) {
+      desiredValue = this._objStructureByteAr[offset];
+    } else {
+      // [error_INTERNAL]
+      throw new Error(`ERROR[INTERNAL]: OBJSTRUCT: read() offset=(${offset}) out of range [0-${this._objStructureOffset}]`);
+    }
+    return desiredValue;
+  }
+
+  public reset() {
+    // effectively empty our image
+    this._objStructureOffset = 0; // call method, so logs
+    this._objReadStructureOffset = 0;
+    this._objStructRecordOffsets = [];
+    this.logMessage(`* OBJSTRUCT: reset()`);
   }
 
   private replaceLong(offset: number, value: number) {
@@ -303,42 +339,23 @@ export class ObjectStructures {
   }
 
   private replaceByte(offset: number, value: number) {
-    if (offset >= 0 && offset <= this._objStructureOffset) {
+    if (offset >= 0 && offset < this._objStructureOffset) {
       this.logMessage(`* OBJSTRUCT: replace(v=(${hexByte(value)})) wroteTo(${hexAddress(offset)})`);
-      this._objStructureSet[offset] = value & 0xff;
+      this._objStructureByteAr[offset] = value & 0xff;
+    } else {
+      // [error_INTERNAL]
+      throw new Error(`ERROR[INTERNAL]: OBJSTRUCT: replaceByte() offset=(${offset}) out of range [0-${this._objStructureOffset}]`);
     }
-  }
-
-  private ensureCapacity(neededCapacity: number) {
-    if (neededCapacity > this._objStructureSet.length) {
-      // our array grows by a INITIAL_SIZE at a time
-      const newCapacity = this._objStructureSet.length + ObjectStructures.INITIAL_SIZE;
-      const newBuffer = new Uint8Array(newCapacity);
-      newBuffer.set(this._objStructureSet);
-      //this._objStructureSet = null; // force prior to be deallocated AUGH doesn't work!
-      this._objStructureSet = newBuffer;
-    }
-  }
-
-  public read(offset: number): number {
-    // read existing value from image
-    let desiredValue: number = 0;
-    if (offset >= 0 && offset <= this._objStructureOffset - 1) {
-      desiredValue = this._objStructureSet[offset];
-    }
-    return desiredValue;
-  }
-
-  public reset() {
-    // effectively empty our image
-    this._objStructureOffset = 0; // call method, so logs
-    this._objReadStructureOffset = 0;
-    this._objStructRecordOffsets = [];
-    this.logMessage(`* OBJSTRUCT: reset()`);
   }
 
   private logMessage(message: string): void {
     if (this.isLogging) {
+      this.context.logger.logMessage(message);
+    }
+  }
+
+  private logMessageOutline(message: string): void {
+    if (this.isLoggingOutline) {
       this.context.logger.logMessage(message);
     }
   }

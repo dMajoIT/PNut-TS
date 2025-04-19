@@ -36,13 +36,14 @@ export class Spin2Parser {
 
   constructor(ctx: Context) {
     this.context = ctx;
-    this.isLogging = this.context.logOptions.logParser;
+    this.isLogging = ctx.logOptions.logParser;
     this.isLoggingOutline = this.context.logOptions.logOutline;
     this.elementizer = new SpinElementizer(this.context);
     this.spinSymbolTables = new SpinSymbolTables(this.context);
     this.spinResolver = new SpinResolver(this.context);
     this.externalFiles = new ExternalFiles(this.context);
-    this.objImage = this.context.compileData.objImage;
+    this.objImage = ctx.compileData.objImage;
+    this.objImage.refreshLogging();
     this.logMessage(`* Parser is logging`);
   }
 
@@ -480,7 +481,6 @@ export class Spin2Parser {
 
     // save binary file?
     if (this.context.compileOptions.writeBin) {
-      //const objImage: ObjectImage = this.context.compileData.objImage;
       const noProgramFlash: boolean = false;
       this.writeBinaryFile(this.objImage, 0, this.objImage.length, noProgramFlash);
     }
@@ -535,9 +535,6 @@ export class Spin2Parser {
     const clkmode_hub = 0x40;
     const clkfreq_hub = 0x44;
     const _debugnop_ = 0xf2c; // this changes with interpreter changes
-
-    //const objImage: ObjectImage = this.context.compileData.objImage;
-    //objImage.setOffsetTo(this.spinResolver.executableSize + 8); // move this...
 
     // determine initial pub index
     this.logMessage(`  -- scan pubs`);

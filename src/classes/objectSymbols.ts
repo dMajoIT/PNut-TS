@@ -58,10 +58,12 @@ export class ObjectSymbols {
 
   private context: Context;
   private isLogging: boolean;
+  private isLoggingOutline: boolean;
   private _id: string;
 
   static readonly MAX_SIZE_IN_BYTES: number = 0x10000;
-  private _objImage = new Uint8Array(ObjectSymbols.MAX_SIZE_IN_BYTES); // pre allocated
+  static readonly ALLOC_SIZE_IN_BYTES: number = ObjectSymbols.MAX_SIZE_IN_BYTES / 16;
+  private _objSymbolsByteAr = new Uint8Array(ObjectSymbols.ALLOC_SIZE_IN_BYTES); // pre allocated
   private _objOffset: number = 0; // current index into OBJ image
   private _objReadOffset: number = 0; // read index into OBJ image
 
@@ -69,10 +71,27 @@ export class ObjectSymbols {
     this.context = ctx;
     this._id = idString;
     this.isLogging = this.context.logOptions.logCompile;
+    this.isLoggingOutline = ctx.logOptions.logOutline;
+  }
+
+  private ensureCapacity(neededCapacity: number) {
+    if (neededCapacity > this._objSymbolsByteAr.length && this._objSymbolsByteAr.length < ObjectSymbols.MAX_SIZE_IN_BYTES) {
+      // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time
+      const tmpCapacity: number = Math.ceil(neededCapacity / ObjectSymbols.ALLOC_SIZE_IN_BYTES) * ObjectSymbols.ALLOC_SIZE_IN_BYTES;
+      const newCapacity: number = tmpCapacity > ObjectSymbols.MAX_SIZE_IN_BYTES ? ObjectSymbols.MAX_SIZE_IN_BYTES : tmpCapacity;
+      this.logMessageOutline(`++ MEM-ALLOC: PUB/CON list grows from (${this._objSymbolsByteAr.length / 1024} kB) to (${newCapacity / 1024} kB)`);
+      const newBuffer = new Uint8Array(newCapacity);
+      newBuffer.set(this._objSymbolsByteAr);
+      //this._objSymbolsByteAr = null; // force prior to be deallocated AUGH doesn't work!
+      this._objSymbolsByteAr = newBuffer;
+    } else if (neededCapacity > this._objSymbolsByteAr.length) {
+      // [error_pclo]
+      throw new Error(`PUB/CON list overflowed ${ObjectSymbols.MAX_SIZE_IN_BYTES / 1024}k bytes`);
+    }
   }
 
   [Symbol.iterator]() {
-    return this._objImage.values();
+    return this._objSymbolsByteAr.values();
   }
 
   get length(): number {
@@ -85,7 +104,7 @@ export class ObjectSymbols {
 
   public readNext(): number {
     let desiredValue: number = 0;
-    desiredValue = this._objImage[this._objReadOffset++];
+    desiredValue = this._objSymbolsByteAr[this._objReadOffset++];
     this.logMessage(`* OBJSYM: readnext(${hexAddress(this._objReadOffset - 1)}) -> v=(${hexByte(desiredValue)})`);
     return desiredValue;
   }
@@ -140,19 +159,15 @@ export class ObjectSymbols {
   public writeByte(uint8: number) {
     // append byte to end of image
     this.logMessage(`* OBJSYM: append(v=(${hexByte(uint8)})) wroteTo(${hexAddress(this._objOffset)})`);
-    if (this._objOffset < ObjectSymbols.MAX_SIZE_IN_BYTES) {
-      this._objImage[this._objOffset++] = uint8 & 0xff;
-    } else {
-      // [error_pclo]
-      throw new Error(`PUB/CON list overflowed ${ObjectSymbols.MAX_SIZE_IN_BYTES / 1024}k bytes`);
-    }
+    this.ensureCapacity(this._objOffset + 64); // ensure we have room for 63 more bytes...
+    this._objSymbolsByteAr[this._objOffset++] = uint8 & 0xff;
   }
 
   public read(offset: number): number {
     // read existing value from image
     let desiredValue: number = 0;
     if (offset >= 0 && offset <= this._objOffset - 1) {
-      desiredValue = this._objImage[offset];
+      desiredValue = this._objSymbolsByteAr[offset];
     }
     return desiredValue;
   }
@@ -166,6 +181,12 @@ export class ObjectSymbols {
 
   private logMessage(message: string): void {
     if (this.isLogging) {
+      this.context.logger.logMessage(message);
+    }
+  }
+
+  private logMessageOutline(message: string): void {
+    if (this.isLoggingOutline) {
       this.context.logger.logMessage(message);
     }
   }

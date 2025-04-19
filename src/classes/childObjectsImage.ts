@@ -20,17 +20,38 @@ export class ChildObjectsImage {
   private context: Context;
   private _firstTimeOff: boolean = true;
   private isLogging: boolean;
+  private isLoggingOutline: boolean;
   private _id: string;
   private _fileDetails: iFileDetails[] = [];
   private _offset: number = 0;
 
   static readonly MAX_SIZE_IN_BYTES: number = 0x100000;
-  private _objImage = new Uint8Array(ChildObjectsImage.MAX_SIZE_IN_BYTES); // total memory size
+  static readonly ALLOC_SIZE_IN_BYTES: number = ChildObjectsImage.MAX_SIZE_IN_BYTES / 16;
+  private _chldObjImageByteAr = new Uint8Array(ChildObjectsImage.ALLOC_SIZE_IN_BYTES); // initial memory size
 
   constructor(ctx: Context, idString: string) {
     this.context = ctx;
     this._id = idString;
     this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logOutline;
+    this.isLoggingOutline = ctx.logOptions.logOutline;
+  }
+
+  private ensureCapacity(neededCapacity: number) {
+    if (neededCapacity > this._chldObjImageByteAr.length && this._chldObjImageByteAr.length < ChildObjectsImage.MAX_SIZE_IN_BYTES) {
+      // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time
+      const tmpCapacity: number = Math.ceil(neededCapacity / ChildObjectsImage.ALLOC_SIZE_IN_BYTES) * ChildObjectsImage.ALLOC_SIZE_IN_BYTES;
+      const newCapacity: number = tmpCapacity > ChildObjectsImage.MAX_SIZE_IN_BYTES ? ChildObjectsImage.MAX_SIZE_IN_BYTES : tmpCapacity;
+      this.logMessageOutline(
+        `++ MEM-ALLOC: cOBJ[${this._id}] grows from (${this._chldObjImageByteAr.length / 1024} kB) to (${newCapacity / 1024} kB)`
+      );
+      const newBuffer = new Uint8Array(newCapacity);
+      newBuffer.set(this._chldObjImageByteAr);
+      //this._chldObjImageByteAr = null; // force prior to be deallocated AUGH doesn't work!
+      this._chldObjImageByteAr = newBuffer;
+    } else if (neededCapacity > this._chldObjImageByteAr.length) {
+      // [error_pex]
+      throw new Error(`Child Object exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}KB`);
+    }
   }
 
   public refreshLogging() {
@@ -39,15 +60,18 @@ export class ChildObjectsImage {
 
   public ensureFits(offset: number, nbrBytes: number) {
     const lastByteIdx: number = offset + nbrBytes - 1;
-    if (offset < 0 || lastByteIdx >= this._objImage.length) {
+    this.ensureCapacity(lastByteIdx + 63); // grow, if possible, and needed, before use
+    if (offset < 0 || lastByteIdx >= this._chldObjImageByteAr.length) {
       // BAD Offset
       // [error_INTERNAL]
-      throw new Error(`cOBJ[${this._id}] write to Offset ${hexAddress(offset)}(${offset}) of ${nbrBytes} bytes Won't FIT!`);
+      throw new Error(
+        `cOBJ[${this._id}] write to Offset ${hexAddress(offset)}(${offset}) of ${Math.floor(lastByteIdx / 1024)} kB Won't FIT! (curr ${this._chldObjImageByteAr.length / 1024} kB)`
+      );
     }
   }
 
   get rawUint8Array(): Uint8Array {
-    return this._objImage;
+    return this._chldObjImageByteAr;
   }
 
   get id(): string {
@@ -68,8 +92,9 @@ export class ChildObjectsImage {
 
   public checksum(offset: number, length: number): number {
     let desiredSum: number = 0;
+    this.ensureCapacity(offset + length);
     for (let readOffset = offset; readOffset < offset + length; readOffset++) {
-      desiredSum -= this._objImage[readOffset];
+      desiredSum -= this._chldObjImageByteAr[readOffset];
     }
     this.logMessage(`* cOBJ[${this._id}]: checksum(ofs=(${offset}), len=(${length})) => (${desiredSum})`);
     return desiredSum;
@@ -148,7 +173,7 @@ export class ChildObjectsImage {
     // eslint-disable-next-line no-constant-condition
     const startOffset: number = this._offset;
     while (length-- > 0) {
-      const symbolChar = this._objImage[this._offset++];
+      const symbolChar = this._chldObjImageByteAr[this._offset++];
       newName += String.fromCharCode(symbolChar);
     }
     this.logMessage(`* cOBJ[${this._id}] readSymbolName() (${hexAddress(startOffset)}) -> v=[${newName}]`);
@@ -158,10 +183,10 @@ export class ChildObjectsImage {
   public nextLong(): number {
     // read existing LONG value from image
     let desiredValue: number = 0;
-    desiredValue = this._objImage[this._offset++];
-    desiredValue |= this._objImage[this._offset++] << 8;
-    desiredValue |= this._objImage[this._offset++] << 16;
-    desiredValue |= this._objImage[this._offset++] << 24;
+    desiredValue = this._chldObjImageByteAr[this._offset++];
+    desiredValue |= this._chldObjImageByteAr[this._offset++] << 8;
+    desiredValue |= this._chldObjImageByteAr[this._offset++] << 16;
+    desiredValue |= this._chldObjImageByteAr[this._offset++] << 24;
     this.logMessage(`* cOBJ[${this._id}] nextLong() (${hexAddress(this._offset - 4)}) -> v=(${hexLong(desiredValue)})`);
     return desiredValue;
   }
@@ -169,8 +194,8 @@ export class ChildObjectsImage {
   public nextWord(): number {
     // read existing WORD value from image
     let desiredValue: number = 0;
-    desiredValue = this._objImage[this._offset++];
-    desiredValue |= this._objImage[this._offset++] << 8;
+    desiredValue = this._chldObjImageByteAr[this._offset++];
+    desiredValue |= this._chldObjImageByteAr[this._offset++] << 8;
     this.logMessage(`* cOBJ[${this._id}] nextWord() (${hexAddress(this._offset - 2)}) -> v=(${hexWord(desiredValue)})`);
     return desiredValue;
   }
@@ -178,8 +203,8 @@ export class ChildObjectsImage {
   public peekWord(): number {
     // read existing WORD value from image without moving past
     let desiredValue: number = 0;
-    desiredValue = this._objImage[this._offset + 0];
-    desiredValue |= this._objImage[this._offset + 1] << 8;
+    desiredValue = this._chldObjImageByteAr[this._offset + 0];
+    desiredValue |= this._chldObjImageByteAr[this._offset + 1] << 8;
     this.logMessage(`* cOBJ[${this._id}] peekWord() (${hexAddress(this._offset)}) -> v=(${hexWord(desiredValue)})`);
     return desiredValue;
   }
@@ -187,7 +212,7 @@ export class ChildObjectsImage {
   public nextByte(): number {
     // read existing value from image
     let desiredValue: number = 0;
-    desiredValue = this._objImage[this._offset++];
+    desiredValue = this._chldObjImageByteAr[this._offset++];
     this.logMessage(`* cOBJ[${this._id}] nextByte() (${hexAddress(this._offset - 1)}0 -> v=(${hexByte(desiredValue)})`);
     return desiredValue;
   }
@@ -195,14 +220,15 @@ export class ChildObjectsImage {
   public nextBytes(sizeInBytes: number): Uint8Array {
     // read next N bytes from data and position at next after
     this.logMessage(`* cOBJ[${this._id}] nextBytes(${sizeInBytes}) from ofs=(${this._offset})`);
-    const desiredBytesArray = new Uint8Array(this._objImage.subarray(this._offset, this._offset + sizeInBytes));
+    const desiredBytesArray = new Uint8Array(this._chldObjImageByteAr.subarray(this._offset, this._offset + sizeInBytes));
     this._offset += sizeInBytes;
     return desiredBytesArray;
   }
 
   public writeByte(value: number) {
     // read existing value from image
-    this._objImage[this._offset++] = value;
+    this.ensureCapacity(this._offset + 64);
+    this._chldObjImageByteAr[this._offset++] = value;
   }
 
   public dumpBytes(dataOffset: number, nbrBytes: number, dsplyOffset: number, idStr: string) {
@@ -212,13 +238,19 @@ export class ChildObjectsImage {
     if (dsplyOffset != -1) {
       addrRange = `${hexByte(dsplyOffset)}-${hexByte(dsplyOffset + nbrBytes - 1)}`;
     }
-    const desiredBytesArray = new Uint8Array(this._objImage.subarray(currOffset, endOffset));
+    const desiredBytesArray = new Uint8Array(this._chldObjImageByteAr.subarray(currOffset, endOffset));
     const titleText: string = `cOBJ[${this._id}] [${addrRange}] - ${idStr}`;
     dumpBytes(this.context, desiredBytesArray, desiredBytesArray.length, -1, titleText, OVERRIDE_MESSAGE);
   }
 
   private logMessage(message: string): void {
     if (this.isLogging) {
+      this.context.logger.logMessage(message);
+    }
+  }
+
+  private logMessageOutline(message: string): void {
+    if (this.isLoggingOutline) {
       this.context.logger.logMessage(message);
     }
   }

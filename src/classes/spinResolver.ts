@@ -3025,7 +3025,7 @@ export class SpinResolver {
 
   private enterData(value: bigint, currSize: eWordSize, multiplier: number, fitToSize: boolean) {
     // TODO: possible rename to emitData
-    this.logMessage(`  -- enterData() - ENTRY`);
+    //this.logMessage(`  -- enterData() - ENTRY`);
     if (multiplier > 0) {
       if (fitToSize) {
         const isNegative = value & BigInt(0x80000000);
@@ -3070,7 +3070,7 @@ export class SpinResolver {
         }
       }
     }
-    this.logMessage(`  -- enterData() - EXIT`);
+    //this.logMessage(`  -- enterData() - EXIT`);
   }
 
   private compile_sub_blocks_id() {
