@@ -7894,6 +7894,7 @@ export class SpinResolver {
   private optimizeBlock(methodId: eOptimizerMethod, subType: number = 0) {
     // Optimizing block compiler
     // PNut optimize_block:
+    // XYZZY this is our optimize loop we want to instrument to fix out how it's demanding time/memory
     //this.logMessageOutline('');
     this.logMessage(`* optimizeBlock(${eOptimizerMethod[methodId]}, (${subType})) elem=[${this.currElement.toString()}]`);
     //this.logMessageOutline(

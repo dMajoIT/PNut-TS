@@ -196,10 +196,11 @@ TODO's from PNut Zoom 250303++:
 				- found 3-deep recursive call to compileVar() @done(2025-04-17)
 			- Fix math128.spin2 @done(2025-04-18)
 	Day31: Mon:
-		- Fix Spin2_v51_misc
+		- Fix Spin2_v51_misc @done(2025-04-21)
+	Day32: Tue:
+		- I review large tests after carefully generating GOLD files
 		- Fix elementizer fix cause of failed to regression tests
 			- affect only 1 file! let's fix this!
-		- Fix more failing regression tests
 		- After all regression tests pass, run coverage and add code to test any missing area
 	
 Upcoming:
