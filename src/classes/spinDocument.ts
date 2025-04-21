@@ -968,7 +968,7 @@ export class SpinDocument {
   }
 
   private getVersionFromHeader(headerComments: string[]): void {
-    const spinLangVersionRegEx = /\{Spin2_v(\d{2,3})\}/;
+    const spinLangVersionRegEx = /\{Spin2_v(\d{2,3})\}/i;
     //this.forceLogMessage(`* SpinPP: headerComments=[${this.headerComments}]`);
     for (let index = 0; index < headerComments.length; index++) {
       const headerLine = headerComments[index];
