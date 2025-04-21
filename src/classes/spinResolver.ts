@@ -1267,7 +1267,6 @@ export class SpinResolver {
       this.hubOrgLimit = 0x100000; // get constant(getValue) will use this;
       this.wordSize = eWordSize.WS_Byte; // 0=byte, 1=word, 2=long
       this.dittoIsActive = false;
-      this.logMessage(`* compDATblks() DITTO active is ${this.dittoIsActive}`);
 
       if (inLineMode) {
         this.cogOrg = inLineCogOrg;
@@ -1428,11 +1427,12 @@ export class SpinResolver {
             continue;
           } else if (this.currElement.type == eElementType.type_asm_dir) {
             // HANDLE pasm directive
-            this.logMessage(`  -- have pasm directive`);
+            this.logMessage(`* compDATblks() -- have pasm directive`);
 
             const pasmDirective: number = Number(this.currElement.value);
             this.wordSize = eWordSize.WS_Long;
             if (pasmDirective == eValueType.dir_ditto) {
+              this.logMessage(`* compDATblks() have pasm DITTO directive`);
               dittoHandledThisGet = true;
               // PNut @@dirditto:
               if (this.dittoIsActive) {
@@ -1465,6 +1465,7 @@ export class SpinResolver {
                 }
                 // fall thru to nextline...
               } else {
+                this.logMessage(`* compDATblks() have pasm DITTO start`);
                 // starting DITTO (two lines after @@dirditto:)
                 this.enterDatSymbol(); // process pending symbol
                 // retrieve the DITTO repeat count
@@ -4339,9 +4340,10 @@ export class SpinResolver {
   }
 
   private checkLocalSymbol(): [boolean, iSymbol] {
+    // PNut here is check_local:
     let symbolFoundStatus: boolean = false;
     let symbolFound: iSymbol = { name: '', type: eElementType.type_undefined, value: 0n };
-    if (this.currElement.type == eElementType.type_dot) {
+    if (this.currElement.type == eElementType.type_dot || this.currElement.type == eElementType.type_colon) {
       // using element as location info, get the symbol from the
       //  associated source code
       this.getElement();
@@ -8971,7 +8973,7 @@ export class SpinResolver {
               resultStatus.value = BigInt(this.hubMode ? this.hubOrg : this.cogOrg >> 2);
             } else if (this.currElement.type == eElementType.type_dollar2) {
               // new DITTO support here
-              if (mode != eMode.BM_OperandIntOrFloat || this.dittoIsActive == false) {
+              if ((mode != eMode.BM_OperandIntOrFloat && mode != eMode.BM_OperandIntOnly) || this.dittoIsActive == false) {
                 // [error_diioa]
                 this.logMessage(`* compDATblks() mode=(${eMode[mode]}), dittoIsActive=(${this.dittoIsActive})`);
                 throw new Error('"$$" (DITTO index) is only allowed within a DITTO block, inside a DAT block');
@@ -9502,21 +9504,27 @@ private checkDec(): boolean {
         if (
           variable.type == eElementType.type_con_struct ||
           variable.type == eElementType.type_loc_struct_ptr ||
-          variable.type == eElementType.type_var_struct_ptr
+          variable.type == eElementType.type_var_struct_ptr ||
+          structureReturn.indexMode > 1
         ) {
           // fall thru to tail handling.. by NOT setting DONE
-        }
-        if (structureReturn.indexMode > 1) {
+          // to enter bit
+          this.compileVariableBitfield(variable);
+          this.compileVariableReadWriteAssign(variable);
+          workIsComplete = true; // DONE
+        } else {
+          //
+          if (structureReturn.indexMode == 1) {
+            variable.indexFlag = true;
+          }
+          variable.type -= 3; // convert to byte
+          variable.wordSize = structureReturn.wordSize;
+          variable.address = structureReturn.address;
+          this.objImage.setOffsetTo(structureReturn.objectPtr);
+          //variable.nextElementIndex = structureReturn.structElemIndex;
+          this.logRestoredElementLocation(structureReturn.structElemIndex);
           // fall thru to tail handling.. by NOT setting DONE
-        } else if (structureReturn.indexMode == 1) {
-          variable.indexFlag = true;
         }
-        variable.type -= 3; // convert to byte
-        variable.wordSize = structureReturn.wordSize;
-        variable.nextElementIndex = structureReturn.structElemIndex;
-        variable.address = structureReturn.address;
-        this.objImage.setOffsetTo(structureReturn.objectPtr);
-        // fall thru to tail handling.. by NOT setting DONE
       } else {
         // here is @@structnotbwl
         if (variable.operation == eVariableOperation.VO_ASSIGN) {
