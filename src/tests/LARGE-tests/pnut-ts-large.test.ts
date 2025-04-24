@@ -126,6 +126,18 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
           const existingFiles: string[] = [listingFSpec, objectFSpec, binaryFSpec, elementsFSpec, errorFSpec];
           removeExistingFiles(existingFiles);
 
+          /*
+          ./PnlLtMeas
+          ./MultSrvo      -d
+          ./Flash-FS      -d
+          ./OctoSerial    -d
+          ./eInk
+          ./TOF           -d
+          ./iOTgw         -d
+          ./HUB75
+          ./BLDC-Motor-drv
+          */
+
           const compileDebug: boolean =
             fileBase.startsWith('flash_fs_demo') ||
             fileBase.startsWith('demo_octo') ||

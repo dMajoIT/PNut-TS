@@ -111,7 +111,7 @@ export class Spin2Parser {
     this.logMessage(`* P2Compile2(isTopLevel=(${isTopLevel})) - EXIT`);
   }
 
-  public P2MakeFlashFile() {
+  private P2MakeFlashFile() {
     if (this.context.compileOptions.writeFlashImageFile) {
       this.logMessage('* P2MakeFlashFile() - write flash image file');
       this.P2MakeFlashFileImage(); // convert image to flash image
@@ -498,6 +498,10 @@ export class Spin2Parser {
     if (ramDownload) {
       this.LoadHardware();
     }
+
+    if (this.context.compileOptions.writeFlashImageFile) {
+      this.P2MakeFlashFile(); // damages objImage!
+    }
   }
 
   private writeBinaryFile(objImage: ObjectImage, offset: number, byteCount: number, hasFlashLoader: boolean = false) {
@@ -750,7 +754,7 @@ export class Spin2Parser {
     return [definedStatus, isConStatus, symValue];
   }
 
-  public P2MakeFlashFileImage() {
+  private P2MakeFlashFileImage() {
     // PNut make_flash_file:
 
     const _loader_offset_ = 0x160;
@@ -773,8 +777,7 @@ export class Spin2Parser {
     // install flash loader
     this.logMessage(`  -- load flash loader`);
     // now path the loader
-    // FIXME: XYZZY should following remove the -1?!!
-    const loaderSubset: Uint8Array = this.externalFiles.flashLoader.subarray(_loader_offset_, 0x1f0 - 1);
+    const loaderSubset: Uint8Array = this.externalFiles.flashLoader.subarray(_loader_offset_, 0x1f0);
     this.objImage.rawUint8Array.set(loaderSubset, 0);
     // get app longs
     this.objImage.replaceLong(appLongCount, _appLongs_);
@@ -790,15 +793,15 @@ export class Spin2Parser {
     //
     // compute negative sum of flash loader
     checkSum = 0;
-    for (let offset = 0; offset < 0x100; offset += 4) {
+    for (let offset = 0; offset < 0x400; offset += 4) {
       checkSum -= this.objImage.readLong(offset);
     }
     // insert checksum after loader
     this.objImage.replaceLong(checkSum, _loaderSum_);
 
-    // pad fullimage to 0x100 if shorter
-    if (this.objImage.offset < 0x100) {
-      for (let offset = this.objImage.offset; offset < 0x100; offset++) {
+    // pad fullimage to 0x100 longs if shorter
+    if (this.objImage.offset < 0x400) {
+      for (let offset = this.objImage.offset; offset < 0x400; offset++) {
         this.objImage.replaceByte(0, offset);
       }
     }

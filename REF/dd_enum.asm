@@ -10,6 +10,8 @@ counter		=	counter+1
 
 ;
 ;
+;
+;
 ;************************************************************************
 ;*  DEBUG Display Parser						*
 ;************************************************************************
@@ -86,11 +88,13 @@ count	dd_key_circle			;CIRCLE
 count	dd_key_clear			;CLEAR
 count	dd_key_close			;CLOSE
 count	dd_key_color			;COLOR
+count	dd_key_crop			;CROP
 count	dd_key_depth			;DEPTH
 count	dd_key_dot			;DOT
 count	dd_key_dotsize			;DOTSIZE
 count	dd_key_hidexy			;HIDEXY
 count	dd_key_holdoff			;HOLDOFF
+count	dd_key_layer			;LAYER
 count	dd_key_line			;LINE
 count	dd_key_linesize			;LINESIZE
 count	dd_key_logscale			;LOGSCALE

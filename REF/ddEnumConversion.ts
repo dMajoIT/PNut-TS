@@ -5,6 +5,8 @@ export enum eDdValues {
 
 // 
 // 
+// 
+// 
 // ************************************************************************
 // *  DEBUG Display Parser                        *
 // ************************************************************************
@@ -81,45 +83,47 @@ export enum eDdValues {
   dd_key_clear = 48, // (0x30)   CLEAR
   dd_key_close = 49, // (0x31)   CLOSE
   dd_key_color = 50, // (0x32)   COLOR
-  dd_key_depth = 51, // (0x33)   DEPTH
-  dd_key_dot = 52, // (0x34)   DOT
-  dd_key_dotsize = 53, // (0x35)   DOTSIZE
-  dd_key_hidexy = 54, // (0x36)   HIDEXY
-  dd_key_holdoff = 55, // (0x37)   HOLDOFF
-  dd_key_line = 56, // (0x38)   LINE
-  dd_key_linesize = 57, // (0x39)   LINESIZE
-  dd_key_logscale = 58, // (0x3a)   LOGSCALE
-  dd_key_lutcolors = 59, // (0x3b)   LUTCOLORS
-  dd_key_mag = 60, // (0x3c)   MAG
-  dd_key_obox = 61, // (0x3d)   OBOX
-  dd_key_opacity = 62, // (0x3e)   OPACITY
-  dd_key_origin = 63, // (0x3f)   ORIGIN
-  dd_key_oval = 64, // (0x40)   OVAL
-  dd_key_pc_key = 65, // (0x41)   PC_KEY
-  dd_key_pc_mouse = 66, // (0x42)   PC_MOUSE
-  dd_key_polar = 67, // (0x43)   POLAR
-  dd_key_pos = 68, // (0x44)   POS
-  dd_key_precise = 69, // (0x45)   PRECISE
-  dd_key_range = 70, // (0x46)   RANGE
-  dd_key_rate = 71, // (0x47)   RATE
-  dd_key_samples = 72, // (0x48)   SAMPLES
-  dd_key_save = 73, // (0x49)   SAVE
-  dd_key_scroll = 74, // (0x4a)   SCROLL
-  dd_key_set = 75, // (0x4b)   SET
-  dd_key_signed = 76, // (0x4c)   SIGNED
-  dd_key_size = 77, // (0x4d)   SIZE
-  dd_key_spacing = 78, // (0x4e)   SPACING
-  dd_key_sparse = 79, // (0x4f)   SPARSE
-  dd_key_sprite = 80, // (0x50)   SPRITE
-  dd_key_spritedef = 81, // (0x51)   SPRITEDEF
-  dd_key_text = 82, // (0x52)   TEXT
-  dd_key_textangle = 83, // (0x53)   TEXTANGLE
-  dd_key_textsize = 84, // (0x54)   TEXTSIZE
-  dd_key_textstyle = 85, // (0x55)   TEXTSTYLE
-  dd_key_title = 86, // (0x56)   TITLE
-  dd_key_trace = 87, // (0x57)   TRACE
-  dd_key_trigger = 88, // (0x58)   TRIGGER
-  dd_key_update = 89, // (0x59)   UPDATE
-  dd_key_window = 90, // (0x5a)   WINDOW
+  dd_key_crop = 51, // (0x33)   CROP
+  dd_key_depth = 52, // (0x34)   DEPTH
+  dd_key_dot = 53, // (0x35)   DOT
+  dd_key_dotsize = 54, // (0x36)   DOTSIZE
+  dd_key_hidexy = 55, // (0x37)   HIDEXY
+  dd_key_holdoff = 56, // (0x38)   HOLDOFF
+  dd_key_layer = 57, // (0x39)   LAYER
+  dd_key_line = 58, // (0x3a)   LINE
+  dd_key_linesize = 59, // (0x3b)   LINESIZE
+  dd_key_logscale = 60, // (0x3c)   LOGSCALE
+  dd_key_lutcolors = 61, // (0x3d)   LUTCOLORS
+  dd_key_mag = 62, // (0x3e)   MAG
+  dd_key_obox = 63, // (0x3f)   OBOX
+  dd_key_opacity = 64, // (0x40)   OPACITY
+  dd_key_origin = 65, // (0x41)   ORIGIN
+  dd_key_oval = 66, // (0x42)   OVAL
+  dd_key_pc_key = 67, // (0x43)   PC_KEY
+  dd_key_pc_mouse = 68, // (0x44)   PC_MOUSE
+  dd_key_polar = 69, // (0x45)   POLAR
+  dd_key_pos = 70, // (0x46)   POS
+  dd_key_precise = 71, // (0x47)   PRECISE
+  dd_key_range = 72, // (0x48)   RANGE
+  dd_key_rate = 73, // (0x49)   RATE
+  dd_key_samples = 74, // (0x4a)   SAMPLES
+  dd_key_save = 75, // (0x4b)   SAVE
+  dd_key_scroll = 76, // (0x4c)   SCROLL
+  dd_key_set = 77, // (0x4d)   SET
+  dd_key_signed = 78, // (0x4e)   SIGNED
+  dd_key_size = 79, // (0x4f)   SIZE
+  dd_key_spacing = 80, // (0x50)   SPACING
+  dd_key_sparse = 81, // (0x51)   SPARSE
+  dd_key_sprite = 82, // (0x52)   SPRITE
+  dd_key_spritedef = 83, // (0x53)   SPRITEDEF
+  dd_key_text = 84, // (0x54)   TEXT
+  dd_key_textangle = 85, // (0x55)   TEXTANGLE
+  dd_key_textsize = 86, // (0x56)   TEXTSIZE
+  dd_key_textstyle = 87, // (0x57)   TEXTSTYLE
+  dd_key_title = 88, // (0x58)   TITLE
+  dd_key_trace = 89, // (0x59)   TRACE
+  dd_key_trigger = 90, // (0x5a)   TRIGGER
+  dd_key_update = 91, // (0x5b)   UPDATE
+  dd_key_window = 92, // (0x5c)   WINDOW
 }
 
