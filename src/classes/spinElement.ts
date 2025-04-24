@@ -151,6 +151,10 @@ export class SpinElement {
     return this._sourceLineIndex;
   }
 
+  public setSourceLineIndex(newLineIdx: number) {
+    this._sourceLineIndex = newLineIdx;
+  }
+
   get sourceLineNumber(): number {
     return this._sourceLineIndex + 1;
   }

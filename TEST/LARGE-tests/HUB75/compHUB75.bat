@@ -2,7 +2,7 @@
 @for %%f in (*.spin2) do (
     @echo Processing file: %%f
     @if /i "%%~nf"=="demo_" (
-        PNut_shell_v51 -cd %%f
+        PNut_shell_v51 -c %%f
     ) else (
         PNut_shell_v51 -c %%f
     )

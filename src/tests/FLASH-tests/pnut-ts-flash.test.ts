@@ -27,7 +27,7 @@ describe('Directory existence tests', () => {
   });
 });
 
-describe('PNut_ts compiles .spin2 w/debug() correctly', () => {
+describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
   let files: string[] = [];
   try {
     files = globSync(`${testDirPath}/*.spin2`);
@@ -41,7 +41,7 @@ describe('PNut_ts compiles .spin2 w/debug() correctly', () => {
   }
   files.forEach((file) => {
     test(`Compile file: ${path.basename(file)}`, () => {
-      const options: string = '-d -v -l -O -F --regression element --';
+      const options: string = '-v -l -O -F --regression element --';
       const basename = path.basename(file, '.spin2');
 
       const listingFSpec = path.join(testDirPath, `${basename}.lst`);

@@ -5928,7 +5928,7 @@ export class SpinResolver {
 
       // skip leading pluses
       do {
-        this.getElement();
+        this.getElementObj();
         if (this.currElement.isPlus) {
           // TODO: COVERAGE test me
           this.logMessage(`* skipping + operator`);
@@ -7779,7 +7779,7 @@ export class SpinResolver {
     // Compile term - \obj{[]}.method({param,...}), \method({param,...}), \var({param,...}){:results}
     // PNut ct_try:
     this.logMessage(`* ct_try([${eResultRequirements[resultsNeeded]}], bc=(${byteCode}))`);
-    this.getElement();
+    this.getElementObj();
     if (this.currElement.type == eElementType.type_obj) {
       // \obj{[]}.method({param,...}) ?
       this.ct_objpub(resultsNeeded, byteCode);
@@ -8366,7 +8366,7 @@ export class SpinResolver {
           throw new Error('SEND parameter methods cannot return multiple values (m270)');
         } else if (returnValueCount == 0) {
           //no return value
-          this.getElement();
+          this.getElementObj();
           this.ct_objpub(eResultRequirements.RR_None, eByteCode.bc_drop);
         }
       }
@@ -9378,7 +9378,7 @@ private checkDec(): boolean {
     const resumeIndex: number = this.logSavedElementLocation();
     let workIsComplete: boolean = false;
     this.logRestoredElementLocation(variable.nextElementIndex);
-    //this.getElement(); three more tests file if i do this!
+    //this.getElement(); three more tests fail if i do this!
 
     // runtime-resolved bitfield
     if (variable.bitfieldFlag && variable.bitfieldConstantFlag == false) {
@@ -11083,12 +11083,12 @@ private checkDec(): boolean {
       // have object reference?
       if (this.currElement.type == eElementType.type_obj) {
         // found OBJ check next
-        const savedElement: SpinElement = this.currElement;
+        const savedObjElement: SpinElement = this.currElement;
         this.currElement = this.getElement(); // now have DOT as current
         this.logMessage(`   -- GETeleObj() at [${this.currElement.toString()}]`);
         if (this.currElement.type == eElementType.type_dot) {
           const savedDotElement: SpinElement = this.currElement;
-          let [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
+          let [objSymType, objSymValue] = this.getObjSymbol(savedObjElement.numberValue);
           // if public method of object then back out and let compiler
           if (objSymType == eElementType.type_obj_pub) {
             // let compiler discover OBJ.PUB
@@ -11099,11 +11099,14 @@ private checkDec(): boolean {
           } else {
             // we have obj type_obj_con_int, type_obj_con_float, or type_obj_con_struct
             // mark our DOT as part
-            this.logMessage(`   -- GETeleObj() objSymType=[${eElementType[objSymType]}]`);
+            this.logMessageForced(`   -- GETeleObj() objSymType=[${eElementType[objSymType]}] at [${this.currElement.toString()}]`);
             savedDotElement.partOfObjReference = true; // mark dot for skip when backing up
             this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.spinElements[this.nextElementIndex - 1]);
             this.currElement.setType(objSymType); // for new type
             this.currElement.setValue(objSymValue); // for new type
+            this.currElement.setSourceLineIndex(savedObjElement.sourceLineIndex);
+            this.currElement.setSourceColumnOffset(savedObjElement.sourceColumnOffset);
+            this.logMessageForced(`   -- GETeleObj() replaced WITH [${this.currElement.toString()}]`);
           }
         } else {
           this.backElement(); // move from dot back to obj
@@ -11924,9 +11927,9 @@ private checkDec(): boolean {
     }
   }
 
-  //private logMessageForced(message: string): void {
-  //  this.context.logger.logMessage(message);
-  //}
+  private logMessageForced(message: string): void {
+    this.context.logger.logMessage(message);
+  }
 
   private logMessageOutline(message: string): void {
     if (this.isLoggingOutline) {

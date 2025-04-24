@@ -199,10 +199,14 @@ TODO's from PNut Zoom 250303++:
 		- Fix Spin2_v51_misc @done(2025-04-21)
 	Day32: Thu:
 		- Fix .flash file generation @done(2025-04-24)
+		- I Fix elementizer case of failed to regression tests
+			- affect only 1 file! @done(2025-04-24)
+			- NO FIX - Leave this alone (internal difference!) @done(2025-04-24)
+		- LARGE tests after carefully generste GOLD files @done(2025-04-24)
 		- I review large tests after carefully generating GOLD files
-		- I Fix elementizer casse of failed to regression tests
-			- affect only 1 file! 
-			- NO FIX - Leave this alone (internal difference!)
+		- After all regression tests pass, run coverage and add code to test any missing area
+	Day32: Fri:
+		- Review large tests after carefully generating GOLD files
 		- After all regression tests pass, run coverage and add code to test any missing area
 	
 Upcoming:
