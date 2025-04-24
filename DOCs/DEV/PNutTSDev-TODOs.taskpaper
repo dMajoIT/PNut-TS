@@ -200,8 +200,9 @@ TODO's from PNut Zoom 250303++:
 	Day32: Thu:
 		- Fix .flash file generation @done(2025-04-24)
 		- I review large tests after carefully generating GOLD files
-		- I Fix elementizer cause of failed to regression tests
+		- I Fix elementizer casse of failed to regression tests
 			- affect only 1 file! 
+			- NO FIX - Leave this alone (internal difference!)
 		- After all regression tests pass, run coverage and add code to test any missing area
 	
 Upcoming:

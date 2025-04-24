@@ -3687,6 +3687,7 @@ export class SpinResolver {
       }
 
       this.getColumn(); // set this.lineColumn from currentElement
+      //this.logMessageForced(`** blockCase() lnCol(${this.lineColumn}), scopeCol(${this.scopeColumn}), at [${this.currElement.toString()}]`);
       this.backElement(); // undo "Match" get
 
       // if this line is out-dented or at same level we are done with case statement!
@@ -3759,6 +3760,9 @@ export class SpinResolver {
       }
 
       this.getColumn(); // set this.lineColumn from currentElement
+      //this.logMessageForced(
+      //  `** blockCase() cb_case:@@comp: lnCol(${this.lineColumn}), scopeCol(${this.scopeColumn}), at [${this.currElement.toString()}]`
+      //);
       this.backElement(); // undo "Match" get
 
       // if line is out-dented or same level we are done with case
@@ -3850,6 +3854,9 @@ export class SpinResolver {
       }
 
       this.getColumn(); // set this.lineColumn from currentElement
+      //this.logMessageForced(
+      //  `** blockCaseFast() @@nextcase1: lnCol(${this.lineColumn}), scopeCol(${this.scopeColumn}), at [${this.currElement.toString()}]`
+      //);
       this.backElement(); // undo "Match" get
 
       // if line is out-dented or same level we are done with case
@@ -3922,6 +3929,9 @@ export class SpinResolver {
       }
 
       this.getColumn(); // set this.lineColumn from currentElement
+      //this.logMessageForced(
+      //  `** blockCaseFast() @@nextcase2: lnCol(${this.lineColumn}), scopeCol(${this.scopeColumn}), at [${this.currElement.toString()}]`
+      //);
       this.backElement(); // undo "Match" get
 
       // if line is out-dented or same level we are done with case
@@ -11913,6 +11923,10 @@ private checkDec(): boolean {
       this.context.logger.logMessage(message);
     }
   }
+
+  //private logMessageForced(message: string): void {
+  //  this.context.logger.logMessage(message);
+  //}
 
   private logMessageOutline(message: string): void {
     if (this.isLoggingOutline) {

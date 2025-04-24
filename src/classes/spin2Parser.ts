@@ -111,15 +111,15 @@ export class Spin2Parser {
     this.logMessage(`* P2Compile2(isTopLevel=(${isTopLevel})) - EXIT`);
   }
 
-  private P2MakeFlashFile() {
+  private P2MakeFlashFile(objImage: ObjectImage) {
     if (this.context.compileOptions.writeFlashImageFile) {
       this.logMessage('* P2MakeFlashFile() - write flash image file');
-      this.P2MakeFlashFileImage(); // convert image to flash image
+      this.P2MakeFlashFileImage(objImage); // convert image to flash image
       const outFilename = this.context.compileOptions.flashFilename;
       // Create a write stream
       this.logMessage(`  -- writing flash image to ${outFilename}`);
       const stream = fs.createWriteStream(outFilename);
-      this.writeObjectFile(this.objImage, 0, this.objImage.offset, outFilename); // full
+      this.writeObjectFile(objImage, 0, objImage.offset, outFilename); // full
       // Close the stream
       stream.end();
       this.context.logger.progressMsg(`Wrote ${outFilename}`);
@@ -477,13 +477,7 @@ export class Spin2Parser {
       this.P2InsertClockSetter();
     }
 
-    // BUGFIX:  binary file should NEVER contain the flash loader! (fix the order of operation here)
-
-    // save binary file?
-    if (this.context.compileOptions.writeBin) {
-      const noProgramFlash: boolean = false;
-      this.writeBinaryFile(this.objImage, 0, this.objImage.length, noProgramFlash);
-    }
+    const nonLoaderObjImage = ObjectImage.copyFrom(this.objImage);
 
     // insert flash loader?
     if (programFlash) {
@@ -493,6 +487,17 @@ export class Spin2Parser {
         throw new Error(`Need to reduce program by ${codeAndLoaderSize - this.HubLimit} bytes, in order to fit flash loader into hub RAM download`);
       }
       this.P2InsertFlashLoader();
+      // save binaryF file?
+      if (this.context.compileOptions.writeBin) {
+        const yesIsProgramFlash: boolean = false;
+        this.writeBinaryFile(this.objImage, 0, this.objImage.length, yesIsProgramFlash);
+      }
+    } else {
+      // save binary file?
+      if (this.context.compileOptions.writeBin) {
+        const noProgramFlash: boolean = false;
+        this.writeBinaryFile(this.objImage, 0, this.objImage.length, noProgramFlash);
+      }
     }
 
     if (ramDownload) {
@@ -500,7 +505,7 @@ export class Spin2Parser {
     }
 
     if (this.context.compileOptions.writeFlashImageFile) {
-      this.P2MakeFlashFile(); // damages objImage!
+      this.P2MakeFlashFile(nonLoaderObjImage);
     }
   }
 
@@ -754,7 +759,7 @@ export class Spin2Parser {
     return [definedStatus, isConStatus, symValue];
   }
 
-  private P2MakeFlashFileImage() {
+  private P2MakeFlashFileImage(objImage: ObjectImage) {
     // PNut make_flash_file:
 
     const _loader_offset_ = 0x160;
@@ -766,43 +771,43 @@ export class Spin2Parser {
     const _loaderSum_ = _loader_size_ - 0x04;
 
     // pad object to next long
-    while (this.objImage.offset & 0b11) {
-      this.objImage.appendByte(0);
+    while (objImage.offset & 0b11) {
+      objImage.appendByte(0);
     }
 
-    const appLongCount = this.objImage.offset >> 2;
+    const appLongCount = objImage.offset >> 2;
     // move object upwards to accommodate flash loader
     this.logMessage(`  -- move object up - _loader_size_=(${_loader_size_}) bytes`);
-    this.moveObjectUp(this.objImage, _loader_size_, 0, this.objImage.offset);
+    this.moveObjectUp(objImage, _loader_size_, 0, objImage.offset);
     // install flash loader
     this.logMessage(`  -- load flash loader`);
     // now path the loader
     const loaderSubset: Uint8Array = this.externalFiles.flashLoader.subarray(_loader_offset_, 0x1f0);
-    this.objImage.rawUint8Array.set(loaderSubset, 0);
+    objImage.rawUint8Array.set(loaderSubset, 0);
     // get app longs
-    this.objImage.replaceLong(appLongCount, _appLongs_);
-    this.objImage.replaceLong(appLongCount, _appLongs2_);
+    objImage.replaceLong(appLongCount, _appLongs_);
+    objImage.replaceLong(appLongCount, _appLongs2_);
     //
     // compute negative sum of all object image
     let checkSum: number = 0;
-    for (let offset = 0 + _loader_size_; offset < this.objImage.offset; offset += 4) {
-      checkSum -= this.objImage.readLong(offset);
+    for (let offset = 0 + _loader_size_; offset < objImage.offset; offset += 4) {
+      checkSum -= objImage.readLong(offset);
     }
     // insert checksum after object
-    this.objImage.replaceLong(checkSum, _appSum_);
+    objImage.replaceLong(checkSum, _appSum_);
     //
     // compute negative sum of flash loader
     checkSum = 0;
     for (let offset = 0; offset < 0x400; offset += 4) {
-      checkSum -= this.objImage.readLong(offset);
+      checkSum -= objImage.readLong(offset);
     }
     // insert checksum after loader
-    this.objImage.replaceLong(checkSum, _loaderSum_);
+    objImage.replaceLong(checkSum, _loaderSum_);
 
     // pad fullimage to 0x100 longs if shorter
-    if (this.objImage.offset < 0x400) {
-      for (let offset = this.objImage.offset; offset < 0x400; offset++) {
-        this.objImage.replaceByte(0, offset);
+    if (objImage.offset < 0x400) {
+      for (let offset = objImage.offset; offset < 0x400; offset++) {
+        objImage.replaceByte(0, offset);
       }
     }
   }

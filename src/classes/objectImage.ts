@@ -31,6 +31,23 @@ export class ObjectImage {
     this.isLoggingOutline = ctx.logOptions.logOutline;
   }
 
+  // Copy constructor
+  public static copyFrom(source: ObjectImage): ObjectImage {
+    const copy = new ObjectImage(source.context, source._id + '_copy');
+
+    // Copy properties
+    copy.isLogging = source.isLogging;
+    copy.isLoggingOutline = source.isLoggingOutline;
+    copy._objOffset = source._objOffset;
+    copy._maxOffset = source._maxOffset;
+
+    // Copy the Uint8Array
+    copy._objImageByteAr = new Uint8Array(source._objImageByteAr.length);
+    copy._objImageByteAr.set(source._objImageByteAr);
+
+    return copy;
+  }
+
   private ensureCapacity(neededCapacity: number) {
     if (neededCapacity > this._objImageByteAr.length && this._objImageByteAr.length < ObjectImage.MAX_SIZE_IN_BYTES) {
       // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time

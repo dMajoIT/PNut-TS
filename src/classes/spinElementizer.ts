@@ -260,7 +260,11 @@ export class SpinElementizer {
         //const tmpDblQuotedString: string = this.unprocessedLine.substring(0, endQuoteOffset + 2);
         //this.dumpStringBytes(tmpDblQuotedString, 'Quoted String');
         returningSingleEntry = false;
-        //let charOffset = this.currCharacterIndex + 1; // +1 account for leading '"'
+        // WARNING!!!!  the first element of a string the column is set to the opening
+        //    double quote NOT the column of the first character as we might expect
+        //    additionally, all following characters of the string are 1 column to the left!
+        // WARNING!!!!
+        //let charOffset = this.currCharacterIndex + 1; // NOPE!!!!  we do not account +1 account for leading '"'
         let charOffset = this.currCharacterIndex;
         for (let charIndex = 1; charIndex < endQuoteOffset + 1; charIndex++) {
           const charCode: number = this.unprocessedLine.charCodeAt(charIndex);
@@ -268,7 +272,6 @@ export class SpinElementizer {
           elementsFound.push(...elementsToAdd); // push 1 to four new elements
           charOffset += 1;
         }
-        //charOffset++; // +1 account for trailing '"'
         this.unprocessedLine = this.skipAhead(endQuoteOffset + 2, this.unprocessedLine);
       } else {
         if (endQuoteOffset == 0) {
