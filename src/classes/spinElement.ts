@@ -5,15 +5,19 @@ import { float32ToHexString } from '../utils/float32';
 import { hexByte } from '../utils/formatUtils';
 // src/classes/parseUtils.ts
 
-import { eBlockType, eByteCode, eElementType, eOperationType, eValueType, getElementTypeString } from './types';
+import { eBlockType, eByteCode, eElementType, eOperationType, eValueType } from './types';
 //import { float32ToString } from '../utils/float32';
 
 // a collection of generally useful functions for parsing spin
 
 export class SpinElement {
+  private readonly NOTSET: number = -1;
   private _sourceLineIndex: number = 0;
   private _sourceCharacterOffset: number = 0;
+  private _overrideLineIndex: number = this.NOTSET;
+  private _overrideCharacterOffset: number = this.NOTSET;
   private _expandedColumn: number = 0; // expanded using tabstop=8, 1 based counting: column=[1,n], 0=NOT SET
+  private _overrideExpandedColumn: number = this.NOTSET;
   private _fileId: number;
   private _value: bigint | string = '';
   private _type: eElementType = eElementType.type_undefined;
@@ -67,8 +71,23 @@ export class SpinElement {
     this._sourceSymbolWasUndefined = true;
   }
 
+  // elementizer USE!
   public setSourceColumnOffset(countLeftWhiteColumns: number) {
     this._expandedColumn = countLeftWhiteColumns;
+  }
+
+  // elementizer USE!
+  public setAlternateSourceCharOffset(charOffset: number) {
+    this._overrideCharacterOffset = charOffset;
+  }
+
+  // elementizer USE!
+  public setAlternateSourceColOffset(columnOffset: number) {
+    this._overrideExpandedColumn = columnOffset;
+  }
+
+  get hasAltSourceCharOffset(): boolean {
+    return this._overrideCharacterOffset != this.NOTSET;
   }
 
   set partOfObjReference(value: boolean) {
@@ -148,11 +167,14 @@ export class SpinElement {
   }
 
   get sourceLineIndex(): number {
-    return this._sourceLineIndex;
+    return this._overrideLineIndex != this.NOTSET ? this._overrideLineIndex : this._sourceLineIndex;
   }
 
-  public setSourceLineIndex(newLineIdx: number) {
-    this._sourceLineIndex = newLineIdx;
+  public setAlternateSourceLocation(lineNbr: number, charOffset: number, expandedColumn: number) {
+    // use by getElementObj() to spoof element locations
+    this._overrideLineIndex = lineNbr;
+    this._overrideCharacterOffset = charOffset;
+    this._overrideExpandedColumn = expandedColumn;
   }
 
   get sourceLineNumber(): number {
@@ -160,11 +182,12 @@ export class SpinElement {
   }
 
   get sourceCharacterOffset(): number {
-    return this._sourceCharacterOffset;
+    return this._overrideCharacterOffset != this.NOTSET ? this._overrideCharacterOffset : this._sourceCharacterOffset;
   }
 
   get sourceColumnOffset(): number {
-    return this._expandedColumn;
+    // can be spoofed due to getElementObj() need
+    return this._overrideExpandedColumn != this.NOTSET ? this._overrideExpandedColumn : this._expandedColumn;
   }
 
   get valueIsNumber(): boolean {
@@ -503,19 +526,22 @@ export class SpinElement {
     return valueInterp;
   }
 
-  public typeString(): string {
-    return getElementTypeString(this._type);
-  }
-
   public toString(): string {
-    const elemTypeStr: string = this.typeString();
+    const elemTypeStr: string = eElementType[this._type];
     const flagInterp: string = this.isMidStringComma ? `, midString` : '';
     const valueInterp: string = this.valueString().length != 0 ? `, ${this.valueString()}` : '';
     const opInterp: string = this.isOperation ? ` ${this.operationString()}` : '';
     const endColumn: number = this._symbolLength > 1 ? this._expandedColumn + this._symbolLength - 1 : 0;
-    const endCOlumnInterp: string = endColumn > 0 ? `-${endColumn}` : '';
-    const offsetInterp: string = this._expandedColumn != 0 ? ` COL(${this._expandedColumn}${endCOlumnInterp})` : '';
-    return `Ln#${this.sourceLineNumber}(${this.sourceCharacterOffset}) ${elemTypeStr}${valueInterp}${flagInterp}${opInterp}${offsetInterp}`;
+    const endColumnInterp: string = endColumn > 0 ? `-${endColumn}` : '';
+    const offsetInterp: string = this._expandedColumn != 0 ? ` COL(${this._expandedColumn}${endColumnInterp})` : '';
+    if (this._expandedColumn != this._sourceCharacterOffset + 1) {
+      //
+    }
+    let srcLocnInterp: string = `${this.sourceLineNumber}(${this.sourceCharacterOffset})`;
+    if (this._overrideLineIndex != this.NOTSET) {
+      srcLocnInterp = `${this.sourceLineNumber}(${this.sourceCharacterOffset}) -> #${this._overrideLineIndex + 1}(${this._overrideCharacterOffset})`;
+    }
+    return `Ln#${srcLocnInterp} ${elemTypeStr}${valueInterp}${flagInterp}${opInterp}${offsetInterp}`;
   }
 
   private hexLong(biUint32: bigint, prefixString: string = ''): string {

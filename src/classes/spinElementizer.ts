@@ -6,7 +6,7 @@
 import { stringToFloat32, float32ToHexString, float32ToString } from '../utils/float32';
 import { Context } from '../utils/context';
 import { SpinDocument } from './spinDocument';
-import { eElementType, getElementTypeString } from './types';
+import { eElementType } from './types';
 import { TextLine } from './textLine';
 import { SpinSymbolTables, iSpinSymbol } from './parseUtils';
 import { SpinElement } from './spinElement';
@@ -230,9 +230,15 @@ export class SpinElementizer {
         stringLength = stringEndOffset - stringOffset;
         this.logMessage(`* EmitTickString --  at(${stringOffset}), end(${stringEndOffset}), charCount=(${stringLength})`);
         if (stringLength > 0) {
+          // NEW!!!! - NOTE: for now, TicStrings do not have any correction!!!
+          //  the first element of a string contains an overriding offset and column!
+          //  this makes the first character report the location of the double quote accurately
+          //    additionally, all following characters have their offset and column set correctly
+          //
+          const quoteOffset: number = -1; //  indicate NOT set
           for (let charIndex = 0; charIndex < stringEndOffset; charIndex++) {
             const charCode: number = this.unprocessedLine.charCodeAt(charIndex);
-            const elementsToAdd = this.elementsForStringCharacter(charCode, charOffset, charIndex < stringEndOffset - 1);
+            const elementsToAdd = this.elementsForStringCharacter(charCode, charOffset, charIndex < stringEndOffset - 1, quoteOffset);
             elementsFound.push(...elementsToAdd); // push 1 to four new elements
             stringOffset += 1;
             charOffset += 1;
@@ -260,15 +266,25 @@ export class SpinElementizer {
         //const tmpDblQuotedString: string = this.unprocessedLine.substring(0, endQuoteOffset + 2);
         //this.dumpStringBytes(tmpDblQuotedString, 'Quoted String');
         returningSingleEntry = false;
+        //
+        // IS:
         // WARNING!!!!  the first element of a string the column is set to the opening
         //    double quote NOT the column of the first character as we might expect
         //    additionally, all following characters of the string are 1 column to the left!
         // WARNING!!!!
-        //let charOffset = this.currCharacterIndex + 1; // NOPE!!!!  we do not account +1 account for leading '"'
+        //
+        // POSSIBLE NEW:
+        //  // NEW!!!! (but disabled for now)
+        //  the first element of a string contains an overriding offset and column!
+        //  this makes the first character report the location of the double quote accurately
+        //    additionally, all following characters have their offset and column set correctly
+        //
+        let dblQuoteOffset: number = -1; // DISABLE FOR NOW....  this.currCharacterIndex++;
         let charOffset = this.currCharacterIndex;
         for (let charIndex = 1; charIndex < endQuoteOffset + 1; charIndex++) {
           const charCode: number = this.unprocessedLine.charCodeAt(charIndex);
-          const elementsToAdd = this.elementsForStringCharacter(charCode, charOffset, charIndex != endQuoteOffset);
+          const elementsToAdd = this.elementsForStringCharacter(charCode, charOffset, charIndex != endQuoteOffset, dblQuoteOffset);
+          dblQuoteOffset = -1;
           elementsFound.push(...elementsToAdd); // push 1 to four new elements
           charOffset += 1;
         }
@@ -400,7 +416,7 @@ export class SpinElementizer {
       }
     }
     // return findings and position within file (sourceLine# NOT lineIndex!)
-    const elemTypeStr: string = getElementTypeString(typeFound);
+    const elemTypeStr: string = eElementType[typeFound];
     const valueToDisplay: string | bigint = typeFound == eElementType.type_con_float ? float32ToString(valueFound) : valueFound;
     // return our 1 iElement within an array
     if (returningSingleEntry) {
@@ -418,7 +434,7 @@ export class SpinElementizer {
         this.lastSymboblEndOffset = singleElement.sourceColumnOffset + symbolLengthFound;
         elementsFound.push(singleElement);
         this.lastEmittedIsLineEnd = singleElement.isLineEnd ? true : false;
-        //this.logMessage(`  -- lastEmittedIsLineEnd=(${this.lastEmittedIsLineEnd}) type=[${singleElement.typeString()}]`); // blank line
+        //this.logMessage(`  -- lastEmittedIsLineEnd=(${this.lastEmittedIsLineEnd}) type=[${eElementType[singleElement.type]]`); // blank line
       }
     } else {
       // dump our list of values
@@ -426,7 +442,7 @@ export class SpinElementizer {
       // NOTE: we DON'T put 'symbolColumn' into these 'x','x',... lists of symbols
       for (let index = 0; index < elementsFound.length; index++) {
         const element = elementsFound[index];
-        const elemTypeStr: string = getElementTypeString(element.type);
+        const elemTypeStr: string = eElementType[element.type];
         const flagInterp: string = element.isMidStringComma ? `, midString` : '';
         const lineNbrString: string = this.lineNumberString(element.sourceLineIndex, element.sourceCharacterOffset);
         this.logMessage(`- get_element_entries() Ln#${lineNbrString} - type=(${elemTypeStr}), value=(${element.value})${flagInterp}`);
@@ -439,7 +455,7 @@ export class SpinElementizer {
     return elementsFound;
   }
 
-  private elementsForStringCharacter(charCodeValue: number, charOffset: number, notLastChar: boolean): SpinElement[] {
+  private elementsForStringCharacter(charCodeValue: number, charOffset: number, notLastChar: boolean, dblQuoteOffset: number): SpinElement[] {
     //  In UTF-8 encoding, characters in the range U+0080 to U+00FF are represented using two bytes.
     //  The first byte is either 0xC2 or 0xC3, depending on the character's code point. Specifically:
     //
@@ -489,9 +505,14 @@ export class SpinElementizer {
         charCode -= 0x40; // rebias from 0xC0-0xFF to 0x80-0xBF
       }
     }
-    // now puch our character element
+    // now push our character element
     const char = isString ? String.fromCharCode(charCode) : BigInt(charCode);
-    const elementChar: SpinElement = this.buildElement(eElementType.type_con_int, char, charOffset);
+    let elementChar: SpinElement;
+    if (dblQuoteOffset != -1) {
+      elementChar = this.buildElement(eElementType.type_con_int, char, charOffset, dblQuoteOffset);
+    } else {
+      elementChar = this.buildElement(eElementType.type_con_int, char, charOffset);
+    }
     newElements.push(elementChar);
     // if this is not the last character of the string push a trailing comma element
     if (notLastChar) {
@@ -653,10 +674,14 @@ export class SpinElementizer {
     return `${lineIndex}(${characterIndex})`;
   }
 
-  private buildElement(type: eElementType, value: bigint | string, charOffset: number): SpinElement {
+  private buildElement(type: eElementType, value: bigint | string, charOffset: number, alternateCharOffset?: number): SpinElement {
     const newElement: SpinElement = new SpinElement(this.srcFile.fileId, type, value, this.currentTextLine.sourceLineNumber - 1, charOffset);
     const symbolColumn: number = this.calculateColumnToOffset(charOffset, this.currentTextLine.text);
     newElement.setSourceColumnOffset(symbolColumn);
+    if (alternateCharOffset) {
+      newElement.setAlternateSourceCharOffset(alternateCharOffset);
+      newElement.setAlternateSourceColOffset(symbolColumn - 1);
+    }
     this.lastSymboblEndOffset = symbolColumn + 1;
     return newElement;
   }
@@ -713,7 +738,7 @@ export class SpinElementizer {
       value = BigInt(findResult.value & 0xffffffff);
       charsUsed = findResult.symbol.length;
       type = findResult.type;
-      const elemTypeStr: string = getElementTypeString(type);
+      const elemTypeStr: string = eElementType[type];
       this.logMessage(`  -- symbolConvert() Symbol found [${findResult.symbol}](${charsUsed}), type=(${elemTypeStr}), value=(${value})`);
     } else {
       this.logMessage(`  -- symbolConvert(${symbolName}) NOT a built-in`);
@@ -741,7 +766,7 @@ export class SpinElementizer {
       value = BigInt(findResult.value & 0xffffffff);
       charsUsed = findResult.symbol.length;
       type = findResult.type;
-      const elemTypeStr: string = getElementTypeString(type);
+      const elemTypeStr: string = eElementType[type];
       this.logMessage(`  -- operatorConvert() Operator found [${findResult.symbol}](${charsUsed}), type=(${elemTypeStr}), value=(${value})`);
     } else {
       this.logMessage('  -- operatorConvert() NOT a valid operator');

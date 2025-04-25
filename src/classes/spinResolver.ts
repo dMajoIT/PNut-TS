@@ -11104,8 +11104,11 @@ private checkDec(): boolean {
             this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.spinElements[this.nextElementIndex - 1]);
             this.currElement.setType(objSymType); // for new type
             this.currElement.setValue(objSymValue); // for new type
-            this.currElement.setSourceLineIndex(savedObjElement.sourceLineIndex);
-            this.currElement.setSourceColumnOffset(savedObjElement.sourceColumnOffset);
+            this.currElement.setAlternateSourceLocation(
+              savedObjElement.sourceLineIndex,
+              savedObjElement.sourceCharacterOffset,
+              savedObjElement.sourceColumnOffset
+            );
             this.logMessageForced(`   -- GETeleObj() replaced WITH [${this.currElement.toString()}]`);
           }
         } else {

@@ -131,10 +131,6 @@ export enum eElementType {
   type_end_file = 122 // 0x7A end-of-file
 }
 
-export function getElementTypeString(value: eElementType): string {
-  return eElementType[value];
-}
-
 export enum eOperationType {
   //
   //
