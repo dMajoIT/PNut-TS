@@ -273,13 +273,14 @@ export class SpinElementizer {
         //    additionally, all following characters of the string are 1 column to the left!
         // WARNING!!!!
         //
-        // POSSIBLE NEW:
+        // POSSIBLE NEW: (but causes 4 regression test failures!!)
         //  // NEW!!!! (but disabled for now)
         //  the first element of a string contains an overriding offset and column!
         //  this makes the first character report the location of the double quote accurately
         //    additionally, all following characters have their offset and column set correctly
         //
         let dblQuoteOffset: number = -1; // DISABLE FOR NOW....  this.currCharacterIndex++;
+        //let dblQuoteOffset: number = this.currCharacterIndex++;
         let charOffset = this.currCharacterIndex;
         for (let charIndex = 1; charIndex < endQuoteOffset + 1; charIndex++) {
           const charCode: number = this.unprocessedLine.charCodeAt(charIndex);
@@ -679,8 +680,8 @@ export class SpinElementizer {
     const symbolColumn: number = this.calculateColumnToOffset(charOffset, this.currentTextLine.text);
     newElement.setSourceColumnOffset(symbolColumn);
     if (alternateCharOffset) {
-      newElement.setAlternateSourceCharOffset(alternateCharOffset);
-      newElement.setAlternateSourceColOffset(symbolColumn - 1);
+      // this is the first char of a string... so just back up 1 to get to quote
+      newElement.setAlternateSourceSourceOffsets(alternateCharOffset, symbolColumn - 1);
     }
     this.lastSymboblEndOffset = symbolColumn + 1;
     return newElement;

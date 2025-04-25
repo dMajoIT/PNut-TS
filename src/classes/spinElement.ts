@@ -24,6 +24,7 @@ export class SpinElement {
   private _midStringComma: boolean = false; // valid only if type_comma
   private _isSymbol: boolean = false; // valid when element refers to symbol in source code
   private _symbolLength: number = 0; // valid only when _isSymbol is true
+  private _overrideSymbolLength: number = this.NOTSET;
   private _sourceSymbolWasUndefined: boolean = false; // valid only when _isSymbol is true
   private _isObjectReference: boolean = false; // valid only when ...
 
@@ -77,13 +78,33 @@ export class SpinElement {
   }
 
   // elementizer USE!
-  public setAlternateSourceCharOffset(charOffset: number) {
+  public setAlternateSourceSourceOffsets(charOffset: number, columnOffset: number) {
     this._overrideCharacterOffset = charOffset;
+    this._overrideExpandedColumn = columnOffset;
   }
 
-  // elementizer USE!
-  public setAlternateSourceColOffset(columnOffset: number) {
-    this._overrideExpandedColumn = columnOffset;
+  public setAlternateSourceLocation(lineNbr: number, charOffset: number, expandedColumn: number, symLength: number) {
+    // use by getElementObj() to spoof element locations
+    this._overrideLineIndex = lineNbr;
+    this._overrideCharacterOffset = charOffset;
+    this._overrideExpandedColumn = expandedColumn;
+    this._overrideSymbolLength = symLength;
+  }
+
+  get haveSourceLineOverride(): boolean {
+    return this._overrideLineIndex != this.NOTSET && this._sourceLineIndex != this._overrideLineIndex;
+  }
+
+  get haveSourceCharacterOffsetOverride(): boolean {
+    return this._overrideCharacterOffset != this.NOTSET && this._sourceCharacterOffset != this._overrideCharacterOffset;
+  }
+
+  get haveSourceExpandedColumnOverride(): boolean {
+    return this._overrideExpandedColumn != this.NOTSET && this._expandedColumn != this._overrideExpandedColumn;
+  }
+
+  get haveSymbolLengthOverride(): boolean {
+    return this._overrideSymbolLength != this.NOTSET && this._symbolLength != this._overrideSymbolLength;
   }
 
   get hasAltSourceCharOffset(): boolean {
@@ -167,26 +188,26 @@ export class SpinElement {
   }
 
   get sourceLineIndex(): number {
+    // if we have override, return it instead
+    // can be spoofed due to getElementObj() need
     return this._overrideLineIndex != this.NOTSET ? this._overrideLineIndex : this._sourceLineIndex;
   }
 
-  public setAlternateSourceLocation(lineNbr: number, charOffset: number, expandedColumn: number) {
-    // use by getElementObj() to spoof element locations
-    this._overrideLineIndex = lineNbr;
-    this._overrideCharacterOffset = charOffset;
-    this._overrideExpandedColumn = expandedColumn;
-  }
-
   get sourceLineNumber(): number {
-    return this._sourceLineIndex + 1;
+    // can be spoofed due to getElementObj() need
+    return this.sourceLineIndex + 1;
   }
 
   get sourceCharacterOffset(): number {
+    // can be spoofed due to getElementObj() need
+    // if we have override, return it instead
     return this._overrideCharacterOffset != this.NOTSET ? this._overrideCharacterOffset : this._sourceCharacterOffset;
   }
 
   get sourceColumnOffset(): number {
+    // used by SpinResolver.getColumn()
     // can be spoofed due to getElementObj() need
+    // if we have override, return it instead
     return this._overrideExpandedColumn != this.NOTSET ? this._overrideExpandedColumn : this._expandedColumn;
   }
 
@@ -478,7 +499,7 @@ export class SpinElement {
     this._symbolLength = length;
   }
 
-  public getSymbolLength(): number {
+  get symbolLength(): number {
     // called when this element refers to a symbol in source code
     return this._symbolLength;
   }
@@ -533,14 +554,23 @@ export class SpinElement {
     const opInterp: string = this.isOperation ? ` ${this.operationString()}` : '';
     const endColumn: number = this._symbolLength > 1 ? this._expandedColumn + this._symbolLength - 1 : 0;
     const endColumnInterp: string = endColumn > 0 ? `-${endColumn}` : '';
-    const offsetInterp: string = this._expandedColumn != 0 ? ` COL(${this._expandedColumn}${endColumnInterp})` : '';
-    if (this._expandedColumn != this._sourceCharacterOffset + 1) {
-      //
+    let offsetInterp: string = '';
+    if (this._expandedColumn != 0) {
+      offsetInterp = ` COL(${this._expandedColumn}${endColumnInterp})`;
     }
-    let srcLocnInterp: string = `${this.sourceLineNumber}(${this.sourceCharacterOffset})`;
-    if (this._overrideLineIndex != this.NOTSET) {
-      srcLocnInterp = `${this.sourceLineNumber}(${this.sourceCharacterOffset}) -> #${this._overrideLineIndex + 1}(${this._overrideCharacterOffset})`;
+    if (this.haveSourceExpandedColumnOverride) {
+      offsetInterp = ` COL(${this._expandedColumn}${endColumnInterp})>(${this._overrideExpandedColumn}${endColumnInterp})`;
     }
+    let lineInterp: string = `${this.sourceLineNumber}`;
+    if (this.haveSourceLineOverride) {
+      lineInterp = `${this._sourceLineIndex + 1}>${this._overrideLineIndex + 1}`;
+    }
+    let colInterp: string = `${this.sourceCharacterOffset}`;
+    if (this.haveSourceCharacterOffsetOverride) {
+      colInterp = `${this._sourceCharacterOffset}>${this._overrideCharacterOffset}`;
+    }
+    const srcLocnInterp: string = `${lineInterp}(${colInterp})`;
+
     return `Ln#${srcLocnInterp} ${elemTypeStr}${valueInterp}${flagInterp}${opInterp}${offsetInterp}`;
   }
 

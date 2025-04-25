@@ -11099,17 +11099,27 @@ private checkDec(): boolean {
           } else {
             // we have obj type_obj_con_int, type_obj_con_float, or type_obj_con_struct
             // mark our DOT as part
-            this.logMessageForced(`   -- GETeleObj() objSymType=[${eElementType[objSymType]}] at [${this.currElement.toString()}]`);
+            this.logMessageForced(`   -- GETeleObj() OBJ is [${savedObjElement.toString()}]`);
+            this.logMessageForced(`                  objSymType=[${eElementType[objSymType]}] at [${this.currElement.toString()}]`);
             savedDotElement.partOfObjReference = true; // mark dot for skip when backing up
-            this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.spinElements[this.nextElementIndex - 1]);
+            // create copy of constant ref element
+            this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.currElement);
+            // replace the type and value with the symbol information
             this.currElement.setType(objSymType); // for new type
             this.currElement.setValue(objSymValue); // for new type
+            // override the location info with that of the obj-reference object
+            this.logMessageForced(
+              `                  replaced srcCol(${this.currElement.sourceCharacterOffset}) with srcCol(${savedObjElement.sourceCharacterOffset})`
+            );
+
             this.currElement.setAlternateSourceLocation(
               savedObjElement.sourceLineIndex,
               savedObjElement.sourceCharacterOffset,
-              savedObjElement.sourceColumnOffset
+              savedObjElement.sourceColumnOffset,
+              savedObjElement.symbolLength
             );
-            this.logMessageForced(`   -- GETeleObj() replaced WITH [${this.currElement.toString()}]`);
+
+            this.logMessageForced(`                  replaced WITH [${this.currElement.toString()}]`);
           }
         } else {
           this.backElement(); // move from dot back to obj
@@ -11142,7 +11152,7 @@ private checkDec(): boolean {
       const foundSymbol = this.lookupSymbol(element.stringValue);
       if (foundSymbol !== undefined) {
         this.replacedName = element.stringValue;
-        const symbolLength = element.getSymbolLength();
+        const symbolLength = element.symbolLength;
         this.logMessage(`    * GETele REPLACING element=[${element.toString()}]`);
         element = new SpinElement(-1, eElementType.type_undefined, '', -1, -1, element);
         element.setType(foundSymbol.type);
@@ -11197,6 +11207,7 @@ private checkDec(): boolean {
   }
 
   private getColumn() {
+    // sets global var lineColumn!
     if (this.currElement.sourceColumnOffset != 0) {
       this.logMessage(`* LINE_SCOPE getColumn() lineColumn (${this.lineColumn}) -> (${this.currElement.sourceColumnOffset})`);
       this.lineColumn = this.currElement.sourceColumnOffset;
