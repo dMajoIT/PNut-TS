@@ -124,14 +124,14 @@ export class ObjectImage {
   }
 
   public appendLong(longValue: number) {
-    this.logMessage(`* OBJ[${this._id}]: append(v=(${hexLong(longValue & 0xffffffff)})) wroteTo(${hexAddress(this._objOffset)})`);
+    this.logMessage(`* OBJ[${this._id}]: append(Lv=(${hexLong(longValue & 0xffffffff)})) wroteTo(${hexAddress(this._objOffset)})`);
     this.appendWord(longValue, SUPPRESS_LOG_MSG);
     this.appendWord(longValue >> 16, SUPPRESS_LOG_MSG);
   }
 
   public appendWord(wordValue: number, alreadyLogged: boolean = false) {
     if (alreadyLogged == false) {
-      this.logMessage(`* OBJ[${this._id}]: append(v=(${hexWord(wordValue & 0xffff)})) wroteTo(${hexAddress(this._objOffset)})`);
+      this.logMessage(`* OBJ[${this._id}]: append(Wv=(${hexWord(wordValue & 0xffff)})) wroteTo(${hexAddress(this._objOffset)})`);
       alreadyLogged = SUPPRESS_LOG_MSG;
     }
     this.appendByte(wordValue, alreadyLogged);

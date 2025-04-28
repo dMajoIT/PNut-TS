@@ -5913,8 +5913,8 @@ export class SpinResolver {
     // PNut compile_exp:
     const nextElement: SpinElement = this.peekNextElement();
     const bIsDesiredLine: boolean = this.currElement.sourceLineNumber == 156 || nextElement.sourceLineNumber == 156;
-    this.logMessage(`*==* compileExpression() elem=[${nextElement.toString()}] - ENTRY`);
-    this.logMessageConditional(bIsDesiredLine, `*==* compileExpression() elem=[${nextElement.toString()}] - ENTRY`);
+    this.logMessage(`*==* compileExpression() at elem=[${this.currElement.toString()}] - ENTRY`);
+    this.logMessageConditional(bIsDesiredLine, `*==* compileExpression() nextelem=[${nextElement.toString()}] - ENTRY`);
     const tryExpressionResult = this.trySpin2ConExpression();
     if (tryExpressionResult.isResolved) {
       this.compileConstant(tryExpressionResult.value);
@@ -7978,6 +7978,7 @@ export class SpinResolver {
     } while (notDone);
     //this.logBlockOptimizeDepth--;
     //this.logMessageOutline('');
+    this.logMessage(`* optimizeBlock() - EXIT`);
   }
 
   private ct_cogspin_taskspin(byteCode: eByteCode, needPush: boolean = false) {
@@ -8858,20 +8859,28 @@ export class SpinResolver {
           resultStatus.foundConstant = false;
         }
       } else if (this.currElement.isConstantInt || this.currElement.isConstantFloat) {
-        // this is a constant
+        // this is a constant  @@spin2exit
         resultStatus.value = this.currElement.bigintValue;
       } else if (this.currElement.type == eElementType.type_pound) {
-        this.getElementObj();
-        const registerAddress: number = Number((this.currElement.bigintValue & BigInt(0xfff00000)) >> (32n - 12n));
-        if (this.isDatStorageType() && registerAddress < 0x400) {
-          resultStatus.value = BigInt(registerAddress);
+        this.currElement = this.getElement();
+        if (this.currElement.type == eElementType.type_register) {
+          // this is a constant  @@spin2exit
+          resultStatus.value = this.currElement.bigintValue;
+        } else if (
+          this.currElement.type == eElementType.type_dat_long_res ||
+          this.currElement.type == eElementType.type_dat_byte ||
+          this.currElement.type == eElementType.type_dat_word ||
+          this.currElement.type == eElementType.type_dat_long
+        ) {
+          // this is a constant but must be below 0x400
+          const registerAddress: number = Number((this.currElement.bigintValue & BigInt(0xfff00000)) >> (32n - 12n));
+          if (this.isDatStorageType() && registerAddress < 0x400) {
+            resultStatus.value = BigInt(registerAddress);
+          }
         } else {
           // [error_eregsym]
           throw new Error('Expected a register symbol');
         }
-      } else if (this.currElement.type == eElementType.type_register) {
-        const registerAddress: number = Number((this.currElement.bigintValue & BigInt(0xfff00000)) >> (32n - 12n));
-        resultStatus.value = BigInt(registerAddress);
       } else {
         resultStatus.foundConstant = false;
       }
@@ -9095,7 +9104,7 @@ export class SpinResolver {
         }
       }
     }
-    this.logMessage(`*--* getCon() EXIT w/foundConstant=(${resultStatus.foundConstant})`);
+    this.logMessage(`*--* getCon() EXIT w/foundConstant=(${resultStatus.foundConstant}, v=(${Number(resultStatus.value)}))`);
     return resultStatus;
   }
 
