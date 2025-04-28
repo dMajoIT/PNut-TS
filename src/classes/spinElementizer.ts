@@ -60,8 +60,8 @@ export class SpinElementizer {
 
   constructor(ctx: Context) {
     this.context = ctx;
-    this.isLogging = this.context.logOptions.logElementizer;
-    this.isLoggingOutline = this.context.logOptions.logOutline;
+    this.isLogging = ctx.logOptions.logElementizer;
+    this.isLoggingOutline = ctx.logOptions.logOutline;
     this.srcFile = new SpinDocument(ctx, '');
     this.symbol_tables = new SpinSymbolTables(ctx);
     if (this.isLogging) {

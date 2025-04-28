@@ -19,7 +19,7 @@ export class DebugRecord {
 
   constructor(ctx: Context) {
     this.context = ctx;
-    this.isLogging = this.context.logOptions.logResolver;
+    this.isLogging = ctx.logOptions.logResolver;
   }
 
   get length(): number {
@@ -64,7 +64,7 @@ export class DebugData {
 
   constructor(ctx: Context) {
     this.context = ctx;
-    this.isLogging = this.context.logOptions.logResolver;
+    this.isLogging = ctx.logOptions.logResolver;
     const nextFreeOffset: number = 0x200;
     this.replaceWord(nextFreeOffset, 0); // set offset to first record
     this._debugOffset = nextFreeOffset;

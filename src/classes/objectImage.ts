@@ -26,7 +26,7 @@ export class ObjectImage {
   constructor(ctx: Context, idString: string) {
     this.context = ctx;
     this._id = idString;
-    this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logResolver;
+    this.isLogging = ctx.logOptions.logCompile || ctx.logOptions.logResolver;
     // this.isLogging = this.context.reportOptions.coverageTesting ? false : true;
     this.isLoggingOutline = ctx.logOptions.logOutline;
   }
@@ -66,6 +66,7 @@ export class ObjectImage {
 
   public refreshLogging() {
     this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logResolver;
+    this.isLoggingOutline = this.context.logOptions.logOutline;
     // this.isLogging = this.context.reportOptions.coverageTesting ? false : true;
   }
 

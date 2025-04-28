@@ -37,7 +37,7 @@ export class Spin2Parser {
   constructor(ctx: Context) {
     this.context = ctx;
     this.isLogging = ctx.logOptions.logParser;
-    this.isLoggingOutline = this.context.logOptions.logOutline;
+    this.isLoggingOutline = ctx.logOptions.logOutline;
     this.elementizer = new SpinElementizer(this.context);
     this.spinSymbolTables = new SpinSymbolTables(this.context);
     this.spinResolver = new SpinResolver(this.context);

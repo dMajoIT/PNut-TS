@@ -41,9 +41,9 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
   }
   files.forEach((file) => {
     test(`Compile file: ${path.basename(file)}`, () => {
-      const options: string = '-v -l -O -F --regression element --';
       const basename = path.basename(file, '.spin2');
 
+      // name our output files
       const listingFSpec = path.join(testDirPath, `${basename}.lst`);
       const objectFSpec = path.join(testDirPath, `${basename}.obj`);
       const binaryFSpec = path.join(testDirPath, `${basename}.bin`);
@@ -58,6 +58,7 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
       removeExistingFile(flashFSpec);
 
       // compile our file generating output files
+      const options: string = '-v -l -O -F --regression element --';
       try {
         execSync(`node ${toolPath}/pnut-ts.js ${options} ${file}`);
       } catch (error) {
@@ -65,7 +66,7 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
         fail(`Execution failed for ${file}`);
       }
 
-      // count the number of matching outputs, should be 3!
+      // append any failure messages from compares, if not empty at end, we have FAILs
       let whatFailed: string = '';
       // ID the golden listing file
       const goldenFSpec = path.join(testDirPath, `${basename}.lst.GOLD`);

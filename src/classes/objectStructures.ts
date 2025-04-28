@@ -67,7 +67,7 @@ export class ObjectStructures {
   constructor(ctx: Context, idString: string) {
     this.context = ctx;
     this._id = idString;
-    this.isLogging = this.context.logOptions.logCompile;
+    this.isLogging = ctx.logOptions.logCompile;
     this.isLoggingOutline = ctx.logOptions.logOutline;
     this._objStructureByteAr = new Uint8Array(ObjectStructures.ALLOC_SIZE_IN_BYTES); // initial memory size
   }

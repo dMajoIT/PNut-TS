@@ -203,9 +203,11 @@ TODO's from PNut Zoom 250303++:
 			- affect only 1 file! @done(2025-04-24)
 			- NO FIX - Leave this alone (internal difference!) @done(2025-04-24)
 		- LARGE tests after carefully generste GOLD files @done(2025-04-24)
-		- I review large tests after carefully generating GOLD files
-		- After all regression tests pass, run coverage and add code to test any missing area
-	Day32: Fri:
+	Day33: Sun:
+		- chase eInk problem - not done, getting closer @done(2025-04-28)
+	Day34: Mon:
+		- chase eInk problem - do more (narrowed down to element positioning problems!)
+		- chase new spin_test4_parent.spin2 -  case-generation problem in 
 		- Review large tests after carefully generating GOLD files
 		- After all regression tests pass, run coverage and add code to test any missing area
 	

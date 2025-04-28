@@ -32,7 +32,7 @@ export class ChildObjectsImage {
   constructor(ctx: Context, idString: string) {
     this.context = ctx;
     this._id = idString;
-    this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logOutline;
+    this.isLogging = ctx.logOptions.logCompile; // || this.context.logOptions.logOutline;
     this.isLoggingOutline = ctx.logOptions.logOutline;
   }
 
@@ -55,7 +55,8 @@ export class ChildObjectsImage {
   }
 
   public refreshLogging() {
-    this.isLogging = this.context.logOptions.logCompile || this.context.logOptions.logOutline;
+    this.isLogging = this.context.logOptions.logCompile; // || this.context.logOptions.logOutline;
+    this.isLoggingOutline = this.context.logOptions.logOutline;
   }
 
   public ensureFits(offset: number, nbrBytes: number) {

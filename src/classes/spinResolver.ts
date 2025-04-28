@@ -337,9 +337,9 @@ export class SpinResolver {
     this.context = ctx;
     this.debug_record = new DebugRecord(this.context);
     this.debug_data = new DebugData(this.context);
-    this.isLogging = this.context.logOptions.logResolver;
-    this.isLoggingOutline = this.context.logOptions.logOutline;
-    this.isLoggingDistill = this.context.logOptions.logDistiller;
+    this.isLogging = ctx.logOptions.logResolver;
+    this.isLoggingOutline = ctx.logOptions.logOutline;
+    this.isLoggingDistill = ctx.logOptions.logDistiller;
     // get references to the single global data
     this.objImage = ctx.compileData.objImage;
     this.objImage.refreshLogging();
@@ -3658,12 +3658,14 @@ export class SpinResolver {
     // Compile block - 'case'
     // PNut cb_case:
     this.logMessage(`*==* cb_case() ENTRY`);
+    this.logMessageOutline(`*==* cb_case() ENTRY nextElemIdx=(${this.nextElementIndex})`);
     this.setScopeColumn(this.lineColumn); // column offset to 'case' PNut [ebp]
     // reserve room for max cases and the other case
     this.new_bnest(eElementType.type_case, this.case_limit + 1); // max case + other
     this.optimizeBlock(eOptimizerMethod.OM_Case);
     this.end_bnest();
     this.logMessage(`*==* cb_case() EXIT`);
+    this.logMessageOutline(`*==* cb_case() EXIT nextElemIdx=(${this.nextElementIndex})`);
   }
 
   private blockCase() {
@@ -3679,6 +3681,7 @@ export class SpinResolver {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       // here is @@nextcase1
+      //  first pass builds case branches, get range/value/'other'
       this.logMessage(`* cb_case:@@comp: (pass1) caseCount=(${caseCount}), haveOtherCase=(${haveOtherCase})`);
       this.getElement();
       const matchIsOtherCase: boolean = this.currElement.type == eElementType.type_other;
@@ -3819,11 +3822,13 @@ export class SpinResolver {
     // Compile block - 'case_fast'
     // PNut cb_case_fast:
     this.logMessage(`*==* cb_case_fast() ENTRY`);
+    this.logMessageOutline(`*==* cb_case_fast() ENTRY nextElemIdx=(${this.nextElementIndex})`);
     this.setScopeColumn(this.lineColumn);
     this.new_bnest(eElementType.type_case_fast, this.case_fast_limit + 6 + 1); // 6 enum value
     this.optimizeBlock(eOptimizerMethod.OM_CaseFast);
     this.end_bnest();
     this.logMessage(`*==* cb_case_fast() EXIT`);
+    this.logMessageOutline(`*==* cb_case_fast() EXIT nextElemIdx=(${this.nextElementIndex})`);
   }
 
   private blockCaseFast() {
@@ -5907,7 +5912,9 @@ export class SpinResolver {
     //  Compile expression with sub-expressions
     // PNut compile_exp:
     const nextElement: SpinElement = this.peekNextElement();
+    const bIsDesiredLine: boolean = this.currElement.sourceLineNumber == 156 || nextElement.sourceLineNumber == 156;
     this.logMessage(`*==* compileExpression() elem=[${nextElement.toString()}] - ENTRY`);
+    this.logMessageConditional(bIsDesiredLine, `*==* compileExpression() elem=[${nextElement.toString()}] - ENTRY`);
     const tryExpressionResult = this.trySpin2ConExpression();
     if (tryExpressionResult.isResolved) {
       this.compileConstant(tryExpressionResult.value);
@@ -5915,6 +5922,7 @@ export class SpinResolver {
       this.compileSubExpression(this.lowestPrecedence);
     }
     this.logMessage(`*==* compileExpression() - EXIT`);
+    this.logMessageConditional(bIsDesiredLine, `*==* compileExpression() - EXIT`);
     return tryExpressionResult;
   }
 
@@ -5928,6 +5936,7 @@ export class SpinResolver {
 
       // skip leading pluses
       do {
+        // here is @@term:
         this.getElementObj();
         if (this.currElement.isPlus) {
           // TODO: COVERAGE test me
@@ -5968,6 +5977,7 @@ export class SpinResolver {
       this.compileSubExpression(currPrecedence);
       // eslint-disable-next-line no-constant-condition
       while (true) {
+        // here is @@next:
         this.getElement();
         const savedElement: SpinElement = this.currElement;
         if (this.currElement.isTernary) {
@@ -5994,6 +6004,7 @@ export class SpinResolver {
       }
     }
     this.logMessage(`compileSubExpression(${entryPrecedence}) - EXIT`);
+    //this.logMessageOutline(`compileSubExpression(${entryPrecedence}) - EXIT`);
   }
 
   private compileInstruction() {
@@ -7287,6 +7298,7 @@ export class SpinResolver {
     // PNut compile_term:
     const elementType: eElementType = this.currElement.type;
     this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}]) - ENTRY`);
+    this.logMessageOutline(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}]) - ENTRY`);
     const elementValue: number = Number(this.currElement.bigintValue);
     if (this.currElement.isConstantInt || this.currElement.isConstantFloat) {
       // constant integer? or constant float?
@@ -7436,6 +7448,7 @@ export class SpinResolver {
       }
     }
     this.logMessage(`*--* compileTerm() - EXIT`);
+    this.logMessageOutline(`*--* compileTerm() - EXIT`);
   }
 
   private compileFlex(flexCode: eFlexcode) {
@@ -8048,6 +8061,7 @@ export class SpinResolver {
   private ct_at() {
     // Compile term - @"string", @\"string", @obj{[]}.method, @method, or @hubvar
     // PNut ct_at:
+    this.logMessageOutline(`* ct_at() with elem=[${this.currElement.toString()}]`);
     this.getElementObj();
     this.logMessage(`* ct_at() get then elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_con_int) {
@@ -8086,7 +8100,9 @@ export class SpinResolver {
       this.compileRfvar(BigInt(methodIndex & 0xfffff));
     } else {
       // have @hubvar case
+      this.logMessageOutline(` pre checkVariable() nxtElemIdx=(${this.nextElementIndex})`);
       const variableReturn: iVariableReturn = this.checkVariable();
+      this.logMessageOutline(` post checkVariable() nxtElemIdx=(${this.nextElementIndex})`);
       if (variableReturn.isVariable == false) {
         // [error_easvmoo]
         throw new Error('Expected a string, variable, method, or object');
@@ -8103,6 +8119,7 @@ export class SpinResolver {
       }
       this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
     }
+    this.logMessageOutline(`* ct_at() EXIT`);
   }
 
   private ct_at_emit_string(escapeMode: boolean) {
@@ -8866,17 +8883,16 @@ export class SpinResolver {
       this.SubToNeg(); // makes currentElem op_neg if was op_sub!
       if (this.currElement.operation == eOperationType.op_neg) {
         // if the next element is a constant we can negate it
-        // NOTE: need test case with op_neg followed by OBJ TUPLE!!!!
-        if (this.nextElementObjType() == eElementType.type_con_int) {
+        this.getElementObj();
+        // FIXME: NOTE: need test case with op_neg followed by OBJ TUPLE!!!! -AND- not an obj.tuple
+        if (this.currElement.type == eElementType.type_con_int) {
           // coerce element to negative value
-          this.getElementObj();
           this.logMessage(`* type_con e=[${this.currElement.toString()}]`);
           resultStatus.value = this.currElement.negateBigIntValue();
           this.checkIntMode(); // throw if we were float
           // if not set then set else
-        } else if (this.nextElementObjType() == eElementType.type_con_float) {
+        } else if (this.currElement.type == eElementType.type_con_float) {
           // coerce element to negative value
-          this.getElementObj();
           this.logMessage(`* type_con_float e=[${this.currElement.toString()}]`);
           resultStatus.value = BigInt(this.currElement.value) ^ BigInt(0x80000000);
           this.checkFloatMode(); // throw if we were int
@@ -8884,6 +8900,8 @@ export class SpinResolver {
         } else {
           // we didn't find a constant
           resultStatus.foundConstant = false;
+          // we need to undo the getElementObj()
+          this.backElement(); // if it was an obj.ref then this should cause two backups!
         }
       } else {
         // continuing without a '-' sign
@@ -10046,7 +10064,9 @@ private checkDec(): boolean {
       structSize: 0 // 1,2,4, or structure size
     };
 
+    const bDesiredLine: boolean = this.currElement.sourceLineNumber == 156;
     this.logMessage(`* checkVariable() ENTRY at [${this.currElement.toString()}]`);
+    this.logMessageConditional(bDesiredLine, `* checkVariable() ENTRY at [${this.currElement.toString()}]`);
 
     // preserve initial values (PNut al,ebx)
     let variableType: eElementType = this.currElement.type;
@@ -11029,21 +11049,6 @@ private checkDec(): boolean {
     return element.type;
   }
 
-  private nextElementObjType(): eElementType {
-    // look ahead if we have an OBJ tuple
-    let element: SpinElement = this.spinElements[this.nextElementIndex];
-    let desiredType: eElementType = element.type;
-    if (element.type == eElementType.type_obj) {
-      element = this.spinElements[this.nextElementIndex + 1];
-      if (element.type == eElementType.type_dot) {
-        element = this.spinElements[this.nextElementIndex + 2];
-        desiredType = element.type;
-      }
-    }
-    //this.logMessage(`* NEXTele i#${this.nextElementIndex}, e=[${this.spinElements[this.nextElementIndex].toString()}]`);
-    return desiredType;
-  }
-
   private nextElementValue(): eValueType | eBlockType {
     const element = this.spinElements[this.nextElementIndex];
     return Number(element.value);
@@ -11076,7 +11081,9 @@ private checkDec(): boolean {
   //
   private getElementObj(): SpinElement {
     // if we are found an OBJ trio and found a constant return leaf element resolved as non-obj constant
+    const bLogElemLn157: boolean = this.currElement.sourceLineNumber == 156;
     this.logMessage(`  *-- GETeleObj() ENTRY at [${this.currElement.toString()}]`);
+    this.logMessageConditional(bLogElemLn157, `  *-- GETeleObj() ENTRY at [${this.currElement.toString()}] nextElemIdx=(${this.nextElementIndex})`);
     this.getElement(); // now have OBJECT as current
     this.logMessage(`   -- GETeleObj() at [${this.currElement.toString()}]`);
     if (this.currElement.type != eElementType.type_end) {
@@ -11092,6 +11099,7 @@ private checkDec(): boolean {
           // if public method of object then back out and let compiler
           if (objSymType == eElementType.type_obj_pub) {
             // let compiler discover OBJ.PUB
+            this.logMessageConditional(bLogElemLn157, `*-- GETeleObj() backup 3... go forward 1`);
             this.backElement(); // move from Symbol back to DOT
             this.backElement(); // move from DOT back to OBJ
             this.backElement();
@@ -11099,8 +11107,11 @@ private checkDec(): boolean {
           } else {
             // we have obj type_obj_con_int, type_obj_con_float, or type_obj_con_struct
             // mark our DOT as part
-            this.logMessageForced(`   -- GETeleObj() OBJ is [${savedObjElement.toString()}]`);
-            this.logMessageForced(`                  objSymType=[${eElementType[objSymType]}] at [${this.currElement.toString()}]`);
+            this.logMessageConditional(bLogElemLn157, `   -- GETeleObj() OBJ is [${savedObjElement.toString()}]`);
+            this.logMessageConditional(
+              bLogElemLn157,
+              `                  objSymType=[${eElementType[objSymType]}] at [${this.currElement.toString()}]`
+            );
             savedDotElement.partOfObjReference = true; // mark dot for skip when backing up
             // create copy of constant ref element
             this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.currElement);
@@ -11108,7 +11119,8 @@ private checkDec(): boolean {
             this.currElement.setType(objSymType); // for new type
             this.currElement.setValue(objSymValue); // for new type
             // override the location info with that of the obj-reference object
-            this.logMessageForced(
+            this.logMessageConditional(
+              bLogElemLn157,
               `                  replaced srcCol(${this.currElement.sourceCharacterOffset}) with srcCol(${savedObjElement.sourceCharacterOffset})`
             );
 
@@ -11119,9 +11131,10 @@ private checkDec(): boolean {
               savedObjElement.symbolLength
             );
 
-            this.logMessageForced(`                  replaced WITH [${this.currElement.toString()}]`);
+            this.logMessageConditional(bLogElemLn157, `                  replaced WITH [${this.currElement.toString()}]`);
           }
         } else {
+          this.logMessageConditional(bLogElemLn157, `*-- GETeleObj() backup 2... go forward 1`);
           this.backElement(); // move from dot back to obj
           this.backElement();
           this.getElement(); // to do type_obj insertion
@@ -11129,11 +11142,13 @@ private checkDec(): boolean {
       }
     }
     this.logMessage(`  *-- GETeleObj() EXIT at [${this.currElement.toString()}]`);
+    this.logMessageConditional(bLogElemLn157, `  *-- GETeleObj() EXIT at [${this.currElement.toString()}] nextElemIdx=(${this.nextElementIndex})`);
     return this.currElement;
   }
 
   private getElement(allowSymbolLookup: boolean = true): SpinElement {
     //this.logMessage(`* Element Index=(${this.nextElementIndex + 1})`);
+    const bLogElemLn157: boolean = this.currElement.sourceLineNumber == 156;
     if (this.spinElements.length == 0) {
       throw new Error(`NO Elements`);
     }
@@ -11154,16 +11169,19 @@ private checkDec(): boolean {
         this.replacedName = element.stringValue;
         const symbolLength = element.symbolLength;
         this.logMessage(`    * GETele REPLACING element=[${element.toString()}]`);
+        this.logMessageConditional(bLogElemLn157, `    * GETele REPLACING element=[${element.toString()}]`);
         element = new SpinElement(-1, eElementType.type_undefined, '', -1, -1, element);
         element.setType(foundSymbol.type);
         element.setValue(foundSymbol.value);
         element.setSymbolLength(symbolLength);
         this.logMessage(`    *       with element=[${element.toString()}] moveAside=["${this.replacedName}"]`);
+        this.logMessageConditional(bLogElemLn157, `    *       with element=[${element.toString()}] moveAside=["${this.replacedName}"]`);
         element.setSourceElementWasUndefined(); // mark this NEW symbol as replacing an undefined symbol
       }
     }
     //*
     this.logMessage(`    * GETele GOT i#${this.nextElementIndex - 1}, e=[${element.toString()}]`);
+    this.logMessageConditional(bLogElemLn157, `    * GETele GOT i#${this.nextElementIndex - 1}, e=[${element.toString()}]`);
     if (element.type != eElementType.type_end_file) {
       //this.logMessage(`*        NEXT i#${this.nextElementIndex}, e=[${this.spinElements[this.nextElementIndex].toString()}]`);
     } else {
@@ -11195,13 +11213,16 @@ private checkDec(): boolean {
 
   private backElement(): void {
     // don't let our index get < 0!
+    const bLogElemLn157: boolean = this.currElement.sourceLineNumber == 156;
     this.nextElementIndex -= this.nextElementIndex > 2 ? 2 : this.nextElementIndex;
     this.logMessage(`* BACKele nextElemIdx=(${this.nextElementIndex})`);
+    this.logMessageConditional(bLogElemLn157, `* BACKele nextElemIdx=(${this.nextElementIndex})`);
     this.currElement = new SpinElement(0, eElementType.type_undefined, '', 0, 0, this.spinElements[this.nextElementIndex++]);
     // and make sure our column offset into the line is set
     this.logMessage(`* BACKele i#${this.nextElementIndex - 1}, e=[${this.currElement.toString()}], nextElemIdx=(${this.nextElementIndex})`);
     // if i'm sitting at DOT which is part of obj.constant then back up one more
     if (this.currElement.partOfObjReference) {
+      this.logMessageConditional(bLogElemLn157, `* BACKele ExtraObject nextElemIdx=(${this.nextElementIndex})`);
       this.backElement();
     }
   }
@@ -11943,6 +11964,12 @@ private checkDec(): boolean {
 
   private logMessageForced(message: string): void {
     this.context.logger.logMessage(message);
+  }
+
+  private logMessageConditional(condition: boolean, message: string) {
+    if (condition) {
+      this.logMessageForced(message);
+    }
   }
 
   private logMessageOutline(message: string): void {

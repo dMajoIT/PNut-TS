@@ -70,7 +70,7 @@ export class ObjectSymbols {
   constructor(ctx: Context, idString: string) {
     this.context = ctx;
     this._id = idString;
-    this.isLogging = this.context.logOptions.logCompile;
+    this.isLogging = ctx.logOptions.logCompile;
     this.isLoggingOutline = ctx.logOptions.logOutline;
   }
 
