@@ -206,9 +206,28 @@ TODO's from PNut Zoom 250303++:
 	Day33: Sun:
 		- chase eInk problem - not done, getting closer @done(2025-04-28)
 	Day34: Mon:
-		- chase eInk problem - do more (narrowed down to element positioning problems!)
-		- chase new spin_test4_parent.spin2 -  case-generation problem in 
+		- chase eInk problem - do more (narrowed down to element positioning problems!) @done(2025-04-28)
+		- chase new spin_test4_parent.spin2 -  case-generation problem in @done(2025-04-28)
+		- Carefully generate GOLD files
+			- BLDC-Motor-drv ./scripts/run-LRG-BLDC demo_dual_motor_rc_hdmi.spin2
+			- Flash-FS  ./scripts/run-LRG-ffs   flash_fs_demo.spin2 [-D]
+			- HUB75 ./scripts/run-LRG-7seg  demo_hub75_7seg.spin2
+			- MultSrvo ./scripts/run-LRG-MSE  -demo_quadEncTimiPca_exerciser.spin2 [-D]
+			- OctoSerial  ./scripts/run-LRG-OCTO demo_octoSystem.spin2 [-D]
+			- PnlLtMeas ./scripts/run-LRG-MP isp_measure_panel.spin2
+			- TOF ./scripts/run-LRG-TOF    demo_180degrFOV.spin2 [-D]
+			- eInk ./scripts/run-LRG-eInk  demo_eInk_click.spin2
+			- iOTgw ./scripts/run-LRG-IOT demo_p2gw_email.spin2 [-D]
 		- Review large tests after carefully generating GOLD files
+			- BLDC-Motor-drv - NO, constant diffs!
+			- Flash-FS  ./scripts/run-LRG-ffs   -d lst GOOD @done(2025-04-28)
+			- HUB75 ./scripts/run-LRG-7seg  lst GOOD @done(2025-04-28)
+			- MultSrvo ./scripts/run-LRG-MSE  -d
+			- OctoSerial  ./scripts/run-LRG-OCTO lst GOOD @done(2025-04-28)
+			- PnlLtMeas ./scripts/run-LRG-MP
+			- TOF ./scripts/run-LRG-TOF    -d @done(2025-04-28)
+			- eInk ./scripts/run-LRG-eInk  lst GOOD @done(2025-04-28)
+			- iOTgw ./scripts/run-LRG-IOT -d lst GOOD @done(2025-04-28)
 		- After all regression tests pass, run coverage and add code to test any missing area
 	
 Upcoming:
