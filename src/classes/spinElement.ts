@@ -111,11 +111,11 @@ export class SpinElement {
     return this._overrideCharacterOffset != this.NOTSET;
   }
 
-  set partOfObjReference(value: boolean) {
+  public setPartOfObjReference(value: boolean) {
     this._isObjectReference = value;
   }
 
-  get partOfObjReference(): boolean {
+  get isPartOfObjReference(): boolean {
     return this._isObjectReference;
   }
 
@@ -555,6 +555,7 @@ export class SpinElement {
     const endColumn: number = this._symbolLength > 1 ? this._expandedColumn + this._symbolLength - 1 : 0;
     const endColumnInterp: string = endColumn > 0 ? `-${endColumn}` : '';
     let offsetInterp: string = '';
+    const dotInterp: string = this.isPartOfObjReference ? ' DOT!' : '';
     if (this._expandedColumn != 0) {
       offsetInterp = ` COL(${this._expandedColumn}${endColumnInterp})`;
     }
@@ -571,7 +572,7 @@ export class SpinElement {
     }
     const srcLocnInterp: string = `${lineInterp}(${colInterp})`;
 
-    return `Ln#${srcLocnInterp} ${elemTypeStr}${valueInterp}${flagInterp}${opInterp}${offsetInterp}`;
+    return `Ln#${srcLocnInterp} ${elemTypeStr}${valueInterp}${flagInterp}${opInterp}${dotInterp}${offsetInterp}`;
   }
 
   private hexLong(biUint32: bigint, prefixString: string = ''): string {
