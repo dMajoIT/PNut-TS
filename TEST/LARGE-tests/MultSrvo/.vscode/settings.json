@@ -1,0 +1,17 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.history": true,
+    "**/*.GOLD": true,
+    "**/*.bin": true,
+    "**/*.elem": true,
+    "**/*.obj": true,
+    "**/*.lst": true,
+    "**/*.elemORIG": true
+  },
+  "explorerExclude.backup": {}
+}

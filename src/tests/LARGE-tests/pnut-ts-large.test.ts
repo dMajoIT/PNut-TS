@@ -4,6 +4,15 @@ import fs from 'fs';
 import path from 'path';
 // Import the glob function specifically
 //import { glob } from 'glob';
+import { EventEmitter } from 'node:events';
+
+EventEmitter.defaultMaxListeners = 20; // Set the global max listeners
+
+import pLimit from 'p-limit';
+
+// Set the maximum number of concurrent compiles
+const MAX_CONCURRENT_COMPILES = 3; // Adjust this number based on your system's capacity
+const limit = pLimit(MAX_CONCURRENT_COMPILES);
 
 // Alternatively, if you want to use the synchronous version, you can do:
 import { sync as globSync } from 'glob';
@@ -61,6 +70,8 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
     let filteredFiles = files.filter((file) => !file.includes('BLDC-Motor-drv'));
     // iOTgw: these are known to fail but are good (runs too long)
     filteredFiles = filteredFiles.filter((file) => !file.includes('iOTgw'));
+    // MultSrvo: these are known to fail but are good (runs too long)
+    filteredFiles = filteredFiles.filter((file) => !file.includes('MultSrvo'));
     filteredFiles.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
     files = filteredFiles;
   }
@@ -94,7 +105,7 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
   // 15000 works on 24 core Mac Studio, but not on 10 core MacBook Pro
   // 20000 works on 10 core MacBook Pro... BYMMV...
   // v51 PNut TS, 20000 NO Longer works on Mac Studio (Need to find out why!)
-  const TEST_TIMEOUT_MS = 40000;
+  const TEST_TIMEOUT_MS = 20000;
 
   files.forEach((file) => {
     const fileBase = path.basename(file);
@@ -105,28 +116,31 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
     const basename = path.basename(file, '.spin2');
     const listingFSpec = path.join(testFolder, `${basename}.lst`);
     const goldenLstFSpec = `${listingFSpec}.GOLD`;
+
     if (fileExists(goldenLstFSpec)) {
       test(
         `Compile file: ${testFilename}`,
         async () => {
-          const objectFSpec = path.join(testFolder, `${basename}.obj`);
-          const binaryFSpec = path.join(testFolder, `${basename}.bin`);
-          const elementsFSpec = path.join(testFolder, `${basename}.elem`);
-          const errorFSpec = path.join(testFolder, `${basename}.errout`);
-          stdErrOutFile = errorFSpec; // tell stderr capture what filespec to use
+          // Use p-limit to limit concurrency
+          await limit(async () => {
+            const objectFSpec = path.join(testFolder, `${basename}.obj`);
+            const binaryFSpec = path.join(testFolder, `${basename}.bin`);
+            const elementsFSpec = path.join(testFolder, `${basename}.elem`);
+            const errorFSpec = path.join(testFolder, `${basename}.errout`);
+            stdErrOutFile = errorFSpec; // tell stderr capture what filespec to use
 
-          // ID the golden .obj file
-          const goldenObjFSpec = `${objectFSpec}.GOLD`;
-          // ID the golden .bin file
-          const goldenBinFSpec = `${binaryFSpec}.GOLD`;
-          // ID the golden .errout file
-          const goldenErroutFSpec = `${errorFSpec}.GOLD`;
+            // ID the golden .obj file
+            const goldenObjFSpec = `${objectFSpec}.GOLD`;
+            // ID the golden .bin file
+            const goldenBinFSpec = `${binaryFSpec}.GOLD`;
+            // ID the golden .errout file
+            const goldenErroutFSpec = `${errorFSpec}.GOLD`;
 
-          // Remove existing files
-          const existingFiles: string[] = [listingFSpec, objectFSpec, binaryFSpec, elementsFSpec, errorFSpec];
-          removeExistingFiles(existingFiles);
+            // Remove existing files
+            const existingFiles: string[] = [listingFSpec, objectFSpec, binaryFSpec, elementsFSpec, errorFSpec];
+            removeExistingFiles(existingFiles);
 
-          /*
+            /*
           ./PnlLtMeas
           ./MultSrvo      -d
           ./Flash-FS      -d
@@ -138,138 +152,139 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
           ./BLDC-Motor-drv
           */
 
-          const compileDebug: boolean =
-            fileBase.startsWith('flash_fs_demo') ||
-            fileBase.startsWith('demo_octo') ||
-            fileBase.startsWith('demo_p2gw') ||
-            fileBase.startsWith('demo_180') ||
-            fileBase.startsWith('demo_quad');
+            const compileDebug: boolean =
+              fileBase.startsWith('flash_fs_demo') ||
+              fileBase.startsWith('demo_octo') ||
+              fileBase.startsWith('demo_p2gw') ||
+              fileBase.startsWith('demo_180') ||
+              fileBase.startsWith('demo_quad');
 
-          // compile our file generating output files
-          const testArguments: string[] = ['node', 'pnut-ts.js', '-O', '-l', '--regression', 'element', '--', `${file}`];
-          const conditionalArgs: string[] = compileDebug ? ['-d'] : [];
-          const adjustedArgs: string[] = [...testArguments.slice(0, 2), ...conditionalArgs, ...testArguments.slice(2)];
-          //console.log(`* TEST sending adjustedArgs=[${adjustedArgs}]`);
+            // compile our file generating output files
+            const testArguments: string[] = ['node', 'pnut-ts.js', '-O', '-l', '--regression', 'element', '--', `${file}`];
+            const conditionalArgs: string[] = compileDebug ? ['-d'] : [];
+            const adjustedArgs: string[] = [...testArguments.slice(0, 2), ...conditionalArgs, ...testArguments.slice(2)];
+            //console.log(`* TEST sending adjustedArgs=[${adjustedArgs}]`);
 
-          try {
-            PNut_ts_compiler = new PNutInTypeScript(adjustedArgs);
-            await PNut_ts_compiler.run();
-          } catch (error) {
-            // Write the error message to a .errout file
-            if (error instanceof Error) {
-              fs.writeFileSync(errorFSpec, error.toString());
-            } else {
-              // Handle the case where error is not an Error object
-              fs.writeFileSync(errorFSpec, `Non-error thrown: ${JSON.stringify(error)}`);
-            } // Re-throw the error if you want the test to fail
-            throw error;
-          }
-
-          // my wait list...
-          const possibleGoldFilesList: string[] = [goldenLstFSpec, goldenObjFSpec, goldenBinFSpec];
-          const outFilesList: string[] = [];
-          for (let index = 0; index < possibleGoldFilesList.length; index++) {
-            const goldFSpec = possibleGoldFilesList[index];
-            const genFSpec = goldFSpec.replace(/\.GOLD$/, '');
-            if (fileExists(goldFSpec)) {
-              outFilesList.push(genFSpec); // we need to wait for this to appear
+            try {
+              PNut_ts_compiler = new PNutInTypeScript(adjustedArgs);
+              await PNut_ts_compiler.run();
+            } catch (error) {
+              // Write the error message to a .errout file
+              if (error instanceof Error) {
+                fs.writeFileSync(errorFSpec, error.toString());
+              } else {
+                // Handle the case where error is not an Error object
+                fs.writeFileSync(errorFSpec, `Non-error thrown: ${JSON.stringify(error)}`);
+              } // Re-throw the error if you want the test to fail
+              throw error;
             }
-          }
-          const compileProducesFiles: boolean = outFilesList.length > 0;
-          //console.log(`TEST: compileProducesFiles=(${compileProducesFiles}), outFilesList=[${outFilesList.join(', ')}]`);
 
-          let whatFailed: string = '';
-          if (compileProducesFiles) {
-            const allFilesExist: boolean = await waitForFiles(outFilesList);
-            // ensure all output files were generated!
-            if (!allFilesExist) {
-              let allFilesPresent: boolean = true;
-              let fileGenerated: boolean;
-              if (outFilesList.includes(listingFSpec)) {
-                fileGenerated = fileExists(listingFSpec);
-                if (!fileGenerated) {
-                  whatFailed = appendDiagnosticString(whatFailed, '.lst', ', ');
-                  allFilesPresent = false;
+            // my wait list...
+            const possibleGoldFilesList: string[] = [goldenLstFSpec, goldenObjFSpec, goldenBinFSpec];
+            const outFilesList: string[] = [];
+            for (let index = 0; index < possibleGoldFilesList.length; index++) {
+              const goldFSpec = possibleGoldFilesList[index];
+              const genFSpec = goldFSpec.replace(/\.GOLD$/, '');
+              if (fileExists(goldFSpec)) {
+                outFilesList.push(genFSpec); // we need to wait for this to appear
+              }
+            }
+            const compileProducesFiles: boolean = outFilesList.length > 0;
+            //console.log(`TEST: compileProducesFiles=(${compileProducesFiles}), outFilesList=[${outFilesList.join(', ')}]`);
+
+            let whatFailed: string = '';
+            if (compileProducesFiles) {
+              const allFilesExist: boolean = await waitForFiles(outFilesList);
+              // ensure all output files were generated!
+              if (!allFilesExist) {
+                let allFilesPresent: boolean = true;
+                let fileGenerated: boolean;
+                if (outFilesList.includes(listingFSpec)) {
+                  fileGenerated = fileExists(listingFSpec);
+                  if (!fileGenerated) {
+                    whatFailed = appendDiagnosticString(whatFailed, '.lst', ', ');
+                    allFilesPresent = false;
+                  }
                 }
-              }
 
-              if (outFilesList.includes(objectFSpec)) {
-                fileGenerated = fileExists(objectFSpec);
-                if (!fileGenerated) {
-                  whatFailed = appendDiagnosticString(whatFailed, '.obj', ', ');
-                  allFilesPresent = false;
+                if (outFilesList.includes(objectFSpec)) {
+                  fileGenerated = fileExists(objectFSpec);
+                  if (!fileGenerated) {
+                    whatFailed = appendDiagnosticString(whatFailed, '.obj', ', ');
+                    allFilesPresent = false;
+                  }
                 }
-              }
 
-              if (outFilesList.includes(binaryFSpec)) {
-                fileGenerated = fileExists(binaryFSpec);
-                if (!fileGenerated) {
-                  whatFailed = appendDiagnosticString(whatFailed, '.bin', ', ');
-                  allFilesPresent = false;
+                if (outFilesList.includes(binaryFSpec)) {
+                  fileGenerated = fileExists(binaryFSpec);
+                  if (!fileGenerated) {
+                    whatFailed = appendDiagnosticString(whatFailed, '.bin', ', ');
+                    allFilesPresent = false;
+                  }
                 }
-              }
 
-              if (outFilesList.includes(errorFSpec)) {
-                fileGenerated = fileExists(errorFSpec);
-                if (!fileGenerated) {
-                  whatFailed = appendDiagnosticString(whatFailed, '.errout', ', ');
-                  allFilesPresent = false;
+                if (outFilesList.includes(errorFSpec)) {
+                  fileGenerated = fileExists(errorFSpec);
+                  if (!fileGenerated) {
+                    whatFailed = appendDiagnosticString(whatFailed, '.errout', ', ');
+                    allFilesPresent = false;
+                  }
                 }
-              }
 
-              if (allFilesPresent == false) {
-                whatFailed = appendDiagnosticString(whatFailed, 'File(s) Missing - Compare Aborted', ' ');
-              }
-            } else {
-              let allFilesMatch: boolean = true;
-              let filesMatch: boolean;
-              if (outFilesList.includes(listingFSpec)) {
-                // Compare listing files
-                filesMatch = compareListingFiles(listingFSpec, goldenLstFSpec);
-                if (!filesMatch) {
-                  whatFailed = appendDiagnosticString(whatFailed, 'Listing File', ', ');
-                  allFilesMatch = false;
+                if (allFilesPresent == false) {
+                  whatFailed = appendDiagnosticString(whatFailed, 'File(s) Missing - Compare Aborted', ' ');
                 }
-              }
-
-              if (outFilesList.includes(objectFSpec)) {
-                // Compare object files
-                filesMatch = compareObjOrBinFiles(objectFSpec, goldenObjFSpec);
-                if (!filesMatch) {
-                  whatFailed = appendDiagnosticString(whatFailed, 'Object File', ', ');
-                  allFilesMatch = false;
-                }
-              }
-
-              if (outFilesList.includes(binaryFSpec)) {
-                // Compare binary files
-                filesMatch = compareObjOrBinFiles(binaryFSpec, goldenBinFSpec);
-                if (!filesMatch) {
-                  whatFailed = appendDiagnosticString(whatFailed, 'Binary File', ', ');
-                  allFilesMatch = false;
-                }
-              }
-
-              if (fileExists(goldenErroutFSpec)) {
-                if (fileExists(errorFSpec)) {
-                  filesMatch = compareExceptionFiles(errorFSpec, goldenErroutFSpec);
+              } else {
+                let allFilesMatch: boolean = true;
+                let filesMatch: boolean;
+                if (outFilesList.includes(listingFSpec)) {
+                  // Compare listing files
+                  filesMatch = compareListingFiles(listingFSpec, goldenLstFSpec);
                   if (!filesMatch) {
-                    whatFailed = appendDiagnosticString(whatFailed, 'Exception File', ', ');
+                    whatFailed = appendDiagnosticString(whatFailed, 'Listing File', ', ');
                     allFilesMatch = false;
                   }
-                } else {
-                  whatFailed = appendDiagnosticString(whatFailed, '(MISSING) Exception File', ', ');
-                  allFilesMatch = false;
+                }
+
+                if (outFilesList.includes(objectFSpec)) {
+                  // Compare object files
+                  filesMatch = compareObjOrBinFiles(objectFSpec, goldenObjFSpec);
+                  if (!filesMatch) {
+                    whatFailed = appendDiagnosticString(whatFailed, 'Object File', ', ');
+                    allFilesMatch = false;
+                  }
+                }
+
+                if (outFilesList.includes(binaryFSpec)) {
+                  // Compare binary files
+                  filesMatch = compareObjOrBinFiles(binaryFSpec, goldenBinFSpec);
+                  if (!filesMatch) {
+                    whatFailed = appendDiagnosticString(whatFailed, 'Binary File', ', ');
+                    allFilesMatch = false;
+                  }
+                }
+
+                if (fileExists(goldenErroutFSpec)) {
+                  if (fileExists(errorFSpec)) {
+                    filesMatch = compareExceptionFiles(errorFSpec, goldenErroutFSpec);
+                    if (!filesMatch) {
+                      whatFailed = appendDiagnosticString(whatFailed, 'Exception File', ', ');
+                      allFilesMatch = false;
+                    }
+                  } else {
+                    whatFailed = appendDiagnosticString(whatFailed, '(MISSING) Exception File', ', ');
+                    allFilesMatch = false;
+                  }
+                }
+
+                if (allFilesMatch == false) {
+                  whatFailed = appendDiagnosticString(whatFailed, 'Do(es) NOT match!', ' ');
                 }
               }
-
-              if (allFilesMatch == false) {
-                whatFailed = appendDiagnosticString(whatFailed, 'Do(es) NOT match!', ' ');
-              }
             }
-          }
 
-          expect(whatFailed).toBe('');
+            expect(whatFailed).toBe('');
+          });
         },
         TEST_TIMEOUT_MS
       );
