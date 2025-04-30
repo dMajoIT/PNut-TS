@@ -23,7 +23,6 @@ CMD_OFFSET = 5
 #-5[-3], TEST1, TEST2
 
 ' #ifdef #endif testing
-#define USE_PSRAM16
 #define USE_PSRAM_SLOW
 
 #ifdef USE_PSRAM16
@@ -66,6 +65,16 @@ MA_PAGESIZE = 0 addbits 15 ' Technically only bounds at 8MB?
 MA_BANKSHIFT = 23
 #endif
 
+#ifndef USE_PSRAM16
+#ifndef USE_PSRAM8
+#ifndef USE_PSRAM4
+#ifndef USE_HYPER
+#error  "ERROR Must have exactly one of USE_PSRAM16, USE_PSRAM8, USE_PSRAM4, or USE_HYPER defined"
+#endif
+#endif
+#endif
+#endif
+
 #ifdef USE_PSRAM_EITHER
 
 #ifdef USE_PSRAM_SLOW
@@ -105,6 +114,8 @@ MA_CYMUL = 2
 MA_CLKDIV = 2
 MA_CYMUL = 1
 #endif
+
+
 
 DAT
 

@@ -54,6 +54,7 @@ These options should already make sense but here's a light-weight recap:
 | <pre>--O, -\-obj,<br>-l, --list</pre> | control the generation of the additional (.lst) listing and (.ob) object files |
 | <pre>-V, -\-version</pre> | shows the compiler version information |
 | <pre>-o {filename}, --output {filename}</pre> | allows you to provide a specific filename for the .bin output file |
+| <pre>-i, --intermediate</pre> | Generate `*__pre.spin2` file after preprocessing your source file
 | <pre>-F, --flashfile</pre> | control the generation of the additional (.flash) flash-mage file |
 | <pre>-a, --altbin</pre> | use alternate `.binary` suffix vs. `.bin` |
 | <pre>-q, --quiet,<br>-v, --verbose</pre> | control how little or how much extra messaging is output from the compiler |
@@ -61,19 +62,20 @@ These options should already make sense but here's a light-weight recap:
 
 And of course `-h` or `--help` produces the output as shown above.
 
+**NOTE:** The `-i, or --intermediate` Option causes the post-preprocessed source file to be saved in case you want to inspect what was passed on to the compiler.  This output file has a `__pre` suffix inserted before the .spin2 extension but otherwise has the same name as your compiled file.  E.G., If you compiled `blink.spin2` your intermediate output file would be `blink__pre.spin2`.
+
+
 ## For PNut-TS - Developer use
 
 There are a couple of additional options we use when testing or validating PNut_TS:
 
 ```text
-  -i, --intermediate          Generate *__pre.spin2 after preprocessing
   --log <objectName...>       objectName (choices: "all", "outline", "compiler", "elementizer", "parser", "preproc", "resolver")
   --regression <testName...>  testName (choices: "element", "tables", "resolver", "preproc")
   --pass <passName...>        Stop after passName (choices: "preprocess", "elementize", "con-block")
 
 ```
 
-The `-i, or --intermediate` Option causes the post preprocessed source file to be saved in case you want to inspect what was passed on to the compiler.  This output file has a `__pre` suffix inserted before the .spin2 extension but otherwise has the same name as your compiled file.  E.G., If you compiled `blink.spin2` your intermediate output file would be `blink__pre.spin2`.
 
 The `--log {option(s)}` produce very detailed output from different sections of the compiler.
 
