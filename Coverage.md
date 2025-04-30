@@ -12,6 +12,18 @@
 
 ## Coverage Status (each release)
 
+The current coverage status is versioned at our repository. You can see the latest at
+
+- [Latest Coverage, All Files](./jest-coverage/lcov-report/index.html) - Top level page
+- [Latest src/classes](./jest-coverage/lcov-report/src/classes/index.html) - The various class files making up PNut TS
+- [Latest code generation coverage](jest-coverage/lcov-report/src/classes/spinResolver.ts.html) - The SpinResolver class does nearly all of our code generation
+
+## Coverage Status v1.51.x
+
+The current coverage status is versioned at our repository.
+
+## Coverage Status v1.43.x
+
 This is our coverage stataus at the v1.43.0 testing release.  In this first coverage effort we focused on the most important areas which would yield the best certification of the compiler in general. We didn't test many of the more extreme (infrequently exercided cases.) We did try to cover all regions that affect actual code generation.
 
 ### Page: Top level
