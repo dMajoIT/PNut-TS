@@ -806,83 +806,255 @@ export class SpinDocument {
   }
 
   private removeNonDocComments(currLine: string): string {
-    // replace any inline nonDoc comments with spaces
-    let nonCommentLine: string = currLine;
-    let needReplace: boolean = false;
-    let currPosn: number = 0;
-    let firstOpenPosn: number = currLine.substring(currPosn).indexOf('{');
-    let nextOpenPosn: number = -1;
-    // must have at least one open { and be more than one char to remove comment
-    if (firstOpenPosn != -1 && currLine.length > 1) {
+    // Replace any inline non-doc comments with spaces, ignoring { and } inside double-quoted strings
+    let nonCommentLine = currLine;
+    let bShouldLog = true;
+
+    if (currLine.length > 1 && currLine.includes('{')) {
       this.logMessage(`SpinPP: rmvNDC() currLine [${currLine}](${currLine.length}) - ENTRY`);
-      do {
-        nextOpenPosn = nonCommentLine.substring(firstOpenPosn + 1).indexOf('{');
-        if (nextOpenPosn != -1) {
-          nextOpenPosn += firstOpenPosn + 1;
-        }
-        let nextClosePosn: number = nonCommentLine.substring(firstOpenPosn + 1).indexOf('}');
-        if (nextClosePosn != -1) {
-          nextClosePosn += firstOpenPosn + 1;
-        }
-        this.logMessage(`SpinPP: rmvNDC() loop firstOpenPosn=(${firstOpenPosn}), nextOpenPosn=(${nextOpenPosn}), nextClosePosn=(${nextClosePosn})`);
-        if (nextOpenPosn == -1) {
-          // no nesting on this line...
-          if (nextClosePosn != -1) {
-            // have open.close on this line, remove it
-            currPosn = firstOpenPosn;
-            needReplace = true;
-          } else {
-            // have only nested open, still in comment
-            break;
+      this.logMessageConditional(bShouldLog, `SpinPP: rmvNDC() currLine [${currLine}](${currLine.length}) - ENTRY`);
+
+      let loopCt = 0;
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        bShouldLog = loopCt < 20;
+
+        // Stack to track positions of `{` and `}`
+        const stack: number[] = [];
+        let deepestOpenPosn = -1;
+        let matchingClosePosn = -1;
+        let insideString = false; // Track whether we are inside a double-quoted string
+
+        // Iterate through the line to find the innermost `{}` pair
+        for (let i = 0; i < nonCommentLine.length; i++) {
+          const char = nonCommentLine[i];
+
+          // Toggle insideString flag when encountering a double quote
+          if (char === '"' && (i === 0 || nonCommentLine[i - 1] !== '\\')) {
+            insideString = !insideString;
           }
-        } else {
-          // nextOpen is NOT = -1!
-          if (nextClosePosn != -1 && nextOpenPosn != -1) {
-            // have both
-            if (nextClosePosn < nextOpenPosn) {
-              // have close, then another open
-              // no replacement, just move to next open
-              currPosn = nextOpenPosn;
-            } else {
-              // have open followed by a close
-              // replace with spaces
-              currPosn = nextOpenPosn;
-              needReplace = true;
+
+          // Skip processing if inside a double-quoted string
+          if (insideString) {
+            continue;
+          }
+
+          if (char === '{') {
+            stack.push(i); // Push the position of `{` onto the stack
+          } else if (char === '}') {
+            if (stack.length > 0) {
+              // Pop the last `{` position from the stack
+              deepestOpenPosn = stack.pop()!;
+              matchingClosePosn = i;
             }
-          } else if (nextClosePosn != -1) {
-            // have only close
-            // no replacement, just move to next open
-            currPosn = nextClosePosn + 1;
-          } else {
-            // have NO open or close
-            break;
           }
         }
-        if (needReplace) {
-          const cmtEndIdx = nextClosePosn + 1 > nonCommentLine.length - 1 ? nonCommentLine.length - 1 : nextClosePosn + 1;
-          nonCommentLine = this.replaceSubstringWithSpaces(nonCommentLine, currPosn, cmtEndIdx);
+
+        this.logMessageConditional(
+          bShouldLog,
+          `SpinPP: rmvNDC() loop (#${++loopCt}) deepestOpen=(${deepestOpenPosn}), matchingClose=(${matchingClosePosn})`
+        );
+
+        // Break if no more `{}` pairs are found
+        if (deepestOpenPosn === -1 || matchingClosePosn === -1) {
+          break;
         }
-        firstOpenPosn = nonCommentLine.indexOf('{');
-      } while (firstOpenPosn != -1);
+
+        // Replace the innermost comment block with spaces
+        nonCommentLine = this.replaceSubstringWithSpaces(nonCommentLine, deepestOpenPosn, matchingClosePosn + 1);
+      }
+
+      if (currLine !== nonCommentLine) {
+        this.logMessage(`SpinPP: rmvNDC()       currLine [${currLine}](${currLine.length})`);
+        this.logMessage(`SpinPP: rmvNDC() nonCommentLine [${nonCommentLine}](${nonCommentLine.length})`);
+        this.logMessageConditional(bShouldLog, `SpinPP: rmvNDC()       currLine [${currLine}](${currLine.length})`);
+        this.logMessageConditional(bShouldLog, `SpinPP: rmvNDC() nonCommentLine [${nonCommentLine}](${nonCommentLine.length})`);
+      }
     }
-    if (currLine !== nonCommentLine) {
-      this.logMessage(`SpinPP: rmvNDC()       currLine [${currLine}](${currLine.length})`);
-      this.logMessage(`SpinPP: rmvNDC() nonCommentLine [${nonCommentLine}](${nonCommentLine.length})`);
-    }
+
     return nonCommentLine;
   }
 
+  /*
+  //private removeNonDocCommentsOLD3(currLine: string): string {
+    // Replace any inline non-doc comments with spaces
+    let nonCommentLine = currLine;
+    let loopCt = 0;
+
+    if (currLine.length > 1 && currLine.includes('{')) {
+      this.logMessage(`SpinPP: rmvNDC() currLine [${currLine}](${currLine.length}) - ENTRY`);
+
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const bShouldLog = loopCt < 20;
+
+        // Stack to track positions of `{` and `}`
+        const stack: number[] = [];
+        let deepestOpenPosn = -1;
+        let matchingClosePosn = -1;
+
+        // Iterate through the line to find the innermost `{}` pair
+        for (let i = 0; i < nonCommentLine.length; i++) {
+          if (nonCommentLine[i] === '{') {
+            stack.push(i); // Push the position of `{` onto the stack
+          } else if (nonCommentLine[i] === '}') {
+            if (stack.length > 0) {
+              // Pop the last `{` position from the stack
+              deepestOpenPosn = stack.pop()!;
+              matchingClosePosn = i;
+            }
+          }
+        }
+
+        this.logMessageConditional(
+          bShouldLog,
+          `SpinPP: rmvNDC() loop (#${++loopCt}) deepestOpen=(${deepestOpenPosn}), matchingClose=(${matchingClosePosn})`
+        );
+
+        // Break if no more `{}` pairs are found
+        if (deepestOpenPosn === -1 || matchingClosePosn === -1) {
+          break;
+        }
+
+        // Replace the innermost comment block with spaces
+        nonCommentLine = this.replaceSubstringWithSpaces(nonCommentLine, deepestOpenPosn, matchingClosePosn + 1);
+      }
+
+      if (currLine !== nonCommentLine) {
+        this.logMessage(`SpinPP: rmvNDC()       currLine [${currLine}](${currLine.length})`);
+        this.logMessage(`SpinPP: rmvNDC() nonCommentLine [${nonCommentLine}](${nonCommentLine.length})`);
+      }
+    }
+
+    return nonCommentLine;
+  }
+
+  //private removeNonDocCommentsOLD2(currLine: string): string {
+    // Replace any inline non-doc comments with spaces
+    let nonCommentLine = currLine;
+    let loopCt = 0;
+
+    if (currLine.length > 1 && currLine.includes('{')) {
+      this.logMessage(`SpinPP: rmvNDC() currLine [${currLine}](${currLine.length}) - ENTRY`);
+
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const bShouldLog = loopCt < 20;
+
+        // Find the first open `{` and close `}` positions
+        const firstOpenPosn = nonCommentLine.indexOf('{');
+        const firstClosePosn = firstOpenPosn != -1 ? nonCommentLine.indexOf('}', firstOpenPosn + 1) : -1;
+
+        this.logMessageConditional(bShouldLog, `SpinPP: rmvNDC() loop (#${++loopCt}) firstOpen=(${firstOpenPosn}), firstClose=(${firstClosePosn})`);
+
+        // Break if no more `{` or `}` are found
+        if (firstOpenPosn === -1 || firstClosePosn === -1) {
+          break;
+        }
+
+        // Replace the comment block with spaces
+        nonCommentLine = this.replaceSubstringWithSpaces(nonCommentLine, firstOpenPosn, firstClosePosn + 1);
+      }
+
+      if (currLine !== nonCommentLine) {
+        this.logMessage(`SpinPP: rmvNDC()       currLine [${currLine}](${currLine.length})`);
+        this.logMessage(`SpinPP: rmvNDC() nonCommentLine [${nonCommentLine}](${nonCommentLine.length})`);
+      }
+    }
+
+    return nonCommentLine;
+  }
+
+  //private removeNonDocCommentsOLD0(currLine: string): string {
+    // replace any inline nonDoc comments with spaces
+    let nonCommentLine: string = currLine;
+    let loopCt: number = 0;
+    if (currLine.length > 1) {
+      // must have at least one open { and be more than one char to remove comment
+      let needReplace: boolean = false;
+      let firstOpenPosn: number = currLine.indexOf('{');
+      let nextOpenPosn: number = -1;
+      // have any open '{'?
+      if (firstOpenPosn != -1) {
+        let currPosn: number = firstOpenPosn;
+        this.logMessage(`SpinPP: rmvNDC() currLine [${currLine}](${currLine.length}) - ENTRY`);
+        do {
+          const bShouldLog: boolean = loopCt < 20;
+          nextOpenPosn = nonCommentLine.substring(firstOpenPosn + 1).indexOf('{');
+          if (nextOpenPosn != -1) {
+            nextOpenPosn += firstOpenPosn + 1;
+          }
+          let nextClosePosn: number = nonCommentLine.substring(firstOpenPosn + 1).indexOf('}');
+          if (nextClosePosn != -1) {
+            nextClosePosn += firstOpenPosn + 1;
+          }
+          this.logMessageConditional(
+            bShouldLog,
+            `SpinPP: rmvNDC() loop (#${++loopCt}) firstOpenPosn=(${firstOpenPosn}), nextOpenPosn=(${nextOpenPosn}), nextClosePosn=(${nextClosePosn})`
+          );
+          if (nextOpenPosn == -1) {
+            // no nesting on this line...
+            if (nextClosePosn != -1) {
+              // have open.close on this line, remove it
+              currPosn = firstOpenPosn;
+              needReplace = true;
+            } else {
+              // have only nested open, still in comment
+              break;
+            }
+          } else {
+            // nextOpen is NOT = -1!
+            if (nextClosePosn != -1 && nextOpenPosn != -1) {
+              // have both
+              if (nextClosePosn < nextOpenPosn) {
+                // have close, then another open
+                // no replacement, just move to next open
+                currPosn = nextOpenPosn;
+              } else {
+                // have open followed by a close
+                // replace with spaces
+                currPosn = nextOpenPosn;
+                needReplace = true;
+              }
+            } else if (nextClosePosn != -1) {
+              // have only close
+              // no replacement, just move to next open
+              currPosn = nextClosePosn + 1;
+            } else {
+              // have NO open or close
+              break;
+            }
+          }
+          if (needReplace) {
+            const cmtEndIdx = nextClosePosn + 1 > nonCommentLine.length - 1 ? nonCommentLine.length - 1 : nextClosePosn + 1;
+            nonCommentLine = this.replaceSubstringWithSpaces(nonCommentLine, currPosn, cmtEndIdx);
+          }
+
+          // DONE XYZZY this is emergency fix... DO REAL  FIX BEFORE release
+          //const priorFirstOpen = firstOpenPosn;
+          firstOpenPosn = nonCommentLine.indexOf('{');
+          //if (priorFirstOpen == firstOpenPosn) {
+          //  break;
+          //}
+        } while (firstOpenPosn != -1);
+      }
+      if (currLine !== nonCommentLine) {
+        this.logMessage(`SpinPP: rmvNDC()       currLine [${currLine}](${currLine.length})`);
+        this.logMessage(`SpinPP: rmvNDC() nonCommentLine [${nonCommentLine}](${nonCommentLine.length})`);
+      }
+    }
+    return nonCommentLine;
+  }
+  */
+
   private replaceSubstringWithSpaces(line: string, startIdx: number, endIdx: number): string {
     let spacedLine = line;
-    this.logMessage(`SpinPP: REPL string [${line}](${line.length}) - (s:${startIdx}-e:${endIdx})`);
-    if (startIdx >= 0 && startIdx <= line.length - 1 && endIdx >= 0 && endIdx <= line.length - 1 && startIdx < endIdx) {
-      const spaces: string = ' '.repeat(endIdx - startIdx);
-      if (endIdx - startIdx + 1 == line.length) {
-        spacedLine = spaces;
-      } else {
-        spacedLine = line.substring(0, startIdx) + spaces + line.substring(endIdx);
-      }
-      this.logMessage(`SpinPP: REPL    new [${spacedLine}](${spacedLine.length})`);
+    const badText: string = line.substring(startIdx, endIdx);
+    const replaceText: string = ''.padEnd(badText.length, ' ');
+    this.logMessageConditional(true, `SpinPP: REPL string [${line}](${line.length}) - (s:${startIdx}-e:${endIdx})[${badText}]`);
+    if (badText.length > 0 && badText.length <= line.length) {
+      spacedLine = line.replace(badText, replaceText);
+      this.logMessageConditional(true, `SpinPP: REPL    new [${spacedLine}](${spacedLine.length})`);
     }
     return spacedLine;
   }
@@ -955,16 +1127,6 @@ export class SpinDocument {
       symbol = lineParts[1].toUpperCase();
     }
     return symbol;
-  }
-
-  private logMessage(message: string): void {
-    if (this.isLogging) {
-      this.context.logger.logMessage(message);
-    }
-  }
-
-  private forceLogMessage(message: string): void {
-    this.context.logger.logMessage(message);
   }
 
   private getVersionFromHeader(headerComments: string[]): void {
@@ -1055,6 +1217,22 @@ export class SpinDocument {
       }
     }
     return emitCode;
+  }
+
+  private logMessage(message: string): void {
+    if (this.isLogging) {
+      this.context.logger.logMessage(message);
+    }
+  }
+
+  private logMessageConditional(condition: boolean, message: string): void {
+    if (condition == true) {
+      this.context.logger.logMessage(message);
+    }
+  }
+
+  private forceLogMessage(message: string): void {
+    this.context.logger.logMessage(message);
   }
 
   private logMessageOutline(message: string): void {
