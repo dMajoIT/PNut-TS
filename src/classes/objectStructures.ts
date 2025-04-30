@@ -269,18 +269,18 @@ export class ObjectStructures {
     // first see if this size will work
     if (nbrInstances > 1 && this._structMemorySize > 0xffff) {
       // [error_iscexb]
-      throw new Error('Indexed structures cannot exceed $FFFF bytes in size');
+      throw new Error('Indexed structures cannot exceed $FFFF bytes in size (m400)');
     }
     // PNut @@gotcount:
     const elementSizeInBytes: number = this._lastSizeRecorded * nbrInstances;
     if (elementSizeInBytes > 0x10000) {
       // [error_sehr]
-      throw new Error('Structure exceeds hub range of $FFFFF');
+      throw new Error('Structure exceeds hub range of $FFFFF (m530)');
     }
     this._structMemorySize += elementSizeInBytes;
     if (this._structMemorySize > objectLimit) {
       // [error_sehr]
-      throw new Error('Structure exceeds hub range of $FFFFF');
+      throw new Error('Structure exceeds hub range of $FFFFF (m531)');
     }
     return this._structMemorySize;
   }

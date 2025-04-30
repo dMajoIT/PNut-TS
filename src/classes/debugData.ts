@@ -29,7 +29,7 @@ export class DebugRecord {
   public append(byteValue: number) {
     if (this._debugOffset >= DebugRecord.MAX_RECORD_LENGTH) {
       // [error_dditl] WAS: DEBUG data is too long
-      throw new Error(`DEBUG data is too long: record exceeds ${DebugRecord.MAX_RECORD_LENGTH} bytes`);
+      throw new Error(`DEBUG data is too long: record exceeds ${DebugRecord.MAX_RECORD_LENGTH} bytes (m150)`);
     }
     this._debugRecord[this._debugOffset++] = byteValue;
   }
@@ -144,7 +144,7 @@ export class DebugData {
     const recordOffset: number = this.readWord(0);
     if (recordOffset + newRecord.length > DebugData.DEBUG_SIZE_IN_BYTES) {
       // [error_dditl] WAS: DEBUG data is too long
-      throw new Error(`DEBUG data is too long: total exceeds ${DebugData.DEBUG_SIZE_IN_BYTES} bytes`);
+      throw new Error(`DEBUG data is too long: total exceeds ${DebugData.DEBUG_SIZE_IN_BYTES} bytes (m151)`);
     }
     // save this new record
     for (let index = 0; index < newRecord.length; index++) {

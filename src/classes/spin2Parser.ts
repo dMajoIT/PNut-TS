@@ -601,7 +601,7 @@ export class Spin2Parser {
     }
     if (computedSize > ObjectImage.MAX_SIZE_IN_BYTES) {
       // [error_pex]
-      throw new Error('Program exceeds 1024KB (m1F1)');
+      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m492)`);
     }
     this.logMessage(`  -- patch interpreter`);
     // set var_longs
@@ -639,7 +639,7 @@ export class Spin2Parser {
     this.logMessage(`* moveObjUp() from=(${sourceOffset}), to=(${destOffset}), length=(${nbrBytes})`);
     if (currOffset + nbrBytes > ObjectImage.MAX_SIZE_IN_BYTES) {
       // [error_pex]
-      throw new Error('Program exceeds 1024KB (m1F2)');
+      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m493)`);
     }
     for (let index = 0; index < nbrBytes; index++) {
       const invertedIndex = nbrBytes - index - 1;

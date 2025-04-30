@@ -60,7 +60,7 @@ export class ObjectImage {
       this._objImageByteAr = newBuffer;
     } else if (neededCapacity > this._objImageByteAr.length) {
       // [error_pex]
-      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m1F0)`);
+      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m491)`);
     }
   }
 

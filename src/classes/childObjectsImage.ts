@@ -50,7 +50,7 @@ export class ChildObjectsImage {
       this._chldObjImageByteAr = newBuffer;
     } else if (neededCapacity > this._chldObjImageByteAr.length) {
       // [error_pex]
-      throw new Error(`Child Object exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}KB`);
+      throw new Error(`Child Object exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}KB (m490)`);
     }
   }
 

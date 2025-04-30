@@ -667,7 +667,7 @@ export class SpinResolver {
             //this.logMessage(`** == * comp_var_blks() NOT undefined...`);
             // our symbol/element was NOT undefined!
             // [error_eauvnsa]
-            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E0)');
+            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m240)');
           }
 
           this.currElement = this.getElementObj();
@@ -680,13 +680,13 @@ export class SpinResolver {
           if (this.checkLeftBracket()) {
             if (this.isPtr(variableType)) {
               // [error_pcba]
-              throw new Error('Pointers cannot be arrays');
+              throw new Error('Pointers cannot be arrays (m480)');
             }
             // we have [count]. Get the value, replacing our 1
             let countResult = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
             if (countResult.value > BigInt(this.hubOrgLimit)) {
               // [error_tmvsid]
-              throw new Error('Too much variable space is declared (m280)');
+              throw new Error('Too much variable space is declared (m600)');
             }
             instanceCount = Number(countResult.value);
             this.getRightBracket();
@@ -696,7 +696,7 @@ export class SpinResolver {
           this.varPtr += instanceCount * variableSize;
           if (this.varPtr > this.hubOrgLimit) {
             // [error_tmvsid]
-            throw new Error('Too much variable space is declared (m281)');
+            throw new Error('Too much variable space is declared (m601)');
           }
           const newVarSymbol: iSymbol = { name: symbolName, type: variableType, value: BigInt(adjustedValue) };
           this.recordSymbol(newVarSymbol);
@@ -798,7 +798,7 @@ export class SpinResolver {
     }
     if (this.varPtr > this.hubOrgLimit) {
       // [error_tmvsid]
-      throw new Error('Too much variable space is declared (m282)');
+      throw new Error('Too much variable space is declared (m602)');
     }
   }
 
@@ -1314,11 +1314,11 @@ export class SpinResolver {
           if (this.currElement.type == eElementType.type_end_file) {
             if (this.dittoIsActive) {
               // [error_edend]
-              throw new Error('Expected DITTO END');
+              throw new Error('Expected DITTO END (m260)');
             }
             if (inLineMode) {
               // [error_eend]
-              throw new Error('Expected END');
+              throw new Error('Expected END (m270)');
             }
             break;
           }
@@ -1336,7 +1336,7 @@ export class SpinResolver {
           }
           if (isDatStorage && pass == 0) {
             // [error_siad]
-            throw new Error('Symbol is already defined (m230)');
+            throw new Error('Symbol is already defined (m540)');
           }
           const tmpSymbolName: string = didFindLocal ? String(symbol.value) : this.currElement.stringValue;
           this.symbolName = this.weHaveASymbol ? tmpSymbolName : '';
@@ -1410,13 +1410,13 @@ export class SpinResolver {
                 if (isSigned) {
                   if ((BigInt(fvarResult.value) & BigInt(0xf0000000)) != BigInt(0xf0000000)) {
                     // [error_fvar]
-                    throw new Error('FVAR/FVARS data is too big (m160)');
+                    throw new Error('FVAR/FVARS data is too big (m350)');
                   }
                   this.compileRfvarsDat(fvarResult.value);
                 } else {
                   if ((BigInt(fvarResult.value) & BigInt(0xe0000000)) != 0n) {
                     // [error_fvar]
-                    throw new Error('FVAR/FVARS data is too big (m161)');
+                    throw new Error('FVAR/FVARS data is too big (m351)');
                   }
                   this.compileRfvarDat(fvarResult.value);
                 }
@@ -1451,7 +1451,7 @@ export class SpinResolver {
                 this.currElement = this.getElement();
                 if (this.currElement.type != eElementType.type_asm_end) {
                   // [error_eend]
-                  throw new Error('Expected END');
+                  throw new Error('Expected END (m271)');
                 }
                 this.logMessage(`* compDATblks() found ditto end`);
                 this.getEndOfLine();
@@ -1524,7 +1524,7 @@ export class SpinResolver {
               this.cogOrg = this.cogOrg + (Number(countResult.value) << 2);
               if (this.cogOrg > this.cogOrgLimit) {
                 // [error_cael]
-                throw new Error('Cog address exceeds limit (m020)');
+                throw new Error('Cog address exceeds limit (m110)');
               }
             } else if (pasmDirective == eValueType.dir_orgf) {
               //
@@ -1538,7 +1538,7 @@ export class SpinResolver {
               const tmpCogAddress = Number(cogAddressResult.value) << 2;
               if (tmpCogAddress > this.cogOrgLimit) {
                 // [error_cael]
-                throw new Error('Cog address exceeds limit (m021)');
+                throw new Error('Cog address exceeds limit (m111)');
               }
               if (this.cogOrg > tmpCogAddress) {
                 // [error_oaet]
@@ -1567,7 +1567,7 @@ export class SpinResolver {
                 const cogAddressResult = this.getValue(eMode.BM_OperandIntOnly, eResolve.BR_Must);
                 if (Number(cogAddressResult.value) > 0x400) {
                   // [error_caexl]
-                  throw new Error('Cog address exceeds $400 limit (m030)');
+                  throw new Error('Cog address exceeds $400 limit (m120)');
                 }
                 this.cogOrg = Number(cogAddressResult.value) << 2;
                 this.cogOrgLimit = (Number(cogAddressResult.value) >= 0x200 ? 0x400 : 0x200) << 2;
@@ -1576,7 +1576,7 @@ export class SpinResolver {
                   const cogLimitResult = this.getValue(eMode.BM_OperandIntOnly, eResolve.BR_Must);
                   if (Number(cogLimitResult.value) > 0x400) {
                     // [error_caexl]
-                    throw new Error('Cog address exceeds $400 limit (m031)');
+                    throw new Error('Cog address exceeds $400 limit (m121)');
                   }
                   this.cogOrgLimit = Number(cogLimitResult.value) << 2;
                 }
@@ -1606,7 +1606,7 @@ export class SpinResolver {
                 }
                 if (Number(hubAddressResult.value) > ObjectImage.MAX_SIZE_IN_BYTES) {
                   // [error_haec]
-                  throw new Error('Hub address exceeds $100000 ceiling (m170)');
+                  throw new Error('Hub address exceeds $100000 ceiling (m360)');
                 }
                 this.hubOrg = Number(hubAddressResult.value);
                 this.orghOffset = this.hubOrg - this.objImage.offset;
@@ -1617,11 +1617,11 @@ export class SpinResolver {
                   this.hubOrgLimit = Number(hubLimitResult.value);
                   if (this.hubOrgLimit < this.hubOrg) {
                     // [error_hael]
-                    throw new Error('Hub address exceeds limit (m180)');
+                    throw new Error('Hub address exceeds limit (m370)');
                   }
                   if (this.hubOrgLimit > ObjectImage.MAX_SIZE_IN_BYTES) {
                     // [error_haec]
-                    throw new Error('Hub address exceeds $100000 ceiling (m171)');
+                    throw new Error('Hub address exceeds $100000 ceiling (m361)');
                   }
                 }
                 // if in pasmMode ...
@@ -1672,7 +1672,7 @@ export class SpinResolver {
             // HANDLE DITTO must have DITTO end
             if (this.dittoIsActive) {
               // [error_edend]
-              throw new Error('Expected DITTO END');
+              throw new Error('Expected DITTO END (m261)');
             }
             // HANDLE inline must have end
             if (this.currElement.type != eElementType.type_asm_end) {
@@ -1726,7 +1726,7 @@ export class SpinResolver {
           } else {
             if (this.dittoIsActive) {
               // [error_edend]
-              throw new Error('Expected DITTO END');
+              throw new Error('Expected DITTO END (m262)');
             }
             // put block back in list
             this.backElement();
@@ -1888,7 +1888,7 @@ export class SpinResolver {
             const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
             if (Number(valueResult.value) > 0b111) {
               // [error_smb0t7]
-              throw new Error('Selector must be 0 to 7 (m260)');
+              throw new Error('Selector must be 0 to 7 (m570)');
             }
             this.instructionImage |= Number(valueResult.value) << 19;
           }
@@ -1904,7 +1904,7 @@ export class SpinResolver {
           const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
           if (Number(valueResult.value) > 0b111) {
             // [error_smb0t7]
-            throw new Error('Selector must be 0 to 7 (m261)');
+            throw new Error('Selector must be 0 to 7 (m571)');
           }
           this.instructionImage |= Number(valueResult.value) << 19;
         }
@@ -1925,7 +1925,7 @@ export class SpinResolver {
             const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
             if (Number(valueResult.value) > 0b11) {
               // [error_smb0t3]
-              throw new Error('Selector must be 0 to 3 (m250)');
+              throw new Error('Selector must be 0 to 3 (m560)');
             }
             this.instructionImage |= Number(valueResult.value) << 19;
           }
@@ -1941,7 +1941,7 @@ export class SpinResolver {
           const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
           if (Number(valueResult.value) > 0b11) {
             // [error_smb0t3]
-            throw new Error('Selector must be 0 to 3 (m251)');
+            throw new Error('Selector must be 0 to 3 (m561)');
           }
           this.instructionImage |= Number(valueResult.value) << 19;
         }
@@ -1962,7 +1962,7 @@ export class SpinResolver {
             const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
             if (Number(valueResult.value) > 0b1) {
               // [error_smb0t1]
-              throw new Error('Selector must be 0 to 1 (m240)');
+              throw new Error('Selector must be 0 to 1 (m550)');
             }
             this.instructionImage |= Number(valueResult.value) << 19;
           }
@@ -1978,7 +1978,7 @@ export class SpinResolver {
           const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
           if (Number(valueResult.value) > 0b1) {
             // [error_smb0t1]
-            throw new Error('Selector must be 0 to 1 (m241)');
+            throw new Error('Selector must be 0 to 1 (m551)');
           }
           this.instructionImage |= Number(valueResult.value) << 19;
         }
@@ -2090,7 +2090,7 @@ export class SpinResolver {
                   if (address & 0b11) {
                     if (dRegister < 0x1f6 || dRegister > 0x1f9) {
                       // [error_drmbpppp]
-                      throw new Error('D register must be PA/PB/PTRA/PTRB (m070)');
+                      throw new Error('D register must be PA/PB/PTRA/PTRB (m160)');
                     }
                     // install the mini d field, set relative, s field
                     this.instructionImage |= (((dRegister & 0b11) ^ 0b10) << 21) | (1 << 20) | (address & 0xfffff);
@@ -2101,7 +2101,7 @@ export class SpinResolver {
                       // out of range
                       if (dRegister < 0x1f6 || dRegister > 0x1f9) {
                         // [error_drmbpppp]
-                        throw new Error('D register must be PA/PB/PTRA/PTRB (m071)');
+                        throw new Error('D register must be PA/PB/PTRA/PTRB (m161)');
                       }
                       // install the mini d field, set relative, s field
                       this.instructionImage |= (((dRegister & 0b11) ^ 0b10) << 21) | (1 << 20) | (address & 0xfffff);
@@ -2119,7 +2119,7 @@ export class SpinResolver {
                     // address out-of-range
                     if (dRegister < 0x1f6 || dRegister > 0x1f9) {
                       // [error_drmbpppp]
-                      throw new Error('D register must be PA/PB/PTRA/PTRB (m072)');
+                      throw new Error('D register must be PA/PB/PTRA/PTRB (m162)');
                     }
                     // install the mini d field, relative bit, and s field
                     this.instructionImage |= (((dRegister & 0b11) ^ 0b10) << 21) | (1 << 20) | (address & 0xfffff);
@@ -2136,7 +2136,7 @@ export class SpinResolver {
               if (this.pasmResolveMode == eResolve.BR_Must) {
                 if (dRegister < 0x1f6 || dRegister > 0x1f9) {
                   // [error_drmbpppp]
-                  throw new Error('D register must be PA/PB/PTRA/PTRB (m073)');
+                  throw new Error('D register must be PA/PB/PTRA/PTRB (m163)');
                 }
                 // install the mini d field and s field
                 this.instructionImage |= (((dRegister & 0b11) ^ 0b10) << 21) | (address & 0xfffff);
@@ -2165,7 +2165,7 @@ export class SpinResolver {
           if (this.pasmResolveMode == eResolve.BR_Must) {
             if (dRegister < 0x1f6 || dRegister > 0x1f9) {
               // [error_drmbpppp]
-              throw new Error('D register must be PA/PB/PTRA/PTRB (m074)');
+              throw new Error('D register must be PA/PB/PTRA/PTRB (m164)');
             }
             // install d
             this.instructionImage |= ((dRegister & 0b11) ^ 0b10) << 21;
@@ -2569,7 +2569,7 @@ export class SpinResolver {
           branchAddress -= orgAddress + 8;
           if (branchAddress & 0b11) {
             // [error_rainawi]
-            throw new Error('Relative address is not aligned with instruction (m200)');
+            throw new Error('Relative address is not aligned with instruction (m500)');
           }
           branchAddress = (branchAddress >> 2) & (0xfffff >> 2);
         }
@@ -2584,7 +2584,7 @@ export class SpinResolver {
           this.logMessage(`* trySRel() hubMode=(${this.hubMode}) value=${hexString(valueResult.value)}, branchAddress=${hexString(branchAddress)}`);
           if (branchAddress & 0b11) {
             // [error_rainawi]
-            throw new Error('Relative address is not aligned with instruction (m201)');
+            throw new Error('Relative address is not aligned with instruction (m501)');
           }
           // check signed number
           // TODO: watch that this doesn't do weird stuff! (fix math if does!)
@@ -2847,7 +2847,7 @@ export class SpinResolver {
     const valueResult = this.getValue(eMode.BM_OperandIntOnly, this.pasmResolveMode);
     if (valueResult.value > 511n) {
       // [error_cmbf0t511]
-      throw new Error('Constant must be from 0 to 511 (m040)');
+      throw new Error('Constant must be from 0 to 511 (m130)');
     }
     this.logMessage(`* tryValueCon() - EXIT`);
     return Number(valueResult.value);
@@ -3070,14 +3070,14 @@ export class SpinResolver {
             this.hubOrg++;
             if (this.hubOrg > this.hubOrgLimit) {
               // [error_hael]
-              throw new Error('Hub address exceeds limit (m181)');
+              throw new Error('Hub address exceeds limit (m370)');
             }
           } else {
             // in COG mode
             this.cogOrg++;
             if (this.cogOrg > this.cogOrgLimit) {
               // [error_cael]
-              throw new Error('Cog address exceeds limit (m022)');
+              throw new Error('Cog address exceeds limit (m112)');
             }
           }
         }
@@ -3148,12 +3148,12 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaupn]
-            throw new Error('Expected a unique parameter name (m0C0)');
+            throw new Error('Expected a unique parameter name (m220)');
           }
           parameterCount += paramSizeInLongs;
           if (parameterCount > this.method_params_limit) {
             // [error_loxpe]
-            throw new Error(`Limit of ${this.method_params_limit} parameters exceeded`);
+            throw new Error(`Limit of ${this.method_params_limit} parameters exceeded (m430)`);
           }
         } while (this.getCommaOrRightParen());
       }
@@ -3178,12 +3178,12 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaurn]
-            throw new Error('Expected a unique result name (m0D0)');
+            throw new Error('Expected a unique result name (m230)');
           }
           resultCount += resultSizeInLongs;
           if (resultCount > this.method_results_limit) {
             // [error_loxre]
-            throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
+            throw new Error(`Limit of ${this.method_results_limit} results exceeded (m440)`);
           }
         } while (this.checkComma());
       }
@@ -3219,13 +3219,13 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
-            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E1)');
+            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m241)');
           }
           // if array index, skip it
           if (this.checkLeftBracket()) {
             if (havePointer) {
               // [error_pcba]
-              throw new Error('Pointers cannot be arrays');
+              throw new Error('Pointers cannot be arrays (m481)');
             }
             this.scanToRightBracket();
           }
@@ -3274,7 +3274,7 @@ export class SpinResolver {
       }
       if (returnValueLongCount > this.method_results_limit) {
         // [error_loxre]
-        throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
+        throw new Error(`Limit of ${this.method_results_limit} results exceeded (m441)`);
       }
     }
     return returnValueLongCount;
@@ -3304,7 +3304,7 @@ export class SpinResolver {
     // if not a structure or we have structure with leaf of BYTE/WORD/LONG
     if (!this.isStruct(variableReturn.type) || variableReturn.structIsBWL) {
       // [error_easn]
-      throw new Error('Expected a structure name');
+      throw new Error('Expected a structure name (m200)');
     }
     this.logMessage(`* getStructVar() returning [${JSON.stringify(variableReturn, null, 2)}]`);
     return variableReturn;
@@ -3392,7 +3392,7 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaupn]
-            throw new Error('Expected a unique parameter name (m0C1)');
+            throw new Error('Expected a unique parameter name (m221)');
           }
           const newParameterSymbol: iSymbol = { name: this.currElement.stringValue, type: paramType, value: BigInt((structID << 20) | localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);
@@ -3432,7 +3432,7 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eaurn]
-            throw new Error('Expected a unique result name (m0D1)');
+            throw new Error('Expected a unique result name (m231)');
           }
           const newReturnSymbol: iSymbol = { name: this.currElement.stringValue, type: resultType, value: BigInt((structID << 20) | localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);
@@ -3488,7 +3488,7 @@ export class SpinResolver {
           }
           if (this.currElement.type != eElementType.type_undefined) {
             // [error_eauvnsa]
-            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E2)');
+            throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m242)');
           }
           const newLocalSymbol: iSymbol = { name: this.currElement.stringValue, type: localType, value: BigInt((structID << 20) | localOffset) };
           //this.logMessage(`* compilePubPriBlocks() calling record symbol [${newSymbol}]`);
@@ -3722,7 +3722,7 @@ export class SpinResolver {
       // if any match after 'other', error
       if (haveOtherCase) {
         // [error_omblc]
-        throw new Error('OTHER must be last case (m1E0)');
+        throw new Error('OTHER must be last case (m470)');
       }
       if (matchIsOtherCase) {
         haveOtherCase = true;
@@ -3753,7 +3753,7 @@ export class SpinResolver {
 
     if (caseCount < 1) {
       // [error_nce]
-      throw new Error('No cases encountered (m1D0)');
+      throw new Error('No cases encountered (m460)');
     }
     if (haveOtherCase) {
       this.logRestoredElementLocation(otherCaseElementIndex);
@@ -3891,7 +3891,7 @@ export class SpinResolver {
       // if any match after 'other', error
       if (haveOtherCase) {
         // [error_omblc]
-        throw new Error('OTHER must be last case (m1E1)');
+        throw new Error('OTHER must be last case (m471)');
       }
       const savedCaseColumn: number = this.scopeColumn;
       this.setScopeColumn(this.lineColumn);
@@ -3920,7 +3920,7 @@ export class SpinResolver {
     // here is @@done1:
     if (caseCount < 1) {
       // [error_nce]
-      throw new Error('No cases encountered (m1D1)');
+      throw new Error('No cases encountered (m461)');
     }
     const tablePtr: number = this.read_bstack(eCaseFast.CF_TablePtr);
     const minValue: number = this.read_bstack(eCaseFast.CF_MinValue);
@@ -4534,7 +4534,7 @@ export class SpinResolver {
               this.getElementObj();
               if (!this.currElement.isTypeUndefined) {
                 // [error_eas]
-                throw new Error('Expected a symbol [eas00]');
+                throw new Error('Expected a symbol (m190)');
               }
               const overrideName: string = this.currElement.stringValue;
               this.getEqual();
@@ -4831,7 +4831,7 @@ export class SpinResolver {
         this.varPtr += objVar[fileNumber];
         if (this.varPtr > this.obj_limit) {
           // [error_tmvsid]
-          throw new Error('Too much variable space is declared (m283)');
+          throw new Error('Too much variable space is declared (m603)');
         }
       }
       this.logMessage(`  -- compObjBlks() end of 2nd pass`);
@@ -5525,7 +5525,7 @@ export class SpinResolver {
             //   name = value, name = value, name = name = value, #0[4], name1, name2
             if (firstPass) {
               // [error_eaucnpos]
-              throw new Error('Expected a unique constant name, "#", or STRUCT (m0B0)');
+              throw new Error('Expected a unique constant name, "#", or STRUCT (m210)');
             }
             backupSymbolName = this.replacedName; // stashed by getElement()
             this.logMessage(`* BACKUP SYMBOL name for use in set/verify name=[${backupSymbolName}]`);
@@ -5664,7 +5664,7 @@ export class SpinResolver {
             this.getElement();
             this.logMessage(`EEEE: Element at fail: [${this.currElement.toString()}]`);
             // [error_eaucnpos]
-            throw new Error('Expected a unique constant name, "#", or STRUCT (m0B1)');
+            throw new Error('Expected a unique constant name, "#", or STRUCT (m211)');
           }
         } while (this.getCommaOrEndOfLine());
         // if we hit end of file, we're done
@@ -5724,7 +5724,7 @@ export class SpinResolver {
         this.logMessage(`  -- at [${this.currElement.toString()}]`);
         if (isSymbol == false) {
           // [error_eas]
-          throw new Error('Expected a symbol [eas01]');
+          throw new Error('Expected a symbol (m191)');
         }
         this.objectStructureSet.recordStructElementName(symbolString);
         let instanceCount: number = 1; // default
@@ -5822,7 +5822,7 @@ export class SpinResolver {
 
     if (currentValue.type !== adjustedExpected.type || currentValue.value !== adjustedExpected.value) {
       // [error_siad]
-      throw new Error('Symbol is already defined (m231)');
+      throw new Error('Symbol is already defined (m541)');
     }
   }
 
@@ -5976,7 +5976,7 @@ export class SpinResolver {
           // we are now doing an assignment of some sort
           if (savedElement.isAssignable == false) {
             // [error_tocbufa]
-            throw new Error('This operator cannot be used for assignment (m290)');
+            throw new Error('This operator cannot be used for assignment (m610)');
           }
           const bytecode: eByteCode = savedElement.byteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write_push);
           this.compileVariablePre(bytecode);
@@ -6163,7 +6163,7 @@ export class SpinResolver {
             // var binary op assign (w/push)?
             if (this.currElement.isAssignable == false) {
               // [error_tocbufa]
-              throw new Error('This operator cannot be used for assignment (m291)');
+              throw new Error('This operator cannot be used for assignment (m611)');
             }
             this.logMessage(`* compileInstruction() type_equal`);
             const baseByteCode: eByteCode = this.currElement.byteCode;
@@ -6262,7 +6262,7 @@ export class SpinResolver {
       if (startValueReturn.value > BigInt(inline_org_limit)) {
         // [error_icaexl]
         //throw new Error('Inline cog address exceeds $120 limit');
-        throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m190)`);
+        throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m380)`);
       }
       inlineOrigin = Number(startValueReturn.value);
       if (this.checkComma()) {
@@ -6270,7 +6270,7 @@ export class SpinResolver {
         if (limitValueReturn.value > BigInt(inline_org_limit)) {
           // [error_icaexl]
           //throw new Error('Inline cog address exceeds $120 limit');
-          throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m191)`);
+          throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m381)`);
         }
         inline_org_limit = Number(limitValueReturn.value);
       }
@@ -6299,7 +6299,7 @@ export class SpinResolver {
     const lengthInLongs: number = (this.objImage.offset - patchLocation) >> 2;
     if (lengthInLongs == 0) {
       // [error_isie]
-      throw new Error('ORG/ORGH inline block is empty');
+      throw new Error('ORG/ORGH inline block is empty (m410)');
     }
     this.objImage.replaceWord(lengthInLongs - 1, patchLocation - 2); // replace the placeholder with length
     this.logMessage(`* compileOrg() - EXIT`);
@@ -6335,7 +6335,7 @@ export class SpinResolver {
     const lengthInLongs: number = (this.objImage.offset - patchLocation) >> 2;
     if (lengthInLongs == 0) {
       // [error_isie]
-      throw new Error('ORG/ORGH inline block is empty');
+      throw new Error('ORG/ORGH inline block is empty (m411)');
     }
     if (lengthInLongs > 0xffff) {
       // [error_isil]
@@ -6413,7 +6413,7 @@ export class SpinResolver {
     } else {
       if (this.subResults == 0) {
         // [error_eeol]
-        throw new Error('Expected end of line (m100)');
+        throw new Error('Expected end of line (m280)');
       }
       this.compileParametersNoParens(this.subResults);
       this.objImage.appendByte(eByteCode.bc_return_args);
@@ -6489,7 +6489,7 @@ export class SpinResolver {
     // PNut ci_unary:
     if (this.currElement.isAssignable == false) {
       // [error_tocbufa]
-      throw new Error('This operator cannot be used for assignment (m292)');
+      throw new Error('This operator cannot be used for assignment (m612)');
     }
     const byteCode: eByteCode = Number(this.currElement.byteCode);
     const adjustedByteCode: number = byteCode - (eByteCode.bc_lognot - eByteCode.bc_lognot_write);
@@ -6809,7 +6809,7 @@ export class SpinResolver {
     this.debug_stack_depth += 4;
     if (this.debug_stack_depth > 127) {
       // [error_dditl]
-      throw new Error('DEBUG data is too long: too many expressions (> 31)');
+      throw new Error('DEBUG data is too long: too many expressions (> 31) (m152)');
     }
   }
 
@@ -6907,7 +6907,7 @@ export class SpinResolver {
     let currCmdValue: number = cmdValue;
     if (parameterCount == 0) {
       // [error_eaet]
-      throw new Error('Expected an expression term (m090)');
+      throw new Error('Expected an expression term (m170)');
     } else if (parameterCount & 0x1) {
       // [error_eaenop]
       throw new Error('Expected an even number of parameters');
@@ -6956,7 +6956,7 @@ export class SpinResolver {
     this.logMessage(`* singleParamSimple(${hexByte(cmdValue, '0x')}) curElem=${this.currElement.toString()} -> parameterCount=(${parameterCount})`);
     if (parameterCount == 0) {
       // [error_eaet]
-      throw new Error('Expected an expression term (m091)');
+      throw new Error('Expected an expression term (m171)');
     }
     while (parameterCount--) {
       currCmdValue = this.debugEnterByteFlag(currCmdValue);
@@ -7257,7 +7257,7 @@ export class SpinResolver {
         }
         if (++entryIndex > DebugData.MAX_ENTRIES) {
           // [error_dditl] WAS: DEBUG data is too long
-          throw new Error(`DEBUG data is too long: too many records: max ${DebugData.MAX_ENTRIES}`);
+          throw new Error(`DEBUG data is too long: too many records: max ${DebugData.MAX_ENTRIES} (m153)`);
         }
       }
     } while (recordPresent);
@@ -7403,7 +7403,7 @@ export class SpinResolver {
       const variableResult: iVariableReturn = this.checkVariable(); // var ?
       if (variableResult.isVariable == false) {
         // [error_eaet]
-        throw new Error('Expected an expression term (m092)');
+        throw new Error('Expected an expression term (m172)');
       }
       if (this.isStruct(variableResult.type) && !variableResult.structIsBWL) {
         if (variableResult.structSize <= 4) {
@@ -7607,7 +7607,7 @@ export class SpinResolver {
       this.getElement();
       if (this.currElement.type == eElementType.type_end) {
         // [error_eright]
-        throw new Error('Expected ")" (m120)');
+        throw new Error('Expected ")" (m300)');
       }
       if (this.currElement.type == eElementType.type_left) {
         nestingCount++;
@@ -7630,7 +7630,7 @@ export class SpinResolver {
       this.getElement();
       if (this.currElement.type == eElementType.type_end) {
         // [error_erightb]
-        throw new Error('Expected "]" (m130)');
+        throw new Error('Expected "]" (m310)');
       }
       if (this.currElement.type == eElementType.type_leftb) {
         // NOTE: this may be extra capability which SPIN2 doesn't support
@@ -8034,7 +8034,7 @@ export class SpinResolver {
       let [objSymType, objSymValue] = this.getObjSymbol(objectElement.numberValue);
       if (objSymType != eElementType.type_obj_pub) {
         // [error_eamn]
-        throw new Error('Expected a method name (m0A0)');
+        throw new Error('Expected a method name (m180)');
       }
       // here is @@method:
       parameterCount = Number(objSymValue) >> 24;
@@ -8103,7 +8103,7 @@ export class SpinResolver {
       this.currElement = this.getElementObj();
       if (this.currElement.type != eElementType.type_con_int) {
         // [error_esc]
-        throw new Error('Expected a string character (m900)');
+        throw new Error('Expected a string character (m320)');
       }
       // process string in escape mode
       this.ct_at_emit_string(true); // with string escapes
@@ -8115,7 +8115,7 @@ export class SpinResolver {
       const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
       if (objSymType != eElementType.type_obj_pub) {
         // [error_eamn]
-        throw new Error('Expected a method name (m0A1)');
+        throw new Error('Expected a method name (m181)');
       }
       if (indexFound) {
         this.compileOutOfSequenceExpression(objectElementIndex);
@@ -8164,7 +8164,7 @@ export class SpinResolver {
       const valueReturn: iValueReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
       if (valueReturn.value < 1n || valueReturn.value > 255n) {
         // [error_scmrf]
-        throw new Error('STRING characters must range from 1 to 255 (m210)');
+        throw new Error('STRING characters must range from 1 to 255 (m510)');
       }
       // PNut @@chrok:
       let stringByte: number = Number(valueReturn.value);
@@ -8174,7 +8174,7 @@ export class SpinResolver {
       this.objImage.appendByte(stringByte);
       if (++stringLength > 255) {
         // [error_sdcx]
-        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m220)');
+        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m520)');
       }
       this.logMessage(`* ct_at() post getValue elem=[${this.currElement.toString()}]`);
       this.getElementObj();
@@ -8228,12 +8228,12 @@ export class SpinResolver {
             const hexDigit1: string = this.getCharacter().toUpperCase();
             if (!this.isHexDigit(hexDigit1)) {
               // [error_iec]
-              throw new Error('Invalid escape character');
+              throw new Error('Invalid escape character (m390)');
             }
             const hexDigit2: string = this.getCharacter().toUpperCase();
             if (!this.isHexDigit(hexDigit2)) {
               // [error_iec]
-              throw new Error('Invalid escape character');
+              throw new Error('Invalid escape character (m391)');
             }
             const upperDigit: number = hexDigit1.charCodeAt(0);
             const lowerDigit: number = hexDigit2.charCodeAt(0);
@@ -8260,17 +8260,17 @@ export class SpinResolver {
     this.getElementObj();
     if (!this.currElement.isMidStringComma) {
       // [error_esc]
-      throw new Error('Expected a string character (m901)');
+      throw new Error('Expected a string character (m321)');
     }
     //this.getComma();
     this.getElementObj();
     if (this.currElement.type != eElementType.type_con_int) {
       // [error_esc]
-      throw new Error('Expected a string character (m902)');
+      throw new Error('Expected a string character (m322)');
     }
     if (this.currElement.numberValue < 1 || this.currElement.numberValue > 255) {
       // [error_scmrf]
-      throw new Error('STRING characters must range from 1 to 255 (m211)');
+      throw new Error('STRING characters must range from 1 to 255 (m511)');
     }
     let charCode = this.currElement.numberValue;
     if (charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0)) {
@@ -8291,7 +8291,7 @@ export class SpinResolver {
     const [objSymType, objSymValue] = this.getObjSymbol(savedElement.numberValue);
     if (objSymType != eElementType.type_obj_pub) {
       // [error_eamn]
-      throw new Error('Expected a method name (m0A2)');
+      throw new Error('Expected a method name (m182)');
     }
     const symValueAsNumber: number = Number(objSymValue);
     this.confirmResult(resultsNeeded, symValueAsNumber);
@@ -8366,7 +8366,7 @@ export class SpinResolver {
     const variableReturn: iVariableReturn = this.checkVariable();
     if (variableReturn.isVariable == false) {
       // [error_eav]
-      throw new Error('Expected a variable (m0F0)');
+      throw new Error('Expected a variable (m250)');
     }
     this.compileVariableAssign(variableReturn, eByteCode.bc_get_field);
     this.logMessage(`*==* ct_upat() - EXIT`);
@@ -8382,7 +8382,7 @@ export class SpinResolver {
         parameterCount += this.compileParameter();
         if (parameterCount > this.method_params_limit) {
           // [error_loxpe]
-          throw new Error(`Limit of ${this.method_params_limit} parameters exceeded`);
+          throw new Error(`Limit of ${this.method_params_limit} parameters exceeded (m431)`);
         }
       } while (this.getCommaOrRightParen());
     }
@@ -8411,7 +8411,7 @@ export class SpinResolver {
         // PNut @@checkmult2:
         if (returnValueCount > 1) {
           // [error_spmcrmv]
-          throw new Error('SEND parameter methods cannot return multiple values (m270)');
+          throw new Error('SEND parameter methods cannot return multiple values (m590)');
         } else if (returnValueCount == 0) {
           //no return value
           this.getElementObj();
@@ -8431,7 +8431,7 @@ export class SpinResolver {
       // this is @@checkmult2:
       if (returnValueCount > 1) {
         // [error_spmcrmv]
-        throw new Error('SEND parameter methods cannot return multiple values (m271)');
+        throw new Error('SEND parameter methods cannot return multiple values (m591)');
       } else if (returnValueCount == 1) {
         // this is @@exp:
         this.logMessage(`* compileParameterSend() type_method, retValCt==1`);
@@ -8452,7 +8452,7 @@ export class SpinResolver {
         // this is @@checkmult2:
         if (returnCount > 1) {
           // [error_spmcrmv]
-          throw new Error('SEND parameter methods cannot return multiple values (m272)');
+          throw new Error('SEND parameter methods cannot return multiple values (m592)');
         } else if (returnCount == 0) {
           //no return value
           this.getElement();
@@ -8543,12 +8543,12 @@ export class SpinResolver {
       let charReturn = this.getValue(eMode.BM_IntOnly, eResolve.BR_Must);
       if (BigInt(charReturn.value) < 1n || BigInt(charReturn.value) > 255n) {
         // [error_scmrf]
-        throw new Error('STRING characters must range from 1 to 255 (m211)');
+        throw new Error('STRING characters must range from 1 to 255 (m512)');
       }
       this.objImage.appendByte(Number(charReturn.value));
       if (++charCount > 254) {
         // [error_sdcx]
-        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m221)');
+        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m521)');
       }
     } while (this.getCommaOrRightParen());
     this.objImage.appendByte(0); // place zero terminator
@@ -8574,7 +8574,7 @@ export class SpinResolver {
       this.objImage.appendByte(Number(charReturn.value));
       if (++charCount > 254) {
         // [error_sdcx]
-        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m222)');
+        throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m522)');
       }
     } while (this.getCommaOrRightParen());
     // and place interpreter string length just before length and string in object
@@ -9009,7 +9009,7 @@ export class SpinResolver {
           const [isStructure, structSize] = this.check_con_struct_size();
           if (!isStructure) {
             // [error_easn]
-            throw new Error('Expected a structure name');
+            throw new Error('Expected a structure name (m201)');
           }
           this.getRightParen();
           resultStatus.value = BigInt(structSize);
@@ -9068,7 +9068,7 @@ export class SpinResolver {
               //  HANDLE DAT Local variable now in register for inline access
               // [error_lvmb]
               // We don't quite like this message (so we adjusted to not match PNut)
-              throw new Error('Local variable must be LONG and within first 16 longs (m1C0)');
+              throw new Error('Local variable must be LONG and within first 16 longs (m450)');
             } else if (
               this.inlineModeForGetConstant &&
               this.currElement.type == eElementType.type_loc_long &&
@@ -9076,7 +9076,7 @@ export class SpinResolver {
             ) {
               // [error_lvmb]
               // We don't quite like this message (so we adjusted to not match PNut)
-              throw new Error('Local variable must be LONG and within first 16 longs (m1C1)');
+              throw new Error('Local variable must be LONG and within first 16 longs (m451)');
             } else if (
               this.inlineModeForGetConstant &&
               (this.currElement.type == eElementType.type_loc_long ||
@@ -9402,7 +9402,7 @@ private checkDec(): boolean {
     this.getElement();
     if (this.currElement.type != eElementType.type_end) {
       // [error_eeol]
-      throw new Error('Expected end of line (m101)');
+      throw new Error('Expected end of line (m281)');
     }
   }
 
@@ -9857,7 +9857,7 @@ private checkDec(): boolean {
     const variableResult: iVariableReturn = this.checkVariable();
     if (variableResult.isVariable == false) {
       // [error_eav]
-      throw new Error('Expected a variable (m0F1)');
+      throw new Error('Expected a variable (m251)');
     }
     this.logMessage(`*==* getVariable() EXIT`);
     return variableResult;
@@ -9896,7 +9896,7 @@ private checkDec(): boolean {
         const firstValueReturn = this.skipExpressionCheckCon();
         if (firstValueReturn.isResolved === false) {
           // [error_eicon]
-          throw new Error('Expected integer constant (m110)');
+          throw new Error('Expected integer constant (m290)');
         }
         const firstValue: number = Number(BigInt(firstValueReturn.value) & BigInt(0x3ff));
         let encodedBitfield: number = firstValue; // default: count of additional bits | bit number
@@ -9905,7 +9905,7 @@ private checkDec(): boolean {
           const secondValueReturn = this.skipExpressionCheckCon();
           if (secondValueReturn.isResolved === false) {
             // [error_eicon]
-            throw new Error('Expected integer constant (m111)');
+            throw new Error('Expected integer constant (m291)');
           }
           const secondValue: number = Number(BigInt(secondValueReturn.value) & BigInt(0x3ff));
           // encode: count of additional bits | bit number
@@ -10339,7 +10339,7 @@ private checkDec(): boolean {
             const registerAddress: number = Number(this.signExtendFrom32Bit(registerResult.value));
             if (registerAddress < 0 || registerAddress > 511) {
               // [error_cmbf0t511]
-              throw new Error('Constant must be from 0 to 511 (m041)');
+              throw new Error('Constant must be from 0 to 511 (m131)');
             }
             this.getRightBracket();
             resultVariable.type = eElementType.type_register;
@@ -10399,7 +10399,7 @@ private checkDec(): boolean {
     const variableReturn: iVariableReturn = this.get_struct_variable();
     if (variableReturn.structSize != variable.structSize) {
       // [error_smbss]
-      throw new Error('Structures must be same size');
+      throw new Error('Structures must be same size (m580)');
     }
     this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
     this.compileConstant(BigInt(variable.structSize));
@@ -10420,7 +10420,7 @@ private checkDec(): boolean {
     const variableReturn: iVariableReturn = this.get_struct_variable();
     if (variableReturn.structSize != variable.structSize) {
       // [error_smbss]
-      throw new Error('Structures must be same size');
+      throw new Error('Structures must be same size (m581)');
     }
     this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
     // compile common struct size
@@ -10771,7 +10771,7 @@ private checkDec(): boolean {
       indexReturn.foundIndex = true;
       if (memberSize > 0xffff) {
         // [error_iscexb]
-        throw new Error('Indexed structures cannot exceed $FFFF bytes in size');
+        throw new Error('Indexed structures cannot exceed $FFFF bytes in size (m401)');
       }
       indexReturn.liveIndexElemIndex = this.logSavedElementLocation(); // element after '['
       //const currIndex: number = liveIndexCount;
@@ -10787,12 +10787,12 @@ private checkDec(): boolean {
         const scaledMemberSize: number = memberSize * instanceCount;
         if (scaledMemberSize > this.obj_limit) {
           // [error_sehr]
-          throw new Error('Structure exceeds hub range of $FFFFF');
+          throw new Error('Structure exceeds hub range of $FFFFF (m532)');
         }
         indexReturn.offsetInStructure += scaledMemberSize;
         if (indexReturn.offsetInStructure > this.obj_limit) {
           // [error_sehr]
-          throw new Error('Structure exceeds hub range of $FFFFF');
+          throw new Error('Structure exceeds hub range of $FFFFF (m533)');
         }
       } else {
         // have variable as index
@@ -10936,7 +10936,7 @@ private checkDec(): boolean {
     this.getElement();
     if (this.currElement.type != eElementType.type_right) {
       // [error_eright]
-      throw new Error('Expected ")" (m121)');
+      throw new Error('Expected ")" (m301)');
     }
   }
 
@@ -10952,7 +10952,7 @@ private checkDec(): boolean {
     this.getElement();
     if (this.currElement.type != eElementType.type_rightb) {
       // [error_erightb]
-      throw new Error('Expected "]" (m131)');
+      throw new Error('Expected "]" (m311)');
     }
   }
 
@@ -11386,7 +11386,7 @@ private checkDec(): boolean {
         {
           if (a > msb32Bit) {
             // [error_fpcmbp]
-            throw new Error(`Floating-point constant must be positive`);
+            throw new Error(`Floating-point constant must be positive (m330)`);
           }
           // convert to internal from float32
           const internalFloat64: number = bigIntFloat32ToNumber(a);
@@ -11423,7 +11423,7 @@ private checkDec(): boolean {
         {
           if (a > msb32Bit) {
             // [error_fpcmbp]
-            throw new Error(`Floating-point constant must be positive`);
+            throw new Error(`Floating-point constant must be positive (m331)`);
           }
           // convert to internal from float32
           const internalFloat64: number = bigIntFloat32ToNumber(a);
@@ -11438,7 +11438,7 @@ private checkDec(): boolean {
         {
           if (a > msb32Bit) {
             // [error_fpcmbp]
-            throw new Error(`Floating-point constant must be positive`);
+            throw new Error(`Floating-point constant must be positive (m332)`);
           }
           // convert to internal from float32
           const internalFloat64: number = bigIntFloat32ToNumber(a);
@@ -11453,7 +11453,7 @@ private checkDec(): boolean {
         {
           if (a > msb32Bit) {
             // [error_fpcmbp]
-            throw new Error(`Floating-point constant must be positive`);
+            throw new Error(`Floating-point constant must be positive (m333)`);
           }
           // convert to internal from float32
           const internalFloat64: number = bigIntFloat32ToNumber(a);
@@ -11602,7 +11602,7 @@ private checkDec(): boolean {
             if ((b & mask31Bit) == 0n) {
               // [error_fpo]
               // (technically this is divide-by-zero attempted)
-              throw new Error(`Floating-point overflow (m150)`);
+              throw new Error(`Floating-point overflow (m340)`);
             }
             let aInternalFloat64: number = bigIntFloat32ToNumber(a);
             const bInternalFloat64: number = bigIntFloat32ToNumber(b);
@@ -11613,7 +11613,7 @@ private checkDec(): boolean {
           } else {
             if (b == 0n) {
               // [error_dbz]
-              throw new Error(`Divide by zero (m050)`);
+              throw new Error(`Divide by zero (m140)`);
             }
             a = (this.signExtendFrom32Bit(a) / this.signExtendFrom32Bit(b)) & mask32Bit;
           }
@@ -11626,7 +11626,7 @@ private checkDec(): boolean {
           if ((b & mask31Bit) == 0n) {
             // [error_fpo]
             // (technically this is divide-by-zero attempted)
-            throw new Error(`Floating-point overflow (m151)`);
+            throw new Error(`Floating-point overflow (m341)`);
           }
           let aInternalFloat64: number = bigIntFloat32ToNumber(a);
           const bInternalFloat64: number = bigIntFloat32ToNumber(b);
@@ -11640,7 +11640,7 @@ private checkDec(): boolean {
       case eOperationType.op_divu: //  +/
         if (b == 0n) {
           // [error_dbz]
-          throw new Error(`Divide by zero (m051)`);
+          throw new Error(`Divide by zero (m141)`);
         }
         a /= b;
         break;
@@ -11648,7 +11648,7 @@ private checkDec(): boolean {
       case eOperationType.op_rem: //  //
         if (b == 0n) {
           // [error_dbz]
-          throw new Error(`Divide by zero (m052)`);
+          throw new Error(`Divide by zero (m142)`);
         }
         a = this.signExtendFrom32Bit(a) % this.signExtendFrom32Bit(b) & mask32Bit;
         break;
@@ -11656,7 +11656,7 @@ private checkDec(): boolean {
       case eOperationType.op_remu: //  +//
         if (b == 0n) {
           // [error_dbz]
-          throw new Error(`Divide by zero (m053)`);
+          throw new Error(`Divide by zero (m143)`);
         }
         a %= b;
         break;
@@ -11674,7 +11674,7 @@ private checkDec(): boolean {
           const origA = a;
           if (b == 0n) {
             // [error_dbz]
-            throw new Error(`Divide by zero (m054)`);
+            throw new Error(`Divide by zero (m144)`);
           }
           // our testing shows that this BigInt behavior is behaving like it's larger than 64 bits...
           a = (a << 32n) / b;
@@ -11974,7 +11974,7 @@ private checkDec(): boolean {
   private checkOverflow(value: bigint) {
     if ((value & BigInt(0x7fffffff)) == BigInt(0x7f800000)) {
       // [error_fpo]
-      throw new Error('Floating-point overflow (m152)');
+      throw new Error('Floating-point overflow (m342)');
     }
   }
 
