@@ -20,8 +20,8 @@ Work to appear in upcoming releases:
 
 ## [1.51.0] 2025-04-??
 
-- Add lanuage version support through `{Spin2_v51}`.
-- Add `-F` which, when specified, causes the .flash file to be written (PNut -ci equiv.)
+- Add language version support through `{Spin2_v51}`.
+- Add command-line `-F` option which, when specified, causes the .flash file to be written (PNut -ci equiv.)
 - Preprocessor intermediate files now end with `__pre.spin2` (vs. '-pre.spin2') 
 - Preprocessor: #define is no longer affected by command-line -U options
 - Added `#pragma exportdef SYMBOL` which make SYMBOL present as if added with `-DSYMBOL` on command line but affects all files compiled after file containing the #pragma (*place in top-most file for best results*)
