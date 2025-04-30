@@ -66,14 +66,14 @@ And of course `-h` or `--help` produces the output as shown above.
 There are a couple of additional options we use when testing or validating PNut_TS:
 
 ```text
-  -i, --intermediate          Generate *-pre.spin2 after preprocessing
+  -i, --intermediate          Generate *__pre.spin2 after preprocessing
   --log <objectName...>       objectName (choices: "all", "outline", "compiler", "elementizer", "parser", "preproc", "resolver")
   --regression <testName...>  testName (choices: "element", "tables", "resolver", "preproc")
   --pass <passName...>        Stop after passName (choices: "preprocess", "elementize", "con-block")
 
 ```
 
-The `-i, or --intermediate` Option causes the post preprocessed source file to be saved in case you want to inspect what was passed on to the compiler.  This output file has a `-pre` suffix inserted before the .spin2 extension but otherwise has the same name as your compiled file.  E.G., If you compiled `blink.spin2` your intermediate output file would be `blink-pre.spin2`.
+The `-i, or --intermediate` Option causes the post preprocessed source file to be saved in case you want to inspect what was passed on to the compiler.  This output file has a `__pre` suffix inserted before the .spin2 extension but otherwise has the same name as your compiled file.  E.G., If you compiled `blink.spin2` your intermediate output file would be `blink__pre.spin2`.
 
 The `--log {option(s)}` produce very detailed output from different sections of the compiler.
 
