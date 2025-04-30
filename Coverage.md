@@ -12,19 +12,39 @@
 
 ## Coverage Status (each release)
 
-The current coverage status is versioned at our repository. You can see the latest at
+The current coverage status is versioned at our repository. To view the full detail of our coverage reports:
 
-- [Latest Coverage, All Files](./jest-coverage/lcov-report/index.html) - Top level page
-- [Latest src/classes](./jest-coverage/lcov-report/src/classes/index.html) - The various class files making up PNut TS
-- [Latest code generation coverage](jest-coverage/lcov-report/src/classes/spinResolver.ts.html) - The SpinResolver class does nearly all of our code generation
+- Create a local copy of our repository
+ - Navigate to the directory you want to contain the repo clone.
+ - Execute `git clone git@github.com:ironsheep/PNut-TS.git` to make your local copy 
+ - The `clone` command makes the folder `./PNut-TS/`
+- Navigate to `./PNut-TS/jest-coverage/lcov-report` within the newly cloned folder
+- Open the file `index.html` in this folder with a web brawser. This is the Coverage Top level page
+- Click on `src/classes` to get to the various class files making up PNut TS
+- Click on `spinResolver.ts` to view the coverage for **SpinResolver Class** which does nearly all of our code generation
 
-## Coverage Status v1.51.x
+## Coverage Status v1.51.x (preliminary)
 
-The current coverage status is versioned at our repository.
+
+This is our coverage stataus at the v1.51.0 release.  In this release coverage effort we focused on the most important areas which would yield the best certification of the compiler in general. We didn't test many of the more extreme (infrequently exercised cases.) We did try to cover all regions that affect actual code generation.
+
+### Page: Top level
+Here are the coverage categories:
+
+![Patreon](./DOCs/images/v1.51.0-top-prelim.png)<br>**FIGURE 1**: v1.51.0 (prelim) `top-level` coverage report view.
+
+This page shows that there are three pages below this one (`src`, `src/classes`, and `src/Utils` each with their own page of details.  Click on one of the three names to view the page for that group.
+
+### Page: src/classes
+Here is the `src/classes` status:
+
+![Patreon](./DOCs/images/v1.51.0-classes-prelim.png)<br>**FIGURE 2**: v1.51.0 (prelim) `src/classes` coverage report view.
+
+Again, this is our results at v1.51.0 (prelim) our preliminary v1.51.0 build just before we officially release.
 
 ## Coverage Status v1.43.x
 
-This is our coverage stataus at the v1.43.0 testing release.  In this first coverage effort we focused on the most important areas which would yield the best certification of the compiler in general. We didn't test many of the more extreme (infrequently exercided cases.) We did try to cover all regions that affect actual code generation.
+This is our coverage stataus at the v1.43.0 testing release.  In this first coverage effort we focused on the most important areas which would yield the best certification of the compiler in general. We didn't test many of the more extreme (infrequently exercised cases.) We did try to cover all regions that affect actual code generation.
 
 ### Page: Top level
 Here are the coverage categories:
@@ -40,7 +60,7 @@ Here is the `src/classes` status:
 
 Again, this is our results at v1.43.0 our initial test release.
 
-## Running coverage
+## DEVELOPER NOTES - Running coverage
 
 Running our coverage is a three step process.
 
