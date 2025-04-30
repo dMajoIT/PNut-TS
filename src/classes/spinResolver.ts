@@ -635,6 +635,7 @@ export class SpinResolver {
 
           // handle structure
           if (this.currElement.type == eElementType.type_con_struct) {
+            //this.logMessage(`** == * comp_var_blks() have STRUCT...`);
             structId = this.currElement.numberValue;
             // get struct size in bytes
             variableSize = this.objectStructureSet.getStructureSizeForID(structId);
@@ -644,14 +645,18 @@ export class SpinResolver {
 
           // handle ^var  pointer variable
           if (this.checkPtr()) {
+            //this.logMessage(`** == * comp_var_blks() have PTR...`);
             variableSize = 4; // all pointers
             if (this.currElement.type == eElementType.type_size) {
               const sizeEncoded: number = Number(this.currElement.value); // NOTE: this matches our enum values
               variableType = eElementType.type_var_byte_ptr + sizeEncoded;
+              this.getElementObj(); // move to name
             } else {
+              //this.logMessage(`** == * comp_var_blks() have PTR to struct...`);
               // here with type = type_con_struct
               structId = this.currElement.numberValue;
               variableType = eElementType.type_var_struct_ptr;
+              this.getElementObj(); // move to name
             }
           }
 
@@ -659,6 +664,7 @@ export class SpinResolver {
           if (this.currElement.isTypeUndefined) {
             this.backElement();
           } else {
+            //this.logMessage(`** == * comp_var_blks() NOT undefined...`);
             // our symbol/element was NOT undefined!
             // [error_eauvnsa]
             throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E0)');
@@ -6594,6 +6600,7 @@ export class SpinResolver {
     } else {
       this.logMessage(`*--* ci_debug(${this.currElement.toString()}) ENTRY`);
       if (!this.checkLeftParen()) {
+        // this is debug (without parens)
         // consumes left paren if next is left paren
         // we found 'debug' without parens
         this.getEndOfLine();
@@ -6604,6 +6611,7 @@ export class SpinResolver {
       } else {
         // here is @@left
         if (this.checkRightParen()) {
+          // this is debug()
           // consumes right paren if next is right paren
           // we found 'debug()'
           this.enterDebug(notPasmMode);
@@ -7316,7 +7324,7 @@ export class SpinResolver {
     // PNut compile_term:
     const elementType: eElementType = this.currElement.type;
     this.logMessage(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}]) - ENTRY`);
-    this.logMessageOutline(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}]) - ENTRY`);
+    //this.logMessageOutline(`*--* compileTerm(${eElementType[elementType]}[${this.currElement.toString()}]) - ENTRY`);
     const elementValue: number = Number(this.currElement.bigintValue);
     if (this.currElement.isConstantInt || this.currElement.isConstantFloat) {
       // constant integer? or constant float?
@@ -7466,7 +7474,7 @@ export class SpinResolver {
       }
     }
     this.logMessage(`*--* compileTerm() - EXIT`);
-    this.logMessageOutline(`*--* compileTerm() - EXIT`);
+    //this.logMessageOutline(`*--* compileTerm() - EXIT`);
   }
 
   private compileFlex(flexCode: eFlexcode) {
@@ -8084,7 +8092,7 @@ export class SpinResolver {
   private ct_at() {
     // Compile term - @"string", @\"string", @obj{[]}.method, @method, or @hubvar
     // PNut ct_at:
-    this.logMessageOutline(`* ct_at() with elem=[${this.currElement.toString()}]`);
+    //this.logMessageOutline(`* ct_at() with elem=[${this.currElement.toString()}]`);
     this.getElementObj();
     this.logMessage(`* ct_at() get then elem=[${this.currElement.toString()}]`);
     if (this.currElement.type == eElementType.type_con_int) {
@@ -8123,9 +8131,9 @@ export class SpinResolver {
       this.compileRfvar(BigInt(methodIndex & 0xfffff));
     } else {
       // have @hubvar case
-      this.logMessageOutline(` pre checkVariable() nxtElemIdx=(${this.nextElementIndex})`);
+      //this.logMessageOutline(` pre checkVariable() nxtElemIdx=(${this.nextElementIndex})`);
       const variableReturn: iVariableReturn = this.checkVariable();
-      this.logMessageOutline(` post checkVariable() nxtElemIdx=(${this.nextElementIndex})`);
+      //this.logMessageOutline(` post checkVariable() nxtElemIdx=(${this.nextElementIndex})`);
       if (variableReturn.isVariable == false) {
         // [error_easvmoo]
         throw new Error('Expected a string, variable, method, or object');
@@ -8142,7 +8150,7 @@ export class SpinResolver {
       }
       this.compileVariableAssign(variableReturn, eByteCode.bc_get_addr);
     }
-    this.logMessageOutline(`* ct_at() EXIT`);
+    //this.logMessageOutline(`* ct_at() EXIT`);
   }
 
   private ct_at_emit_string(escapeMode: boolean) {
