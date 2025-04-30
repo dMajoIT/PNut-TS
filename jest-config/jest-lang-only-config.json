@@ -1,0 +1,6 @@
+{
+  "displayName": "Language Version suite of tests",
+  "roots": ["<rootDir>/../dist/tests/LANG-VER-tests/"],
+  "testMatch": ["**/*.test.js"],
+  "verbose": true
+}

@@ -1,23 +1,45 @@
 {Spin2_v45}
+CON
 
-CON STRUCT point(x,y), STRUCT line(point a, point b)
+#4[MYSTEP], MYSTEP=3, MYOTHERSTEP
+#0, ENVAL1, ENVAL2[LATE_OFFSET], LATE_OFFSET=5
+NEXTENUMVALCON
+
+CON
+
+DEBUG_ENABLE = 1 ' ensure debug statement are compiled in!
+
+CON STRUCT point(x,y), STRUCT line(point a, point b), STRUCT tinyPt(byte x, byte y)
+  STRUCT bigOne(long sums[18])
   PINS = 34
 
 VAR byte A[100]
    B[100], line vline[10]
    point vpoint[10]
    ^line pMyLine ' pointer to a line
+   ^WORD pMyWord
+   ^BYTE pMyBYte
+   bigOne sums
+   bigOne moreSums
+   tinyPt smallPoint
 
 DAT
 myLine  LINE ' no intial values allow on line
         LONG    4,5 ' init line.a.x, line.a.y
         LONG    6,7 ' init line.b.x, line.b.y
 
-PUB go() | line pline
+PUB go() : ^tinyPt pRetTiny | line pline, tinyPt testTiny, ^tinyPt pTiny
 
   byteswap(@A, @B, 100*4)
   wordswap(@A, @B, 100*2)
   longswap(@A, @B, 100)
+
+  testTiny := $0102
+  pRetTiny := $0304
+  pTiny:= %"aB"
+
+  smallPoint := testTiny ' 2 byte copy
+  sums := moreSums ' 72 byte copy
 
   pinwrite(0, bytecomp(@A, @B, 100*4))
   pinwrite(0, wordcomp(@A, @B, 100*2))
@@ -29,6 +51,12 @@ PUB go() | line pline
     debug(`s `(getrnd() & 255))
 
   debug(bool(0,1))
+
+  debug
+  debug()
+
+  pMyByte := 0
+  pMyWord~~
 
   pline := 1,2,3,4
   DoLine(pline)

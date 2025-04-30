@@ -11,9 +11,16 @@ PUB go() | a,b
   if_nc	debug("No Carry")
   if_c	debug("Is Carry")
 
-  ditto	3
+        ditto	3
 	long	$66666666+$$
 	ditto	end
+
+        ditto	0
+	long	$22222222+$$
+	ditto	end
+        ret
+
+oddBYte WORD  $DEAD
 
 	end
 

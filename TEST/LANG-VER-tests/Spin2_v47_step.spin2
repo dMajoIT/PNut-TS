@@ -8,6 +8,7 @@ PUB start() | i, task
 
   repeat 32 with i
     task := taskspin(newtask, LED(i), @stk[i*30])
+    taskspin(newtask, LED(i), @stk[i*30])
     debug(sdec(task))
 
   debug("Ending: ", udec(taskid()), ", Other tasks are running")
