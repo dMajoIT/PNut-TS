@@ -253,3 +253,4 @@ scripts/run-LANG-math
 *.HOLD
 *__pre.spin2
 jest-config/jest-coverage-configOLD.json
+jest-config/jest-coverage-configBAD.json

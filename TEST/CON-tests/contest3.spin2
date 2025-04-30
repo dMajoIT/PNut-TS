@@ -1,0 +1,6 @@
+'' test to exercise the no clock setting code providing good clock default
+''  NO clock specs in CON start of file compiled w/o debug shoud cause this to happen
+pub main()
+
+  repeat 10
+    pintoggle(0)

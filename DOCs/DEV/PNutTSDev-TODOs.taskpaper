@@ -238,27 +238,35 @@ TODO's from PNut Zoom 250303++:
 			- Get LANG-VER tests incorporated into coverage @done(2025-04-29)
 			- X [rslv:651] Add ^B/W/L to reggression tests/coverage @done(2025-04-29)
 			- X [rslv:1098] Add DEBUG_DISABLE=non-zero to regression tests/coverage
-			- X [rslv:6602] Add debug and debug()  to regression tests/coverage @done(2025-04-29)
 			- X [rslv:1459] DITTO 0 count case v50 @done(2025-04-29)
+			- X [rslv:3421] PUB/PRI Return VAR ^struct v45 @done(2025-04-30)
+			- X [rslv:3477] PUB/PRI LOCAL VAR ^struct v45 @done(2025-04-30)
 			- X [rslv:5516] ENUM in CON   #0[MYSTEP], MYSTEP, MYOTHERSTEP v45 (COV TEST ME!) @done(2025-04-29)
 			- X [rslv:5597] ENUM in CON   #0, ENVAL1, ENVAL2[LATE_OFFSET], LATE_OFFSET (COV TEST ME!) @done(2025-04-29)
 			- X [rslv:5710] CON Declare a struct with B/W/L member size override @done(2025-04-29)
 			- X [rslv:6057] call taskspin() but do/do-not assing return value (Which ever is missing) v47 @done(2025-04-29)
 			- X [rslv:6124]  LARGE CON structure >= 18LONGS, SPIN assign := long structure @done(2025-04-29)
 			- X [rslv:6329]  ORGH need pad-to-long to kick-in   ORGH byte 0xDEAD END v50 @done(2025-04-29)
+			- X [rslv:6602] Add debug and debug()  to regression tests/coverage @done(2025-04-29)
+			
 	Day 36:Wed: Release Prep Round 2 (just ME):
-		- BUGFIX repair our loop in loading spin documents [SpinDocument.ts]
+		- BUGFIX repair our loop in loading spin documents [SpinDocument.ts] @done(2025-04-30)
 		- PERFORMANCE update DAT FILE load to use array .set() instead of byte loop!
+			- PART1  compiler.ts  --  update DAT FILE load to use array .set() instead of byte loop! @done(2025-04-30)
+			- PART2  spinResolver.ts  --  update DAT FILE load to use array .set() instead of byte loop!
+		- Correct the preproc tests to report correct results
+			- FAIL 1of2 condCodeElse.spin2  -->
+				- listing doesn't match PNut output listing... check why
+			- FAIL 2of2 condNestCodeCmdLn.spin2  -->
+				- .pre comparison is different. Let's ensure behavior is what we want then correct .GOLD file
 		- Add .flash file test to coverage
 		- After all regression tests pass, run coverage and add code to test any missing area
-			- [rslv:948] How to cause no clock spec using default clock?  debug compile with no clock specs
-					-  (NOT debug COMPILE)
+			- X [rslv:948] How to cause no clock spec using default clock?  debug compile with no clock specs
+					-  (NOT debug COMPILE)  NOW in  [CON-tests/contest3.spin]
 			- [rslv:3290] PUB/PRI Structure access get size... (SPIN code)    var := Line[0].a.x
-			- X [rslv:3421] PUB/PRI Return VAR ^struct v45 @done(2025-04-30)
-			- [rslv:3421] PUB/PRI Return VAR ^B/W/L v45
-			- X [rslv:3477] PUB/PRI LOCAL VAR ^struct v45 @done(2025-04-30)
-			- [rslv:3477] PUB/PRI LOCAL VAR ^B/W/L  v45
-			- [rslv:6666] DEBUG -SPIN- debug(IF_NOT, `?(), `.(), `$(), `%() 
+			- X [rslv:3421] PUB/PRI Return VAR ^B/W/L v45
+			- X [rslv:3477] PUB/PRI LOCAL VAR ^B/W/L  v45
+			- X [rslv:6666] DEBUG -SPIN- debug(IF_NOT, `?(), `.(), `$(), `%() 
 			- [rslv:6698] DEBUG -DAT- varname LONG 100; debug(  `#(varname)) - emits 'd'
 	Day 37:Thu: Release PNut_TS!:
 			- Update docs, build release files, tag release version and upload release files!

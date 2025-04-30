@@ -108,7 +108,8 @@ describe('PNut_ts preprocesses files correctly', () => {
         conditionalArgs = ['-I', 'inc', '--pass', 'preprocess'];
       }
 
-      const testArguments: string[] = ['node', 'pnut-ts.js', '-v', '-l', '-i', '--log', 'preproc', '--regression', 'preproc', '--', `${file}`];
+      const testArguments: string[] = ['node', 'pnut-ts.js', '-v', '-l', '-i', '--regression', 'preproc', '--', `${file}`];
+      //const testArguments: string[] = ['node', 'pnut-ts.js', '-v', '-l', '-i', '--log', 'preproc', '--regression', 'preproc', '--', `${file}`];
       // const testArguments: string[] = ['node', 'pnut-ts.js', '-v', '--regression', 'preproc', '--', `${file}`];
       const adjustedArgs: string[] = [...testArguments.slice(0, 2), ...conditionalArgs, ...testArguments.slice(2)];
       console.log(`* TEST sending testArguments=[${adjustedArgs}]`);

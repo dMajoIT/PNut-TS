@@ -221,11 +221,16 @@ export class Compiler {
                 this.logMessageOutline(
                   `++ DAT FILE Compiler [dfd=${this.datFileData.id}]  [${filename}], idx=(${datFileIdx}) len=(${datImage.length})`
                 );
-                // FIXME: XYZZY convert to Uint8Array.set() call!
-                this.datFileData.setOffset(fileDataOffset); // set write start
-                for (let byteIndex = 0; byteIndex < datImage.length; byteIndex++) {
-                  this.datFileData.writeByte(datImage[byteIndex]);
-                }
+                // DONE: XYZZY convert to Uint8Array.set() call!
+                //this.datFileData.setOffset(fileDataOffset); // set write start
+                //for (let byteIndex = 0; byteIndex < datImage.length; byteIndex++) {
+                //  this.datFileData.writeByte(datImage[byteIndex]);
+                //}
+                // ensure fits
+                this.datFileData.ensureFits(fileDataOffset, datImage.length);
+                // place file content into image
+                this.datFileData.rawUint8Array.set(datImage, fileDataOffset);
+                // record new arrival
                 this.datFileData.recordLengthOffsetForFilename(filename, fileDataOffset, datImage.length);
                 fileDataOffset += datImage.length;
               }

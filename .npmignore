@@ -18,6 +18,7 @@ babel.config.js
 jest.config.ts
 old.*
 smm.*
+*.vsix
 # don't include these folders
 scripts-pkg/
 .devcontainer/
@@ -36,5 +37,6 @@ RESULTS/
 scripts/
 src/
 TEST/
+scripts-excep-nbring/
 # get contents from here
 !out

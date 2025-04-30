@@ -17,46 +17,51 @@ Our new PNut-TS compiler will show you the following when you speicfy `-h` or `-
 ```text
 PNut-TS: Usage: pnut-ts [optons] filename
 
-Propeller Spin2 compiler - v1.43.3
+Propeller Spin2 compiler - v1.51.0
 
 Options:
   -V, --version               Output the version number
   -d, --debug                 Compile with DEBUG
   -l, --list                  Generate listing files (.lst) from compilation
   -v, --verbose               Output verbose messages
-  -a, --altbin                Use alternate `.binary` suffix vs. `.bin`
+  -a, --altbin                Use alternate .binary name vs. .bin
   -o, --output <name>         Specify output file basename
-  -i, --intermediate          Generate *-pre.spin2 after preprocessing
+  -i, --intermediate          Generate *__pre.spin2 after preprocessing
   -q, --quiet                 Quiet mode (suppress banner and non-error text)
+  -F, --flashfile             Generate FLASH image file (.flash) suitable for writing to flash chip
   -O, --obj                   Generate object files (.obj) from compilation
   -D, --Define <symbol...>    Define (add) preprocessor symbol(s)
   -U, --Undefine <symbol...>  Undefine (remove) preprocessor symbol(s)
   -I, --Include <dir...>      Add preprocessor include directories
+  --log <objectName...>       objectName (choices: "all", "outline", "compiler", "elementizer", "parser", "distiller", "preproc", "resolver")
+  --regression <testName...>  testName (choices: "element", "tables", "resolver", "preproc")
+  --pass <passName...>        Stop after passName (choices: "preprocess", "elementize", "con-block")
   -h, --help                  display help for command
 
       Example:
          $ pnut-ts my-top-level.spin2         # compile leaving .bin file
          $ pnut-ts -l my-top-level.spin2      # compile file leaving .bin and .lst files
-
-
+         
 pnut-ts: * Propeller Spin2/PASM2 Compiler 'pnut_ts' (c) 2024 Iron Sheep Productions, LLC., Parallax Inc.
-pnut-ts: * Version 1.43.3,  Build date: 12/14/24
+pnut-ts: * Version 1.51.0, Build date: 4/30/2025
 ```
 
 These options should already make sense but here's a light-weight recap:
 
 | Option forms | Description |
 | --- | --- |
-| -O, --obj,<br>-l, --list | control the generation of the additional listing and object files |
-| -V, -\-version | shows the compiler version information |
+| <pre>--d, -\-debug</pre> | enables generation of code for debug() statements  |
+| <pre>--O, -\-obj,<br>-l, --list</pre> | control the generation of the additional (.lst) listing and (.ob) object files |
+| <pre>-V, -\-version</pre> | shows the compiler version information |
 | <pre>-o {filename}, --output {filename}</pre> | allows you to provide a specific filename for the .bin output file |
-| -a, -\-altbin | use alternate `.binary` suffix vs. `.bin` |
-| -q, --quiet,<br>-v, --verbose | control how little or how much extra messaging is output from the compiler |
-| -I \<dir...\>, --Include \<dir...\>,<br>-U \<symbol...\>, --Undefine \<symbol...\>,<br>-D \<symbol...\>, --Define \<symbol...\> | Are all proprocessor directives where -I adds search directories |contining .spin2 files to be included, -D defines one or more symbols on the command line, and -U un-defines symbols from the command line. |
+| <pre>-F, --flashfile</pre> | control the generation of the additional (.flash) flash-mage file |
+| <pre>-a, --altbin</pre> | use alternate `.binary` suffix vs. `.bin` |
+| <pre>-q, --quiet,<br>-v, --verbose</pre> | control how little or how much extra messaging is output from the compiler |
+| <pre>-I \<dir...\>, --Include \<dir...\>,<br>-U \<symbol...\>, --Undefine \<symbol...\>,<br>-D \<symbol...\>, --Define \<symbol...\> | Are all **proprocessor directives** where:<br> -I adds search directories containing .spin2 files to be included (using `#include "filename(.spin2)"` statements)<br> -D defines one or more symbols on the command line (*Equivalent to #define SYMBOL but affects all files in the compilation effort.*)<br> -U un-defines symbols from the command line.<BR>&nbsp;&nbsp;(**NOTE:** *The -U option can not undefine a symbol created by a #define directive.*) |
 
 And of course `-h` or `--help` produces the output as shown above.
 
-## For PNut-TS developer use
+## For PNut-TS - Developer use
 
 There are a couple of additional options we use when testing or validating PNut_TS:
 
