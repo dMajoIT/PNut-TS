@@ -4,13 +4,19 @@ All notable changes to the "Pnut - A reimplementation in TypeScript" are documen
 
 Check [Keep a Changelog](http://keepachangelog.com/) for reminders on how to structure this file. Also, note that our version numbering adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Known compatibility issues w/PNut
+
+There is one issue which we are unable to address in this implementation:
+
+1. **Floating point constants**: The mantissa (bits 22:0) can be +/- 1 ls-bit different in value (*this is a math library limitation*)
+
 ## [Unreleased]
 
 Work to appear in upcoming releases:
 
-- Work on getting essential coverage completed (all code gen. but not exception testing)
+- Work on getting essential coverage completed (all code generation, less exception testing)
 - Fix any bugs reported by users
-- Keep up with PNut changes as they are released.
+- Keep up with PNut changes soon after they are released.
 
 ## [1.51.0] 2025-04-??
 

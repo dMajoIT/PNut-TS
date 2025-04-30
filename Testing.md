@@ -1,4 +1,4 @@
-# PNut Reimplementation in TypeScript (PNut-TS)<BR>Testing V1.43.0
+# PNut Reimplementation in TypeScript (PNut-TS)<BR>Testing a Release
 
 ![Project Maintenance][maintenance-shield]
 
@@ -10,15 +10,17 @@
 
 [![GitHub issues][Issues-shield]](https://github.com/ironsheep/PNut-TS/issues)
 
-## Testing v1.43.0
+## Testing a PNut TS Release
 
 *Thank you for considering helping us do further testing of our new PNut-TS compiler!*
 
-Here's an overview of the process to use for testing. More detailed descriptions, follow.
+Here's an overview of the process we use for testing. More detailed descriptions, follow.
 
-Testing consists of locating projects that can be compiled with PNut v43 on Windows, compiling the code on Windows and then compiling the same code using our new PNut-TS v1.43.0 compiler.
+Testing consists of locating projects that can be compiled with the PNut version on Windows, compiling the code on Windows and then compiling the same code using our new PNut-TS compiler.
 
-With each compiler you generate .obj, .bin and .lst files. The files you generated from PNut v43 you rename as .obj.GOLD, .bin.GOLD and .lst.GOLD.  The .GOLD suffix connotes that these are the expected golden output that our new PNut-TS compiler much also generate to be working correctly.
+With each compile you generate .obj, .bin and .lst files. The files generated from PNut you then rename as .obj.GOLD, .bin.GOLD and .lst.GOLD.  (*The .GOLD suffix connotes that these are the expected golden output that the new PNut-TS compiler must also generate to be working correctly.*)
+
+Next you compile the same code using the mew PNut-TS compiler.
 
 You then compare each of the file types to their .GOLD counterpart expecting them to match.
 

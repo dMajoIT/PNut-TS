@@ -251,7 +251,7 @@ TODO's from PNut Zoom 250303++:
 			
 	Day 36:Wed: Release Prep Round 2 (just ME):
 		- BUGFIX repair our loop in loading spin documents [SpinDocument.ts] @done(2025-04-30)
-		- PERFORMANCE update DAT FILE load to use array .set() instead of byte loop!
+		- PERFORMANCE update DAT FILE load to use array .set() instead of byte loop! @done(2025-04-30)
 			- PART1  compiler.ts  --  update DAT FILE load to use array .set() instead of byte loop! @done(2025-04-30)
 			- PART2  spinResolver.ts  --  update DAT FILE load to use array .set() instead of byte loop!
 		- Correct the preproc tests to report correct results @done(2025-04-30)

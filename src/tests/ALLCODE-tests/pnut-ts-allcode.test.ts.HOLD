@@ -64,6 +64,8 @@ describe('PNut_ts compiles .spin2 w/debug() correctly', () => {
     files = files.filter((file) => !file.includes('-pre.spin2'));
     // isp_dummy_flash_rpi is NOT a debug compile
     files = files.filter((file) => !file.includes('isp_dummy_flash_rpi.spin2'));
+    // isp_dummy_flash is NOT a debug compile
+    files = files.filter((file) => !file.includes('isp_dummy_flash.spin2'));
     files.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
   }
   //console.log(`* files=[${files.join(', ')}]`); // no extra file coming in here
@@ -217,7 +219,14 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
   if (files.length > 1) {
     // Dont' compile -pre.spin2 files!
     files = files.filter((file) => !file.includes('-pre.spin2'));
-    const specificFile = path.join(testDirPath, 'isp_dummy_flash_rpi.spin2');
+    // add these files if they exist
+    let specificFile: string = path.join(testDirPath, 'isp_dummy_flash_rpi.spin2');
+    if (fs.existsSync(specificFile)) {
+      files.push(specificFile);
+    } else {
+      console.warn(`Specific file not found: ${specificFile}`);
+    }
+    specificFile = path.join(testDirPath, 'isp_dummy_flash.spin2');
     if (fs.existsSync(specificFile)) {
       files.push(specificFile);
     } else {
@@ -263,6 +272,7 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
         const objectFSpec = path.join(testDirPath, `${basename}.obj`);
         const binaryFSpec = path.join(testDirPath, `${basename}.bin`);
         const elementsFSpec = path.join(testDirPath, `${basename}.elem`);
+        const flashFSpec = path.join(testDirPath, `${basename}.flash`);
         const errorFSpec = path.join(testDirPath, `${basename}.errout`);
         stdErrOutFile = errorFSpec; // tell stderr capture what filespec to use
 
@@ -271,9 +281,12 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
         removeExistingFile(objectFSpec);
         removeExistingFile(binaryFSpec);
         removeExistingFile(elementsFSpec);
+        removeExistingFile(flashFSpec);
+        removeExistingFile(errorFSpec);
 
         // compile our file generating output files
-        const conditionalArgs: string[] = []; //basename === 'coverage_003_v44' ? ['-44'] : [];
+        const bNeedFlashFile: boolean = basename === 'isp_dummy_flash';
+        const conditionalArgs: string[] = bNeedFlashFile ? ['-F'] : [];
         const testArguments: string[] = ['node', 'pnut-ts.js', '-l', '-O', '--regression', 'element', '--', `${file}`];
         const adjustedArgs: string[] = [...testArguments.slice(0, 2), ...conditionalArgs, ...testArguments.slice(2)];
 
@@ -294,7 +307,12 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
           throw error;
         }
 
-        const allFilesExist: boolean = await waitForFiles([listingFSpec, objectFSpec, binaryFSpec]);
+        const allTestFiles: string[] = [listingFSpec, objectFSpec, binaryFSpec];
+        if (bNeedFlashFile) {
+          allTestFiles.push(flashFSpec);
+        }
+
+        const allFilesExist: boolean = await waitForFiles(allTestFiles);
         let whatFailed: string = '';
         if (!allFilesExist) {
           // ensure all output files were generated!
@@ -316,6 +334,14 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
             whatFailed = appendDiagnosticString(whatFailed, '.bin', ', ');
             allFilesPresent = false;
           }
+          if (bNeedFlashFile) {
+            fileGenerated = fileExists(flashFSpec);
+            if (!fileGenerated) {
+              whatFailed = appendDiagnosticString(whatFailed, '.flash', ', ');
+              allFilesPresent = false;
+            }
+          }
+
           if (allFilesPresent == false) {
             whatFailed = appendDiagnosticString(whatFailed, 'File(s) Missing - Compare Aborted', ' ');
           }
@@ -348,6 +374,18 @@ describe('PNut_ts compiles .spin2 w/o debug() correctly', () => {
             whatFailed = appendDiagnosticString(whatFailed, 'Binary Files', ', ');
             allFilesMatch = false;
           }
+
+          // ID the golden .flash file
+          const goldenFlashFSpec = path.join(testDirPath, `${basename}.flash.GOLD`);
+          if (fileExists(goldenFlashFSpec)) {
+            // Compare binary files
+            filesMatch = compareObjOrBinFiles(flashFSpec, goldenFlashFSpec);
+            if (!filesMatch) {
+              whatFailed = appendDiagnosticString(whatFailed, 'Flash Files', ', ');
+              allFilesMatch = false;
+            }
+          }
+
           if (allFilesMatch == false) {
             whatFailed = appendDiagnosticString(whatFailed, "Don't match!", ' ');
           }

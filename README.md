@@ -13,12 +13,11 @@
 A joint project between Chip Gracey and Stephen M Moraco.
 Reimplementation Pnut for Windows in a platform agnostic language.
 
-## We are inviting testing help
+## We welcome testing help
 
-v1.43.3 is an early release inviting testing of the v43 compatibility. The hope is that our community can help us expand our initial testing beyond what we've been able to do to help us
-find any compilation issues we may not have found.
+While this is no longer our first release, we hope is that our community can help us expand our testing beyond what we've been able to do to help us find any compilation issues we may not have found. Our regression test suite is reasonably large (*currently 180+ individual .spin2 compiles which generate coverage reports that allow us to quickly find regions of code that we haven't tested.*) but there is no such thing as too much testing!
 
-The page [Testing PNut-TS v1.43.0](Testing.md) will help you learn how to test and identify what to report when you find an issue.
+The page [Testing PNut-TS](Testing.md) will help you learn how to test and identify what to report when you find an issue.
 
 ## Table of Contents
 
@@ -35,7 +34,7 @@ Additional pages:
 - [PNut-TS Repository notes](BUILD-RUN.md) - how to build, run tests, etc.
 - [PNut-TS Coverage notes](Coverage.md) - latest coverage status, how to run coverage, etc.
 - [PNut-TS Project Goals](Goals.md) - our thoughts as we started this project
-- [PNut-TS ChangeLog](CHANGELOG.md) - history of releases
+- [PNut-TS ChangeLog](CHANGELOG.md) - history of releases (Including what's new in this release!)
 - [P2\_PNut_Public](https://github.com/parallaxinc/P2_PNut_Public) - Pnut (for Windows) source is currently found in the Parallax Repo
 
 ## PNut-TS Features
@@ -46,7 +45,7 @@ The features of this new implementation are:
 - Written in a language which is relatively easy to maintain
 - A command line tool with standard option processing
 - Has a full featured light-weight [preprocessor](Preprocessor.md)
-- Listing, object, and binary compatible with PNut of same version.<BR>(PNut v43, initially (at testing release), upgraded to PNut v45 before formal release.)
+- Listing, object, and binary compatible with PNut of same version.<BR>(PNut v43, initially (at testing release), now at PNut v51a with this release.)
 - Internal table-size-limits are now easy to adjust if we find a need.
 
 ## Installing PNut-TS
