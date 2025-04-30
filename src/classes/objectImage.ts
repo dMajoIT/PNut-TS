@@ -48,6 +48,18 @@ export class ObjectImage {
     return copy;
   }
 
+  public ensureFits(offset: number, nbrBytes: number) {
+    const lastByteIdx: number = offset + nbrBytes - 1;
+    this.ensureCapacity(lastByteIdx + 63); // grow, if possible, and needed, before use
+    if (offset < 0 || lastByteIdx >= this._objImageByteAr.length) {
+      // BAD Offset
+      // [error_INTERNAL]
+      throw new Error(
+        `cOBJ[${this._id}] write to Offset ${hexAddress(offset)}(${offset}) of ${Math.floor(lastByteIdx / 1024)} kB Won't FIT! (curr ${this._objImageByteAr.length / 1024} kB)`
+      );
+    }
+  }
+
   private ensureCapacity(neededCapacity: number) {
     if (neededCapacity > this._objImageByteAr.length && this._objImageByteAr.length < ObjectImage.MAX_SIZE_IN_BYTES) {
       // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time
@@ -73,6 +85,7 @@ export class ObjectImage {
   public setLogging(enable: boolean) {
     this.isLogging = enable;
   }
+
   get isLoggingEnabled(): boolean {
     return this.isLogging;
   }
@@ -116,12 +129,14 @@ export class ObjectImage {
     this._objOffset = offset;
   }
 
+  /*
   public readNext(): number {
     let desiredValue: number = 0;
     desiredValue = this._objImageByteAr[this._objOffset++];
     this.updateMax();
     return desiredValue;
   }
+  */
 
   public appendLong(longValue: number) {
     this.logMessage(`* OBJ[${this._id}]: append(Lv=(${hexLong(longValue & 0xffffffff)})) wroteTo(${hexAddress(this._objOffset)})`);

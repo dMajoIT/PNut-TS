@@ -1250,7 +1250,6 @@ export class SpinResolver {
     // PNut compile_dat_blocks:
     //const startTime = Date.now();
     //this.logMessageOutline(`++ compile_dat_blocks(inLineMode=(${inLineMode})) - ENTRY`);
-    //  XYZZY factor in use of check_local (NEW) compile_dat_blocks
     this.logMessage(`*==* COMPILE_dat_blocks() inLineMode=(${inLineMode})`);
     this.inlineModeForGetConstant = inLineMode;
     if (inLineMode) {
@@ -1705,12 +1704,43 @@ export class SpinResolver {
                 this.logMessageOutline(
                   `++ DAT FILE Resolver [dfd=${this.datFileData.id}] [${filename}], idx=(${fileIndex}), ofs=(${offset}), len=(${dataLength})(${hexLong(dataLength, '0x')})`
                 );
+                // OLD way
+                /*
                 this.datFileData.setOffset(offset);
-                // FIXME: XYZZY convert to Uint8Array.set() call!
+                // FIXME: XYZZY convert to Uint8Array.set() call!  RESOLVER
                 for (let byteCount = 0; byteCount < dataLength; byteCount++) {
                   // NOTE: this is writing to this.objImage.
                   this.enterDataByte(BigInt(this.datFileData.nextByte()));
                 }
+                //*/
+
+                // NEW WAY
+                ///*
+                // ensure fits
+                const initialObjOffset = this.objImage.offset;
+                this.objImage.ensureFits(initialObjOffset, dataLength);
+                // ensure we don't exceed our hub/cog use constraints
+                if (this.hubMode) {
+                  // in HUB mode
+                  this.hubOrg += dataLength;
+                  if (this.hubOrg > this.hubOrgLimit) {
+                    // [error_hael]
+                    throw new Error('Hub address exceeds limit (m370)');
+                  }
+                } else {
+                  // in COG mode
+                  this.cogOrg += dataLength;
+                  if (this.cogOrg > this.cogOrgLimit) {
+                    // [error_cael]
+                    throw new Error('Cog address exceeds limit (m112)');
+                  }
+                }
+                // place file content into image
+                const dataFileContent: Uint8Array = this.datFileData.rawUint8Array.subarray(offset, offset + dataLength);
+                this.objImage.rawUint8Array.set(dataFileContent, initialObjOffset);
+                // and point past data we just added
+                this.objImage.setOffsetTo(initialObjOffset + dataLength);
+                //*/
               }
             } else {
               this.logRestoredElementLocation(fileElementIndex);
@@ -8868,7 +8898,6 @@ export class SpinResolver {
   private getConstant(mode: eMode, resolve: eResolve): iConstantReturn {
     // PNut check_constant:
     //  this 'check_constant', now 'get_constant' in Pnut v44 and later
-    //  XYZZY factor in use of check_local (NEW) check_constant
     const resultStatus: iConstantReturn = { value: 0n, foundConstant: true };
     this.logMessage(`*--* getCON() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${this.currElement.toString()}]`);
 
