@@ -808,7 +808,8 @@ export class SpinDocument {
   private removeNonDocComments(currLine: string): string {
     // Replace any inline non-doc comments with spaces, ignoring { and } inside double-quoted strings
     let nonCommentLine = currLine;
-    let bShouldLog = true;
+    // eslint-disable-next-line prefer-const
+    let bShouldLog = false; // true when testing
 
     if (currLine.length > 1 && currLine.includes('{')) {
       this.logMessage(`SpinPP: rmvNDC() currLine [${currLine}](${currLine.length}) - ENTRY`);
@@ -817,7 +818,7 @@ export class SpinDocument {
       let loopCt = 0;
       // eslint-disable-next-line no-constant-condition
       while (true) {
-        bShouldLog = loopCt < 20;
+        //bShouldLog = loopCt < 20; // uncomment when testing
 
         // Stack to track positions of `{` and `}`
         const stack: number[] = [];
@@ -1049,12 +1050,15 @@ export class SpinDocument {
 
   private replaceSubstringWithSpaces(line: string, startIdx: number, endIdx: number): string {
     let spacedLine = line;
+    const bShoudLog: boolean = false; // TRUE when testing
     const badText: string = line.substring(startIdx, endIdx);
     const replaceText: string = ''.padEnd(badText.length, ' ');
-    this.logMessageConditional(true, `SpinPP: REPL string [${line}](${line.length}) - (s:${startIdx}-e:${endIdx})[${badText}]`);
+    this.logMessage(`SpinPP: REPL string [${line}](${line.length}) - (s:${startIdx}-e:${endIdx})[${badText}]`);
+    this.logMessageConditional(bShoudLog, `SpinPP: REPL string [${line}](${line.length}) - (s:${startIdx}-e:${endIdx})[${badText}]`);
     if (badText.length > 0 && badText.length <= line.length) {
       spacedLine = line.replace(badText, replaceText);
-      this.logMessageConditional(true, `SpinPP: REPL    new [${spacedLine}](${spacedLine.length})`);
+      this.logMessage(`SpinPP: REPL    new [${spacedLine}](${spacedLine.length})`);
+      this.logMessageConditional(bShoudLog, `SpinPP: REPL    new [${spacedLine}](${spacedLine.length})`);
     }
     return spacedLine;
   }
