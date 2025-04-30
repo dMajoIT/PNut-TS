@@ -250,3 +250,4 @@ Spin2_v51_misc.*
 scripts/run-LANG-misc
 scripts/run-LANG-math
 *.flash
+*.HOLD

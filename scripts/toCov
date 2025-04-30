@@ -19,12 +19,24 @@ fi
 
 # Copy all files from the specified source directories to the target directory
 # Define a list of directories to copy from
-dirs=("TEST/SPIN-tests" "TEST/OBJ-tests" "TEST/DBG-tests" "TEST/DBG-CROP-tests" "TEST/DAT-PASM-tests" "TEST/VAR-tests" "TEST/CON-tests" "TEST/COV-tests" "TEST/LOADER-tests")
+# NOTE: do coverage tests first, so the debug tests overwrite some of them
+dirs=("TEST/COV-tests" "TEST/SPIN-tests" "TEST/LANG-VER-tests" "TEST/OBJ-tests" "TEST/DBG-tests" "TEST/DBG-CROP-tests" "TEST/DAT-PASM-tests" "TEST/VAR-tests" "TEST/CON-tests" "TEST/LOADER-tests")
 
 # Loop over the list and copy each directory's contents to TEST/ALLCODE-tests
 for dir in "${dirs[@]}"; do
     cp "$dir"/* ${NEW_TEST_DIR}
 done
+# remove prior compilation results before running coverage
+rm -f ${NEW_TEST_DIR}/*.bin
+rm -f ${NEW_TEST_DIR}/*.lst
+rm -f ${NEW_TEST_DIR}/*.obj
+rm -f ${NEW_TEST_DIR}/*.elem
+rm -f ${NEW_TEST_DIR}/*.elemold
+rm -f ${NEW_TEST_DIR}/*.elemORIG
+rm -f ${NEW_TEST_DIR}/*.errout
+rm -f ${NEW_TEST_DIR}/*.bat
+rm -f ${NEW_TEST_DIR}/*.ps1
+
 # Find and rename all *.test.ts files in src/tests to *.test.ts.HOLD
 find src/tests -type f -name "*.test.ts" -exec bash -c 'mv "$0" "${0%.test.ts}.test.ts.HOLD"' {} \;
 

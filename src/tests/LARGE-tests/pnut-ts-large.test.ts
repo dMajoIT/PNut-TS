@@ -71,7 +71,7 @@ describe('PNut_ts detects .spin2 exceptions w/debug() & without correctly', () =
     // iOTgw: these are known to fail but are good (runs too long)
     filteredFiles = filteredFiles.filter((file) => !file.includes('iOTgw'));
     // MultSrvo: these are known to fail but are good (runs too long)
-    filteredFiles = filteredFiles.filter((file) => !file.includes('MultSrvo'));
+    // filteredFiles = filteredFiles.filter((file) => !file.includes('MultSrvo'));
     filteredFiles.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
     files = filteredFiles;
   }

@@ -1,5 +1,6 @@
 // jest.config.js
 const additionalConfig1 = require('./jest-config/jest-coverage-config.json');
+//const additionalConfig1 = require('./jest-config/jest-allcode-only-config.json');
 
 module.exports = {
   ...require('./old.jestconfig.json'), // Main configuration

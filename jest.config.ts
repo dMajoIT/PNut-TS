@@ -43,7 +43,8 @@ const config: Config = {
   // coveragePathIgnorePatterns: [
   //   "/node_modules/"
   // ],
-  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', 'src/tests/'],
+  //coveragePathIgnorePatterns: ['/node_modules/', '/dist/', 'src/tests/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/tests', '/dist/ext/', 'src/tests/', 'src/ext/'],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8',
@@ -186,6 +187,7 @@ const config: Config = {
   // testPathIgnorePatterns: [
   //   "/node_modules/"
   // ],
+  //testPathIgnorePatterns: ['/node_modules/', '/dist/tests/', '/dist/ext/', '/src/ext/', '/src/tests/'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/tests/', '/dist/ext/', '/src/ext/'],
   /* BREAKs THINGS
   testPathIgnorePatterns: [
