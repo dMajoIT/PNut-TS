@@ -1,0 +1,686 @@
+/workspaces/PNut-TS/src/classes/childObjectsImage.ts
+  52,10: // [error_pex]
+  53,7: throw new Error(`Child Object exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}KB`);
+  67,10: // [error_INTERNAL]
+  68,7: throw new Error(
+
+/workspaces/PNut-TS/src/classes/compiler.ts
+  115,9: throw new Error(`Object nesting exceeds ${OBJ_STACK_LIMIT} levels - illegal circular reference may exist`);
+  138,13: throw new Error(`${srcFile.fileName} is a PASM file and cannot be used as a Spin2 object`);
+  242,13: throw new Error(`OBJ data exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}k limit`);
+
+/workspaces/PNut-TS/src/classes/debugData.ts
+  31,10: // [error_dditl] WAS: DEBUG data is too long
+  32,7: throw new Error(`DEBUG data is too long: record exceeds ${DebugRecord.MAX_RECORD_LENGTH} bytes`);
+  146,10: // [error_dditl] WAS: DEBUG data is too long
+  147,7: throw new Error(`DEBUG data is too long: total exceeds ${DebugData.DEBUG_SIZE_IN_BYTES} bytes`);
+
+/workspaces/PNut-TS/src/classes/numberStack.ts
+  51,7: throw new Error('NumberStack: attempted pop from empty stack');
+
+/workspaces/PNut-TS/src/classes/objectImage.ts
+  62,10: // [error_pex]
+  63,7: throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m1F0)`);
+
+/workspaces/PNut-TS/src/classes/objectStructureRecord.ts
+  63,10: // [error_INTERNAL]
+  64,7: throw new Error(`OSRcd: nextByte() bad read offset ${this.readOffset} record-${this._id}`);
+  75,10: // [error_INTERNAL]
+  76,7: throw new Error(`OSRcd: peekByte() bad read offset ${this.readOffset} record-${this._id}`);
+  108,10: // [error_INTERNAL]
+  109,7: throw new Error(`OSRcd: recordWithinStructureRecord() bad read offset ${internalRcdOffset} record-${this._id}`);
+  150,10: // [error_INTERNAL]
+  151,7: throw new Error(`OSRcd: readByte() bad read offset ${offset} record-${this._id}`);
+
+/workspaces/PNut-TS/src/classes/objectStructures.ts
+  140,10: // [error_ PNut TS new]
+  141,7: throw new Error(`ERROR: couldn't find existing structure RCD#${recordId}`);
+  271,10: // [error_iscexb]
+  272,7: throw new Error('Indexed structures cannot exceed $FFFF bytes in size');
+  277,10: // [error_sehr]
+  278,7: throw new Error('Structure exceeds hub range of $FFFFF');
+  282,10: // [error_sehr]
+  283,7: throw new Error('Structure exceeds hub range of $FFFFF');
+  315,10: // [error_INTERNAL]
+  316,7: throw new Error(`ERROR[INTERNAL]: OBJSTRUCT: read() offset=(${offset}) out of range [0-${this._objStructureOffset}]`);
+  346,10: // [error_INTERNAL]
+  347,7: throw new Error(`ERROR[INTERNAL]: OBJSTRUCT: replaceByte() offset=(${offset}) out of range [0-${this._objStructureOffset}]`);
+
+/workspaces/PNut-TS/src/classes/objectSymbols.ts
+  88,10: // [error_pclo]
+  89,7: throw new Error(`PUB/CON list overflowed ${ObjectSymbols.MAX_SIZE_IN_BYTES / 1024}k bytes`);
+
+/workspaces/PNut-TS/src/classes/parseUtils.ts
+  2903,12: // [error_INTERNAL]
+  2904,9: throw new Error(`[INTERNAL] failed to located fc_ value for bc_ (${bcValue})[${eByteCode[bcValue]}]`);
+  2952,10: // [error_level44]
+  2953,7: throw new Error(`{Spin2_v44} is no longer supported due to changes in data structures beginning in v45]`);
+
+/workspaces/PNut-TS/src/classes/spin2Parser.ts
+  468,10: // [error_PASCAL]
+  469,7: throw new Error(`Program requirement exceeds ${this.HubLimit / 1024}KB hub RAM by ${objSize - this.HubLimit} bytes`);
+  486,12: // [error_PASCAL]
+  487,9: throw new Error(`Need to reduce program by ${codeAndLoaderSize - this.HubLimit} bytes, in order to fit flash loader into hub RAM download`);
+  562,9: throw new Error('LOOP EXCEEDED EMPTY BUFFER');
+  603,10: // [error_pex]
+  604,7: throw new Error('Program exceeds 1024KB (m1F1)');
+  641,10: // [error_pex]
+  642,7: throw new Error('Program exceeds 1024KB (m1F2)');
+  655,10: // [error_debugclk]
+  656,7: throw new Error('DEBUG requires at least 10 MHz of crystal/external clocking');
+  702,12: // [error_debugcog]
+  703,9: throw new Error('DEBUG_COGS can only be defined as an integer constant');
+  730,12: // [error_debugdly]
+  731,9: throw new Error('DEBUG_DELAY can only be defined as an integer constant');
+  860,12: // [error_acobd]
+  861,9: throw new Error('_AUTOCLK can only be defined as an integer constant');
+
+/workspaces/PNut-TS/src/classes/spinDocument.ts
+  1036,7: throw new Error(`[PREPROCESSOR] error found #endif without #ifdef or #ifndef`);
+
+/workspaces/PNut-TS/src/classes/spinElementizer.ts
+  295,14: // [error_es] we have an empty string
+  296,11: throw new Error('Empty string');
+  298,14: // [error_eatq] we have an unterminated string
+  299,11: throw new Error('Expected a terminating quote');
+  360,10: // [error_bmbpbb]
+  361,7: throw new Error('"}" must be preceeded by "{" to form a comment');
+  415,12: // [error_uc]
+  416,9: throw new Error(`Unrecognized character [${valueFound}]($${this.unprocessedLine.charCodeAt(0).toString(16)})`);
+  597,15: //  [error_erbb]
+  598,11: throw new Error('Expected "}}"');
+  640,15: //  [error_erb]
+  641,11: throw new Error('Expected "}"');
+  806,12: // [error_nmt4c]
+  807,9: throw new Error(`Packed ascii must be 1-4 characters - [${asciiStr}] is too ${explainStr}`);
+  810,10: // [error_NEW not in Pnut]
+  811,7: throw new Error(`Missing 2nd " on packed ascii`);
+  904,12: // [error_fpcmbw]
+  905,9: throw new Error(`Floating-point constant must be within +/- 3.4e+38`);
+  941,10: // [error_ce32b]
+  942,7: throw new Error('Constant exceeds 32 bits');
+
+/workspaces/PNut-TS/src/classes/spinFiles.ts
+  87,12: // [error_tmop]
+  88,9: throw new Error(`Too many object parameters, exceeded limit of ${OBJ_PARAMS_LIMIT}`);
+  283,10: // [error_loxuoe]
+  284,7: throw new Error(`Limit of ${FILES_LIMIT} unique objects exceeded`);
+  307,7: throw new Error(`Cannot find ${spin2fileName}`);
+  310,10: // [error_INTERNAL]
+  311,7: throw new Error(`ERROR[INTERNAL] - failed to locate/allocate object file record ${fileName}`);
+
+/workspaces/PNut-TS/src/classes/spinResolver.ts
+  668,16: // [error_eauvnsa]
+  669,13: throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E0)');
+  674,16: // [error_eauvn]
+  675,13: throw new Error('Expected a unique variable name');
+  681,18: // [error_pcba]
+  682,15: throw new Error('Pointers cannot be arrays');
+  687,18: // [error_tmvsid]
+  688,15: throw new Error('Too much variable space is declared (m280)');
+  697,16: // [error_tmvsid]
+  698,13: throw new Error('Too much variable space is declared (m281)');
+  799,10: // [error_tmvsid]
+  800,7: throw new Error('Too much variable space is declared (m282)');
+  830,18: // [error_INTERNAL]
+  832,15: throw new Error(`DAT file not found [${fileName}] (preload)`);
+  850,12: // [error_ifufiq]
+  851,9: throw new Error('Invalid filename, use "FilenameInQuotes"');
+  854,12: // [error_ifc]
+  855,9: throw new Error('Invalid filename character');
+  859,12: // [error_ftl]
+  860,9: throw new Error('Filename too long');
+  917,14: // [error_cfcobd]
+  918,11: throw new Error('_CLKFREQ, _XTLFREQ, _XINFREQ, _ERRFREQ, _RCFAST, _RCSLOW can only be defined as integer constants');
+  927,10: // [error_cccbd]
+  928,7: throw new Error('CLKMODE_ and CLKFREQ_ cannot be declared, since they are set by the compiler');
+  998,12: // [error_codcssf]
+  999,9: throw new Error('Conflicting or deficient _CLKFREQ/_XTLFREQ/_XINFREQ/_RCFAST/_RCSLOW symbols found');
+  1034,12: // [error_downbaud]
+  1035,9: throw new Error('DOWNLOAD_BAUD can only be defined as an integer constant');
+  1044,12: // [error_debugpin]
+  1045,9: throw new Error('DEBUG_PIN can only be defined as an integer constant');
+  1053,12: // [error_debugptx]
+  1054,9: throw new Error('DEBUG_PIN_TX can only be defined as an integer constant');
+  1063,12: // [error_debugprx]
+  1064,9: throw new Error('DEBUG_PIN_RX can only be defined as an integer constant');
+  1073,12: // [error_debugbaud]
+  1074,9: throw new Error('DEBUG_BAUD can only be defined as an integer constant');
+  1103,12: // [error_ddcobd]
+  1104,9: throw new Error('DEBUG_DISABLE can only be defined as an integer constant');
+  1116,12: // [error_dmcobd]
+  1117,9: throw new Error('DEBUG_MASK can only be defined as an integer constant');
+  1178,10: // [error_INTERNAL]
+  1179,7: throw new Error('_XINFREQ must be from 250_000 to 500_000_000');
+  1182,10: // [error_INTERNAL]
+  1183,7: throw new Error('_CLKFREQ must be from 3_333_333 to 500_000_000');
+  1231,10: // [error_pllscnba]
+  1232,7: throw new Error('PLL settings could not be achieved per _CLKFREQ');
+  1315,18: // [error_edend]
+  1316,15: throw new Error('Expected DITTO END');
+  1319,18: // [error_eend]
+  1320,15: throw new Error('Expected END');
+  1337,16: // [error_siad]
+  1338,13: throw new Error('Symbol is already defined (m230)');
+  1359,20: // [error_dscobd]
+  1360,17: throw new Error('DAT structures can only be declared in ORGH mode');
+  1363,20: // [error_dsmbpbas]
+  1364,17: throw new Error('DAT structure must be preceded by a symbol');
+  1411,24: // [error_fvar]
+  1412,21: throw new Error('FVAR/FVARS data is too big (m160)');
+  1417,24: // [error_fvar]
+  1418,21: throw new Error('FVAR/FVARS data is too big (m161)');
+  1452,22: // [error_eend]
+  1453,19: throw new Error('Expected END');
+  1483,22: // [error_dcmbapi]
+  1484,19: throw new Error('DITTO count must be a positive integer or zero');
+  1502,22: // [error_haefl]
+  1503,19: throw new Error('Hub address exceeds FIT limit');
+  1507,22: // [error_caefl]
+  1508,19: throw new Error('Cog address exceeds FIT limit');
+  1515,20: // [error_rinaiom]
+  1516,17: throw new Error('RES is not allowed in ORGH mode');
+  1525,20: // [error_cael]
+  1526,17: throw new Error('Cog address exceeds limit (m020)');
+  1532,20: // [error_oinaiom]
+  1533,17: throw new Error('ORGF is not allowed in ORGH mode');
+  1539,20: // [error_cael]
+  1540,17: throw new Error('Cog address exceeds limit (m021)');
+  1543,20: // [error_oaet]
+  1544,17: throw new Error('Origin already exceeds target');
+  1552,20: // [error_onawiac]
+  1553,17: throw new Error('ORG not allowed within inline assembly code');
+  1556,20: // [error_onawads]
+  1557,17: throw new Error('ORG not allowed within a DITTO block');
+  1568,22: // [error_caexl]
+  1569,19: throw new Error('Cog address exceeds $400 limit (m030)');
+  1577,24: // [error_caexl]
+  1578,21: throw new Error('Cog address exceeds $400 limit (m031)');
+  1587,20: // [error_ohnawiac]
+  1588,17: throw new Error('ORGH not allowed within inline assembly code');
+  1602,24: // [error_habxl]
+  1603,21: throw new Error('Hub address below $400 limit');
+  1607,22: // [error_haec]
+  1608,19: throw new Error('Hub address exceeds $100000 ceiling (m170)');
+  1618,24: // [error_hael]
+  1619,21: throw new Error('Hub address exceeds limit (m180)');
+  1622,24: // [error_haec]
+  1623,21: throw new Error('Hub address exceeds $100000 ceiling (m171)');
+  1629,24: // [error_hacd]
+  1630,21: throw new Error('Hub address cannot decrease');
+  1644,20: // [error_aanawiac]
+  1645,17: throw new Error('ALIGNW/ALIGNL not allowed within inline assembly code');
+  1651,18: // [error_ohnawads]
+  1652,15: throw new Error('ORGH not allowed within a DITTO block');
+  1673,18: // [error_edend]
+  1674,15: throw new Error('Expected DITTO END');
+  1678,18: // [error_eidbwloe]
+  1679,15: throw new Error('Expected instruction, directive, BYTE/WORD/LONG, or END');
+  1697,18: // [error_INTERNAL]
+  1698,15: throw new Error(`DAT file not found [${filename}]`);
+  1716,18: // [error_INTERNAL]
+  1717,15: throw new Error(`ERROR[INTERNAL] file [${filename}] missing from mid-pass list of data files`);
+  1723,16: // [error_eaunbwlo]
+  1724,13: throw new Error('Expected a unique name, BYTE, WORD, LONG, or assembly instruction');
+  1727,18: // [error_edend]
+  1728,15: throw new Error('Expected DITTO END');
+  1773,12: // [error_eaasmi]
+  1774,9: throw new Error('Expected an assembly instruction');
+  1799,12: // [error_INTERNAL]
+  1800,9: throw new Error('[CODE] INTERNAL error: we should have found an instruction');
+  1889,18: // [error_smb0t7]
+  1890,15: throw new Error('Selector must be 0 to 7 (m260)');
+  1905,16: // [error_smb0t7]
+  1906,13: throw new Error('Selector must be 0 to 7 (m261)');
+  1926,18: // [error_smb0t3]
+  1927,15: throw new Error('Selector must be 0 to 3 (m250)');
+  1942,16: // [error_smb0t3]
+  1943,13: throw new Error('Selector must be 0 to 3 (m251)');
+  1963,18: // [error_smb0t1]
+  1964,15: throw new Error('Selector must be 0 to 1 (m240)');
+  1979,16: // [error_smb0t1]
+  1980,13: throw new Error('Selector must be 0 to 1 (m241)');
+  2033,18: // [error_rbeiooa]
+  2034,15: throw new Error('REP block end is out of alignment');
+  2039,18: // [error_rbeioor]
+  2040,15: throw new Error('REP block end is out of range');
+  2091,26: // [error_drmbpppp]
+  2092,23: throw new Error('D register must be PA/PB/PTRA/PTRB (m070)');
+  2102,28: // [error_drmbpppp]
+  2103,25: throw new Error('D register must be PA/PB/PTRA/PTRB (m071)');
+  2120,26: // [error_drmbpppp]
+  2121,23: throw new Error('D register must be PA/PB/PTRA/PTRB (m072)');
+  2137,22: // [error_drmbpppp]
+  2138,19: throw new Error('D register must be PA/PB/PTRA/PTRB (m073)');
+  2166,18: // [error_drmbpppp]
+  2167,15: throw new Error('D register must be PA/PB/PTRA/PTRB (m074)');
+  2181,16: // [error_amnex]
+  2182,13: throw new Error('Address must not exceed $FFFFF (m000)');
+  2258,14: // [error_ewcwzwcz]
+  2259,11: throw new Error('Expected WC, WZ, or WCZ');
+  2341,18: // [error_INTERNAL]
+  2342,15: throw new Error('[CODE] unexpected XLAT instruction');
+  2386,16: // [error_nchcor]
+  2387,13: throw new Error('NOP cannot have a condition or _RET_');
+  2439,12: // [error_INTERNAL]
+  2440,9: throw new Error(`ERROR[INTERNAL] unknown operandType=(${operandType}(${hexLong(operandType, '0x')}))`);
+  2450,12: // [error_eaaeoeol]
+  2451,9: throw new Error('Expected an assembly effect or end of line');
+  2456,12: // [error_teinafti]
+  2457,9: throw new Error('This effect is not allowed for this instruction');
+  2478,14: // [error_dmbmb]
+  2479,11: throw new Error('DEBUG mask bit-number must be 0..31');
+  2482,14: // [error_dmmbd]
+  2483,11: throw new Error('DEBUG_MASK symbol must be defined for DEBUG[0..31] usage');
+  2570,16: // [error_rainawi]
+  2571,13: throw new Error('Relative address is not aligned with instruction (m200)');
+  2585,16: // [error_rainawi]
+  2586,13: throw new Error('Relative address is not aligned with instruction (m201)');
+  2592,16: // [error_raioor]
+  2593,13: throw new Error('Relative address is out of range');
+  2612,10: // [error_amnex]
+  2613,7: throw new Error('Address must not exceed $FFFFF (m001)');
+  2715,18: // [error_picmr116]
+  2716,15: throw new Error('PTRA/PTRB index constant must range from 1 to 16');
+  2722,18: // [error_picmr6b]
+  2723,15: throw new Error('PTRA/PTRB index constant must range from -32 to 31');
+  2747,16: // [error_cmbf0t255]
+  2748,13: throw new Error('Constant must be from 0 to 255');
+  2764,12: // [error_ebwls]
+  2765,9: throw new Error('Expected BYTE, WORD, LONG, or STRUCT name');
+  2789,10: // [error_racc]
+  2790,7: throw new Error('Relative addresses cannot cross between cog and hub domains');
+  2814,10: // [error_ewaox]
+  2815,7: throw new Error('Expected WC, WZ, ANDC, ANDZ, ORC, ORZ, XORC, or XORZ');
+  2837,10: // [error_rcex]
+  2838,7: throw new Error('Register cannot exceed $1FF');
+  2848,10: // [error_cmbf0t511]
+  2849,7: throw new Error('Constant must be from 0 to 511 (m040)');
+  3025,10: // [error_tdcbpbas]
+  3026,7: throw new Error('This directive cannot be preceded by a symbol');
+  3048,18: // [error_bmbft]
+  3049,15: throw new Error('BYTEFIT values must range from -$80 to $FF');
+  3056,18: // [error_wmbft]
+  3057,15: throw new Error('WORDFIT values must range from -$8000 to $FFFF');
+  3071,18: // [error_hael]
+  3072,15: throw new Error('Hub address exceeds limit (m181)');
+  3078,18: // [error_cael]
+  3079,15: throw new Error('Cog address exceeds limit (m022)');
+  3099,12: // [error_npmf]
+  3100,9: throw new Error('No PUB method or DAT block found');
+  3122,12: // [error_eaumn]
+  3123,9: throw new Error('Expected a unique method name');
+  3149,16: // [error_eaupn]
+  3150,13: throw new Error('Expected a unique parameter name (m0C0)');
+  3154,16: // [error_loxpe]
+  3155,13: throw new Error(`Limit of ${this.method_params_limit} parameters exceeded`);
+  3179,16: // [error_eaurn]
+  3180,13: throw new Error('Expected a unique result name (m0D0)');
+  3184,16: // [error_loxre]
+  3185,13: throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
+  3220,16: // [error_eauvnsa]
+  3221,13: throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E1)');
+  3226,18: // [error_pcba]
+  3227,15: throw new Error('Pointers cannot be arrays');
+  3237,12: // [error_loxppme]
+  3238,9: throw new Error(`Limit of ${this.subs_limit} PUB/PRI methods exceeded`);
+  3270,14: // [error_eiconos]
+  3271,11: throw new Error(`Expected integer constant or structure (for size)`);
+  3275,12: // [error_loxre]
+  3276,9: throw new Error(`Limit of ${this.method_results_limit} results exceeded`);
+  3305,10: // [error_easn]
+  3306,7: throw new Error('Expected a structure name');
+  3393,16: // [error_eaupn]
+  3394,13: throw new Error('Expected a unique parameter name (m0C1)');
+  3433,16: // [error_eaurn]
+  3434,13: throw new Error('Expected a unique result name (m0D1)');
+  3489,16: // [error_eauvnsa]
+  3490,13: throw new Error('Expected a unique variable name, STRUCT name, BYTE, WORD, LONG, "^", ALIGNW, or ALIGNL (m0E2)');
+  3504,16: // [error_loxlve]
+  3505,13: throw new Error('Limit of 64KB of local variables exceeded');
+  3647,16: // [error_loxee]
+  3648,13: throw new Error('Limit of 256 ELSEIF/ELSEIFNOTs exceeded');
+  3723,12: // [error_omblc]
+  3724,9: throw new Error('OTHER must be last case (m1E0)');
+  3735,14: // [error_loxcase]
+  3736,11: throw new Error(`Limit of ${this.case_limit} CASE elements exceeded`);
+  3754,10: // [error_nce]
+  3755,7: throw new Error('No cases encountered (m1D0)');
+  3892,12: // [error_omblc]
+  3893,9: throw new Error('OTHER must be last case (m1E1)');
+  3903,14: // [error_loxcasef]
+  3904,11: throw new Error(`Limit of ${this.case_fast_limit} CASE_FAST elements exceeded`);
+  3921,10: // [error_nce]
+  3922,7: throw new Error('No cases encountered (m1D1)');
+  3989,18: // [error_cfiinu]
+  3990,15: throw new Error('CASE_FAST index is not unique');
+  4006,12: // [error_cfbex]
+  4007,9: throw new Error('CASE_FAST block exceeds 64KB');
+  4067,10: // [error_cfvmbw]
+  4068,7: throw new Error('CASE_FAST values must be within 255 of each other');
+  4330,14: // [error_INTERNAL]
+  4331,11: throw new Error(`[CODE] unexpected wordSize=(${this.wordSize}) !`);
+  4338,14: // [error_csmbla]
+  4339,11: throw new Error('Cog symbol must be long-aligned');
+  4354,10: // [error_loxdse]
+  4355,7: throw new Error('Limit of 10k DAT symbols exceeded');
+  4388,12: // [error_eals]
+  4389,9: throw new Error('Expected a local symbol');
+  4459,12: // [error_INTERNAL]
+  4460,9: throw new Error('[CODE] known table ID!');
+  4493,18: // [error_ocmbf1tx]
+  4494,15: throw new Error('Object count must be from 1 to 255');
+  4520,18: // [error_loxoie]
+  4521,15: throw new Error(`Limit of ${this.objs_limit} OBJ instances exceeded`);
+  4535,20: // [error_eas]
+  4536,17: throw new Error('Expected a symbol [eas00]');
+  4546,14: // [error_eauon]
+  4547,11: throw new Error('Expected a unique object name');
+  4725,20: // [error_loxdsde]
+  4726,17: throw new Error(`Limit of ${ObjectStructures.MAX_STRUCTURES} data structure definitions exceeded`);
+  4751,16: // [error_INTERNAL]
+  4752,13: throw new Error(`ERROR[INTERNAL]: failed to decode object symbol type (${symbolType}) for [${objFileRecords[objFileIndex].fileName}]`);
+  4762,8: // [error_NEW]
+  4764,5: throw new Error(`Invalid object image found for file: ${objFileInfo.fileName}`);
+  4832,14: // [error_tmvsid]
+  4833,11: throw new Error('Too much variable space is declared (m283)');
+  5086,10: // [error_odo]
+  5087,7: throw new Error(`Object distiller overflow (more than ${this.distiller_limit} entries)`);
+  5409,11: throw new Error(`ERROR[INTERNAL] failed to locate Object Id ${subObjId} list`);
+  5526,18: // [error_eaucnpos]
+  5527,15: throw new Error('Expected a unique constant name, "#", or STRUCT (m0B0)');
+  5612,18: // [error_eelcoeol]
+  5613,15: throw new Error('Expected "=" "[" "," or end of line');
+  5619,18: // [error_eausn]
+  5620,15: throw new Error('Expected a unique STRUCT name');
+  5634,20: // [error_eloe]
+  5635,17: throw new Error('Expected "(" or "="');
+  5643,20: // [error_loxdsde]
+  5644,17: throw new Error(`Limit of ${ObjectStructures.MAX_STRUCTURES} data structure definitions exceeded`);
+  5665,16: // [error_eaucnpos]
+  5666,13: throw new Error('Expected a unique constant name, "#", or STRUCT (m0B1)');
+  5687,12: // [error_eaesn]
+  5688,9: throw new Error('Expected an existing STRUCT name');
+  5698,12: // [error_eeqol]
+  5699,9: throw new Error('Expected "=", or "("');
+  5725,14: // [error_eas]
+  5726,11: throw new Error('Expected a symbol [eas01]');
+  5736,18: // [error_iccbl]
+  5737,15: throw new Error('Instance count cannot be less than 1');
+  5739,18: // [error_icce]
+  5740,15: throw new Error('Instance count cannot exceed $10000');
+  5823,10: // [error_siad]
+  5824,7: throw new Error('Symbol is already defined (m231)');
+  5893,12: // [error_bdmbifc]
+  5894,9: throw new Error('Block designator must be in first column');
+  5977,16: // [error_tocbufa]
+  5978,13: throw new Error('This operator cannot be used for assignment (m290)');
+  6066,12: // [error_ticobu]
+  6067,9: throw new Error('This instruction can only be used as an expression term, since it returns results');
+  6107,16: // [error_eaiov]
+  6108,13: throw new Error('Expected an instruction or variable');
+  6134,18: // [error_eastott]
+  6135,15: throw new Error('Expected ":=", ":=:", "~", or "~~"');
+  6164,18: // [error_tocbufa]
+  6165,15: throw new Error('This operator cannot be used for assignment (m291)');
+  6176,16: // [error_vnao]
+  6177,13: throw new Error('Variable needs an operator');
+  6231,9: throw new Error('ERROR: [CODE] compileVariableMultiple() underflowed internal stack');
+  6262,12: // [error_icaexl]
+  6263,11: //throw new Error('Inline cog address exceeds $120 limit');
+  6264,9: throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m190)`);
+  6270,14: // [error_icaexl]
+  6271,13: //throw new Error('Inline cog address exceeds $120 limit');
+  6272,11: throw new Error(`Inline cog address exceeds $${this.inline_org_limit.toString(16)} limit (m191)`);
+  6300,10: // [error_isie]
+  6301,7: throw new Error('ORG/ORGH inline block is empty');
+  6336,10: // [error_isie]
+  6337,7: throw new Error('ORG/ORGH inline block is empty');
+  6340,10: // [error_isil]
+  6341,7: throw new Error('ORGH inline block exceeds $FFFF longs (including the added RET instruction)');
+  6361,12: // [error_tioawarb]
+  6362,9: throw new Error('This instruction is only allowed within a REPEAT block');
+  6383,12: // [error_internal]
+  6384,9: throw new Error('Internal error! - ci_next_quit()');
+  6414,12: // [error_eeol]
+  6415,9: throw new Error('Expected end of line (m100)');
+  6439,10: // [error_esendd]
+  6440,7: throw new Error('Expected SEND data (m140)');
+  6490,10: // [error_tocbufa]
+  6491,7: throw new Error('This operator cannot be used for assignment (m292)');
+  6708,14: // [error_ebackcmd]
+  6709,11: throw new Error('Expected "?", ".", "(", "$", "%", "#", or DEBUG command');
+  6810,10: // [error_dditl]
+  6811,7: throw new Error('DEBUG data is too long: too many expressions (> 31)');
+  6908,10: // [error_eaet]
+  6909,7: throw new Error('Expected an expression term (m090)');
+  6911,10: // [error_eaenop]
+  6912,7: throw new Error('Expected an even number of parameters');
+  6957,10: // [error_eaet]
+  6958,7: throw new Error('Expected an expression term (m091)');
+  7103,12: // [error_rpcx]
+  7104,9: throw new Error('Register parameter cannot exceed $3FF');
+  7258,14: // [error_dditl] WAS: DEBUG data is too long
+  7259,11: throw new Error(`DEBUG data is too long: too many records: max ${DebugData.MAX_ENTRIES}`);
+  7377,14: // [error_etmrasr]
+  7378,11: throw new Error('Expression terms must return a single result');
+  7404,12: // [error_eaet]
+  7405,9: throw new Error('Expected an expression term (m092)');
+  7418,16: // [error_eeone]
+  7419,13: throw new Error('Expected "==" or "<>"');
+  7524,22: // [error_pmbttsp]
+  7525,19: throw new Error('Pins must belong to the same port');
+  7594,10: // [error_mpmblv]
+  7595,7: throw new Error('Method pointers must be long variables without bitfields');
+  7608,12: // [error_eright]
+  7609,9: throw new Error('Expected ")" (m120)');
+  7631,12: // [error_erightb]
+  7632,9: throw new Error('Expected "]" (m130)');
+  7672,12: // [error_enope]
+  7673,9: throw new Error('Expected number of parameters exceeded');
+  7775,14: // [error_oiina]
+  7776,11: throw new Error('Object index is not allowed before constants and structures');
+  7840,12: // [error_eamoov]
+  7841,9: throw new Error('Expected a method, object, or variable');
+  8035,12: // [error_eamn]
+  8036,9: throw new Error('Expected a method name (m0A0)');
+  8061,12: // [error_eamomp]
+  8062,9: throw new Error('Expected a method, object, or method pointer');
+  8104,12: // [error_esc]
+  8105,9: throw new Error('Expected a string character (m900)');
+  8116,12: // [error_eamn]
+  8117,9: throw new Error('Expected a method name (m0A1)');
+  8137,12: // [error_easvmoo]
+  8138,9: throw new Error('Expected a string, variable, method, or object');
+  8143,12: // [error_arina]
+  8144,9: throw new Error('@register is not allowed, use ^@ to get field pointer');
+  8147,12: // [error_ainafbf]
+  8148,9: throw new Error('@ is not allowed for bitfields, use ^@ to get field pointer');
+  8165,12: // [error_scmrf]
+  8166,9: throw new Error('STRING characters must range from 1 to 255 (m210)');
+  8175,12: // [error_sdcx]
+  8176,9: throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m220)');
+  8229,18: // [error_iec]
+  8230,15: throw new Error('Invalid escape character');
+  8234,18: // [error_iec]
+  8235,15: throw new Error('Invalid escape character');
+  8261,10: // [error_esc]
+  8262,7: throw new Error('Expected a string character (m901)');
+  8267,10: // [error_esc]
+  8268,7: throw new Error('Expected a string character (m902)');
+  8271,10: // [error_scmrf]
+  8272,7: throw new Error('STRING characters must range from 1 to 255 (m211)');
+  8292,10: // [error_eamn]
+  8293,7: throw new Error('Expected a method name (m0A2)');
+  8330,12: // [error_recvcbu]
+  8331,9: throw new Error('RECV() can be used only as a term and \\RECV() is not allowed');
+  8339,12: // [error_sendcbu]
+  8340,9: throw new Error('SEND() can be used only as an instruction and \\SEND() is not allowed');
+  8367,10: // [error_eav]
+  8368,7: throw new Error('Expected a variable (m0F0)');
+  8383,14: // [error_loxpe]
+  8384,11: throw new Error(`Limit of ${this.method_params_limit} parameters exceeded`);
+  8412,14: // [error_spmcrmv]
+  8413,11: throw new Error('SEND parameter methods cannot return multiple values (m270)');
+  8432,12: // [error_spmcrmv]
+  8433,9: throw new Error('SEND parameter methods cannot return multiple values (m271)');
+  8453,14: // [error_spmcrmv]
+  8454,11: throw new Error('SEND parameter methods cannot return multiple values (m272)');
+  8485,12: // [error_tmrnr]
+  8486,9: throw new Error('This method returns no results');
+  8488,12: // [error_tmrmr]
+  8489,9: throw new Error('This method returns multiple result longs');
+  8525,12: // [error_bwldcx]
+  8526,9: throw new Error('BYTE/WORD/LONG data cannot exceed 255 bytes (m011)');
+  8544,12: // [error_scmrf]
+  8545,9: throw new Error('STRING characters must range from 1 to 255 (m211)');
+  8549,12: // [error_sdcx]
+  8550,9: throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m221)');
+  8570,12: // [error_lscmrf]
+  8571,9: throw new Error('LSTRING characters must range from 0 to 255');
+  8575,12: // [error_sdcx]
+  8576,9: throw new Error('@"string"/STRING/LSTRING data cannot exceed 254 bytes (m222)');
+  8693,11: throw new Error(error.message);
+  8769,16: // [error_NEW for Pnut-ts] (BEING CAPTURED)
+  8770,13: throw new Error('[INTERNAL] Spin2 Constant failed to resolve');
+  8772,16: // [error_eacuool]
+  8773,13: throw new Error('Expected a constant, unary operator, or "("');
+  8859,12: // [error_ionaifpe]
+  8860,9: throw new Error('Integer operator not allowed in floating-point expression');
+  8910,14: // [error_eregsym]
+  8911,11: throw new Error('Expected a register symbol');
+  9002,16: // [error_soioa]
+  9003,13: throw new Error('SIZEOF() is only allowed in DAT, VAR, PUB, and PRI blocks');
+  9010,16: // [error_easn]
+  9011,13: throw new Error('Expected a structure name');
+  9036,20: // [error_dioa]
+  9037,17: throw new Error('"$" (DAT origin) is only allowed in DAT blocks');
+  9044,20: // [error_diioa]
+  9046,17: throw new Error('"$$" (DITTO index) is only allowed within a DITTO block, inside a DAT block');
+  9055,20: // [error_rinah]
+  9056,17: throw new Error('Register is not allowed here');
+  9068,18: // [error_lvmb]
+  9070,15: throw new Error('Local variable must be LONG and within first 16 longs (m1C0)');
+  9076,18: // [error_lvmb]
+  9078,15: throw new Error('Local variable must be LONG and within first 16 longs (m1C1)');
+  9101,22: // [error_eads]
+  9102,19: throw new Error('Expected a DAT symbol');
+  9178,10: // [error_eaocsom]
+  9179,7: throw new Error('Expected an object constant, structure, or method');
+  9195,14: // [error_eacn]
+  9196,11: throw new Error('Expected a constant name (m081)');
+  9201,12: // [error_us]
+  9202,9: throw new Error(`Undefined symbol`);
+  9222,16: // [error_cmbf1t15]
+  9223,13: throw new Error(`Constant must be from 1 to 15`);
+  9380,10: // [error_ecoeol]
+  9381,7: throw new Error('Expected "," or end of line');
+  9392,10: // [error_esoeol]
+  9393,7: throw new Error('Expected STEP or end of line');
+  9403,10: // [error_eeol]
+  9404,7: throw new Error('Expected end of line (m101)');
+  9414,10: // [error_ecor]
+  9415,7: throw new Error('Expected "," or ")"');
+  9427,10: // [error_epoeol]
+  9428,7: throw new Error('Expected "|" or end of line');
+  9601,16: // [error_oaocbats]
+  9602,13: throw new Error('Only @ operator can be applied to a structure');
+  9796,10: // [error_stosmne]
+  9797,7: throw new Error('Structures transferred on the stack must not exceed 15 longs');
+  9858,10: // [error_eav]
+  9859,7: throw new Error('Expected a variable (m0F1)');
+  9897,14: // [error_eicon]
+  9898,11: throw new Error('Expected integer constant (m110)');
+  9906,16: // [error_eicon]
+  9907,13: throw new Error('Expected integer constant (m111)');
+  10204,16: // [error_eptrid]
+  10205,13: throw new Error('Expected pointer variable, "++", or "--"');
+  10210,16: // [error_eptr]
+  10211,13: throw new Error('Expected pointer variable');
+  10340,18: // [error_cmbf0t511]
+  10341,15: throw new Error('Constant must be from 0 to 511 (m041)');
+  10400,10: // [error_smbss]
+  10401,7: throw new Error('Structures must be same size');
+  10421,10: // [error_smbss]
+  10422,7: throw new Error('Structures must be same size');
+  10618,12: // [error_easmn]
+  10619,9: throw new Error('Expected a structure member name');
+  10672,14: // [error_sdnctn]
+  10673,11: throw new Error('Structure does not contain this name');
+  10772,12: // [error_iscexb]
+  10773,9: throw new Error('Indexed structures cannot exceed $FFFF bytes in size');
+  10783,14: // [error_simbf]
+  10784,11: throw new Error('Structure index must be from 0 to $FFFF');
+  10788,14: // [error_sehr]
+  10789,11: throw new Error('Structure exceeds hub range of $FFFFF');
+  10793,14: // [error_sehr]
+  10794,11: throw new Error('Structure exceeds hub range of $FFFFF');
+  10800,14: // [error_loxrs]
+  10801,11: throw new Error('Limit of 3 runtime structure index expressions exceeded');
+  10929,10: // [error_eleft]
+  10930,7: throw new Error('Expected "("');
+  10937,10: // [error_eright]
+  10938,7: throw new Error('Expected ")" (m121)');
+  10945,10: // [error_eleftb]
+  10946,7: throw new Error('Expected "["');
+  10953,10: // [error_erightb]
+  10954,7: throw new Error('Expected "]" (m131)');
+  10961,10: // [error_ecomma]
+  10962,7: throw new Error('Expected ","');
+  10968,10: // [error_epound]
+  10969,7: throw new Error('Expected "#"');
+  10975,10: // [error_eequal]
+  10976,7: throw new Error('Expected "="');
+  10983,10: // [error_ecolon]
+  10984,7: throw new Error('Expected ":"');
+  10991,10: // [error_edot]
+  10992,7: throw new Error('Expected "."');
+  10999,10: // [error_edotdot]
+  11000,7: throw new Error('Expected ".."');
+  11007,10: // [error_eassign]
+  11008,7: throw new Error('Expected ":="');
+  11015,10: // [error_ebwl]
+  11016,7: throw new Error('Expected BYTE/WORD/LONG');
+  11023,10: // [error_efrom]
+  11024,7: throw new Error('Expected FROM');
+  11031,10: // [error_eto]
+  11032,7: throw new Error('Expected TO');
+  11039,10: // [error_ewith]
+  11040,7: throw new Error('Expected WITH');
+  11046,10: // [error_fpnaiie]
+  11047,7: throw new Error('Floating-point not allowed in integer expression');
+  11056,10: // [error_inaifpe]
+  11057,7: throw new Error('Integer not allowed in floating-point expression');
+  11197,7: throw new Error(`NO Elements`);
+  11203,9: throw new Error(`Off end of Element List`);
+  11387,16: // [error_fpcmbp]
+  11388,13: throw new Error(`Floating-point constant must be positive`);
+  11424,16: // [error_fpcmbp]
+  11425,13: throw new Error(`Floating-point constant must be positive`);
+  11439,16: // [error_fpcmbp]
+  11440,13: throw new Error(`Floating-point constant must be positive`);
+  11454,16: // [error_fpcmbp]
+  11455,13: throw new Error(`Floating-point constant must be positive`);
+  11602,18: // [error_fpo]
+  11604,15: throw new Error(`Floating-point overflow (m150)`);
+  11614,18: // [error_dbz]
+  11615,15: throw new Error(`Divide by zero (m050)`);
+  11626,16: // [error_fpo]
+  11628,13: throw new Error(`Floating-point overflow (m151)`);
+  11641,14: // [error_dbz]
+  11642,11: throw new Error(`Divide by zero (m051)`);
+  11649,14: // [error_dbz]
+  11650,11: throw new Error(`Divide by zero (m052)`);
+  11657,14: // [error_dbz]
+  11658,11: throw new Error(`Divide by zero (m053)`);
+  11675,16: // [error_dbz]
+  11676,13: throw new Error(`Divide by zero (m054)`);
+  11681,16: // [error_divo]
+  11682,13: throw new Error(`Division overflow`);
+  11965,12: // [error_INTERNAL]
+  11966,9: throw new Error(`this operation NOT YET IMPLEMENTED`);
+  11975,10: // [error_fpo]
+  11976,7: throw new Error('Floating-point overflow (m152)');
+
+/workspaces/PNut-TS/src/utils/context.ts
+  101,7: throw new Error(`CODE CONSTRUCTION ERROR: getTopFile() this._srcFiles[] shouldn't be empty`);

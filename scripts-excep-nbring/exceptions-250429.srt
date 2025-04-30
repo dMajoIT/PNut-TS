@@ -1,0 +1,318 @@
+/workspaces/PNut-TS/src/classes/childObjectsImage.ts:67,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/objectStructureRecord.ts:63,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/objectStructureRecord.ts:75,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/objectStructureRecord.ts:108,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/objectStructureRecord.ts:150,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/objectStructures.ts:315,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/objectStructures.ts:346,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/parseUtils.ts:2903,12: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinFiles.ts:310,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:830,18: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1178,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1182,10: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1697,18: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1716,18: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1799,12: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2341,18: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2439,12: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4330,14: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4459,12: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4751,16: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11965,12: --error_INTERNAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4762,8: --error_NEW
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:468,10: --error_PASCAL
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:486,12: --error_PASCAL
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1644,20: --error_aanawiac
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:860,12: --error_acobd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8147,12: --error_ainafbf
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2181,16: --error_amnex--    (m100):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2612,10: --error_amnex--    (m101):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8143,12: --error_arina
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5893,12: --error_bdmbifc
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3048,18: --error_bmbft
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:360,10: --error_bmbpbb
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8525,12: --error_bwldcx
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1507,22: --error_caefl
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1525,20: --error_cael--    (m110):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1539,20: --error_cael--    (m111):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3078,18: --error_cael--    (m112):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1568,22: --error_caexl--    (m120):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1577,24: --error_caexl--    (m121):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:927,10: --error_cccbd
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:941,10: --error_ce32b
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4006,12: --error_cfbex
+/workspaces/PNut-TS/src/classes/spinResolver.ts:917,14: --error_cfcobd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3989,18: --error_cfiinu
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4067,10: --error_cfvmbw
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2747,16: --error_cmbf0t255
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2848,10: --error_cmbf0t511--    (m130):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10340,18: --error_cmbf0t511--    (m131):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9222,16: --error_cmbf1t15
+/workspaces/PNut-TS/src/classes/spinResolver.ts:998,12: --error_codcssf
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4338,14: --error_csmbla
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11614,18: --error_dbz--    (m140):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11641,14: --error_dbz--    (m141):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11649,14: --error_dbz--    (m142):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11657,14: --error_dbz--    (m143):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11675,16: --error_dbz--    (m144):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1483,22: --error_dcmbapi
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1103,12: --error_ddcobd
+/workspaces/PNut-TS/src/classes/debugData.ts:31,10: --error_dditl--    (m150):
+/workspaces/PNut-TS/src/classes/debugData.ts:146,10: --error_dditl--    (m151):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6810,10: --error_dditl--    (m152):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7258,14: --error_dditl--    (m153):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1073,12: --error_debugbaud
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:655,10: --error_debugclk
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:702,12: --error_debugcog
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:730,12: --error_debugdly
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1044,12: --error_debugpin
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1063,12: --error_debugprx
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1053,12: --error_debugptx
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9044,20: --error_diioa
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9036,20: --error_dioa
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11681,16: --error_divo
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2478,14: --error_dmbmb
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1116,12: --error_dmcobd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2482,14: --error_dmmbd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1034,12: --error_downbaud
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2091,26: --error_drmbpppp--    (m160):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2102,28: --error_drmbpppp--    (m161):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2120,26: --error_drmbpppp--    (m162):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2137,22: --error_drmbpppp--    (m163):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2166,18: --error_drmbpppp--    (m164):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1359,20: --error_dscobd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1363,20: --error_dsmbpbas
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2450,12: --error_eaaeoeol
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1773,12: --error_eaasmi
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9195,14: --error_eacn
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8772,16: --error_eacuool
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9101,22: --error_eads
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6911,10: --error_eaenop
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5687,12: --error_eaesn
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6908,10: --error_eaet--    (m170):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6957,10: --error_eaet--    (m171):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7404,12: --error_eaet--    (m172):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6107,16: --error_eaiov
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4388,12: --error_eals
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8035,12: --error_eamn--    (m180):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8116,12: --error_eamn--    (m181):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8292,10: --error_eamn--    (m182):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8061,12: --error_eamomp
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7840,12: --error_eamoov
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9178,10: --error_eaocsom
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4535,20: --error_eas--    (m190):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5725,14: --error_eas--    (m191):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10618,12: --error_easmn
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3305,10: --error_easn--    (m200):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9010,16: --error_easn--    (m201):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11007,10: --error_eassign
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6134,18: --error_eastott
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8137,12: --error_easvmoo
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:298,14: --error_eatq
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5526,18: --error_eaucnpos--    (m210):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5665,16: --error_eaucnpos--    (m211):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3122,12: --error_eaumn
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1723,16: --error_eaunbwlo
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4546,14: --error_eauon
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3149,16: --error_eaupn--    (m220):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3393,16: --error_eaupn--    (m221):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3179,16: --error_eaurn--    (m230):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3433,16: --error_eaurn--    (m231):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5619,18: --error_eausn
+/workspaces/PNut-TS/src/classes/spinResolver.ts:674,16: --error_eauvn
+/workspaces/PNut-TS/src/classes/spinResolver.ts:668,16: --error_eauvnsa--    (m240):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3220,16: --error_eauvnsa--    (m241):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3489,16: --error_eauvnsa--    (m242):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8367,10: --error_eav--    (m250):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9858,10: --error_eav--    (m251):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6708,14: --error_ebackcmd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11015,10: --error_ebwl
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2764,12: --error_ebwls
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9380,10: --error_ecoeol
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10983,10: --error_ecolon
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10961,10: --error_ecomma
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9414,10: --error_ecor
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1315,18: --error_edend--    (m260):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1673,18: --error_edend--    (m261):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1727,18: --error_edend--    (m262):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10991,10: --error_edot
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10999,10: --error_edotdot
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5612,18: --error_eelcoeol
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1319,18: --error_eend--    (m270):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1452,22: --error_eend--    (m271):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6414,12: --error_eeol--    (m280):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9403,10: --error_eeol--    (m281):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7418,16: --error_eeone
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5698,12: --error_eeqol
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10975,10: --error_eequal
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11023,10: --error_efrom
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9897,14: --error_eicon--    (m290):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9906,16: --error_eicon--    (m291):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3270,14: --error_eiconos
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1678,18: --error_eidbwloe
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10929,10: --error_eleft
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10945,10: --error_eleftb
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5634,20: --error_eloe
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7672,12: --error_enope
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9427,10: --error_epoeol
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10968,10: --error_epound
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10210,16: --error_eptr
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10204,16: --error_eptrid
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:640,15: --error_erb
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:597,15: --error_erbb
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8910,14: --error_eregsym
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7608,12: --error_eright--    (m300):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10937,10: --error_eright--    (m301):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7631,12: --error_erightb--    (m310):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10953,10: --error_erightb--    (m311):
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:295,14: --error_es
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8104,12: --error_esc--    (m320):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8261,10: --error_esc--    (m321):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8267,10: --error_esc--    (m322):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6439,10: --error_esendd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9392,10: --error_esoeol
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7377,14: --error_etmrasr
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11031,10: --error_eto
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2814,10: --error_ewaox
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2258,14: --error_ewcwzwcz
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11039,10: --error_ewith
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11387,16: --error_fpcmbp--    (m330):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11424,16: --error_fpcmbp--    (m331):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11439,16: --error_fpcmbp--    (m332):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11454,16: --error_fpcmbp--    (m333):
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:904,12: --error_fpcmbw
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11046,10: --error_fpnaiie
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11602,18: --error_fpo--    (m340):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11626,16: --error_fpo--    (m341):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11975,10: --error_fpo--    (m342):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:859,12: --error_ftl
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1411,24: --error_fvar--    (m350):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1417,24: --error_fvar--    (m351):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1602,24: --error_habxl
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1629,24: --error_hacd
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1607,22: --error_haec--    (m360):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1622,24: --error_haec--    (m361):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1502,22: --error_haefl
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1618,24: --error_hael--    (m370):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3071,18: --error_hael--    (m371):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6262,12: --error_icaexl--    (m380):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6270,14: --error_icaexl--    (m381):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5736,18: --error_iccbl
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5739,18: --error_icce
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8229,18: --error_iec--    (m390):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8234,18: --error_iec--    (m391):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:854,12: --error_ifc
+/workspaces/PNut-TS/src/classes/spinResolver.ts:850,12: --error_ifufiq
+/workspaces/PNut-TS/src/classes/spinResolver.ts:11056,10: --error_inaifpe
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6383,12: --error_internal
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8859,12: --error_ionaifpe
+/workspaces/PNut-TS/src/classes/objectStructures.ts:271,10: --error_iscexb--    (m400):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10772,12: --error_iscexb--    (m401):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6300,10: --error_isie--    (m410):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6336,10: --error_isie--    (m411):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6340,10: --error_isil
+/workspaces/PNut-TS/src/classes/parseUtils.ts:2952,10: --error_level44
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3735,14: --error_loxcase
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3903,14: --error_loxcasef
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4725,20: --error_loxdsde--    (m420):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5643,20: --error_loxdsde--    (m421):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4354,10: --error_loxdse
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3647,16: --error_loxee
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3504,16: --error_loxlve
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4520,18: --error_loxoie
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3154,16: --error_loxpe--    (m430):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8383,14: --error_loxpe--    (m431):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3237,12: --error_loxppme
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3184,16: --error_loxre--    (m440):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3275,12: --error_loxre--    (m441):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10800,14: --error_loxrs
+/workspaces/PNut-TS/src/classes/spinFiles.ts:283,10: --error_loxuoe
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8570,12: --error_lscmrf
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9068,18: --error_lvmb--    (m450):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9076,18: --error_lvmb--    (m451):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7594,10: --error_mpmblv
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3754,10: --error_nce--    (m460):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3921,10: --error_nce--    (m461):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2386,16: --error_nchcor
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:806,12: --error_nmt4c
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3099,12: --error_npmf
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1543,20: --error_oaet
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9601,16: --error_oaocbats
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4493,18: --error_ocmbf1tx
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5086,10: --error_odo
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1651,18: --error_ohnawads
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1587,20: --error_ohnawiac
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7775,14: --error_oiina
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1532,20: --error_oinaiom
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3723,12: --error_omblc--    (m470):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3892,12: --error_omblc--    (m471):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1556,20: --error_onawads
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1552,20: --error_onawiac
+/workspaces/PNut-TS/src/classes/spinResolver.ts:681,18: --error_pcba--    (m480):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3226,18: --error_pcba--    (m481):
+/workspaces/PNut-TS/src/classes/objectSymbols.ts:88,10: --error_pclo
+/workspaces/PNut-TS/src/classes/childObjectsImage.ts:52,10: --error_pex--    (m490):
+/workspaces/PNut-TS/src/classes/objectImage.ts:62,10: --error_pex--    (m491):
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:603,10: --error_pex--    (m492):
+/workspaces/PNut-TS/src/classes/spin2Parser.ts:641,10: --error_pex--    (m493):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2715,18: --error_picmr116
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2722,18: --error_picmr6b
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1231,10: --error_pllscnba
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7524,22: --error_pmbttsp
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2789,10: --error_racc
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2570,16: --error_rainawi--    (m500):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2585,16: --error_rainawi--    (m501):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2592,16: --error_raioor
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2033,18: --error_rbeiooa
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2039,18: --error_rbeioor
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2837,10: --error_rcex
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8330,12: --error_recvcbu
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9055,20: --error_rinah
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1515,20: --error_rinaiom
+/workspaces/PNut-TS/src/classes/spinResolver.ts:7103,12: --error_rpcx
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8165,12: --error_scmrf--    (m510):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8271,10: --error_scmrf--    (m511):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8544,12: --error_scmrf--    (m512):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8175,12: --error_sdcx--    (m520):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8549,12: --error_sdcx--    (m521):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8575,12: --error_sdcx--    (m522):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10672,14: --error_sdnctn
+/workspaces/PNut-TS/src/classes/objectStructures.ts:277,10: --error_sehr--    (m530):
+/workspaces/PNut-TS/src/classes/objectStructures.ts:282,10: --error_sehr--    (m531):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10788,14: --error_sehr--    (m532):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10793,14: --error_sehr--    (m533):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8339,12: --error_sendcbu
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1337,16: --error_siad--    (m540):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5823,10: --error_siad--    (m541):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10783,14: --error_simbf
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1963,18: --error_smb0t1--    (m550):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1979,16: --error_smb0t1--    (m551):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1926,18: --error_smb0t3--    (m560):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1942,16: --error_smb0t3--    (m561):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1889,18: --error_smb0t7--    (m570):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:1905,16: --error_smb0t7--    (m571):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10400,10: --error_smbss--    (m580):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:10421,10: --error_smbss--    (m581):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9002,16: --error_soioa
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8412,14: --error_spmcrmv--    (m590):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8432,12: --error_spmcrmv--    (m591):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8453,14: --error_spmcrmv--    (m592):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9796,10: --error_stosmne
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3025,10: --error_tdcbpbas
+/workspaces/PNut-TS/src/classes/spinResolver.ts:2456,12: --error_teinafti
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6066,12: --error_ticobu
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6361,12: --error_tioawarb
+/workspaces/PNut-TS/src/classes/spinFiles.ts:87,12: --error_tmop
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8488,12: --error_tmrmr
+/workspaces/PNut-TS/src/classes/spinResolver.ts:8485,12: --error_tmrnr
+/workspaces/PNut-TS/src/classes/spinResolver.ts:687,18: --error_tmvsid--    (m600):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:697,16: --error_tmvsid--    (m601):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:799,10: --error_tmvsid--    (m602):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:4832,14: --error_tmvsid--    (m603):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:5977,16: --error_tocbufa--    (m610):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6164,18: --error_tocbufa--    (m611):
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6490,10: --error_tocbufa--    (m612):
+/workspaces/PNut-TS/src/classes/spinElementizer.ts:415,12: --error_uc
+/workspaces/PNut-TS/src/classes/spinResolver.ts:9201,12: --error_us
+/workspaces/PNut-TS/src/classes/spinResolver.ts:6176,16: --error_vnao
+/workspaces/PNut-TS/src/classes/spinResolver.ts:3056,18: --error_wmbft
