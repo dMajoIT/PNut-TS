@@ -8,10 +8,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for reminders on how to str
 
 Work to appear in upcoming releases:
 
-- Add revised STRUCT support as in PNut_v45.exe
-- Add enhanced DEBUG support as in PNut_v46.exe
-- Add TASK support as in PNut_v47.exe
-- Preprocessor support is superset of that in PNut_v48.exe (no need to add)
+- Work on getting essential coverage completed (all code gen. but not exception testing)
+- Fix any bugs reported by users
+- Keep up with PNut changes as they are released.
 
 ## [1.51.0] 2025-04-??
 
