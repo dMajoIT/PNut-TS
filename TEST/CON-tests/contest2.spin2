@@ -2,17 +2,18 @@ DAT
 CON  EnableFlow = 8                'single assignments
      DisableFlow = 4
      ColorBurstFreq = 3_579_545
-     UpperNibs = $F0F0F0F0
+     UpperNibs = $F0F0_F0F0
 
      PWM_base = 8
      PWM_pins = PWM_base ADDPINS 7
 
      x = 5, y = -5, z = 1          'comma-separated assignments
 
-     HalfPi = 1.5707963268         'IEEE-754 single-precision float values
+     HalfPi = 1.570_796_3268         'IEEE-754 single-precision float values
      QuarPi = HalfPi / 2.0
      NegG   = -1e9
      Micro  = 1e-6
+     Marked  = 1_0e6
 
      zz = ROUND(4000.0 / QuarPi)    'float to integer
 
@@ -31,6 +32,10 @@ CON  #0,a,b, ...
      u[2]                 'u=19   ([2] is a step multiplier)
      v                    'v=21
      w                    'w=22
+     xq = %"AbCd"
+     yq = %"QrZ"
+     zq = %"pI"
+     zr = %"Z"
 
 CON  e0,e1,e2             'e0=0, e1=1, e2=2      (start=0, step=1)
                           '..enumeration is reset at each CON

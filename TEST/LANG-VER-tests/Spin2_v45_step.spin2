@@ -3,7 +3,10 @@
 CON STRUCT point(x,y), STRUCT line(point a, point b)
   PINS = 34
 
-VAR byte A[100], B[100], line vline[10]
+VAR byte A[100]
+   B[100], line vline[10]
+   point vpoint[10]
+   ^line pMyLine ' pointer to a line
 
 DAT
 myLine  LINE ' no intial values allow on line
