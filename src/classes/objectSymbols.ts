@@ -163,6 +163,7 @@ export class ObjectSymbols {
     this._objSymbolsByteAr[this._objOffset++] = uint8 & 0xff;
   }
 
+  /*
   public read(offset: number): number {
     // read existing value from image
     let desiredValue: number = 0;
@@ -171,6 +172,7 @@ export class ObjectSymbols {
     }
     return desiredValue;
   }
+  //*/
 
   public reset() {
     // effectively empty our image

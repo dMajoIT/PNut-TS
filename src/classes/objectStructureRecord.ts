@@ -66,6 +66,7 @@ export class ObjectStructureRecord {
     return desiredByte;
   }
 
+  /*
   public peekByte(): number {
     // return byte at current offset without incrementing offset
     let desiredByte: number = 0;
@@ -77,6 +78,7 @@ export class ObjectStructureRecord {
     }
     return desiredByte;
   }
+  //*/
 
   public peekWord(): number {
     let desiredWord: number = 0;
