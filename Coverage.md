@@ -23,7 +23,7 @@ The current coverage status is versioned at our repository. To view the full det
 - Click on `src/classes` to get to the various class files making up PNut TS
 - Click on `spinResolver.ts` to view the coverage for **SpinResolver Class** which does nearly all of our code generation
 
-## Coverage Status v1.51.x (preliminary)
+## Coverage Status v1.51.x
 
 
 This is our coverage stataus at the v1.51.0 release.  In this release coverage effort we focused on the most important areas which would yield the best certification of the compiler in general. We didn't test many of the more extreme (infrequently exercised cases.) We did try to cover all regions that affect actual code generation.
@@ -31,16 +31,16 @@ This is our coverage stataus at the v1.51.0 release.  In this release coverage e
 ### Page: Top level
 Here are the coverage categories:
 
-![Patreon](./DOCs/images/v1.51.0-top-prelim.png)<br>**FIGURE 1**: v1.51.0 (prelim) `top-level` coverage report view.
+![Patreon](./DOCs/images/v1.51.0-top.png)<br>**FIGURE 1.50-1**: v1.51.0 `top-level` coverage report view.
 
 This page shows that there are three pages below this one (`src`, `src/classes`, and `src/Utils` each with their own page of details.  Click on one of the three names to view the page for that group.
 
 ### Page: src/classes
 Here is the `src/classes` status:
 
-![Patreon](./DOCs/images/v1.51.0-classes-prelim.png)<br>**FIGURE 2**: v1.51.0 (prelim) `src/classes` coverage report view.
+![Patreon](./DOCs/images/v1.51.0-classes.png)<br>**FIGURE 1.50-2**: v1.51.0 `src/classes` coverage report view.
 
-Again, this is our results at v1.51.0 (prelim) our preliminary v1.51.0 build just before we officially release.
+Again, this is our results at v1.51.0 for our release build.
 
 ## Coverage Status v1.43.x
 
@@ -49,14 +49,14 @@ This is our coverage stataus at the v1.43.0 testing release.  In this first cove
 ### Page: Top level
 Here are the coverage categories:
 
-![Patreon](./DOCs/images/v1.43.0-top.png)<br>**FIGURE 1**: v1.43.0 `top-level` coverage report view.
+![Patreon](./DOCs/images/v1.43.0-top.png)<br>**FIGURE 1.43-1**: v1.43.0 `top-level` coverage report view.
 
 This page shows that there are three pages below this one (`src`, `src/classes`, and `src/Utils` each with their own page of details.  Click on one of the three names to view the page for that group.
 
 ### Page: src/classes
 Here is the `src/classes` status:
 
-![Patreon](./DOCs/images/v1.43.0-classes.png)<br>**FIGURE 2**: v1.43.0 `src/classes` coverage report view.
+![Patreon](./DOCs/images/v1.43.0-classes.png)<br>**FIGURE 1.43-2**: v1.43.0 `src/classes` coverage report view.
 
 Again, this is our results at v1.43.0 our initial test release.
 
