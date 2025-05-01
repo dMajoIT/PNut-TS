@@ -272,7 +272,7 @@ TODO's from PNut Zoom 250303++:
 		- Performance fix: Issue #2 @done(2025-04-30)
 		
 	Day 37:Thu: Release PNut_TS!:
-			- Final Update docs, build release files, tag release version and upload release files!
+			- Final Update docs, build release files, tag release version and upload release files! @done(2025-05-01)
 			
 	POST v51 release!  DO ANOTHER DAY:
 			- [rslv:6729-6787]   DO ANOTHER DAY!  non-tic debug....
@@ -337,8 +337,8 @@ RE-PACKAGING PNut-TS (Self-contained):
 	Preparation:
 	- in vscode run:    npm run bld-dist
 	- copy pkgs/ content to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs
-	- copy out/pnut_ts.js to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
-	- copy prebuilds/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
+	- copy out/pnut-ts.js to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs/pnut_ts # cs_pack.sh will use this for macOS images for now..
+	- copy prebuilds/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now... @done(2025-05-01)
 	- copy out/ext/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
 	- ensure content of /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_dist is current (has latest stuff)
 	Packaging:
@@ -351,9 +351,13 @@ RE-PACKAGING PNut-TS (Self-contained):
 		- at end run    xcrun stapler staple _unzipped/macos/macos-arm64.dmg   # to complete the DMG
 	- run    cs_not_dmgx64.sh to notarize the x64 DMG
 		- at end run    xcrun stapler staple _unzipped/macos/macos-x64.dmg   # to complete the DMG
+	- Prepare _UPLOAD
+		- duplicate _UPLOAD/ folder and rename to UPLOAD_v99.99.99/
+		- now from original _UPLOAD/ remove *.zip and PRIOR_ZIPS/*.zip
 	- run    cs_zip_dmgs.sh  to zip the .dmg files and place the .zips in _UPLOAD
-	- UPLOAD all the .zip's to the releases page for the given release
 	- run cs_fixUploadNames.sh to formally name the .zip files before uploading to repo as assets
+		- Ex: run 'cs_fixUploadNames.sh 014305' for v01.43.05
+	- UPLOAD all the _UPLOAD/.zip's to the releases page for the given release
 	
 RE-PACKAGING PNut-TS (External Node.js):
 	Ensure latest files are on _dist folder (ChangeLog.md, etc.)
