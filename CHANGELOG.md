@@ -18,7 +18,7 @@ Work to appear in upcoming releases:
 - Fix any bugs reported by users
 - Keep up with PNut changes soon after they are released.
 
-## [1.51.0] 2025-04-??
+## [1.51.0] 2025-05-01
 
 - Add language version support through `{Spin2_v51}`.
 - Add command-line `-F` option which, when specified, causes the .flash file to be written (PNut -ci equiv.)
