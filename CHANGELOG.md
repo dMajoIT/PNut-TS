@@ -24,9 +24,9 @@ Work to appear in upcoming releases:
 - Add command-line `-F` option which, when specified, causes the .flash file to be written (PNut -ci equiv.)
 - Preprocessor intermediate files now end with `__pre.spin2` (vs. '-pre.spin2') 
 - Preprocessor: #define is no longer affected by command-line -U options
-- Added `#pragma exportdef SYMBOL` which make SYMBOL present as if added with `-DSYMBOL` on command line but affects all files compiled after file containing the #pragma (*place in top-most file for best results*)
+- Added `#pragma exportdef SYMBOL` which makes SYMBOL present as if added with `-DSYMBOL` on the command line but affects all files compiled after the file containing the #pragma (*place in top-most file for best results*)
 - {Spin2_v44} is no longer supported due to changes in data structures beginning in v45
-- Compatible with PNut versions thru PNut_v51a.exe (except for PNut_v44.exe which is no longer supported)
+- Compatible with PNut versions through PNut_v51a.exe (except for PNut_v44.exe, which is no longer supported)
 - **Performance fix**: [Issue #2](https://github.com/ironsheep/PNut-TS/issues/2) Compiling FILEs in DAT section needs attention - is slow
 
 ## [1.43.3] 2024-12-14
