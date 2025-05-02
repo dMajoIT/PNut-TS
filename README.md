@@ -54,18 +54,20 @@ Install .zip files available for each release:
 
 | Archive Name | Operating System | Architecture | Unpack Leaves |
 | --- | --- | --- | --- |
-| linux-arm64.zip | Linux, RPi | Arm 64 bit | pnut_ts/ |
-| linux-x64.zip| Linux | Intel x86-64 bit | pnut_ts/ |
-| macos-arm64.zip| MacOS | Arm 64 bit | macos-arm64.dmg |
-| macos-x64.zip| MacOS | Intel x86-64 bit | macos-x64.dmg |
-| win-arm64.zip| Windows | Arm 64 bit | pnut_ts/ |
-| win-x64.zip| Windows | Intel x86-64 bit | pnut_ts/ |
+| linux-arm64-{MMmmpp}.zip | Linux, RPi | Arm 64 bit | pnut_ts/ |
+| linux-x64-{MMmmpp}.zip| Linux | Intel x86-64 bit | pnut_ts/ |
+| macos-arm64-{MMmmpp}.zip| MacOS | Apple Silicon | pnut_ts/ |
+| macos-x64-{MMmmpp}.zip| MacOS | Intel x86-64 bit | pnut_ts/ |
+| win-arm64-{MMmmpp}.zip| Windows | Arm 64 bit | pnut_ts/ |
+| win-x64-{MMmmpp}.zip| Windows | Intel x86-64 bit | pnut_ts/ |
 
-Installation is pretty easy for PNut-TS.
+**NOTE:** *where -MMmmpp is the release verison. (E.g., -014303.zip means v1.43.3.)*
+
+Installation is pretty easy for PNut-TS.  Here are the general steps: (*more specific instructions links are below.*)
 
 - Identify and download the .zip file for your platform and architecture (from the latest release.)
 - unzip the file, creates a folder (or .dmg)
-- On **Windows**, **Linux** move the folder to the install location.<BR>On **macOS** double-click on the .dmg then from within the window drag the folder to the /Applications folder.
+- On **Windows**, **Linux** move the folder to the install location.<BR>On **macOS** move the folder to the /Applications folder. *(This is a signed application so it should run without unknown developer warnings.)*
 - Setup and enviroment variable (typically PATH) so that the **pnut_ts** executable can be referenceed from anywhere.
 - Run VSCode with the **Spin2 v2.3.0 extension** (when it's released) to ensure that the installed **pnut_ts** was found.
 
