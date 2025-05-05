@@ -7436,6 +7436,7 @@ export class SpinResolver {
         throw new Error('Expected an expression term (m172)');
       }
       if (this.isStruct(variableResult.type) && !variableResult.structIsBWL) {
+        this.logMessage(`  -- compileTerm() have struct, NOT BWL`);
         if (variableResult.structSize <= 4) {
           variableResult.operation = eVariableOperation.VO_READ;
           this.compileVariable(variableResult);
@@ -7453,13 +7454,12 @@ export class SpinResolver {
         }
         workComplete = true;
       } else if (variableResult.structIsBWL) {
-        this.logMessage(`  -- compileTerm() have BWL compile a read var`);
-        variableResult.operation = eVariableOperation.VO_READ;
-        this.compileVariable(variableResult);
-        workComplete = true;
+        this.logMessage(`  -- compileTerm() have BWL compile a read var, look for post incr/decr`);
+        // fall thru to @@notstruct:
       }
       this.logMessage(`  -- compileTerm() workComplete=(${workComplete})`);
       if (!workComplete) {
+        // here is @notstruct:
         this.currElement = this.getElement(); // get element after variable
         if (this.currElement.type == eElementType.type_left) {
           // var({param,...}){:results} ?
@@ -9543,7 +9543,7 @@ private checkDec(): boolean {
       }
       variable.wordSize = eWordSize.WS_Long;
       variable.address &= 0xfffff; // mask away any struct id
-      this.logMessage(`  -- compVar() calling self with var.type changed to of [${eElementType[variable.type]}]`);
+      this.logMessage(`  -- compVar() calling self with var.type changed to [${eElementType[variable.type]}]`);
       this.compileVariable(variable);
       this.logMessage(`  -- compVar() resume after var.type changed with variable.type [${eElementType[variable.type]}]`);
       if (incDecValue != 1) {
