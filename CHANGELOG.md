@@ -18,6 +18,10 @@ Work to appear in upcoming releases:
 - Fix any bugs reported by users
 - Keep up with PNut changes soon after they are released.
 
+## [1.51.1] 2025-05-05
+
+- BUGFIX: Issue ([#7](https://github.com/ironsheep/PNut-TS/issues/7)) compile failure for post increment/decrement (Thank you Macca for reporting this!)
+
 ## [1.51.0] 2025-05-01
 
 - Add language version support through `{Spin2_v51}`.
