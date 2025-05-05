@@ -1,0 +1,31 @@
+{Spin2_v51}
+
+' failing test code from Macca
+CON
+    STRUCT sPoint(word x, word y, byte c)
+
+PUB main() | a, b, ^sPoint ptr
+
+    a := ptr.x++
+    a := ++ptr.x
+
+    a := [ptr]
+    a := [ptr]++
+    a := ++[ptr]
+
+    a := ptr[++].x
+    a := ptr[++].x--
+    a := --ptr[++].x
+    a := [++]ptr.x
+    a := [++]ptr.x--
+    a := --[++]ptr.x
+
+    ptr.x := a
+    [ptr] := a
+
+    ptr[++].x := a
+    [++]ptr.x := a
+
+    a := ptr.x := b
+    a := ptr[++].x := b
+    a := [++]ptr.x := b
