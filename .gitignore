@@ -254,3 +254,4 @@ scripts/run-LANG-math
 *__pre.spin2
 jest-config/jest-coverage-configOLD.json
 jest-config/jest-coverage-configBAD.json
+scripts-pkg/cs_fixUploadNames.sh

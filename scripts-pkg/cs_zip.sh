@@ -2,8 +2,11 @@
 SCRIPT=${0##*/}
 SCRIPT_VERSION="1.0"
 
-#              v1.43.0
-BUILD_VERSION="014302"
+# Check that we are in desired directory
+if [ "${PWD##*/}" != "DIST" ]; then
+   echo "${SCRIPT}: ERROR: this script must be from from PropV2-Shared/.../DIST folder! Aborted"
+   exit 1;
+fi
 
 
 # =============================================================================
@@ -14,15 +17,19 @@ show_help() {
 ERROR_LEVEL=$1
 cat  >&2 << EOF
 
-Usage: ${SCRIPT} [-dhv]
+Usage: ${SCRIPT} [-dhv] {buildVersion}
 
- $SCRIPT v${SCRIPT_VERSION} generate diff between to AltOS code versions
+ $SCRIPT v${SCRIPT_VERSION} compress our raw package folders into .zip files
 
 where:
     -h          Display this (h)elp and exit
     -d          Enable script-(d)ebug output
     -v          Enable (v)erbose mode. Can be used multiple times for increased
                  verbosity.
+
+    {buildVersion}  is XXYYZZ, where XX is the major version, YY is the minor version,
+                    and ZZ is the patch version. For example, 014302 is
+                    version 1.43.2.
 
 Typical Use Cases:
 
@@ -132,26 +139,21 @@ done
 
 shift "$((OPTIND-1))" # Shift off the options and optional --.
 
+BUILD_VERSION=$1
 
 # =============================================================================
 #  final checks and setup before execution
 #
 
+# Validate that BUILD_VERSION is a 6-digit decimal number
+if [[ ! "$BUILD_VERSION" =~ ^[0-9]{6}$ ]]; then
+    fatalMessage "BUILD_VERSION must be a 6-digit decimal number" 1
+fi
+
 export DATETIME=`date +%y%m%d%H%m`
 debugMessage "date=[${DATETIME}]"
 
-# Store the original directory
-original_dir=$(pwd)
-changed_dir=false
-
-# Check if the current directory is scripts-pkg
-if [ "${PWD##*/}" != "scripts-pkg" ]; then
-  cd scripts-pkg || { echo "${SCRIPT}: ERROR: Failed to change directory to scripts-pkg"; exit 1; }
-  changed_dir=true
-fi
-
-
-# zip command: ditto -ck --norsrc pnut_ts linux-x64-014300.zip
+# zip command: ditto -ck --norsrc pnut_ts linux-x64.zip
 
 # The zip_folder_contents function takes a folder path and an output zip file name, then zips the contents of the folder.
 # The script defines an array base_dirs containing the base directories linux, macos, and win.
@@ -199,9 +201,3 @@ for base_dir in "${base_dirs[@]}"; do
         warningMessage "Base directory $base_dir does not exist"
     fi
 done
-
-
-# Change back to the original directory if we changed to scripts-pkg
-if [ "$changed_dir" = true ]; then
-  cd "$original_dir" || { echo "${SCRIPT}: ERROR: Failed to change back to the original directory"; exit 1; }
-fi
