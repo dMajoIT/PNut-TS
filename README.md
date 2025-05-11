@@ -1,4 +1,4 @@
-# PNut Reimplementation in TypeScript (PNut-TS)
+# PNut Re-implementation in TypeScript (PNut-TS)
 
 ![Project Maintenance][maintenance-shield]
 
