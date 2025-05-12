@@ -12,7 +12,7 @@
 
 ## Everyday Use of PNut-TS
 
-Our new PNut-TS compiler will show you the following when you speicfy `-h` or `--help`:
+Our new PNut-TS compiler will show you the following when you specify `-h` or `--help`:
 
 ```text
 PNut-TS: Usage: pnut-ts [optons] filename

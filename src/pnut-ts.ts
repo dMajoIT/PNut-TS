@@ -415,13 +415,13 @@ export class PNutInTypeScript {
       this.requiresFilename = true;
     }
 
+    /*
     if (this.options.flash) {
       this.context.logger.progressMsg('Downloading to FLASH');
       this.context.compileOptions.writeFlash = true;
       this.requiresFilename = true;
     }
 
-    /*
     if (this.options.ram) {
       this.context.logger.progressMsg('Downloading to RAM');
       this.context.compileOptions.writeRAM = true;
