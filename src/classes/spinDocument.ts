@@ -385,7 +385,7 @@ export class SpinDocument {
       let insertTextLines: TextLine[] = [];
       let currLine = this.rawLines[lineIdx];
       this.logMessage(`SpinPP: currLine[${lineIdx}]: [${currLine}](${currLine.length})`);
-      if (currLine.startsWith("'")) {
+      if (/^\s*'/.test(currLine)) {
         // have single line non-doc (') or doc ('') comment
         this.recordComment(currLine);
         // check for nonDoc comments (generally looking for '} patterns) in single line comment (only if already in nonDoc Comment)
@@ -438,10 +438,10 @@ export class SpinDocument {
         if (docClosePosn != -1) {
           this.inDocComment = false;
         }
-      } else if (currLine.startsWith('#')) {
+      } else if (/^\s*#/.test(currLine)) {
         // handle preprocessor #directive
         this.gatheringHeaderComment = false; // no more gathering once we hit text
-        if (currLine.startsWith('#define')) {
+        if (/^\s*#define\s+/i.test(currLine)) {
           // parse #define {symbol} {value}
           const [symbol, value] = this.getSymbolValue(currLine);
           if (symbol) {
@@ -455,7 +455,7 @@ export class SpinDocument {
             // ERROR bad statement
             this.reportError(`#define is missing symbol name`, lineIdx, 0);
           }
-        } else if (currLine.startsWith('#undef')) {
+        } else if (/^\s*#undef\s+/i.test(currLine)) {
           // parse #undef {symbol}
           const symbol = this.getSymbolName(currLine);
           if (symbol) {
@@ -475,10 +475,10 @@ export class SpinDocument {
           } else {
             this.reportError(`#undef is missing symbol name`, lineIdx, 0);
           }
-        } else if (currLine.startsWith('#ifdef') || currLine.startsWith('#elseifdef')) {
+        } else if (/^\s*#ifdef\s+/i.test(currLine) || /^\s*#elseifdef\s+/i.test(currLine)) {
           // parse #ifdef {symbol}
           // parse #elseifdef {symbol}
-          const isElseForm: boolean = currLine.startsWith('#elseifdef');
+          const isElseForm: boolean = /^\s*#elseifdef\s+/i.test(currLine);
           const wasEmitting = !this.inIfDef() || (this.inIfDef() && this.thisSideKeepsCode());
           const ifState = isElseForm ? this.currIfDef() : this.enterIf();
           if (ifState === undefined) {
@@ -518,10 +518,10 @@ export class SpinDocument {
               this.reportError(`#elseifdef without earlier #if*...`, lineIdx, 0);
             }
           }
-        } else if (currLine.startsWith('#ifndef') || currLine.startsWith('#elseifndef')) {
+        } else if (/^\s*#ifndef\s+/i.test(currLine) || /^\s*#elseifndef\s+/i.test(currLine)) {
           // parse #ifndef {symbol}
           // parse #elseifndef {symbol}
-          const isElseForm: boolean = currLine.startsWith('#elseifndef');
+          const isElseForm: boolean = /^\s*#elseifndef\s+/i.test(currLine);
           const wasEmitting = !this.inIfDef() || (this.inIfDef() && this.thisSideKeepsCode());
           const ifState = isElseForm ? this.currIfDef() : this.enterIf();
           if (ifState === undefined) {
@@ -559,7 +559,7 @@ export class SpinDocument {
               this.reportError(`#elseifndef without earlier #if*...`, lineIdx, 0);
             }
           }
-        } else if (currLine.startsWith('#else')) {
+        } else if (/^\s*#else\s*/i.test(currLine)) {
           // parse #else
           const ifState = this.currIfDef();
           if (ifState === undefined) {
@@ -569,7 +569,7 @@ export class SpinDocument {
             replaceCurrent = this.commentOut(currLine);
             ifState.setInElse();
           }
-        } else if (currLine.startsWith('#endif')) {
+        } else if (/^\s*#endif\s*/i.test(currLine)) {
           // parse #endif
           if (!this.inIfDef()) {
             // ERROR missing preceeding #if*...
@@ -579,17 +579,17 @@ export class SpinDocument {
             this.exitIf();
           }
           // this.logMessage(`SpinPP: (DBG) inPrePrxocIForIFNOT=(${inPreProcIFoxrIFNOT})`);
-        } else if (currLine.startsWith('#error')) {
+        } else if (/^\s*#error\s+/i.test(currLine)) {
           // parse #error
           replaceCurrent = this.commentOut(currLine);
           const message: string = currLine.substring(7);
           this.reportError(`ERROR: ${message}`, lineIdx, 0);
-        } else if (currLine.startsWith('#warn')) {
+        } else if (/^\s*#warn\s+/i.test(currLine)) {
           // parse #warn
           replaceCurrent = this.commentOut(currLine);
           const message: string = currLine.substring(7);
           this.reportError(`WARNING: ${message}`, lineIdx, 0);
-        } else if (currLine.startsWith('#include')) {
+        } else if (/^\s*#include\s+/i.test(currLine)) {
           this.logMessage(`SpinPP: have #include [${currLine}]`);
           // handle #include "filename"
           //  ensure suffix not present or must be ".spin2"
@@ -616,7 +616,7 @@ export class SpinDocument {
           } else {
             this.reportError(`Filename missing from #include statement!`, lineIdx, 0);
           }
-        } else if (currLine.startsWith('#pragma')) {
+        } else if (/^\s*#pragma\s+/i.test(currLine)) {
           // handle #pragma {comand} {symbol}
           const [command, symbol, value] = this.getPragmaSymbolValue(currLine);
           if (command.length > 0 && command.toUpperCase() == 'EXPORTDEF') {
@@ -727,7 +727,7 @@ export class SpinDocument {
       }
 
       if (!skipThisline) {
-        const skipSubst: boolean = currLine.startsWith('#') || currLine.startsWith("'") ? true : false;
+        const skipSubst: boolean = /^\s*#/.test(currLine) || /^\s*'/.test(currLine) ? true : false;
         currLine = replaceCurrent.length > 0 ? replaceCurrent : currLine;
         if (!skipSubst) {
           const tmpLine: string = this.macroSubstitute(currLine);
@@ -897,7 +897,7 @@ export class SpinDocument {
 
   private isolateFilename(currLine: string, index: number): string | undefined {
     let isolatedFilename: string | undefined = undefined;
-    const match = currLine.match(/#include\s+"(.*)"/);
+    const match = currLine.match(/#include\s+"(.*)"/i);
     if (match) {
       const filename = match[1];
       const fileExtension = path.extname(filename);
