@@ -18,10 +18,12 @@ Work to appear in upcoming releases:
 - Fix any bugs reported by users
 - Keep up with PNut changes soon after they are released.
 
-## [1.51.2] 2025-05-05
+## [1.51.2] 2025-05-19
 
-- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace on preprocesor '#' directives (Thank you @wummi for reporting this!)
-- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired compilation of negate variable expression (Thank you @wummi for reporting this!)
+- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace preceding preprocesor '#' directives 
+- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired compilation of negated variable expression
+
+*(Thank you @wummi for reporting these!)*
 
 ## [1.51.1] 2025-05-05
 
