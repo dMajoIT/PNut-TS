@@ -42,6 +42,8 @@ describe('PNut_ts builds our COV non-debug() test files correctly', () => {
   } catch (error) {
     console.error('ERROR: glob issue:', error);
   }
+  // Filter out files that match the *__pre.spin2 pattern (-i output files)
+  files = files.filter((file) => !file.endsWith('__pre.spin2') && !file.endsWith('-pre.spin2'));
   if (files.length > 1) {
     files.sort();
   }
@@ -113,6 +115,8 @@ describe('PNut_ts builds our COV debug() test files correctly', () => {
   } catch (error) {
     console.error('ERROR: glob issue:', error);
   }
+  // Filter out files that match the *__pre.spin2 pattern (-i output files)
+  files = files.filter((file) => !file.endsWith('__pre.spin2') && !file.endsWith('-pre.spin2'));
   if (files.length > 1) {
     files.sort();
   }

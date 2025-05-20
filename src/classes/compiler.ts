@@ -182,11 +182,7 @@ export class Compiler {
               // for this child, append child image to objectData
               this.childImages.setOffset(objOffset); // set read start
               this.objectData.setOffset(objDataOffset); // set write start
-              // OLD WAY
-              //for (let byteCount = 0; byteCount < objLength; byteCount++) {
-              //  this.objectData.writeByte(this.childImages.nextByte());
-              //}
-              // NEW WAY
+
               this.objectData.ensureFits(objDataOffset, objLength); // throws exception if bad!
               this.objectData.rawUint8Array.set(this.childImages.rawUint8Array.subarray(objOffset, objOffset + objLength), objDataOffset);
               this.objectData.recordLengthOffsetForFile(fileIdx, objDataOffset, objLength);
@@ -245,11 +241,6 @@ export class Compiler {
           //  move P2.OBJ (this.objImage) into ObjFileBuff (this.childImages)
           this.childImages.setOffset(this.objectFileOffset);
           this.objImage.setOffsetTo(0);
-          // OLD way
-          //for (let index = 0; index < objectLength; index++) {
-          //  this.childImages.writeByte(this.objImage.readNext());
-          //}
-          // NEW WAY
           this.childImages.ensureFits(this.objectFileOffset, objectLength); // throws exception if bad!
           this.childImages.rawUint8Array.set(this.objImage.rawUint8Array.subarray(0, 0 + objectLength), this.objectFileOffset);
           this.objImage.setOffsetTo(0 + objectLength);

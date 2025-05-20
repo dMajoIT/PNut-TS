@@ -1704,17 +1704,6 @@ export class SpinResolver {
                 this.logMessageOutline(
                   `++ DAT FILE Resolver [dfd=${this.datFileData.id}] [${filename}], idx=(${fileIndex}), ofs=(${offset}), len=(${dataLength})(${hexLong(dataLength, '0x')})`
                 );
-                // OLD way
-                /*
-                this.datFileData.setOffset(offset);
-                // FIXME: XYZZY convert to Uint8Array.set() call!  RESOLVER
-                for (let byteCount = 0; byteCount < dataLength; byteCount++) {
-                  // NOTE: this is writing to this.objImage.
-                  this.enterDataByte(BigInt(this.datFileData.nextByte()));
-                }
-                //*/
-
-                // NEW WAY
                 ///*
                 // ensure fits
                 const initialObjOffset = this.objImage.offset;
@@ -5965,7 +5954,7 @@ export class SpinResolver {
     const bIsDesiredLine: boolean = this.determineInRange(this.currElement.sourceLineNumber);
     this.logMessage(`*==* compileExpression() at elem=[${this.currElement.toString()}] - ENTRY`);
     this.logMessageConditional(bIsDesiredLine, `*==* compileExpression() nextelem=[${nextElement.toString()}] - ENTRY`);
-    const tryExpressionResult = this.trySpin2ConExpression();
+    const tryExpressionResult = this.trySpin2ConExpression(); // XYZZY BUG HERE
     if (tryExpressionResult.isResolved) {
       this.compileConstant(tryExpressionResult.value);
     } else {
@@ -8708,7 +8697,7 @@ export class SpinResolver {
 
   private trySpin2ConExpression(): iValueReturn {
     // PNut try_spin2_con_exp:
-    this.logMessage(`*==* trySpin2ConExpression()`);
+    this.logMessage(`*==* trySpin2ConExpr()`);
     const valueResult: iValueReturn = { value: 0n, isResolved: false, isFloat: false };
     this.numberStack.reset(); // empty our stack
     const savedElementIndex = this.logSavedElementLocation();
@@ -8717,7 +8706,7 @@ export class SpinResolver {
       this.resolveExp(eMode.BM_Spin2, eResolve.BR_Must, this.lowestPrecedence);
     } catch (error) {
       // code to handle the exception
-      this.logMessage(`!!! trySpin2ConExpression() caught INTERNAL error`);
+      this.logMessage(`!!! trySpin2ConExpr() caught INTERNAL error`); // XYZZY BUG HERE
       if (error instanceof Error) {
         if (error.message !== '[INTERNAL] Spin2 Constant failed to resolve') {
           // forward to actually cause our compiler stop
@@ -8734,7 +8723,7 @@ export class SpinResolver {
         valueResult.isResolved = true;
       }
     }
-    this.logMessage(`*==* trySpin2ConExpression() - EXIT`);
+    this.logMessage(`*==* trySpin2ConExpr() - EXIT`);
     return valueResult;
   }
 
@@ -8768,7 +8757,7 @@ export class SpinResolver {
         // place it on our stack and we're done
         this.numberStack.push(resolution.value);
       } else {
-        this.logMessage(`* resolvExp() did NOT find constant... mode=[${eMode[mode]}]`);
+        this.logMessage(`* resolvExp() did NOT find constant... mode=[${eMode[mode]}]`); // XYZZY BUG HERE
         // no constant found, currElement is not a constant
         this.SubToNeg(); // these do NOT affect the element list! only the global currElement copy
         this.FSubToFNeg();
@@ -8899,7 +8888,7 @@ export class SpinResolver {
     // PNut check_constant:
     //  this 'check_constant', now 'get_constant' in Pnut v44 and later
     const resultStatus: iConstantReturn = { value: 0n, foundConstant: true };
-    this.logMessage(`*--* getCON() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${this.currElement.toString()}]`);
+    this.logMessage(`*--* getCon() mode=(${eMode[mode]}), resolve=(${eResolve[resolve]}), ele=[${this.currElement.toString()}]`);
 
     if (mode == eMode.BM_Spin2) {
       // trying to resolve spin2 constant
@@ -8913,8 +8902,9 @@ export class SpinResolver {
           resultStatus.value = BigInt(this.currElement.bigintValue) ^ BigInt(0x80000000);
           //this.logMessage(`  -- new value = ${float32ToHexString(resultStatus.value)}`);
         } else {
-          this.backElement(); // return this element
-          this.backElement(); // return the minus sign
+          this.backElement(); // return to minus
+          this.backElement(); // return to left paren
+          this.getElement(); // get element (the minus sign), make it current element
           resultStatus.foundConstant = false;
         }
       } else if (this.currElement.isConstantInt || this.currElement.isConstantFloat) {

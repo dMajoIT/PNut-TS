@@ -18,6 +18,11 @@ Work to appear in upcoming releases:
 - Fix any bugs reported by users
 - Keep up with PNut changes soon after they are released.
 
+## [1.51.2] 2025-05-05
+
+- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace on preprocesor '#' directives (Thank you @wummi for reporting this!)
+- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired compilation of negate variable expression (Thank you @wummi for reporting this!)
+
 ## [1.51.1] 2025-05-05
 
 - BUGFIX: Issue ([#7](https://github.com/ironsheep/PNut-TS/issues/7)) compile failure for post increment/decrement (Thank you Macca for reporting this!)
@@ -26,7 +31,7 @@ Work to appear in upcoming releases:
 
 - Add language version support through `{Spin2_v51}`.
 - Add command-line `-F` option which, when specified, causes the .flash file to be written (PNut -ci equiv.)
-- Preprocessor intermediate files now end with `__pre.spin2` (vs. '-pre.spin2') 
+- Preprocessor intermediate files now end with `__pre.spin2` (vs. '-pre.spin2')
 - Preprocessor: #define is no longer affected by command-line -U options
 - Added `#pragma exportdef SYMBOL` which makes SYMBOL present as if added with `-DSYMBOL` on the command line but affects all files compiled after the file containing the #pragma (*place in top-most file for best results*)
 - {Spin2_v44} is no longer supported due to changes in data structures beginning in v45

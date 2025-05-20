@@ -1,3 +1,3 @@
 #!/bin/bash
 #  the following should abort if the compile fails
-(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O -i  --log compiler resolver parser preproc --regression element -v TEST/LANG-VER-tests/Spin2_v51_wummi.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -d -v -l -O -i  --log compiler resolver --regression element -v TEST/LANG-VER-tests/Spin2_v51_wummi.spin2)

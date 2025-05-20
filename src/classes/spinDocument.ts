@@ -651,7 +651,7 @@ export class SpinDocument {
             // ERROR bad statement
             this.reportError(`#pragma [${command}] UNSUPPORTED!`, lineIdx, 0);
           }
-        } else if (currLine.match(/^#-*[0-9%$]+\s*,*|^#_*[A-Za-z_]+\s*,*/)) {
+        } else if (currLine.match(/^\s*#-*[0-9%$]+\s*,*|^\s*#_*[A-Za-z_]+\s*,*/)) {
           // ignore these enumeration starts, they are not meant to be directives
           this.logMessage(`SpinPP: SKIP ENUM [${currLine}]`);
         } else {
@@ -727,7 +727,7 @@ export class SpinDocument {
       }
 
       if (!skipThisline) {
-        const skipSubst: boolean = /^\s*#/.test(currLine) || /^\s*'/.test(currLine) ? true : false;
+        const skipSubst: boolean = this.isPreprocessorDirective(currLine) || /^\s*'/.test(currLine) ? true : false;
         currLine = replaceCurrent.length > 0 ? replaceCurrent : currLine;
         if (!skipSubst) {
           const tmpLine: string = this.macroSubstitute(currLine);
@@ -769,6 +769,36 @@ export class SpinDocument {
       reporter.writeProprocessResults(this.dirName, this.fileName, this.allPreprocessedLines);
     }
     this.logMessage(`SpinPP: preProcess() file=[${this.fileBaseName}], ver=(v${this.versionNumber}) id=(${this.fileId})- EXIT`);
+  }
+
+  private isPreprocessorDirective(line: string): boolean {
+    let foundDirectiveStatus: boolean = false;
+    if (/^\s*#define\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#undef\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#ifdef\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#ifndef\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#elseifdef\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#elseifndef\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#warn\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#error\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#include\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#else/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#endif/i.test(line)) {
+      foundDirectiveStatus = true;
+    } else if (/^\s*#pragma\s+/i.test(line)) {
+      foundDirectiveStatus = true;
+    }
+    return foundDirectiveStatus;
   }
 
   private dumpErrors() {
