@@ -22,11 +22,14 @@ Work to appear in upcoming releases:
 ## [1.51.3] 2025-05-26
 
 - **New Feature**: Allow OBJ and DAT files to be found via -I {include} directories ([#9](https://github.com/ironsheep/PNut-TS/issues/9)) *Requested by github user @AustinMathuw*
+- **BUGFIX**: Issue ([#10](https://github.com/ironsheep/PNut-TS/issues/10)) Old OBJ limit still in place, please update
+
+*(Thank you @wummi for reporting the old limit issue!)*
 
 ## [1.51.2] 2025-05-19
 
-- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace preceding preprocesor '#' directives 
-- BUGFIX: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired compilation of negated variable expression
+- **BUGFIX**: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace preceding preprocesor '#' directives 
+- **BUGFIX**: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired compilation of negated variable expression
 
 *(Thank you @wummi for reporting these!)*
 

@@ -267,7 +267,7 @@ export class SpinResolver {
   private readonly objs_limit: number = 1024; // max object count
   private readonly distiller_limit: number = 0x10000; // max distiller limit
   private readonly method_locals_limit: number = 0x10000 + this.method_params_limit * 4 + this.method_results_limit * 4;
-  private readonly obj_limit = 0x100000;
+  private readonly obj_limit = 0x200000; // max object size (2MB) PNut obj_limit as of v49
 
   // VAR processing support data
   private varPtr: number = 4;
