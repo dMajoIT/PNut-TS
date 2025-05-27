@@ -16,7 +16,12 @@ Work to appear in upcoming releases:
 
 - Work on getting essential coverage completed (all code generation, less exception testing)
 - Fix any bugs reported by users
+- Add User Reqeuested enhancements
 - Keep up with PNut changes soon after they are released.
+
+## [1.51.3] 2025-05-26
+
+- **New Feature**: Allow OBJ and DAT files to be found via -I {include} directories ([#9](https://github.com/ironsheep/PNut-TS/issues/9)) *Requested by github user @AustinMathuw*
 
 ## [1.51.2] 2025-05-19
 

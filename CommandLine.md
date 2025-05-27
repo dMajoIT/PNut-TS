@@ -58,12 +58,11 @@ These options should already make sense but here's a light-weight recap:
 | <pre>-F, --flashfile</pre> | control the generation of the additional (.flash) flash-mage file |
 | <pre>-a, --altbin</pre> | use alternate `.binary` suffix vs. `.bin` |
 | <pre>-q, --quiet,<br>-v, --verbose</pre> | control how little or how much extra messaging is output from the compiler |
-| <pre>-I \<dir...\>, --Include \<dir...\>,<br>-U \<symbol...\>, --Undefine \<symbol...\>,<br>-D \<symbol...\>, --Define \<symbol...\> | Are all **proprocessor directives** where:<br> -I adds search directories containing .spin2 files to be included (using `#include "filename(.spin2)"` statements)<br> -D defines one or more symbols on the command line (*Equivalent to #define SYMBOL but affects all files in the compilation effort.*)<br> -U un-defines symbols from the command line.<BR>&nbsp;&nbsp;(**NOTE:** *The -U option can not undefine a symbol created by a #define directive.*) |
+| <pre>-I \<dir...\>, --Include \<dir...\>,<br>-U \<symbol...\>, --Undefine \<symbol...\>,<br>-D \<symbol...\>, --Define \<symbol...\> | Are all **proprocessor directives** where:<br> -I adds search directories containing files to be included (using `#include "filename(.spin2)"` statements, or as `files mentioned in the OBJ or DAT sections of your code`)<br> -D defines one or more symbols on the command line (*Equivalent to #define SYMBOL but affects all files in the compilation effort.*)<br> -U un-defines symbols from the command line.<BR>&nbsp;&nbsp;(**NOTE:** *The -U option can not undefine a symbol created by a #define directive.*) |
 
 And of course `-h` or `--help` produces the output as shown above.
 
 **NOTE:** The `-i, or --intermediate` Option causes the post-preprocessed source file to be saved in case you want to inspect what was passed on to the compiler.  This output file has a `__pre` suffix inserted before the .spin2 extension but otherwise has the same name as your compiled file.  E.G., If you compiled `blink.spin2` your intermediate output file would be `blink__pre.spin2`.
-
 
 ## For PNut-TS - Developer use
 
