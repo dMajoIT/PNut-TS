@@ -135,6 +135,7 @@ export function locateSpin2File(filename: string, canSearchLibray: boolean = fal
         locatedFSpec = fileSpec;
       }
     }
+    // NEW Issue (#9) allow OBJ files to exist in include folders
     if (locatedFSpec === undefined && ctx.preProcessorOptions.includeFolders.length > 0) {
       for (const includeFolder of ctx.preProcessorOptions.includeFolders) {
         const incFolder: string = path.join(ctx.currentFolder, includeFolder);
@@ -180,6 +181,21 @@ export function locateDataFile(workingDir: string, filename: string, ctx?: Conte
     //if (ctx) ctx.logger.logMessage(`TRC: locateDataFile() checking [${fileSpec}]`);
     if (fileExists(fileSpec)) {
       locatedFSpec = fileSpec;
+    }
+  }
+  // NEW Issue (#9) allow DAT files to exist in include folders
+  if (locatedFSpec == undefined && ctx && ctx.preProcessorOptions.includeFolders.length > 0) {
+    for (const includeFolder of ctx.preProcessorOptions.includeFolders) {
+      const incFolder: string = path.join(workingDir, includeFolder);
+      //if (ctx) ctx.logger.logMessage(`TRC: locateDataFile() CHK inc [${incFolder}]`);
+      if (dirExists(incFolder)) {
+        fileSpec = path.join(incFolder, filename);
+        //if (ctx) ctx.logger.logMessage(`TRC: locateDataFile() checking [${fileSpec}]`);
+        if (fileExists(fileSpec)) {
+          locatedFSpec = fileSpec;
+          break; // found it, so exit loop
+        }
+      }
     }
   }
   //if (ctx) ctx.logger.logMessage(`TRC: locateDataFile() -> [${locatedFSpec}]`);
