@@ -297,6 +297,7 @@ export class SpinFiles {
       //this.logMessage(`  -- fileName=[${fileName}], spin2fileName=[${spin2fileName}], searched=[${fileNames}] -> fileSpec=[${fileSpec}]`);
     } else {
       fileSpec = locateSpin2File(spin2fileName, ALLOW_LIBRARY_SEARCH, this.context);
+      this.logMessage(`  -- locateSpin2File() -> spin2fileName=[${spin2fileName}] -> fileSpec=[${fileSpec}]`);
     }
     this.logMessage(`* addObjFile([${spin2fileName}]) - new file...`);
     if (fileSpec !== undefined) {

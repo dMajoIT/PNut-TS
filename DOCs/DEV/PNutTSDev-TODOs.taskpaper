@@ -338,7 +338,6 @@ RE-PACKAGING PNut-TS (Self-contained):
 	- in vscode run:    npm run bld-dist
 	- copy pkgs/ content to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs
 	- copy out/pnut-ts.js to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs/pnut_ts # cs_pack.sh will use this for macOS images for now..
-	- copy prebuilds/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now... @done(2025-05-01)
 	- copy out/ext/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
 	- ensure content of /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_dist is current (has latest stuff)
 	Packaging:
@@ -362,19 +361,23 @@ RE-PACKAGING PNut-TS (Self-contained):
 RE-PACKAGING PNut-TS (External Node.js):
 	Ensure latest files are on _dist folder (ChangeLog.md, etc.)
 	- in vscode run:    npm run bld-dist
-	- Replace version with new   BUILD_VERSION=MMmmSS  where 014300 is v1.43.00
+	- copy pkgs/ content to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs
+	- copy out/pnut-ts.js to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs/pnut_ts # 
+	- copy out/ext/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
+	- ensure content of /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_dist is current (has latest stuff)
+	Replace version with new   BUILD_VERSION=MMmmSS  where 014300 is v1.43.00
 		- in cs_zip.dmgs.sh
 		- in cs_zip.sh
 	- run     cs_pack_ext.sh  # to fill _unzipped with correctly shaped folders with signed macos exe's
 	- run     cs_zip.sh    # to put initial .zip files in _UPLOAD
-	- run manually DropDMG to build dmg's for each of two macOS arch's
-		- VALIDATE that content of .dmg is correct for each ARCH
-	- run     cs_dmg.sh  # to sign the new DMGs
-	- run    cs_not_dmgarm64.sh to notarize the arm64 DMG
-		- at end run    xcrun stapler staple _unzipped/macos/macos-arm64.dmg   # to complete the DMG
-	- run    cs_not_dmgx64.sh to notarize the x64 DMG
-		- at end run    xcrun stapler staple _unzipped/macos/macos-x64.dmg   # to complete the DMG
-	- run    cs_zip_dmgs.sh  to zip the .dmg files and place the .zips in _UPLOAD
+	- run manually DropDMG to build dmg's for each of two macOS arch's @done(2025-05-21)
+		- VALIDATE that content of .dmg is correct for each ARCH @done(2025-05-21)
+	- run     cs_dmg.sh  # to sign the new DMGs @done(2025-05-21)
+	- run    cs_not_dmgarm64.sh to notarize the arm64 DMG @done(2025-05-21)
+		- at end run    xcrun stapler staple _unzipped/macos/macos-arm64.dmg   # to complete the DMG @done(2025-05-21)
+	- run    cs_not_dmgx64.sh to notarize the x64 DMG @done(2025-05-21)
+		- at end run    xcrun stapler staple _unzipped/macos/macos-x64.dmg   # to complete the DMG @done(2025-05-21)
+	- run    cs_zip_dmgs.sh  to zip the .dmg files and place the .zips in _UPLOAD @done(2025-05-21)
 	- Manually UPLOAD all the .zip's to the releases page for the given release
 
 REPO Preparation to go pubic:

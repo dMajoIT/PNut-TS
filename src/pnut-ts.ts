@@ -9,6 +9,7 @@ import { Context } from './utils/context';
 import { Compiler } from './classes/compiler';
 import { eTextSub, SpinDocument } from './classes/spinDocument';
 import path from 'path';
+import fs from 'fs';
 import { exec } from 'child_process';
 //import { UsbSerial } from './utils/usb.serial';
 
@@ -26,7 +27,7 @@ export class PNutInTypeScript {
   private readonly program = new Command();
   //static isTesting: boolean = false;
   private options: OptionValues = this.program.opts();
-  private version: string = '1.51.2';
+  private version: string = '1.51.3';
   private argsArray: string[] = [];
   private context: Context;
   private spinDocument: SpinDocument | undefined = undefined;
@@ -452,8 +453,11 @@ export class PNutInTypeScript {
       // forward  Include Folder name(s)
       const includeDirs: string[] = this.options.Include;
       for (const newFolder of includeDirs) {
-        this.context.preProcessorOptions.includeFolders.push(newFolder);
+        if (fs.existsSync(newFolder) && fs.statSync(newFolder).isDirectory()) {
+          this.context.preProcessorOptions.includeFolders.push(newFolder);
+        }
       }
+      //this.context.logger.verboseMsg(`Include Dirs=[${this.context.preProcessorOptions.includeFolders}]`);
     }
 
     if (this.options.Define) {
@@ -523,6 +527,9 @@ export class PNutInTypeScript {
       this.context.logger.verboseMsg(`ext dir [${this.context.extensionFolder}]`);
       this.context.logger.verboseMsg(`lib dir [${this.context.libraryFolder}]`);
       this.context.logger.verboseMsg(`wkg dir [${this.context.currentFolder}]`);
+      if (this.context.preProcessorOptions.includeFolders.length > 0) {
+        this.context.logger.verboseMsg(`inc dir [${this.context.preProcessorOptions.includeFolders}]`);
+      }
       this.context.logger.verboseMsg(''); // blank line
       /*
       this.runCommand('node -v').then((result) => {

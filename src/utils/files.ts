@@ -135,6 +135,20 @@ export function locateSpin2File(filename: string, canSearchLibray: boolean = fal
         locatedFSpec = fileSpec;
       }
     }
+    if (locatedFSpec === undefined && ctx.preProcessorOptions.includeFolders.length > 0) {
+      for (const includeFolder of ctx.preProcessorOptions.includeFolders) {
+        const incFolder: string = path.join(ctx.currentFolder, includeFolder);
+        //if (ctx) ctx.logger.logMessage(`TRC: locateSpin2File() CHK inc [${incFolder}]`);
+        if (dirExists(incFolder)) {
+          fileSpec = path.join(incFolder, filename);
+          //if (ctx) ctx.logger.logMessage(`TRC: locateSpin2File() checking [${fileSpec}]`);
+          if (fileExists(fileSpec)) {
+            locatedFSpec = fileSpec;
+            break; // found it, so exit loop
+          }
+        }
+      }
+    }
     //if (ctx) ctx.logger.logMessage(`TRC: locateSpin2File() -> [${locatedFSpec}]`);
     //} else {
     //if (ctx) ctx.logger.logMessage(`TRC: locateSpin2File(${path.basename(filename)}) NOT a .spin2 file!`);
