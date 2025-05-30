@@ -13,6 +13,7 @@ import { ChildObjectsImage } from './childObjectsImage';
 import { loadFileAsUint8Array, loadUint8ArrayFailed } from '../utils/files';
 import { ObjectImage } from './objectImage';
 import path from 'path';
+import { OBJ_LIMIT } from './spinResolver';
 
 // src/classes/compiler.ts
 
@@ -36,6 +37,7 @@ export class Compiler {
   private objectFileOffset: number = 0; // pascal ObjFilePtr
 
   private countByFilename = new Map<string, number>();
+  private readonly obj_limit: number = OBJ_LIMIT; // max object size (2MB) PNut obj_limit as of v49
 
   constructor(ctx: Context) {
     this.context = ctx;
@@ -234,8 +236,8 @@ export class Compiler {
 
           // now copy obj data to output
           const objectLength: number = this.objImage.offset;
-          if (this.objectFileOffset + objectLength > ChildObjectsImage.MAX_SIZE_IN_BYTES) {
-            throw new Error(`OBJ data exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}k limit`);
+          if (this.objectFileOffset + objectLength > this.obj_limit) {
+            throw new Error(`OBJ data exceeds ${this.obj_limit / 1024}k limit`);
           }
           // Save obj file into memory
           //  move P2.OBJ (this.objImage) into ObjFileBuff (this.childImages)

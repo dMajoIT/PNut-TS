@@ -192,6 +192,8 @@ interface ObjectRecord {
   subObjectIds: number[];
 }
 
+export const OBJ_LIMIT = 0x200000; // max object size (2MB) PNut obj_limit as of v49
+
 export class SpinResolver {
   readonly IGNORE_SYMBOL_TABLE = false; // parameter value affecting getElement()
   private context: Context;
@@ -267,7 +269,7 @@ export class SpinResolver {
   private readonly objs_limit: number = 1024; // max object count
   private readonly distiller_limit: number = 0x10000; // max distiller limit
   private readonly method_locals_limit: number = 0x10000 + this.method_params_limit * 4 + this.method_results_limit * 4;
-  private readonly obj_limit = 0x200000; // max object size (2MB) PNut obj_limit as of v49
+  private readonly obj_limit: number = OBJ_LIMIT; // max object size (2MB) PNut obj_limit as of v49
 
   // VAR processing support data
   private varPtr: number = 4;
@@ -1592,7 +1594,7 @@ export class SpinResolver {
               this.hubMode = true;
               this.hubOrg = this.pasmMode ? this.objImage.offset : 0x400;
               this.orghOffset = this.hubOrg - this.objImage.offset;
-              this.hubOrgLimit = ObjectImage.MAX_SIZE_IN_BYTES;
+              this.hubOrgLimit = this.obj_limit;
 
               if (this.nextElementType() != eElementType.type_end) {
                 // get our (optional) address
@@ -1603,7 +1605,7 @@ export class SpinResolver {
                     throw new Error('Hub address below $400 limit');
                   }
                 }
-                if (Number(hubAddressResult.value) > ObjectImage.MAX_SIZE_IN_BYTES) {
+                if (Number(hubAddressResult.value) > this.obj_limit) {
                   // [error_haec]
                   throw new Error('Hub address exceeds $100000 ceiling (m360)');
                 }
@@ -1618,7 +1620,7 @@ export class SpinResolver {
                     // [error_hael]
                     throw new Error('Hub address exceeds limit (m370)');
                   }
-                  if (this.hubOrgLimit > ObjectImage.MAX_SIZE_IN_BYTES) {
+                  if (this.hubOrgLimit > this.obj_limit) {
                     // [error_haec]
                     throw new Error('Hub address exceeds $100000 ceiling (m361)');
                   }

@@ -7,6 +7,7 @@
 
 import { Context } from '../utils/context';
 import { hexAddress, hexByte, hexLong, hexWord } from '../utils/formatUtils';
+import { OBJ_LIMIT } from './spinResolver';
 
 // src/classes/objectImage.ts
 const SUPPRESS_LOG_MSG: boolean = true;
@@ -16,10 +17,9 @@ export class ObjectImage {
   private isLogging: boolean;
   private isLoggingOutline: boolean;
   private _id: string;
-
-  static readonly MAX_SIZE_IN_BYTES: number = 0x100000;
-  static readonly ALLOC_SIZE_IN_BYTES: number = ObjectImage.MAX_SIZE_IN_BYTES / 16;
-  private _objImageByteAr = new Uint8Array(ObjectImage.ALLOC_SIZE_IN_BYTES); // initial memory size
+  private readonly obj_limit: number = OBJ_LIMIT; // max object size (2MB) PNut obj_limit as of v49
+  private readonly ALLOC_SIZE_IN_BYTES: number = this.obj_limit / 16;
+  private _objImageByteAr = new Uint8Array(this.ALLOC_SIZE_IN_BYTES); // initial memory size
   private _objOffset: number = 0; // current index into OBJ image
   private _maxOffset: number = 0; // max index into OBJ image
 
@@ -61,10 +61,10 @@ export class ObjectImage {
   }
 
   private ensureCapacity(neededCapacity: number) {
-    if (neededCapacity > this._objImageByteAr.length && this._objImageByteAr.length < ObjectImage.MAX_SIZE_IN_BYTES) {
+    if (neededCapacity > this._objImageByteAr.length && this._objImageByteAr.length < this.obj_limit) {
       // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time
-      const tmpCapacity: number = Math.ceil(neededCapacity / ObjectImage.ALLOC_SIZE_IN_BYTES) * ObjectImage.ALLOC_SIZE_IN_BYTES;
-      const newCapacity: number = tmpCapacity > ObjectImage.MAX_SIZE_IN_BYTES ? ObjectImage.MAX_SIZE_IN_BYTES : tmpCapacity;
+      const tmpCapacity: number = Math.ceil(neededCapacity / this.ALLOC_SIZE_IN_BYTES) * this.ALLOC_SIZE_IN_BYTES;
+      const newCapacity: number = tmpCapacity > this.obj_limit ? this.obj_limit : tmpCapacity;
       this.logMessageOutline(`++ MEM-ALLOC: OBJ[${this._id}] grows from (${this._objImageByteAr.length / 1024} kB) to (${newCapacity / 1024} kB)`);
       const newBuffer = new Uint8Array(newCapacity);
       newBuffer.set(this._objImageByteAr);
@@ -72,7 +72,7 @@ export class ObjectImage {
       this._objImageByteAr = newBuffer;
     } else if (neededCapacity > this._objImageByteAr.length) {
       // [error_pex]
-      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m491)`);
+      throw new Error(`Program exceeds ${this.obj_limit / 1024}KB (m491)`);
     }
   }
 

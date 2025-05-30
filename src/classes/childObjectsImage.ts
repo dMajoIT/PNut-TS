@@ -5,6 +5,7 @@
 import { Context } from '../utils/context';
 import { dumpBytes, OVERRIDE_MESSAGE } from '../utils/dumpUtils';
 import { hexAddress, hexByte, hexLong, hexWord } from '../utils/formatUtils';
+import { OBJ_LIMIT } from './spinResolver';
 
 // src/classes/childObjectImage.ts
 
@@ -24,10 +25,9 @@ export class ChildObjectsImage {
   private _id: string;
   private _fileDetails: iFileDetails[] = [];
   private _offset: number = 0;
-
-  static readonly MAX_SIZE_IN_BYTES: number = 0x100000;
-  static readonly ALLOC_SIZE_IN_BYTES: number = ChildObjectsImage.MAX_SIZE_IN_BYTES / 16;
-  private _chldObjImageByteAr = new Uint8Array(ChildObjectsImage.ALLOC_SIZE_IN_BYTES); // initial memory size
+  private readonly obj_limit: number = OBJ_LIMIT; // max object size (2MB) PNut obj_limit as of v49
+  private readonly ALLOC_SIZE_IN_BYTES: number = this.obj_limit / 16;
+  private _chldObjImageByteAr = new Uint8Array(this.ALLOC_SIZE_IN_BYTES); // initial memory size
 
   constructor(ctx: Context, idString: string) {
     this.context = ctx;
@@ -37,10 +37,10 @@ export class ChildObjectsImage {
   }
 
   private ensureCapacity(neededCapacity: number) {
-    if (neededCapacity > this._chldObjImageByteAr.length && this._chldObjImageByteAr.length < ChildObjectsImage.MAX_SIZE_IN_BYTES) {
+    if (neededCapacity > this._chldObjImageByteAr.length && this._chldObjImageByteAr.length < this.obj_limit) {
       // our array grows in multiples of ALLOC_SIZE_IN_BYTES at a time
-      const tmpCapacity: number = Math.ceil(neededCapacity / ChildObjectsImage.ALLOC_SIZE_IN_BYTES) * ChildObjectsImage.ALLOC_SIZE_IN_BYTES;
-      const newCapacity: number = tmpCapacity > ChildObjectsImage.MAX_SIZE_IN_BYTES ? ChildObjectsImage.MAX_SIZE_IN_BYTES : tmpCapacity;
+      const tmpCapacity: number = Math.ceil(neededCapacity / this.ALLOC_SIZE_IN_BYTES) * this.ALLOC_SIZE_IN_BYTES;
+      const newCapacity: number = tmpCapacity > this.obj_limit ? this.obj_limit : tmpCapacity;
       this.logMessageOutline(
         `++ MEM-ALLOC: cOBJ[${this._id}] grows from (${this._chldObjImageByteAr.length / 1024} kB) to (${newCapacity / 1024} kB)`
       );
@@ -50,7 +50,7 @@ export class ChildObjectsImage {
       this._chldObjImageByteAr = newBuffer;
     } else if (neededCapacity > this._chldObjImageByteAr.length) {
       // [error_pex]
-      throw new Error(`Child Object exceeds ${ChildObjectsImage.MAX_SIZE_IN_BYTES / 1024}KB (m490)`);
+      throw new Error(`Child Object exceeds ${this.obj_limit / 1024}KB (m490)`);
     }
   }
 
@@ -157,11 +157,11 @@ export class ChildObjectsImage {
 
   public setOffset(offset: number) {
     // set start for read() or write() oerations
-    if (offset >= 0 && offset < ChildObjectsImage.MAX_SIZE_IN_BYTES) {
+    if (offset >= 0 && offset < this.obj_limit) {
       this.logMessage(`* cOBJ[${this._id}] setOffset(${offset})`);
       this._offset = offset;
     } else {
-      this.logMessage(`setOffset(${offset}) ERROR: out of range [0-${ChildObjectsImage.MAX_SIZE_IN_BYTES - 1}]`);
+      this.logMessage(`setOffset(${offset}) ERROR: out of range [0-${this.obj_limit - 1}]`);
     }
   }
 

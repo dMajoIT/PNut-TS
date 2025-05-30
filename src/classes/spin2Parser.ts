@@ -9,7 +9,7 @@ import { SpinElementizer } from './spinElementizer';
 import { SpinElement } from './spinElement';
 import { RegressionReporter } from './regression';
 import { SpinSymbolTables } from './parseUtils';
-import { SpinResolver } from './spinResolver';
+import { OBJ_LIMIT, SpinResolver } from './spinResolver';
 import { ID_SEPARATOR_STRING, SymbolEntry, SymbolTable, iSymbol } from './symbolTable';
 import { float32ToHexString } from '../utils/float32';
 import { eElementType } from './types';
@@ -33,6 +33,7 @@ export class Spin2Parser {
   private externalFiles: ExternalFiles;
   private objImage: ObjectImage;
   private readonly HubLimit: number = 0x80000;
+  private readonly obj_limit = OBJ_LIMIT;
 
   constructor(ctx: Context) {
     this.context = ctx;
@@ -599,9 +600,9 @@ export class Spin2Parser {
     if (isDebugMode) {
       computedSize += 0x4000; // account for debugger
     }
-    if (computedSize > ObjectImage.MAX_SIZE_IN_BYTES) {
+    if (computedSize > this.obj_limit) {
       // [error_pex]
-      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m492)`);
+      throw new Error(`Program exceeds ${this.obj_limit / 1024}KB (m492)`);
     }
     this.logMessage(`  -- patch interpreter`);
     // set var_longs
@@ -637,9 +638,9 @@ export class Spin2Parser {
   private moveObjectUp(objImage: ObjectImage, destOffset: number, sourceOffset: number, nbrBytes: number) {
     const currOffset = objImage.offset;
     this.logMessage(`* moveObjUp() from=(${sourceOffset}), to=(${destOffset}), length=(${nbrBytes})`);
-    if (currOffset + nbrBytes > ObjectImage.MAX_SIZE_IN_BYTES) {
+    if (currOffset + nbrBytes > this.obj_limit) {
       // [error_pex]
-      throw new Error(`Program exceeds ${ObjectImage.MAX_SIZE_IN_BYTES / 1024}KB (m493)`);
+      throw new Error(`Program exceeds ${this.obj_limit / 1024}KB (m493)`);
     }
     for (let index = 0; index < nbrBytes; index++) {
       const invertedIndex = nbrBytes - index - 1;
