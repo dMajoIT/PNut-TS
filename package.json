@@ -1,6 +1,6 @@
 {
   "name": "p2-pnut-ts",
-  "version": "1.51.4",
+  "version": "1.51.5",
   "description": "A Parallax Propeller 2 compiler in TypeScript",
   "main": "out/pnut-ts.js",
   "bin": {
@@ -44,6 +44,7 @@
     "test-var": "npm run build && jest -c jest-config/jest-var-only-config.json",
     "test-loader": "npm run build && jest -c jest-config/jest-loader-only-config.json",
     "test-spin": "npm run build && jest -c jest-config/jest-spin-only-config.json",
+    "test-wummi": "npm run build && jest -c jest-config/jest-wummi-only-config.json",
     "test-full-only": "npm run build && jest -c jest-config/jest-full-only-config.json",
     "test-short-only": "npm run build && jest -c jest-config/jest-short-only-config.json",
     "test": "npm run build && jest -c smm.jestconfig.js",

@@ -269,7 +269,8 @@ export class Spin2Parser {
           } else {
             nonUniqueName = nonUniqueName.slice(0, -1);
           }
-          const symWithInstanceNbr = instanceNumber != 0 ? `${nonUniqueName},${instanceNumber.toString().padStart(2, '0')}` : `${nonUniqueName}`;
+          const symWithInstanceNbr =
+            instanceNumber != 0 ? `${nonUniqueName},${instanceNumber.toString(16).toUpperCase().padStart(2, '0')}` : `${nonUniqueName}`;
           this.logMessage(`LST: symNameParts=[${symNameParts}], nonUniqueName=[${nonUniqueName}], instanceNumber=(${instanceNumber})`);
           stream.write(`TYPE: ${symbolTypeFixed} VALUE: ${hexValue}          NAME: ${symWithInstanceNbr}\n`);
         }

@@ -255,3 +255,4 @@ scripts/run-LANG-math
 jest-config/jest-coverage-configOLD.json
 jest-config/jest-coverage-configBAD.json
 scripts-pkg/cs_fixUploadNames.sh
+/TEST/WUMMI-tests

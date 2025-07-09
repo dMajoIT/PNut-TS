@@ -19,11 +19,13 @@ Work to appear in upcoming releases:
 - Add User Reqeuested enhancements
 - Keep up with PNut changes soon after they are released.
 
+## [1.51.5] 2025-07-xx
+
+- **BUGFIX**: Object instance numbers in listing file are now shown in hex vs. decimal
+
 ## [1.51.4] 2025-05-30
 
-
 - **BUGFIX**: Issue ([#10](https://github.com/ironsheep/PNut-TS/issues/10)) Old OBJ limit still in place, one more time! *(First attempt was incomplete fix.)*
-
 
 ## [1.51.3] 2025-05-27
 
@@ -34,7 +36,7 @@ Work to appear in upcoming releases:
 
 ## [1.51.2] 2025-05-19
 
-- **BUGFIX**: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace preceding preprocesor '#' directives 
+- **BUGFIX**: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired preprocessor to allow whitespace preceding preprocesor '#' directives
 - **BUGFIX**: Issue ([#8](https://github.com/ironsheep/PNut-TS/issues/8)) Repaired compilation of negated variable expression
 
 *(Thank you @wummi for reporting these!)*
