@@ -54,14 +54,16 @@ interface iVariableReturn {
   structSize: number; // 1,2,4, or structure size
 }
 
-enum eStructureType { // enum for bc_casefast() and blockCasefast() methods
+enum eStructureType {
+  // enum for bc_casefast() and blockCasefast() methods
   ST_RawStructure = 0, // 0 - if base structure (returns address at runtime)
   ST_IndexOrSubStructure = 1, // 1 - index or sub structure (returns address at runtime)
   ST_Unknown = 2,
   ST_ResolvedAsBWL = 3 // 3 - byte/word/long (performs setup at runtime for read/write/assign)
 }
 
-enum eStructureIndexMode { // enum for bc_casefast() and blockCasefast() methods
+enum eStructureIndexMode {
+  // enum for bc_casefast() and blockCasefast() methods
   SIM_NoIndexes, //  0 - if no indexes (can be optimized)
   SIM_SingleIndex, // 1 - if single index on byte/word/long member (can be optimized)
   SIM_NoOptimize, // 2 (or more) other case (cannot be optimized)
@@ -85,7 +87,8 @@ interface iIndexReturn {
   liveIndexElemIndex: number; // index of element after '['
 }
 
-enum eCaseFast { // enum for bc_casefast() and blockCasefast() methods
+enum eCaseFast {
+  // enum for bc_casefast() and blockCasefast() methods
   CF_FinalAddr,
   CF_TablePtr,
   CF_SourcePtr,
@@ -94,7 +97,8 @@ enum eCaseFast { // enum for bc_casefast() and blockCasefast() methods
   CF_TableAddr
 }
 
-enum eRepeat { // enum for cb_repeat() and blockRepeat*() methods
+enum eRepeat {
+  // enum for cb_repeat() and blockRepeat*() methods
   RP_NextAddress,
   RP_QuitAddress,
   RP_LoopAddress
@@ -6470,8 +6474,8 @@ export class SpinResolver {
       // count the number of constant-bytes in sequence
       do {
         // here is @@trybytes
-        this.getElement();
-        if (this.currElement.type != eElementType.type_con_int || this.currElement.bigintValue > 255n) {
+        this.getElementObj();
+        if (this.currElement.type != eElementType.type_con_int || this.currElement.bigintValue < 0n || this.currElement.bigintValue > 255n) {
           break;
         }
         byteCount++;
@@ -6487,9 +6491,10 @@ export class SpinResolver {
         this.compileRfvar(BigInt(byteCount));
         do {
           // this is @@enterbytes:
-          this.getElement();
+          this.getElementObj();
           this.objImage.appendByte(Number(this.currElement.value));
-          if (byteCount > 1) {
+          // TEST this.objImage.appendByte(Number(0x77));
+          if (byteCount != 1) {
             this.getComma();
           }
         } while (--byteCount);

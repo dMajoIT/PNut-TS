@@ -1,0 +1,4 @@
+#!/bin/bash
+#  the following should abort if the compile fails
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -v -d -l -O --log  outline parser resolver  --regression element -v TEST/WUMMI-tests/IO.spin2)
+(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -v -d -l -O --log  outline  --regression element -v TEST/WUMMI-tests/IO.spin2)
