@@ -489,7 +489,7 @@ export class SpinDocument {
               // we were in ifdef and not emitting so ignore this whole ifdef
               ifState.setIgnoreIfdef();
             }
-            if (isElseForm == false || (isElseForm == true && this.inIfDef())) {
+            if (isElseForm == false || this.inIfDef()) {
               // this.logMessage(`SpinPP: (DBG) inPreProcIxForIFNOT=(${inPrePxrocIForIFNOT})`);
               const symbol = this.getSymbolName(currLine);
               if (symbol !== undefined) {
@@ -532,7 +532,7 @@ export class SpinDocument {
               // we were in ifdef and not emitting so ignore this whole ifdef
               ifState.setIgnoreIfdef();
             }
-            if (isElseForm == false || (isElseForm == true && this.inIfDef())) {
+            if (isElseForm == false || this.inIfDef()) {
               // this.logMessage(`SpinPP: (DBG) inPreProcIxForIFNOT=(${inPreProcIFxorIFNOT})`);
               const symbol = this.getSymbolName(currLine);
               if (symbol !== undefined) {
