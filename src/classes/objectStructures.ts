@@ -127,7 +127,7 @@ export class ObjectStructures {
   public readRecord(recordId: number): Uint8Array {
     // retrieve the record from the set of structure-definition records
     this.logMessage(`* OBJSTRUCT: readRecord(RCD#${recordId})`);
-    let desiredRecord: Uint8Array = new Uint8Array();
+    let desiredRecord: Uint8Array;
     let desiredRcdLen: number = 0;
     if (recordId >= 0 && recordId < this._objStructRecordOffsets.length) {
       const recordOffset = this._objStructRecordOffsets[recordId];

@@ -1,0 +1,8 @@
+#!/bin/bash
+#  the following should abort if the compile fails
+#export NODE_OPTIONS="--max-old-space-size=8192 --max-semi-space-size=64"
+#export NODE_OPTIONS="--max-old-space-size=8192"
+#export NODE_OPTIONS="--heap-prof"
+#(set -x;npm run build && ./scripts/doit ./dist/pnut-ts.js -v -d -l -O --log  outline parser resolver  --regression element -v TEST/WUMMI-tests/IO.spin2)
+#(set -x;npm run build && ./scripts/doit ../../usr/local/bin/node --heap-prof ./out/pnut-ts.js -v -d -l -O --log  resolver --regression element -- TEST/WUMMI-tests/FG6.spin2)
+(set -x;npm run build && ./scripts/doit ../../usr/local/bin/node  ./out/pnut-ts.js -v -d -l -O --log  resolver --regression element -- TEST/WUMMI-tests/FG1.spin2)

@@ -132,7 +132,7 @@ export class SpinElement {
   }
 
   get value(): string | bigint {
-    let tempValue: bigint = 0n;
+    let tempValue: bigint;
     if (typeof this._value === 'string' && this._value.length == 1) {
       tempValue = BigInt(this._value.charCodeAt(0));
     } else if (typeof this._value === 'string') {

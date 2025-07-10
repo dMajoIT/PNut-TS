@@ -616,7 +616,7 @@ export class PNutInTypeScript {
           resolve({ cmd: command, value: stdout.trim(), error: null });
         });
       } catch (error: unknown) {
-        let excString: string = '?exc?';
+        let excString: string;
         if (error instanceof Error) {
           excString = `Exception: ${error.name}-${error.message}`;
         } else {

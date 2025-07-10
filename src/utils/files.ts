@@ -220,9 +220,17 @@ export function loadFileAsString(fspec: string): string {
   let fileContent: string = '';
   if (fs.existsSync(fspec)) {
     // ctx.logger.log(`TRC: loadFileAsString() attempt load of [${fspec}]`);
+    // See: https://nodejs.org/api/buffer.html#buffers-and-character-encodings
     try {
       fileContent = fs.readFileSync(fspec, 'utf-8');
-      //fileContent = fs.readFileSync(fspec, 'latin1');  // NO THIS IS REALLY BAD!!!
+      //fileContent = fs.readFileSync(fspec, 'ascii');
+      // SPCIAL @Wummi is putting german chars in strings. These
+      //   are not well constructed utf-8 files.  So when we have a decode issue
+      //   let's reload as the more forgiving 'latin1' encoding.
+      if (fileContent.includes('\uFFFD')) {
+        fileContent = fs.readFileSync(fspec, 'latin1');
+      }
+      // if we still see unusual characters, try utf16le
       if (fileContent.includes('\x00') || fileContent.includes('\xC0')) {
         fileContent = fs.readFileSync(fspec, 'utf16le');
       }

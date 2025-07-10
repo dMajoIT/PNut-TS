@@ -42,7 +42,7 @@ export class NumberStack {
   }
 
   public pop(): bigint {
-    let poppedValue: bigint = 0n;
+    let poppedValue: bigint;
     const tempValue: bigint | undefined = this.stack.pop();
     if (tempValue !== undefined) {
       poppedValue = tempValue;

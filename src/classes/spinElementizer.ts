@@ -490,8 +490,14 @@ export class SpinElementizer {
     const newElements: SpinElement[] = [];
     let charCode: number = charCodeValue;
     const isString: boolean = charCode == 0x09 || (charCode >= 0x20 && charCode <= 0x7f);
-    const shouldBe2ByteCode: boolean = charCode >= 0x80 && charCode <= 0xff;
+    let shouldBe2ByteCode: boolean = charCode >= 0x80 && charCode <= 0xff;
     let prefixByte: bigint = BigInt(0xc2);
+    const haveUnmappedChar: boolean = charCode == 0xfffd;
+    // NOTE: the following might not happen as we now attempt multiple encoding conversions on file load of .spin2 files
+    if (haveUnmappedChar) {
+      shouldBe2ByteCode = false;
+      charCode = 0xfe; // SPECIAL utf-8  unmapped characters come thru as 0xFFFD we use this internally
+    }
     if (shouldBe2ByteCode && charCode >= 0xc0) {
       prefixByte = BigInt(0xc3);
     }
@@ -646,7 +652,6 @@ export class SpinElementizer {
   }
 
   private firstBraceOpenOrClose(line: string): [number, string] {
-    let charFound: string = '{';
     let foundOffset: number = -1;
     const openOffset: number = line.indexOf('{');
     const closeOffset: number = line.indexOf('}');
@@ -660,6 +665,7 @@ export class SpinElementizer {
     } else {
       useOpen = false;
     }
+    let charFound: string;
     if (useOpen) {
       charFound = '{';
       foundOffset = openOffset;
