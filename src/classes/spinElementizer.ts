@@ -457,6 +457,30 @@ export class SpinElementizer {
   }
 
   private elementsForStringCharacter(charCodeValue: number, charOffset: number, notLastChar: boolean, dblQuoteOffset: number): SpinElement[] {
+    const newElements: SpinElement[] = [];
+    const charCode: number = charCodeValue;
+    const isString: boolean = charCode == 0x09 || (charCode >= 0x20 && charCode <= 0x7f);
+    // NOTE: the following might not happen as we now attempt multiple encoding conversions on file load of .spin2 files
+    //*/
+    // now push our character element
+    const char = isString ? String.fromCharCode(charCode) : BigInt(charCode);
+    let elementChar: SpinElement;
+    if (dblQuoteOffset != -1) {
+      elementChar = this.buildElement(eElementType.type_con_int, char, charOffset, dblQuoteOffset);
+    } else {
+      elementChar = this.buildElement(eElementType.type_con_int, char, charOffset);
+    }
+    newElements.push(elementChar);
+    // if this is not the last character of the string push a trailing comma element
+    if (notLastChar) {
+      const elementComma: SpinElement = this.buildElement(eElementType.type_comma, 0n, charOffset);
+      elementComma.midStringComma = true;
+      newElements.push(elementComma);
+    }
+    return newElements;
+  }
+
+  private elementsForStringCharacterOLD(charCodeValue: number, charOffset: number, notLastChar: boolean, dblQuoteOffset: number): SpinElement[] {
     //  In UTF-8 encoding, characters in the range U+0080 to U+00FF are represented using two bytes.
     //  The first byte is either 0xC2 or 0xC3, depending on the character's code point. Specifically:
     //
@@ -492,7 +516,7 @@ export class SpinElementizer {
     const isString: boolean = charCode == 0x09 || (charCode >= 0x20 && charCode <= 0x7f);
     let shouldBe2ByteCode: boolean = charCode >= 0x80 && charCode <= 0xff;
     let prefixByte: bigint = BigInt(0xc2);
-    const haveUnmappedChar: boolean = charCode == 0xfffd;
+    const haveUnmappedChar: boolean = false; // disable this code    charCode == 0xfffd;
     // NOTE: the following might not happen as we now attempt multiple encoding conversions on file load of .spin2 files
     if (haveUnmappedChar) {
       shouldBe2ByteCode = false;
@@ -501,6 +525,7 @@ export class SpinElementizer {
     if (shouldBe2ByteCode && charCode >= 0xc0) {
       prefixByte = BigInt(0xc3);
     }
+    /**
     if (shouldBe2ByteCode) {
       // push two prefix elements
       const prefixChar: SpinElement = this.buildElement(eElementType.type_con_int, prefixByte, charOffset);
@@ -510,6 +535,16 @@ export class SpinElementizer {
       newElements.push(elementComma);
       if (prefixByte == BigInt(0xc3)) {
         charCode -= 0x40; // rebias from 0xC0-0xFF to 0x80-0xBF
+      }
+    }
+    //*/
+    if (shouldBe2ByteCode) {
+      // instead let's map this to 8-bit with msbit set
+      if (prefixByte == BigInt(0xc3)) {
+        // 0xC3 are value 0x80 to 0xBF remap these to 0xC0-0xFF
+        charCode += 0x40; // rebias from 0x80-0xBF to 0xC0-0xFF
+      } else if (prefixByte == BigInt(0xc2)) {
+        // 0xC2 are value 0x80 to 0xBF this is our desired value
       }
     }
     // now push our character element

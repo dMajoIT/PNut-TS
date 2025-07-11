@@ -196,10 +196,32 @@ interface ObjectRecord {
   subObjectIds: number[];
 }
 
-export const OBJ_LIMIT = 0x200000; // max object size (2MB) PNut obj_limit as of v49
+export const OBJ_LIMIT = 0x1800000; // max object size (2MB) PNut obj_limit as of v49
 
 export class SpinResolver {
   readonly IGNORE_SYMBOL_TABLE = false; // parameter value affecting getElement()
+
+  // registers / constants
+  private readonly taskhltReg: number = 0x1cc; // address
+  private readonly mrecvReg: number = 0x1d1; // address
+  private readonly msendReg: number = 0x1d2; // address
+  private readonly prxRegs: number = 0x1d8; // address PNut prx_regs
+  private readonly inlineLocalsBase: number = 0x1e0; // address PNut inline_locals_base
+  private readonly clkfreqAddress: number = 0x44; // address
+
+  private readonly inline_org_limit: number = 0x120; // address PNut inline_limit
+  private readonly method_results_limit: number = 15; // max return value LONGs
+  private readonly method_params_limit: number = 127; // max parameter value LONGs
+  private readonly if_limit: number = 256; // max if-chain length
+  private readonly case_limit: number = 256; // max cases
+  private readonly case_fast_limit: number = 256; // max cases
+  private readonly subs_limit: number = 1024; // max PUB/PRI count
+  private readonly objs_limit: number = 1024; // max object count
+  private readonly distiller_limit: number = 0x10000; // max distiller limit
+  private readonly method_locals_limit: number = 0x10000 + this.method_params_limit * 4 + this.method_results_limit * 4;
+  private readonly obj_limit: number = OBJ_LIMIT; // max object size PNut obj_data_limit as of v49
+  private readonly obj_size_limit: number = 0x100000;
+
   private context: Context;
   private isLogging: boolean;
   private isLoggingOutline: boolean;
@@ -229,12 +251,12 @@ export class SpinResolver {
   private inlineSymbols: SymbolTable = new SymbolTable(); // for inline code sections
   private activeSymbolTable: eSymbolTableId = eSymbolTableId.STI_MAIN;
 
-  // DAT processing support data
+  // DAT processing support datai
   private objImage: ObjectImage;
   private asmLocal: number = 0;
   // ORGH handling (HUB)
   private hubOrg: number = 0x00000;
-  private hubOrgLimit: number = 0x100000;
+  private hubOrgLimit: number = this.obj_size_limit; // default to PNut obj_size_limit
   private hubMode: boolean = false; // was orgh!
   private orghOffset: number = 0;
   // ORG handling (COG)
@@ -254,26 +276,6 @@ export class SpinResolver {
   private inlineModeForGetConstant: boolean = false;
 
   private objectStructureSet: ObjectStructures;
-
-  // registers / constants
-  private readonly taskhltReg: number = 0x1cc; // address
-  private readonly mrecvReg: number = 0x1d1; // address
-  private readonly msendReg: number = 0x1d2; // address
-  private readonly prxRegs: number = 0x1d8; // address PNut prx_regs
-  private readonly inlineLocalsBase: number = 0x1e0; // address PNut inline_locals_base
-  private readonly clkfreqAddress: number = 0x44; // address
-
-  private readonly inline_org_limit: number = 0x120; // address PNut inline_limit
-  private readonly method_results_limit: number = 15; // max return value LONGs
-  private readonly method_params_limit: number = 127; // max parameter value LONGs
-  private readonly if_limit: number = 256; // max if-chain length
-  private readonly case_limit: number = 256; // max cases
-  private readonly case_fast_limit: number = 256; // max cases
-  private readonly subs_limit: number = 1024; // max PUB/PRI count
-  private readonly objs_limit: number = 1024; // max object count
-  private readonly distiller_limit: number = 0x10000; // max distiller limit
-  private readonly method_locals_limit: number = 0x10000 + this.method_params_limit * 4 + this.method_results_limit * 4;
-  private readonly obj_limit: number = OBJ_LIMIT; // max object size (2MB) PNut obj_limit as of v49
 
   // VAR processing support data
   private varPtr: number = 4;
@@ -608,12 +610,16 @@ export class SpinResolver {
       do {
         // LINE loop
         this.getElementObj();
+        if (this.currElement.type == eElementType.type_end) {
+          this.getElementObj();
+        }
         if (this.currElement.type == eElementType.type_end_file) {
           break;
         }
         //this.logMessage(`  -- compile_var_blocks() at elem=[${this.currElement.toString()}]`);
         // allow an EMPTY VAR block
         if (this.currElement.type == eElementType.type_block) {
+          this.backElement(); // put back for while loop to find...
           break;
         }
 
@@ -1279,7 +1285,7 @@ export class SpinResolver {
       this.asmLocal = startingAsmLocal;
       this.logRestoredElementLocation(startingElementIndex);
       this.hubOrg = 0x00000; // get constant(getValue) will use this
-      this.hubOrgLimit = 0x100000; // get constant(getValue) will use this;
+      this.hubOrgLimit = this.obj_size_limit; // get constant(getValue) will use this;
       this.wordSize = eWordSize.WS_Byte; // 0=byte, 1=word, 2=long
       this.dittoIsActive = false;
 
@@ -1288,7 +1294,7 @@ export class SpinResolver {
         this.cogOrgLimit = inLineCogOrgLimit;
         this.hubOrg = 0x400;
         this.orghOffset = this.hubOrg - this.objImage.offset;
-        this.hubOrgLimit = 0x100000;
+        this.hubOrgLimit = this.obj_size_limit;
         this.logRestoredElementLocation(startingElementIndex);
       } else {
         // PNut @@passblock:
@@ -1298,7 +1304,7 @@ export class SpinResolver {
         // location in object of start -OR- start of hub for execution
         this.hubOrg = this.pasmMode ? this.objImage.offset : 0x00400;
         this.orghOffset = this.hubOrg - this.objImage.offset;
-        this.hubOrgLimit = 0x100000;
+        this.hubOrgLimit = this.obj_size_limit;
         this.logRestoredElementLocation(0); // start from first in list
       }
       do {
@@ -1594,11 +1600,11 @@ export class SpinResolver {
                 throw new Error('ORGH not allowed within inline assembly code');
               }
               this.errorIfSymbol();
-              // reset hub address and limit
+              // reset hub address and limitsize_
               this.hubMode = true;
               this.hubOrg = this.pasmMode ? this.objImage.offset : 0x400;
               this.orghOffset = this.hubOrg - this.objImage.offset;
-              this.hubOrgLimit = this.obj_limit;
+              this.hubOrgLimit = this.obj_size_limit;
 
               if (this.nextElementType() != eElementType.type_end) {
                 // get our (optional) address
@@ -1624,7 +1630,7 @@ export class SpinResolver {
                     // [error_hael]
                     throw new Error('Hub address exceeds limit (m370)');
                   }
-                  if (this.hubOrgLimit > this.obj_limit) {
+                  if (this.hubOrgLimit > this.obj_size_limit) {
                     // [error_haec]
                     throw new Error('Hub address exceeds $100000 ceiling (m361)');
                   }

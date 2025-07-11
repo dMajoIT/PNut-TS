@@ -91,6 +91,29 @@ export class ChildObjectsImage {
     return this._fileDetails;
   }
 
+  public isChildPresent(childImage: Uint8Array): boolean {
+    let childMatchStatus: boolean = false;
+    let matchIndex: number = 0;
+    for (let fileIdx = 0; fileIdx < this.objectFileCount; fileIdx++) {
+      const [objOffset, objLength] = this.getOffsetAndLengthForFile(fileIdx);
+      if (childImage.length == objLength) {
+        const possibleChildImage = this.rawUint8Array.subarray(objOffset, objOffset + objLength);
+        const sameChild: boolean = possibleChildImage.every((byte, idx) => byte === childImage[idx]);
+        if (sameChild) {
+          childMatchStatus = true;
+          matchIndex = fileIdx;
+          break; // found a match, no need to continue
+        }
+      }
+    }
+    if (childMatchStatus) {
+      this.logMessageOutline(`  -- cOBJ[${this._id}]: child [${matchIndex} of ${this.objectFileCount}] MATCHed=(true)`);
+    } else {
+      this.logMessageOutline(`  -- cOBJ[${this._id}]: none of [${this.objectFileCount}] children MATCHed=(false)`);
+    }
+    return childMatchStatus;
+  }
+
   public checksum(offset: number, length: number): number {
     let desiredSum: number = 0;
     this.ensureCapacity(offset + length);

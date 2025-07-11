@@ -262,16 +262,17 @@ export class Spin2Parser {
           const symbolTypeFixed = `${symbolType.padEnd(padWidth, ' ')}`;
           const hexValue: string = float32ToHexString(BigInt(symbol.value)).replace('0x', '').padStart(8, '0');
           const symNameParts: string[] = symbol.name.split(ID_SEPARATOR_STRING);
+
           let nonUniqueName: string = symNameParts[0];
-          let instanceNumber: number = nonUniqueName.charCodeAt(nonUniqueName.length - 1);
-          if (instanceNumber > 32) {
-            instanceNumber = 0;
-          } else {
-            nonUniqueName = nonUniqueName.slice(0, -1);
+          const instanceNumber: number = nonUniqueName.charCodeAt(nonUniqueName.length - 1);
+          let symWithInstanceNbr: string = nonUniqueName;
+          // if we need to show instance number in hex...
+          if (instanceNumber > 0 && instanceNumber <= 32) {
+            nonUniqueName = nonUniqueName.slice(0, -1); // remove last char (instanceNumber)
+            symWithInstanceNbr = `${nonUniqueName},${instanceNumber.toString(16).toUpperCase().padStart(2, '0')}`; // remove trailing underscore
           }
-          const symWithInstanceNbr =
-            instanceNumber != 0 ? `${nonUniqueName},${instanceNumber.toString(16).toUpperCase().padStart(2, '0')}` : `${nonUniqueName}`;
-          this.logMessage(`LST: symNameParts=[${symNameParts}], nonUniqueName=[${nonUniqueName}], instanceNumber=(${instanceNumber})`);
+
+          this.logMessage(`LST: symNameParts=[${symNameParts}], nonUniqueName=[${nonUniqueName.slice(0, -1)}], instanceNumber=(${instanceNumber})`);
           stream.write(`TYPE: ${symbolTypeFixed} VALUE: ${hexValue}          NAME: ${symWithInstanceNbr}\n`);
         }
       }

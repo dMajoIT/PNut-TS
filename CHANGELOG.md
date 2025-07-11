@@ -19,9 +19,13 @@ Work to appear in upcoming releases:
 - Add User Reqeuested enhancements
 - Keep up with PNut changes soon after they are released.
 
-## [1.51.5] 2025-07-xx
+## [1.51.5] 2025-07-11
 
-- **BUGFIX**: Object instance numbers in listing file are now shown in hex vs. decimal
+- **BUGFIX**: Repair code generation for send(...) statements
+- **BUGFIX**: Object instance numbers in listing file are now shown in hex vs. decimal - PNut v51a compat.
+- **BUGFIX**: Fixed character encoding within strings (was generating bad values)
+- **BUGFIX**: Repair Empty VAR handling
+- **BUGFIX**: Increased object size limitations (smaller size not needed for this compiler)
 
 ## [1.51.4] 2025-05-30
 

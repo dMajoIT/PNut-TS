@@ -111,7 +111,7 @@ export class Compiler {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private compileRecursively(depth: number, srcFile: SpinDocument, overrideParameters: SymbolTable | undefined = undefined) {
-    this.logMessageOutline(`++ compileRecursively(${depth}, [${srcFile.fileName}]) - ENTRY ---------------------------------------`);
+    this.logMessageOutline(`++ compileRecursly(${depth}, [${srcFile.fileName}]) - ENTRY ---------------------------------------`);
     if (this.spin2Parser !== undefined) {
       if (depth > OBJ_STACK_LIMIT) {
         throw new Error(`Object nesting exceeds ${OBJ_STACK_LIMIT} levels - illegal circular reference may exist`);
@@ -234,31 +234,42 @@ export class Compiler {
           this.logMessageOutline(`  -- compRecur(${depth}).compile2 ENTRY`);
           this.spin2Parser.P2Compile2(depth == 0); // NOTE: if at zero  (see above note...)
 
-          // now copy obj data to output
           const objectLength: number = this.objImage.offset;
-          if (this.objectFileOffset + objectLength > this.obj_limit) {
-            throw new Error(`OBJ data exceeds ${this.obj_limit / 1024}k limit`);
-          }
-          // Save obj file into memory
-          //  move P2.OBJ (this.objImage) into ObjFileBuff (this.childImages)
-          this.childImages.setOffset(this.objectFileOffset);
-          this.objImage.setOffsetTo(0);
-          this.childImages.ensureFits(this.objectFileOffset, objectLength); // throws exception if bad!
-          this.childImages.rawUint8Array.set(this.objImage.rawUint8Array.subarray(0, 0 + objectLength), this.objectFileOffset);
-          this.objImage.setOffsetTo(0 + objectLength);
+          // determine if we need this child copy
+          const childImage: Uint8Array = this.objImage.rawUint8Array.subarray(0, 0 + objectLength);
+          // if binary already in list, dont't add this one
+          const childExists: boolean = false; //this.childImages.isChildPresent(childImage);
+          //const childExists: boolean = this.childImages.isChildPresent(childImage);
 
-          this.childImages.recordLengthOffsetForFile(this.objectFileCount, this.objectFileOffset, objectLength);
-          this.objectFileOffset += objectLength;
-          this.objectFileCount++;
-          // DEBUG dump into .obj file for inspection
-          //const newObjFileSpec = this.uniqueObjectName(depth, srcFile.dirName, srcFile.fileName, 'Child'); // REMOVE BEFORE FLIGHT
-          //dumpUniqueChildObjectFile(this.childImages, this.objectFileOffset, newObjFileSpec, this.context); // REMOVE BEFORE FLIGHT
-          this.logMessageOutline(`  -- objFiCnt=(${this.objectFileCount}), objLen=(${objectLength}), new objEndOffset=(${this.objectFileOffset})`);
+          if (!childExists) {
+            // save obj file into memory if a copy doesn't already exist
+            // now copy obj data to output
+            if (this.objectFileOffset + objectLength > this.obj_limit) {
+              throw new Error(`OBJ data exceeds ${this.obj_limit / 1024}k limit`);
+            }
+            // Save obj file into memory
+            //  move P2.OBJ (this.objImage) into ObjFileBuff (this.childImages)
+            this.childImages.setOffset(this.objectFileOffset);
+            this.childImages.ensureFits(this.objectFileOffset, objectLength); // throws exception if bad!
+            this.childImages.rawUint8Array.set(childImage, this.objectFileOffset);
+
+            this.childImages.recordLengthOffsetForFile(this.objectFileCount, this.objectFileOffset, objectLength);
+            this.objectFileOffset += objectLength;
+            this.objectFileCount++;
+            // DEBUG dump into .obj file for inspection
+            //const newObjFileSpec = this.uniqueObjectName(depth, srcFile.dirName, srcFile.fileName, 'Child'); // REMOVE BEFORE FLIGHT
+            //dumpUniqueChildObjectFile(this.childImages, this.objectFileOffset, newObjFileSpec, this.context); // REMOVE BEFORE FLIGHT
+            this.logMessageOutline(
+              `  -- NEW objFiCnt=(${this.objectFileCount}), objLen=(${objectLength}), new objEndOffset=(${this.objectFileOffset})`
+            );
+          } else {
+            this.logMessageOutline(`  -- SKIP DUPE -- objFiCnt=(${this.objectFileCount}), objEndOffset=(${this.objectFileOffset})`);
+          }
           this.logMessageOutline(`  -- compRecur(${depth}).compile2 EXIT`);
         }
       }
     }
-    this.logMessageOutline(`++ compileRecursively(${depth}, [${srcFile.fileName}]) - EXIT ----------------------------------------`);
+    this.logMessageOutline(`++ compileRecursly(${depth}, [${srcFile.fileName}]) - EXIT ----------------------------------------`);
     this.logMessageOutline(``);
   }
 
