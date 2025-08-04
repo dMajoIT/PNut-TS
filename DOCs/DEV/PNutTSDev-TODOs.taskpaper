@@ -365,20 +365,23 @@ RE-PACKAGING PNut-TS (External Node.js):
 	- copy out/pnut-ts.js to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs/pnut_ts # 
 	- copy out/ext/ to /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_pkgs # cs_pack.sh will use this for macOS images for now...
 	- ensure content of /Users/stephen/Library/CloudStorage/Dropbox/PropV2-Shared/Projects/PNutTS-work/DIST/_dist is current (has latest stuff)
-	Replace version with new   BUILD_VERSION=MMmmSS  where 014300 is v1.43.00
-		- in cs_zip.dmgs.sh
-		- in cs_zip.sh
 	- run     cs_pack_ext.sh  # to fill _unzipped with correctly shaped folders with signed macos exe's
-	- run     cs_zip.sh    # to put initial .zip files in _UPLOAD
-	- run manually DropDMG to build dmg's for each of two macOS arch's @done(2025-05-21)
-		- VALIDATE that content of .dmg is correct for each ARCH @done(2025-05-21)
-	- run     cs_dmg.sh  # to sign the new DMGs @done(2025-05-21)
-	- run    cs_not_dmgarm64.sh to notarize the arm64 DMG @done(2025-05-21)
-		- at end run    xcrun stapler staple _unzipped/macos/macos-arm64.dmg   # to complete the DMG @done(2025-05-21)
-	- run    cs_not_dmgx64.sh to notarize the x64 DMG @done(2025-05-21)
-		- at end run    xcrun stapler staple _unzipped/macos/macos-x64.dmg   # to complete the DMG @done(2025-05-21)
-	- run    cs_zip_dmgs.sh  to zip the .dmg files and place the .zips in _UPLOAD @done(2025-05-21)
-	- Manually UPLOAD all the .zip's to the releases page for the given release
+	- run     cs_zip.sh  XXYYZZ   # to put initial .zip files in _UPLOAD
+	- run manually DropDMG to build dmg's for each of two macOS arch's
+		- VALIDATE that content of .dmg is correct for each ARCH
+	- run     cs_dmg.sh  # to sign the new DMGs
+	- run    cs_not_dmgarm64.sh to notarize the arm64 DMG
+		- at end run    xcrun stapler staple _unzipped/macos/macos-arm64.dmg   # to complete the DMG
+	- run    cs_not_dmgx64.sh to notarize the x64 DMG
+		- at end run    xcrun stapler staple _unzipped/macos/macos-x64.dmg   # to complete the DMG
+	- run    cs_zip_dmgs.sh  XXYYZZ  to zip the .dmg files and place the .zips in _UPLOAD- Manually UPLOAD all the .zip's to the releases page for the given release
+	
+	
+	OLD:
+		Replace version with new   BUILD_VERSION=MMmmSS  where 014300 is v1.43.00
+			- in cs_zip.dmgs.sh @done(2025-07-12)
+			- in cs_zip.sh @done(2025-07-12)
+		
 
 REPO Preparation to go pubic:
 		- update npm package list versions to what our main local container is using! @done(2024-08-29)
