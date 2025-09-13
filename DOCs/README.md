@@ -11,6 +11,14 @@ Documents that explain how the existing compiler works:
 - **[Theory-of-Operations.md](internals/Theory-of-Operations.md)** - Comprehensive compilation flow from source files to binary output
 - **[Distiller-Theory-of-Operations.md](internals/Distiller-Theory-of-Operations.md)** - How the object distillation mechanism works
 
+### `/language-specification/` - PASM2/SPIN2 Language Specification Package
+Complete language specification and IDE integration package for Parallax Propeller 2 development:
+
+- **[README.md](language-specification/README.md)** - Complete language specification package overview
+- **234 total language elements** extracted from PNut-TS compiler source
+- **IDE integration files** for VS Code, Sublime, Atom, Vim, Emacs
+- **Automated extraction pipeline** for maintaining sync with compiler changes
+
 ### `/roadmaps/` - Future Improvement Plans
 Strategic plans for architectural improvements and optimizations:
 

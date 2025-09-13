@@ -1,0 +1,174 @@
+{
+  "name": "SPIN2",
+  "scopeName": "source.spin2",
+  "fileTypes": [
+    "spin2"
+  ],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#blocks"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#assembly"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#identifiers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.apostrophe.spin2",
+          "match": "(\\\\'.*$)"
+        },
+        {
+          "name": "comment.block.documentation.spin2",
+          "begin": "\\\\{\\\\{",
+          "end": "\\\\}\\\\}",
+          "patterns": [
+            {
+              "name": "markup.bold.spin2",
+              "match": "\\\\*\\\\*[^*]+\\\\*\\\\*"
+            }
+          ]
+        },
+        {
+          "name": "comment.block.spin2",
+          "begin": "\\\\{",
+          "end": "\\\\}"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.spin2",
+          "begin": "\\\\\"",
+          "end": "\\\\\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.spin2",
+              "match": "\\\\\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.binary.spin2",
+          "match": "\\\\%[01_]+"
+        },
+        {
+          "name": "constant.numeric.hex.spin2",
+          "match": "\\\\$[0-9A-Fa-f_]+"
+        },
+        {
+          "name": "constant.numeric.decimal.spin2",
+          "match": "\\\\b[0-9][0-9_]*\\\\b"
+        },
+        {
+          "name": "constant.numeric.float.spin2",
+          "match": "\\\\b[0-9][0-9_]*\\\\.[0-9_]+([eE][+-]?[0-9_]+)?\\\\b"
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "name": "keyword.control.block.spin2",
+          "match": "\\\\b(CON|DAT|OBJ|PRI|PUB|VAR)\\\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.conditional.spin2",
+          "match": "\\\\b(ABORT|CASE|CASE_FAST|ELSE|ELSEIF|ELSEIFNOT|FROM|IF|IFNOT|NEXT|OTHER|QUIT|REPEAT|RETURN|STEP|TO|UNTIL|WHILE|WITH)\\\\b"
+        },
+        {
+          "name": "storage.type.spin2",
+          "match": "\\\\b(BYTE|BYTEFIT|LONG|WORD|WORDFIT)\\\\b"
+        },
+        {
+          "name": "support.function.builtin.spin2",
+          "match": "\\\\b(LOOKDOWN|LOOKDOWNZ|LOOKUP|LOOKUPZ)\\\\b"
+        }
+      ]
+    },
+    "assembly": {
+      "patterns": [
+        {
+          "name": "keyword.mnemonic.assembly.spin2",
+          "match": "\\\\b(ABS|ADD|ADDCT1|ADDCT2|ADDCT3|ADDPIX|ADDS|ADDSX|ADDX|AKPIN|ALLOWI|ALTB|ALTD|ALTGB|ALTGN|ALTGW|ALTI|ALTR|ALTS|ALTSB|ALTSN|ALTSW|AND|ANDN|ASMCLK|AUGD|AUGS|BITC|BITH|BITL|BITNC|BITNOT|BITNZ|BITRND|BITZ|BLNPIX|BMASK|BRK|CALL|CALLA|CALLB|CALLD|CALLPA|CALLPB|CMP|CMPM|CMPR|CMPS|CMPSUB|CMPSX|CMPX|COGATN|COGBRK|COGID|COGINIT|COGSTOP|CRCBIT|CRCNIB|DEBUG|DECMOD|DECOD|DIRC|DIRH|DIRL|DIRNC|DIRNOT|DIRNZ|DIRRND|DIRZ|DJF|DJNF|DJNZ|DJZ|DRVC|DRVH|DRVL|DRVNC|DRVNOT|DRVNZ|DRVRND|DRVZ|ENCOD|EXECF|FBLOCK|FGE|FGES|FLE|FLES|FLTC|FLTH|FLTL|FLTNC|FLTNOT|FLTNZ|FLTRND|FLTZ|GETBRK|GETBYTE|GETCT|GETNIB|GETPTR|GETQX|GETQY|GETRND|GETSCP|GETWORD|GETXACC|HUBSET|IJNZ|IJZ|INCMOD|JATN|JCT1|JCT2|JCT3|JFBW|JINT|JMP|JMPREL|JNATN|JNCT1|JNCT2|JNCT3|JNFBW|JNINT|JNPAT|JNQMT|JNSE1|JNSE2|JNSE3|JNSE4|JNXFI|JNXMT|JNXRL|JNXRO|JPAT|JQMT|JSE1|JSE2|JSE3|JSE4|JXFI|JXMT|JXRL|JXRO|LOC|LOCKNEW|LOCKREL|LOCKRET|LOCKTRY|MERGEB|MERGEW|MIXPIX|MODC|MODCZ|MODZ|MOV|MOVBYTS|MUL|MULPIX|MULS|MUXC|MUXNC|MUXNIBS|MUXNITS|MUXNZ|MUXQ|MUXZ|NEG|NEGC|NEGNC|NEGNZ|NEGZ|NIXINT1|NIXINT2|NIXINT3|NOP|NOT|ONES|OR|OUTC|OUTH|OUTL|OUTNC|OUTNOT|OUTNZ|OUTRND|OUTZ|POLLATN|POLLCT1|POLLCT2|POLLCT3|POLLFBW|POLLINT|POLLPAT|POLLQMT|POLLSE1|POLLSE2|POLLSE3|POLLSE4|POLLXFI|POLLXMT|POLLXRL|POLLXRO|POP|POPA|POPB|PUSH|PUSHA|PUSHB|QDIV|QEXP|QFRAC|QLOG|QMUL|QROTATE|QSQRT|QVECTOR|RCL|RCR|RCZL|RCZR|RDBYTE|RDFAST|RDLONG|RDLUT|RDPIN|RDWORD|REP|RESI0|RESI1|RESI2|RESI3|RET|RETA|RETB|RETI0|RETI1|RETI2|RETI3|REV|RFBYTE|RFLONG|RFVAR|RFVARS|RFWORD|RGBEXP|RGBSQZ|ROL|ROLBYTE|ROLNIB|ROLWORD|ROR|RQPIN|SAL|SAR|SCA|SCAS|SETBYTE|SETCFRQ|SETCI|SETCMOD|SETCQ|SETCY|SETD|SETDACS|SETINT1|SETINT2|SETINT3|SETLUTS|SETNIB|SETPAT|SETPIV|SETPIX|SETQ|SETQ2|SETR|SETS|SETSCP|SETSE1|SETSE2|SETSE3|SETSE4|SETWORD|SETXFRQ|SEUSSF|SEUSSR|SHL|SHR|SIGNX|SKIP|SKIPF|SPLITB|SPLITW|STALLI|SUB|SUBR|SUBS|SUBSX|SUBX|SUMC|SUMNC|SUMNZ|SUMZ|TEST|TESTB|TESTBN|TESTN|TESTP|TESTPN|TJF|TJNF|TJNS|TJNZ|TJS|TJV|TJZ|TRGINT1|TRGINT2|TRGINT3|WAITATN|WAITCT1|WAITCT2|WAITCT3|WAITFBW|WAITINT|WAITPAT|WAITSE1|WAITSE2|WAITSE3|WAITSE4|WAITX|WAITXFI|WAITXMT|WAITXRL|WAITXRO|WFBYTE|WFLONG|WFWORD|WMLONG_|WRBYTE|WRC|WRFAST|WRLONG|WRLUT|WRNC|WRNZ|WRPIN|WRWORD|WRZ|WXPIN|WYPIN|XCONT|XINIT|XOR|XORO32|XSTOP|XZERO|ZEROX)\\\\b"
+        },
+        {
+          "name": "keyword.control.conditional.assembly.spin2",
+          "match": "\\\\b()\\\\b"
+        },
+        {
+          "name": "keyword.other.effect.assembly.spin2",
+          "match": "\\\\b(WC|WZ|WCZ)\\\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.assignment.spin2",
+          "match": ":=|:=:"
+        },
+        {
+          "name": "keyword.operator.arithmetic.spin2",
+          "match": "\\\\+\\\\+|--|\\\\+|\\\\-|\\\\*|\\\\/"
+        },
+        {
+          "name": "keyword.operator.comparison.spin2",
+          "match": "==|<>|<=|>=|<|>"
+        },
+        {
+          "name": "keyword.operator.logical.spin2",
+          "match": "\\\\b(NOT|AND|OR)\\\\b"
+        },
+        {
+          "name": "keyword.operator.bitwise.spin2",
+          "match": "&|\\\\||\\\\^|!|~"
+        },
+        {
+          "name": "keyword.operator.shift.spin2",
+          "match": "<<|>>|\\\\b(SAR|ROR|ROL)\\\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "entity.name.function.spin2",
+          "match": "\\\\b[a-zA-Z_][a-zA-Z0-9_]*(?=\\\\s*\\\\()"
+        },
+        {
+          "name": "variable.other.spin2",
+          "match": "\\\\b[a-zA-Z_][a-zA-Z0-9_]*\\\\b"
+        }
+      ]
+    }
+  }
+}

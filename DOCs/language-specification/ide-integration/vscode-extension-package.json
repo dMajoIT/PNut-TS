@@ -1,0 +1,34 @@
+{
+  "name": "SPIN2 Language Support",
+  "displayName": "Parallax Propeller 2 SPIN2/PASM2",
+  "description": "Language support for Parallax Propeller 2 SPIN2 and PASM2",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "spin2",
+        "aliases": [
+          "SPIN2",
+          "Parallax Propeller 2"
+        ],
+        "extensions": [
+          ".spin2"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "spin2",
+        "scopeName": "source.spin2",
+        "path": "./syntaxes/spin2.tmGrammar.json"
+      }
+    ]
+  }
+}

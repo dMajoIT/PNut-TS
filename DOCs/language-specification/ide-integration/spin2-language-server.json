@@ -1,0 +1,3780 @@
+{
+  "languageId": "spin2",
+  "extensions": [
+    ".spin2"
+  ],
+  "aliases": [
+    "SPIN2",
+    "Parallax Propeller 2"
+  ],
+  "configuration": {
+    "comments": {
+      "lineComment": "'",
+      "blockComment": [
+        "{",
+        "}"
+      ]
+    },
+    "brackets": [
+      [
+        "(",
+        ")"
+      ],
+      [
+        "[",
+        "]"
+      ],
+      [
+        "{",
+        "}"
+      ]
+    ],
+    "autoClosingPairs": [
+      {
+        "open": "(",
+        "close": ")"
+      },
+      {
+        "open": "[",
+        "close": "]"
+      },
+      {
+        "open": "{",
+        "close": "}"
+      },
+      {
+        "open": "\"",
+        "close": "\""
+      }
+    ],
+    "surroundingPairs": [
+      {
+        "open": "(",
+        "close": ")"
+      },
+      {
+        "open": "[",
+        "close": "]"
+      },
+      {
+        "open": "{",
+        "close": "}"
+      },
+      {
+        "open": "\"",
+        "close": "\""
+      }
+    ]
+  },
+  "completionItems": [
+    {
+      "label": "ABORT",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Abort method execution with optional error value",
+      "insertText": "ABORT"
+    },
+    {
+      "label": "BYTE",
+      "kind": 14,
+      "detail": "Data Types keyword",
+      "documentation": "8-bit unsigned integer type (0-255)",
+      "insertText": "BYTE"
+    },
+    {
+      "label": "BYTEFIT",
+      "kind": 14,
+      "detail": "Data Types keyword",
+      "documentation": "Expression that fits in a byte constant",
+      "insertText": "BYTEFIT"
+    },
+    {
+      "label": "CASE",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Multi-way branch based on expression value",
+      "insertText": "CASE"
+    },
+    {
+      "label": "CASE_FAST",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Optimized case statement for sequential values",
+      "insertText": "CASE_FAST"
+    },
+    {
+      "label": "CON",
+      "kind": 14,
+      "detail": "Block Structure keyword",
+      "documentation": "Constants section - defines named constant values",
+      "insertText": "CON"
+    },
+    {
+      "label": "DAT",
+      "kind": 14,
+      "detail": "Block Structure keyword",
+      "documentation": "Data section - contains data and inline assembly",
+      "insertText": "DAT"
+    },
+    {
+      "label": "ELSE",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Default case in IF statement",
+      "insertText": "ELSE"
+    },
+    {
+      "label": "ELSEIF",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Additional condition in IF statement chain",
+      "insertText": "ELSEIF"
+    },
+    {
+      "label": "ELSEIFNOT",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Additional negative condition in IF statement chain",
+      "insertText": "ELSEIFNOT"
+    },
+    {
+      "label": "FILE",
+      "kind": 14,
+      "detail": "Special keyword",
+      "documentation": "Include file contents as data",
+      "insertText": "FILE"
+    },
+    {
+      "label": "FROM",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Starting value for counted loop",
+      "insertText": "FROM"
+    },
+    {
+      "label": "IF",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Conditional execution based on boolean expression",
+      "insertText": "IF"
+    },
+    {
+      "label": "IFNOT",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Conditional execution when condition is false",
+      "insertText": "IFNOT"
+    },
+    {
+      "label": "LONG",
+      "kind": 14,
+      "detail": "Data Types keyword",
+      "documentation": "32-bit signed integer type (-2147483648 to 2147483647)",
+      "insertText": "LONG"
+    },
+    {
+      "label": "LOOKDOWN",
+      "kind": 14,
+      "detail": "Built-in Functions keyword",
+      "documentation": "Find index of value in table (1-based result)",
+      "insertText": "LOOKDOWN"
+    },
+    {
+      "label": "LOOKDOWNZ",
+      "kind": 14,
+      "detail": "Built-in Functions keyword",
+      "documentation": "Find index of value in table (0-based result)",
+      "insertText": "LOOKDOWNZ"
+    },
+    {
+      "label": "LOOKUP",
+      "kind": 14,
+      "detail": "Built-in Functions keyword",
+      "documentation": "Look up value in table (1-based indexing)",
+      "insertText": "LOOKUP"
+    },
+    {
+      "label": "LOOKUPZ",
+      "kind": 14,
+      "detail": "Built-in Functions keyword",
+      "documentation": "Look up value in table (0-based indexing)",
+      "insertText": "LOOKUPZ"
+    },
+    {
+      "label": "NEXT",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Continue to next loop iteration",
+      "insertText": "NEXT"
+    },
+    {
+      "label": "OBJ",
+      "kind": 14,
+      "detail": "Block Structure keyword",
+      "documentation": "Object section - declares child objects",
+      "insertText": "OBJ"
+    },
+    {
+      "label": "OTHER",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Default case in CASE statement",
+      "insertText": "OTHER"
+    },
+    {
+      "label": "PRI",
+      "kind": 14,
+      "detail": "Block Structure keyword",
+      "documentation": "Private method declaration - internal to object only",
+      "insertText": "PRI"
+    },
+    {
+      "label": "PUB",
+      "kind": 14,
+      "detail": "Block Structure keyword",
+      "documentation": "Public method declaration - visible to parent objects",
+      "insertText": "PUB"
+    },
+    {
+      "label": "QUIT",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Exit current loop",
+      "insertText": "QUIT"
+    },
+    {
+      "label": "REPEAT",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Loop construct with various forms",
+      "insertText": "REPEAT"
+    },
+    {
+      "label": "RETURN",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Return from method with optional value(s)",
+      "insertText": "RETURN"
+    },
+    {
+      "label": "STEP",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Increment value for counted loop",
+      "insertText": "STEP"
+    },
+    {
+      "label": "STRING",
+      "kind": 14,
+      "detail": "Special keyword",
+      "documentation": "String constant declaration",
+      "insertText": "STRING"
+    },
+    {
+      "label": "TO",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Ending value for counted loop",
+      "insertText": "TO"
+    },
+    {
+      "label": "UNTIL",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Continue loop until condition becomes true",
+      "insertText": "UNTIL"
+    },
+    {
+      "label": "VAR",
+      "kind": 14,
+      "detail": "Block Structure keyword",
+      "documentation": "Variables section - declares variables for the object",
+      "insertText": "VAR"
+    },
+    {
+      "label": "WHILE",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Continue loop while condition is true",
+      "insertText": "WHILE"
+    },
+    {
+      "label": "WITH",
+      "kind": 14,
+      "detail": "Control Flow keyword",
+      "documentation": "Loop variable declaration in REPEAT",
+      "insertText": "WITH"
+    },
+    {
+      "label": "WORD",
+      "kind": 14,
+      "detail": "Data Types keyword",
+      "documentation": "16-bit unsigned integer type (0-65535)",
+      "insertText": "WORD"
+    },
+    {
+      "label": "WORDFIT",
+      "kind": 14,
+      "detail": "Data Types keyword",
+      "documentation": "Expression that fits in a word constant",
+      "insertText": "WORDFIT"
+    },
+    {
+      "label": "-",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Arithmetic negation",
+      "insertText": "-"
+    },
+    {
+      "label": "--",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Decrement by 1 (post-decrement)",
+      "insertText": "--"
+    },
+    {
+      "label": "!",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Bitwise NOT - invert all bits",
+      "insertText": "!"
+    },
+    {
+      "label": "??",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Random value operator",
+      "insertText": "??"
+    },
+    {
+      "label": "++",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Increment by 1 (post-increment)",
+      "insertText": "++"
+    },
+    {
+      "label": "ABS",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Absolute value (also PASM2 instruction)",
+      "insertText": "ABS"
+    },
+    {
+      "label": "BMASK",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Create bit mask from bit count (also PASM2 instruction)",
+      "insertText": "BMASK"
+    },
+    {
+      "label": "DECOD",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Decode bit position to mask (also PASM2 instruction)",
+      "insertText": "DECOD"
+    },
+    {
+      "label": "ENCOD",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Encode highest bit position (also PASM2 instruction)",
+      "insertText": "ENCOD"
+    },
+    {
+      "label": "FABS",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Floating point absolute value",
+      "insertText": "FABS"
+    },
+    {
+      "label": "FSQRT",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Floating point square root",
+      "insertText": "FSQRT"
+    },
+    {
+      "label": "ONES",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Count number of 1 bits (also PASM2 instruction)",
+      "insertText": "ONES"
+    },
+    {
+      "label": "QEXP",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Quick exponential (also PASM2 instruction)",
+      "insertText": "QEXP"
+    },
+    {
+      "label": "QLOG",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Quick logarithm (also PASM2 instruction)",
+      "insertText": "QLOG"
+    },
+    {
+      "label": "SQRT",
+      "kind": 24,
+      "detail": "unary operator (precedence 0)",
+      "documentation": "Integer square root",
+      "insertText": "SQRT"
+    },
+    {
+      "label": "<<",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Logical left shift",
+      "insertText": "<<"
+    },
+    {
+      "label": ">>",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Logical right shift",
+      "insertText": ">>"
+    },
+    {
+      "label": "REV",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Reverse bits in specified width (also PASM2 instruction)",
+      "insertText": "REV"
+    },
+    {
+      "label": "ROL",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Rotate bits left (also PASM2 instruction)",
+      "insertText": "ROL"
+    },
+    {
+      "label": "ROR",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Rotate bits right (also PASM2 instruction)",
+      "insertText": "ROR"
+    },
+    {
+      "label": "SAR",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Arithmetic right shift - sign extending (also PASM2 instruction)",
+      "insertText": "SAR"
+    },
+    {
+      "label": "SIGNX",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Sign extend to specified bit width (also PASM2 instruction)",
+      "insertText": "SIGNX"
+    },
+    {
+      "label": "ZEROX",
+      "kind": 24,
+      "detail": "binary operator (precedence 1)",
+      "documentation": "Zero extend to specified bit width (also PASM2 instruction)",
+      "insertText": "ZEROX"
+    },
+    {
+      "label": "&",
+      "kind": 24,
+      "detail": "binary operator (precedence 2)",
+      "documentation": "Bitwise AND",
+      "insertText": "&"
+    },
+    {
+      "label": "^",
+      "kind": 24,
+      "detail": "binary operator (precedence 3)",
+      "documentation": "Bitwise XOR",
+      "insertText": "^"
+    },
+    {
+      "label": "|",
+      "kind": 24,
+      "detail": "binary operator (precedence 4)",
+      "documentation": "Bitwise OR",
+      "insertText": "|"
+    },
+    {
+      "label": "*",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Integer multiplication",
+      "insertText": "*"
+    },
+    {
+      "label": "*.",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Floating point multiplication",
+      "insertText": "*."
+    },
+    {
+      "label": "/",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Signed integer division",
+      "insertText": "/"
+    },
+    {
+      "label": "/.",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Floating point division",
+      "insertText": "/."
+    },
+    {
+      "label": "//",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Signed remainder (modulo)",
+      "insertText": "//"
+    },
+    {
+      "label": "+/",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Unsigned integer division",
+      "insertText": "+/"
+    },
+    {
+      "label": "+//",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Unsigned remainder (modulo)",
+      "insertText": "+//"
+    },
+    {
+      "label": "FRAC",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Calculate fraction",
+      "insertText": "FRAC"
+    },
+    {
+      "label": "SCA",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Scale value (also PASM2 instruction)",
+      "insertText": "SCA"
+    },
+    {
+      "label": "SCAS",
+      "kind": 24,
+      "detail": "binary operator (precedence 5)",
+      "documentation": "Scale value signed (also PASM2 instruction)",
+      "insertText": "SCAS"
+    },
+    {
+      "label": "-",
+      "kind": 24,
+      "detail": "binary operator (precedence 6)",
+      "documentation": "Integer subtraction",
+      "insertText": "-"
+    },
+    {
+      "label": "-.",
+      "kind": 24,
+      "detail": "binary operator (precedence 6)",
+      "documentation": "Floating point subtraction",
+      "insertText": "-."
+    },
+    {
+      "label": "+",
+      "kind": 24,
+      "detail": "binary operator (precedence 6)",
+      "documentation": "Integer addition",
+      "insertText": "+"
+    },
+    {
+      "label": "+.",
+      "kind": 24,
+      "detail": "binary operator (precedence 6)",
+      "documentation": "Floating point addition",
+      "insertText": "+."
+    },
+    {
+      "label": "#>",
+      "kind": 24,
+      "detail": "binary operator (precedence 7)",
+      "documentation": "Force value to be at least minimum",
+      "insertText": "#>"
+    },
+    {
+      "label": "<#",
+      "kind": 24,
+      "detail": "binary operator (precedence 7)",
+      "documentation": "Force value to be at most maximum",
+      "insertText": "<#"
+    },
+    {
+      "label": "ADDBITS",
+      "kind": 24,
+      "detail": "binary operator (precedence 8)",
+      "documentation": "Add bit count to pin number",
+      "insertText": "ADDBITS"
+    },
+    {
+      "label": "ADDPINS",
+      "kind": 24,
+      "detail": "binary operator (precedence 8)",
+      "documentation": "Add pin count to pin number",
+      "insertText": "ADDPINS"
+    },
+    {
+      "label": "+<",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Unsigned less than comparison",
+      "insertText": "+<"
+    },
+    {
+      "label": "+<=",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Unsigned less than or equal comparison",
+      "insertText": "+<="
+    },
+    {
+      "label": "+>",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Unsigned greater than comparison",
+      "insertText": "+>"
+    },
+    {
+      "label": "+>=",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Unsigned greater than or equal comparison",
+      "insertText": "+>="
+    },
+    {
+      "label": "<",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Signed less than comparison",
+      "insertText": "<"
+    },
+    {
+      "label": "<.",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Floating point less than comparison",
+      "insertText": "<."
+    },
+    {
+      "label": "<=",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Signed less than or equal comparison",
+      "insertText": "<="
+    },
+    {
+      "label": "<=.",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Floating point less than or equal comparison",
+      "insertText": "<=."
+    },
+    {
+      "label": "<=>",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Three-way comparison (returns -1, 0, or 1)",
+      "insertText": "<=>"
+    },
+    {
+      "label": "<>",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Inequality comparison",
+      "insertText": "<>"
+    },
+    {
+      "label": "<>.",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Floating point inequality comparison",
+      "insertText": "<>."
+    },
+    {
+      "label": "==",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Equality comparison",
+      "insertText": "=="
+    },
+    {
+      "label": "==.",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Floating point equality comparison",
+      "insertText": "==."
+    },
+    {
+      "label": ">",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Signed greater than comparison",
+      "insertText": ">"
+    },
+    {
+      "label": ">.",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Floating point greater than comparison",
+      "insertText": ">."
+    },
+    {
+      "label": ">=",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Signed greater than or equal comparison",
+      "insertText": ">="
+    },
+    {
+      "label": ">=.",
+      "kind": 24,
+      "detail": "binary operator (precedence 9)",
+      "documentation": "Floating point greater than or equal comparison",
+      "insertText": ">=."
+    },
+    {
+      "label": "!!",
+      "kind": 24,
+      "detail": "unary operator (precedence 10)",
+      "documentation": "Logical NOT operator",
+      "insertText": "!!"
+    },
+    {
+      "label": "NOT",
+      "kind": 24,
+      "detail": "unary operator (precedence 10)",
+      "documentation": "Logical NOT (also PASM2 instruction)",
+      "insertText": "NOT"
+    },
+    {
+      "label": "&&",
+      "kind": 24,
+      "detail": "binary operator (precedence 11)",
+      "documentation": "Logical AND operator",
+      "insertText": "&&"
+    },
+    {
+      "label": "AND",
+      "kind": 24,
+      "detail": "binary operator (precedence 11)",
+      "documentation": "Logical AND (also PASM2 instruction)",
+      "insertText": "AND"
+    },
+    {
+      "label": "^^",
+      "kind": 24,
+      "detail": "binary operator (precedence 12)",
+      "documentation": "Logical XOR operator",
+      "insertText": "^^"
+    },
+    {
+      "label": "XOR",
+      "kind": 24,
+      "detail": "binary operator (precedence 12)",
+      "documentation": "Logical XOR (also PASM2 instruction)",
+      "insertText": "XOR"
+    },
+    {
+      "label": "||",
+      "kind": 24,
+      "detail": "binary operator (precedence 13)",
+      "documentation": "Logical OR operator",
+      "insertText": "||"
+    },
+    {
+      "label": "OR",
+      "kind": 24,
+      "detail": "binary operator (precedence 13)",
+      "documentation": "Logical OR (also PASM2 instruction)",
+      "insertText": "OR"
+    },
+    {
+      "label": "? :",
+      "kind": 24,
+      "detail": "ternary operator (precedence 14)",
+      "documentation": "Ternary conditional operator",
+      "insertText": "? :"
+    },
+    {
+      "label": ":=",
+      "kind": 24,
+      "detail": "binary operator (precedence 15)",
+      "documentation": "Assignment operator",
+      "insertText": ":="
+    },
+    {
+      "label": ":=:",
+      "kind": 24,
+      "detail": "binary operator (precedence 15)",
+      "documentation": "Swap operator",
+      "insertText": ":=:"
+    },
+    {
+      "label": "ABS",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Return absolute value of parameter\\n\\nReturns: LONG",
+      "insertText": "ABS(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "BYTECOMP",
+      "kind": 3,
+      "detail": "Data Manipulation function",
+      "documentation": "Complement bytes within a long value\\n\\nReturns: LONG",
+      "insertText": "BYTECOMP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "BYTEFILL",
+      "kind": 3,
+      "detail": "Memory function",
+      "documentation": "Fill memory with byte value\\n\\nReturns: VOID",
+      "insertText": "BYTEFILL(dest, value, count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "BYTEMOVE",
+      "kind": 3,
+      "detail": "Memory function",
+      "documentation": "Copy bytes from source to destination\\n\\nReturns: VOID",
+      "insertText": "BYTEMOVE(dest, src, count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "BYTESWAP",
+      "kind": 3,
+      "detail": "Data Manipulation function",
+      "documentation": "Swap bytes within a long value\\n\\nReturns: LONG",
+      "insertText": "BYTESWAP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "COGID",
+      "kind": 3,
+      "detail": "COG Management function",
+      "documentation": "Get current cog ID\\n\\nReturns: LONG",
+      "insertText": "COGID()",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "COGINIT",
+      "kind": 3,
+      "detail": "COG Management function",
+      "documentation": "Start a cog with specified program and parameter\\n\\nReturns: LONG",
+      "insertText": "COGINIT(cog, program, param)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "COGSTOP",
+      "kind": 3,
+      "detail": "COG Management function",
+      "documentation": "Stop the specified cog\\n\\nReturns: VOID",
+      "insertText": "COGSTOP(cog)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "DECOD",
+      "kind": 3,
+      "detail": "Bit Manipulation function",
+      "documentation": "Decode bit position to bit mask\\n\\nReturns: LONG",
+      "insertText": "DECOD(position)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "ENCOD",
+      "kind": 3,
+      "detail": "Bit Manipulation function",
+      "documentation": "Encode highest bit position (32 if zero)\\n\\nReturns: LONG",
+      "insertText": "ENCOD(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "EXP",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "e raised to the power of value\\n\\nReturns: FLOAT",
+      "insertText": "EXP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "EXP10",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "10 raised to the power of value\\n\\nReturns: FLOAT",
+      "insertText": "EXP10(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "EXP2",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "2 raised to the power of value\\n\\nReturns: FLOAT",
+      "insertText": "EXP2(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "FLOAT",
+      "kind": 3,
+      "detail": "Type Conversion function",
+      "documentation": "Convert integer to floating point\\n\\nReturns: FLOAT",
+      "insertText": "FLOAT(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "GETCT",
+      "kind": 3,
+      "detail": "Timing function",
+      "documentation": "Get current system counter value\\n\\nReturns: LONG",
+      "insertText": "GETCT()",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "GETRND",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Get random number from hardware generator\\n\\nReturns: LONG",
+      "insertText": "GETRND()",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "HUBSET",
+      "kind": 3,
+      "detail": "System function",
+      "documentation": "Set hub configuration register\\n\\nReturns: VOID",
+      "insertText": "HUBSET(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LOG",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Natural logarithm (base e)\\n\\nReturns: FLOAT",
+      "insertText": "LOG(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LOG10",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Base-10 logarithm\\n\\nReturns: FLOAT",
+      "insertText": "LOG10(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LOG2",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Base-2 logarithm\\n\\nReturns: FLOAT",
+      "insertText": "LOG2(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LONGCOMP",
+      "kind": 3,
+      "detail": "Data Manipulation function",
+      "documentation": "Complement long value\\n\\nReturns: LONG",
+      "insertText": "LONGCOMP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LONGFILL",
+      "kind": 3,
+      "detail": "Memory function",
+      "documentation": "Fill memory with long value\\n\\nReturns: VOID",
+      "insertText": "LONGFILL(dest, value, count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LONGMOVE",
+      "kind": 3,
+      "detail": "Memory function",
+      "documentation": "Copy longs from source to destination\\n\\nReturns: VOID",
+      "insertText": "LONGMOVE(dest, src, count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LONGSWAP",
+      "kind": 3,
+      "detail": "Data Manipulation function",
+      "documentation": "Swap long value byte order\\n\\nReturns: LONG",
+      "insertText": "LONGSWAP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LOOKUP",
+      "kind": 3,
+      "detail": "Lookup function",
+      "documentation": "Look up value in table using 1-based indexing\\n\\nReturns: any",
+      "insertText": "LOOKUP(index, values)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "LOOKUPZ",
+      "kind": 3,
+      "detail": "Lookup function",
+      "documentation": "Look up value in table using 0-based indexing\\n\\nReturns: any",
+      "insertText": "LOOKUPZ(index, values)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "ONES",
+      "kind": 3,
+      "detail": "Bit Manipulation function",
+      "documentation": "Count number of 1 bits in value\\n\\nReturns: LONG",
+      "insertText": "ONES(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINCLEAR",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Clear smart pin configuration\\n\\nReturns: VOID",
+      "insertText": "PINCLEAR(pin)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINHIGH",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Set pin high (output 1)\\n\\nReturns: VOID",
+      "insertText": "PINHIGH(pin)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINLOW",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Set pin low (output 0)\\n\\nReturns: VOID",
+      "insertText": "PINLOW(pin)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINREAD",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Read value from pin\\n\\nReturns: LONG",
+      "insertText": "PINREAD(pin)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINSTART",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Start smart pin with specified mode and parameters\\n\\nReturns: VOID",
+      "insertText": "PINSTART(pin, mode, x_value, y_value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINTOGGLE",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Toggle pin state\\n\\nReturns: VOID",
+      "insertText": "PINTOGGLE(pin)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "PINWRITE",
+      "kind": 3,
+      "detail": "Pin I/O function",
+      "documentation": "Write value to pin\\n\\nReturns: VOID",
+      "insertText": "PINWRITE(pin, value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "POW",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Raise base to the power of exponent\\n\\nReturns: FLOAT",
+      "insertText": "POW(base, exponent)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "QCOS",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Quick cosine calculation\\n\\nReturns: LONG",
+      "insertText": "QCOS(angle, radius)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "QSIN",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Quick sine calculation\\n\\nReturns: LONG",
+      "insertText": "QSIN(angle, radius)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "ROUND",
+      "kind": 3,
+      "detail": "Type Conversion function",
+      "documentation": "Round floating point to nearest integer\\n\\nReturns: LONG",
+      "insertText": "ROUND(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "SQRT",
+      "kind": 3,
+      "detail": "Math function",
+      "documentation": "Return square root of parameter\\n\\nReturns: LONG",
+      "insertText": "SQRT(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "STRCOMP",
+      "kind": 3,
+      "detail": "String function",
+      "documentation": "Compare two null-terminated strings\\n\\nReturns: LONG",
+      "insertText": "STRCOMP(str1_ptr, str2_ptr)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "STRSIZE",
+      "kind": 3,
+      "detail": "String function",
+      "documentation": "Get length of null-terminated string\\n\\nReturns: LONG",
+      "insertText": "STRSIZE(string_ptr)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TASKCHK",
+      "kind": 3,
+      "detail": "Task Management function",
+      "documentation": "Check task status\\n\\nReturns: LONG",
+      "insertText": "TASKCHK(task_id)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TASKCONT",
+      "kind": 3,
+      "detail": "Task Management function",
+      "documentation": "Continue a halted task\\n\\nReturns: LONG",
+      "insertText": "TASKCONT(task_id)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TASKHALT",
+      "kind": 3,
+      "detail": "Task Management function",
+      "documentation": "Halt a running task\\n\\nReturns: LONG",
+      "insertText": "TASKHALT(task_id)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TASKID",
+      "kind": 3,
+      "detail": "Task Management function",
+      "documentation": "Get current task ID\\n\\nReturns: LONG",
+      "insertText": "TASKID()",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TASKNEXT",
+      "kind": 3,
+      "detail": "Task Management function",
+      "documentation": "Get next available task ID\\n\\nReturns: LONG",
+      "insertText": "TASKNEXT()",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TASKSTOP",
+      "kind": 3,
+      "detail": "Task Management function",
+      "documentation": "Stop a running task\\n\\nReturns: LONG",
+      "insertText": "TASKSTOP(task_id)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "TRUNC",
+      "kind": 3,
+      "detail": "Type Conversion function",
+      "documentation": "Truncate floating point to integer\\n\\nReturns: LONG",
+      "insertText": "TRUNC(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WAITCT",
+      "kind": 3,
+      "detail": "Timing function",
+      "documentation": "Wait until system counter reaches specified value\\n\\nReturns: VOID",
+      "insertText": "WAITCT(count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WAITMS",
+      "kind": 3,
+      "detail": "Timing function",
+      "documentation": "Wait for specified milliseconds\\n\\nReturns: VOID",
+      "insertText": "WAITMS(milliseconds)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WAITUS",
+      "kind": 3,
+      "detail": "Timing function",
+      "documentation": "Wait for specified microseconds\\n\\nReturns: VOID",
+      "insertText": "WAITUS(microseconds)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WORDCOMP",
+      "kind": 3,
+      "detail": "Data Manipulation function",
+      "documentation": "Complement words within a long value\\n\\nReturns: LONG",
+      "insertText": "WORDCOMP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WORDFILL",
+      "kind": 3,
+      "detail": "Memory function",
+      "documentation": "Fill memory with word value\\n\\nReturns: VOID",
+      "insertText": "WORDFILL(dest, value, count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WORDMOVE",
+      "kind": 3,
+      "detail": "Memory function",
+      "documentation": "Copy words from source to destination\\n\\nReturns: VOID",
+      "insertText": "WORDMOVE(dest, src, count)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "WORDSWAP",
+      "kind": 3,
+      "detail": "Data Manipulation function",
+      "documentation": "Swap words within a long value\\n\\nReturns: LONG",
+      "insertText": "WORDSWAP(value)",
+      "insertTextFormat": 2
+    },
+    {
+      "label": "ABS",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "ABS instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "ABS D{,S/#}"
+    },
+    {
+      "label": "ADD",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "ADD instruction - Destination register, Source register or immediate value",
+      "insertText": "ADD D,S/#"
+    },
+    {
+      "label": "ADDCT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ADDCT1 instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDCT1 D,S/#"
+    },
+    {
+      "label": "ADDCT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ADDCT2 instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDCT2 D,S/#"
+    },
+    {
+      "label": "ADDCT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ADDCT3 instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDCT3 D,S/#"
+    },
+    {
+      "label": "ADDPIX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ADDPIX instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDPIX D,S/#"
+    },
+    {
+      "label": "ADDS",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "ADDS instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDS D,S/#"
+    },
+    {
+      "label": "ADDSX",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "ADDSX instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDSX D,S/#"
+    },
+    {
+      "label": "ADDX",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "ADDX instruction - Destination register, Source register or immediate value",
+      "insertText": "ADDX D,S/#"
+    },
+    {
+      "label": "AKPIN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "AKPIN instruction - Acknowledge pin: pin number/immediate",
+      "insertText": "AKPIN S/#"
+    },
+    {
+      "label": "ALLOWI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALLOWI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "ALLOWI"
+    },
+    {
+      "label": "ALTB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTB instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTB D{,S/#}"
+    },
+    {
+      "label": "ALTD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTD instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTD D{,S/#}"
+    },
+    {
+      "label": "ALTGB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTGB instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTGB D{,S/#}"
+    },
+    {
+      "label": "ALTGN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTGN instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTGN D{,S/#}"
+    },
+    {
+      "label": "ALTGW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTGW instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTGW D{,S/#}"
+    },
+    {
+      "label": "ALTI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTI instruction - Destination, optional source (ALTI instruction modifier)",
+      "insertText": "ALTI D{,S/#}"
+    },
+    {
+      "label": "ALTR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTR instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTR D{,S/#}"
+    },
+    {
+      "label": "ALTS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTS instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTS D{,S/#}"
+    },
+    {
+      "label": "ALTSB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTSB instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTSB D{,S/#}"
+    },
+    {
+      "label": "ALTSN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTSN instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTSN D{,S/#}"
+    },
+    {
+      "label": "ALTSW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ALTSW instruction - Destination, optional source (immediate bit set if no source)",
+      "insertText": "ALTSW D{,S/#}"
+    },
+    {
+      "label": "AND",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "AND instruction - Destination register, Source register or immediate value",
+      "insertText": "AND D,S/#"
+    },
+    {
+      "label": "ANDN",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "ANDN instruction - Destination register, Source register or immediate value",
+      "insertText": "ANDN D,S/#"
+    },
+    {
+      "label": "ASMCLK",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ASMCLK instruction - Assembly clock instruction - no operands",
+      "insertText": "ASMCLK"
+    },
+    {
+      "label": "AUGD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "AUGD instruction - Augment: immediate 23-bit value for AUGS/AUGD",
+      "insertText": "AUGD #S"
+    },
+    {
+      "label": "AUGS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "AUGS instruction - Augment: immediate 23-bit value for AUGS/AUGD",
+      "insertText": "AUGS #S"
+    },
+    {
+      "label": "BITC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITC instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITC D,S/#"
+    },
+    {
+      "label": "BITH",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITH instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITH D,S/#"
+    },
+    {
+      "label": "BITL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITL instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITL D,S/#"
+    },
+    {
+      "label": "BITNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITNC instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITNC D,S/#"
+    },
+    {
+      "label": "BITNOT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITNOT instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITNOT D,S/#"
+    },
+    {
+      "label": "BITNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITNZ instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITNZ D,S/#"
+    },
+    {
+      "label": "BITRND",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITRND instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITRND D,S/#"
+    },
+    {
+      "label": "BITZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BITZ instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+      "insertText": "BITZ D,S/#"
+    },
+    {
+      "label": "BLNPIX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BLNPIX instruction - Destination register, Source register or immediate value",
+      "insertText": "BLNPIX D,S/#"
+    },
+    {
+      "label": "BMASK",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "BMASK instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "BMASK D{,S/#}"
+    },
+    {
+      "label": "BRK",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "BRK instruction - Destination or immediate value 0-511",
+      "insertText": "BRK D/#0..511"
+    },
+    {
+      "label": "CALL",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "CALL instruction - Call: immediate address or register",
+      "insertText": "CALL #S | D"
+    },
+    {
+      "label": "CALLA",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CALLA instruction - Call: immediate address or register",
+      "insertText": "CALLA #S | D"
+    },
+    {
+      "label": "CALLB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CALLB instruction - Call: immediate address or register",
+      "insertText": "CALLB #S | D"
+    },
+    {
+      "label": "CALLD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CALLD instruction - Call with return register: destination, address/relative/immediate",
+      "insertText": "CALLD D,#S/{@}S | D,S/#"
+    },
+    {
+      "label": "CALLPA",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CALLPA instruction - Jump/call with immediate destination and relative source: destination/immediate, relative address",
+      "insertText": "CALLPA D/#,S/@"
+    },
+    {
+      "label": "CALLPB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CALLPB instruction - Jump/call with immediate destination and relative source: destination/immediate, relative address",
+      "insertText": "CALLPB D/#,S/@"
+    },
+    {
+      "label": "CMP",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "CMP instruction - Destination register, Source register or immediate value",
+      "insertText": "CMP D,S/#"
+    },
+    {
+      "label": "CMPM",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "CMPM instruction - Destination register, Source register or immediate value",
+      "insertText": "CMPM D,S/#"
+    },
+    {
+      "label": "CMPR",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "CMPR instruction - Destination register, Source register or immediate value",
+      "insertText": "CMPR D,S/#"
+    },
+    {
+      "label": "CMPS",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "CMPS instruction - Destination register, Source register or immediate value",
+      "insertText": "CMPS D,S/#"
+    },
+    {
+      "label": "CMPSUB",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "CMPSUB instruction - Destination register, Source register or immediate value",
+      "insertText": "CMPSUB D,S/#"
+    },
+    {
+      "label": "CMPSX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CMPSX instruction - Destination register, Source register or immediate value",
+      "insertText": "CMPSX D,S/#"
+    },
+    {
+      "label": "CMPX",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "CMPX instruction - Destination register, Source register or immediate value",
+      "insertText": "CMPX D,S/#"
+    },
+    {
+      "label": "COGATN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "COGATN instruction - Destination or immediate value 0-511",
+      "insertText": "COGATN D/#0..511"
+    },
+    {
+      "label": "COGBRK",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "COGBRK instruction - Destination or immediate value 0-511",
+      "insertText": "COGBRK D/#0..511"
+    },
+    {
+      "label": "COGID",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "COGID instruction - Destination or immediate value 0-511",
+      "insertText": "COGID D/#0..511"
+    },
+    {
+      "label": "COGINIT",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "COGINIT instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "COGINIT D/#,S/#"
+    },
+    {
+      "label": "COGSTOP",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "COGSTOP instruction - Destination or immediate value 0-511",
+      "insertText": "COGSTOP D/#0..511"
+    },
+    {
+      "label": "CRCBIT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CRCBIT instruction - Destination register, Source register or immediate value",
+      "insertText": "CRCBIT D,S/#"
+    },
+    {
+      "label": "CRCNIB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "CRCNIB instruction - Destination register, Source register or immediate value",
+      "insertText": "CRCNIB D,S/#"
+    },
+    {
+      "label": "DEBUG",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DEBUG instruction - Debug instruction - no operands",
+      "insertText": "DEBUG"
+    },
+    {
+      "label": "DECMOD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DECMOD instruction - Destination register, Source register or immediate value",
+      "insertText": "DECMOD D,S/#"
+    },
+    {
+      "label": "DECOD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DECOD instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "DECOD D{,S/#}"
+    },
+    {
+      "label": "DIRC",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DIRC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRH",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DIRH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRH D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRL",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DIRL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRL D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DIRNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRNC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRNOT",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DIRNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRNOT D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DIRNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRNZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRRND",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DIRRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRRND D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DIRZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DIRZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DIRZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DJF",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DJF instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "DJF D,S/@"
+    },
+    {
+      "label": "DJNF",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DJNF instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "DJNF D,S/@"
+    },
+    {
+      "label": "DJNZ",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "DJNZ instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "DJNZ D,S/@"
+    },
+    {
+      "label": "DJZ",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "DJZ instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "DJZ D,S/@"
+    },
+    {
+      "label": "DRVC",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DRVC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVH",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DRVH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVH D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVL",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DRVL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVL D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DRVNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVNC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVNOT",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "DRVNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVNOT D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DRVNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVNZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVRND",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DRVRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVRND D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "DRVZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "DRVZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "DRVZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "ENCOD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ENCOD instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "ENCOD D{,S/#}"
+    },
+    {
+      "label": "EXECF",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "EXECF instruction - Destination or immediate value 0-511",
+      "insertText": "EXECF D/#0..511"
+    },
+    {
+      "label": "FBLOCK",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FBLOCK instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "FBLOCK D/#,S/#"
+    },
+    {
+      "label": "FGE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FGE instruction - Destination register, Source register or immediate value",
+      "insertText": "FGE D,S/#"
+    },
+    {
+      "label": "FGES",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FGES instruction - Destination register, Source register or immediate value",
+      "insertText": "FGES D,S/#"
+    },
+    {
+      "label": "FLE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FLE instruction - Destination register, Source register or immediate value",
+      "insertText": "FLE D,S/#"
+    },
+    {
+      "label": "FLES",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FLES instruction - Destination register, Source register or immediate value",
+      "insertText": "FLES D,S/#"
+    },
+    {
+      "label": "FLTC",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "FLTC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTH",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "FLTH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTH D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTL",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "FLTL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTL D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FLTNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTNC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTNOT",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "FLTNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTNOT D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FLTNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTNZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTRND",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FLTRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTRND D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "FLTZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "FLTZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "FLTZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "GETBRK",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETBRK instruction - Get break address: destination/immediate, REQUIRES effect flags",
+      "insertText": "GETBRK D/# WC/WZ/WCZ"
+    },
+    {
+      "label": "GETBYTE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETBYTE instruction - Get byte: destination, optional source and byte index 0-3",
+      "insertText": "GETBYTE D{,S/#,#0..3}"
+    },
+    {
+      "label": "GETCT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETCT instruction - Destination register only",
+      "insertText": "GETCT D"
+    },
+    {
+      "label": "GETNIB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETNIB instruction - Get nibble: destination, optional source and nibble index 0-7",
+      "insertText": "GETNIB D{,S/#,#0..7}"
+    },
+    {
+      "label": "GETPTR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETPTR instruction - Destination register only",
+      "insertText": "GETPTR D"
+    },
+    {
+      "label": "GETQX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETQX instruction - Destination register only",
+      "insertText": "GETQX D"
+    },
+    {
+      "label": "GETQY",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETQY instruction - Destination register only",
+      "insertText": "GETQY D"
+    },
+    {
+      "label": "GETRND",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETRND instruction - Destination register or effect flags only (GETRND)",
+      "insertText": "GETRND D | {WC/WZ/WCZ}"
+    },
+    {
+      "label": "GETSCP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETSCP instruction - Destination register only",
+      "insertText": "GETSCP D"
+    },
+    {
+      "label": "GETWORD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETWORD instruction - Get word: destination, optional source and word index 0-1",
+      "insertText": "GETWORD D{,S/#,#0..1}"
+    },
+    {
+      "label": "GETXACC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "GETXACC instruction - Destination register only",
+      "insertText": "GETXACC D"
+    },
+    {
+      "label": "HUBSET",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "HUBSET instruction - Destination or immediate value 0-511",
+      "insertText": "HUBSET D/#0..511"
+    },
+    {
+      "label": "IJNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "IJNZ instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "IJNZ D,S/@"
+    },
+    {
+      "label": "IJZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "IJZ instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "IJZ D,S/@"
+    },
+    {
+      "label": "INCMOD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "INCMOD instruction - Destination register, Source register or immediate value",
+      "insertText": "INCMOD D,S/#"
+    },
+    {
+      "label": "JATN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JATN instruction - Poll jump: target address/immediate",
+      "insertText": "JATN S/#"
+    },
+    {
+      "label": "JCT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JCT1 instruction - Poll jump: target address/immediate",
+      "insertText": "JCT1 S/#"
+    },
+    {
+      "label": "JCT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JCT2 instruction - Poll jump: target address/immediate",
+      "insertText": "JCT2 S/#"
+    },
+    {
+      "label": "JCT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JCT3 instruction - Poll jump: target address/immediate",
+      "insertText": "JCT3 S/#"
+    },
+    {
+      "label": "JFBW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JFBW instruction - Poll jump: target address/immediate",
+      "insertText": "JFBW S/#"
+    },
+    {
+      "label": "JINT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JINT instruction - Poll jump: target address/immediate",
+      "insertText": "JINT S/#"
+    },
+    {
+      "label": "JMP",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "JMP instruction - Jump: immediate address or register",
+      "insertText": "JMP #S | D"
+    },
+    {
+      "label": "JMPREL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JMPREL instruction - Destination or immediate value 0-511",
+      "insertText": "JMPREL D/#0..511"
+    },
+    {
+      "label": "JNATN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNATN instruction - Poll jump: target address/immediate",
+      "insertText": "JNATN S/#"
+    },
+    {
+      "label": "JNCT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNCT1 instruction - Poll jump: target address/immediate",
+      "insertText": "JNCT1 S/#"
+    },
+    {
+      "label": "JNCT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNCT2 instruction - Poll jump: target address/immediate",
+      "insertText": "JNCT2 S/#"
+    },
+    {
+      "label": "JNCT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNCT3 instruction - Poll jump: target address/immediate",
+      "insertText": "JNCT3 S/#"
+    },
+    {
+      "label": "JNFBW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNFBW instruction - Poll jump: target address/immediate",
+      "insertText": "JNFBW S/#"
+    },
+    {
+      "label": "JNINT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNINT instruction - Poll jump: target address/immediate",
+      "insertText": "JNINT S/#"
+    },
+    {
+      "label": "JNPAT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNPAT instruction - Poll jump: target address/immediate",
+      "insertText": "JNPAT S/#"
+    },
+    {
+      "label": "JNQMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNQMT instruction - Poll jump: target address/immediate",
+      "insertText": "JNQMT S/#"
+    },
+    {
+      "label": "JNSE1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNSE1 instruction - Poll jump: target address/immediate",
+      "insertText": "JNSE1 S/#"
+    },
+    {
+      "label": "JNSE2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNSE2 instruction - Poll jump: target address/immediate",
+      "insertText": "JNSE2 S/#"
+    },
+    {
+      "label": "JNSE3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNSE3 instruction - Poll jump: target address/immediate",
+      "insertText": "JNSE3 S/#"
+    },
+    {
+      "label": "JNSE4",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNSE4 instruction - Poll jump: target address/immediate",
+      "insertText": "JNSE4 S/#"
+    },
+    {
+      "label": "JNXFI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNXFI instruction - Poll jump: target address/immediate",
+      "insertText": "JNXFI S/#"
+    },
+    {
+      "label": "JNXMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNXMT instruction - Poll jump: target address/immediate",
+      "insertText": "JNXMT S/#"
+    },
+    {
+      "label": "JNXRL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNXRL instruction - Poll jump: target address/immediate",
+      "insertText": "JNXRL S/#"
+    },
+    {
+      "label": "JNXRO",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JNXRO instruction - Poll jump: target address/immediate",
+      "insertText": "JNXRO S/#"
+    },
+    {
+      "label": "JPAT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JPAT instruction - Poll jump: target address/immediate",
+      "insertText": "JPAT S/#"
+    },
+    {
+      "label": "JQMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JQMT instruction - Poll jump: target address/immediate",
+      "insertText": "JQMT S/#"
+    },
+    {
+      "label": "JSE1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JSE1 instruction - Poll jump: target address/immediate",
+      "insertText": "JSE1 S/#"
+    },
+    {
+      "label": "JSE2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JSE2 instruction - Poll jump: target address/immediate",
+      "insertText": "JSE2 S/#"
+    },
+    {
+      "label": "JSE3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JSE3 instruction - Poll jump: target address/immediate",
+      "insertText": "JSE3 S/#"
+    },
+    {
+      "label": "JSE4",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JSE4 instruction - Poll jump: target address/immediate",
+      "insertText": "JSE4 S/#"
+    },
+    {
+      "label": "JXFI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JXFI instruction - Poll jump: target address/immediate",
+      "insertText": "JXFI S/#"
+    },
+    {
+      "label": "JXMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JXMT instruction - Poll jump: target address/immediate",
+      "insertText": "JXMT S/#"
+    },
+    {
+      "label": "JXRL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JXRL instruction - Poll jump: target address/immediate",
+      "insertText": "JXRL S/#"
+    },
+    {
+      "label": "JXRO",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "JXRO instruction - Poll jump: target address/immediate",
+      "insertText": "JXRO S/#"
+    },
+    {
+      "label": "LOC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "LOC instruction - Load address: destination register, immediate address (optional \\ for absolute)",
+      "insertText": "LOC D,#S{\\}"
+    },
+    {
+      "label": "LOCKNEW",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "LOCKNEW instruction - Destination register only",
+      "insertText": "LOCKNEW D"
+    },
+    {
+      "label": "LOCKREL",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "LOCKREL instruction - Destination or immediate value 0-511",
+      "insertText": "LOCKREL D/#0..511"
+    },
+    {
+      "label": "LOCKRET",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "LOCKRET instruction - Destination or immediate value 0-511",
+      "insertText": "LOCKRET D/#0..511"
+    },
+    {
+      "label": "LOCKTRY",
+      "kind": 3,
+      "detail": "Hub/Cog instruction",
+      "documentation": "LOCKTRY instruction - Destination or immediate value 0-511",
+      "insertText": "LOCKTRY D/#0..511"
+    },
+    {
+      "label": "MERGEB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MERGEB instruction - Destination register only",
+      "insertText": "MERGEB D"
+    },
+    {
+      "label": "MERGEW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MERGEW instruction - Destination register only",
+      "insertText": "MERGEW D"
+    },
+    {
+      "label": "MIXPIX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MIXPIX instruction - Destination register, Source register or immediate value",
+      "insertText": "MIXPIX D,S/#"
+    },
+    {
+      "label": "MODC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MODC instruction - Modify condition flags: C flag value (4-bit), optional Z flag value (4-bit)",
+      "insertText": "MODC #C{,#Z}"
+    },
+    {
+      "label": "MODCZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MODCZ instruction - Modify condition flags: C flag value (4-bit), optional Z flag value (4-bit)",
+      "insertText": "MODCZ #C{,#Z}"
+    },
+    {
+      "label": "MODZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MODZ instruction - Modify condition flags: C flag value (4-bit), optional Z flag value (4-bit)",
+      "insertText": "MODZ #C{,#Z}"
+    },
+    {
+      "label": "MOV",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "MOV instruction - Destination register, Source register or immediate value",
+      "insertText": "MOV D,S/#"
+    },
+    {
+      "label": "MOVBYTS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MOVBYTS instruction - Destination register, Source register or immediate value",
+      "insertText": "MOVBYTS D,S/#"
+    },
+    {
+      "label": "MUL",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "MUL instruction - Destination register, Source register or immediate value",
+      "insertText": "MUL D,S/#"
+    },
+    {
+      "label": "MULPIX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MULPIX instruction - Destination register, Source register or immediate value",
+      "insertText": "MULPIX D,S/#"
+    },
+    {
+      "label": "MULS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MULS instruction - Destination register, Source register or immediate value",
+      "insertText": "MULS D,S/#"
+    },
+    {
+      "label": "MUXC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXC instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXC D,S/#"
+    },
+    {
+      "label": "MUXNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXNC instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXNC D,S/#"
+    },
+    {
+      "label": "MUXNIBS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXNIBS instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXNIBS D,S/#"
+    },
+    {
+      "label": "MUXNITS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXNITS instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXNITS D,S/#"
+    },
+    {
+      "label": "MUXNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXNZ instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXNZ D,S/#"
+    },
+    {
+      "label": "MUXQ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXQ instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXQ D,S/#"
+    },
+    {
+      "label": "MUXZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "MUXZ instruction - Destination register, Source register or immediate value",
+      "insertText": "MUXZ D,S/#"
+    },
+    {
+      "label": "NEG",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "NEG instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "NEG D{,S/#}"
+    },
+    {
+      "label": "NEGC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NEGC instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "NEGC D{,S/#}"
+    },
+    {
+      "label": "NEGNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NEGNC instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "NEGNC D{,S/#}"
+    },
+    {
+      "label": "NEGNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NEGNZ instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "NEGNZ D{,S/#}"
+    },
+    {
+      "label": "NEGZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NEGZ instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "NEGZ D{,S/#}"
+    },
+    {
+      "label": "NIXINT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NIXINT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "NIXINT1"
+    },
+    {
+      "label": "NIXINT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NIXINT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "NIXINT2"
+    },
+    {
+      "label": "NIXINT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NIXINT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "NIXINT3"
+    },
+    {
+      "label": "NOP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "NOP instruction - No operation - no operands",
+      "insertText": "NOP"
+    },
+    {
+      "label": "NOT",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "NOT instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "NOT D{,S/#}"
+    },
+    {
+      "label": "ONES",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "ONES instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "ONES D{,S/#}"
+    },
+    {
+      "label": "OR",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "OR instruction - Destination register, Source register or immediate value",
+      "insertText": "OR D,S/#"
+    },
+    {
+      "label": "OUTC",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "OUTC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTH",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "OUTH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTH D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTL",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "OUTL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTL D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "OUTNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTNC D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTNOT",
+      "kind": 3,
+      "detail": "Pin Control instruction",
+      "documentation": "OUTNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTNOT D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "OUTNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTNZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTRND",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "OUTRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTRND D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "OUTZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "OUTZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+      "insertText": "OUTZ D/#0..511 {WC/WZ}"
+    },
+    {
+      "label": "POLLATN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLATN instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLATN"
+    },
+    {
+      "label": "POLLCT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLCT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLCT1"
+    },
+    {
+      "label": "POLLCT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLCT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLCT2"
+    },
+    {
+      "label": "POLLCT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLCT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLCT3"
+    },
+    {
+      "label": "POLLFBW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLFBW instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLFBW"
+    },
+    {
+      "label": "POLLINT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLINT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLINT"
+    },
+    {
+      "label": "POLLPAT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLPAT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLPAT"
+    },
+    {
+      "label": "POLLQMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLQMT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLQMT"
+    },
+    {
+      "label": "POLLSE1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLSE1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLSE1"
+    },
+    {
+      "label": "POLLSE2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLSE2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLSE2"
+    },
+    {
+      "label": "POLLSE3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLSE3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLSE3"
+    },
+    {
+      "label": "POLLSE4",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLSE4 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLSE4"
+    },
+    {
+      "label": "POLLXFI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLXFI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLXFI"
+    },
+    {
+      "label": "POLLXMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLXMT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLXMT"
+    },
+    {
+      "label": "POLLXRL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLXRL instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLXRL"
+    },
+    {
+      "label": "POLLXRO",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POLLXRO instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "POLLXRO"
+    },
+    {
+      "label": "POP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POP instruction - Destination register only",
+      "insertText": "POP D"
+    },
+    {
+      "label": "POPA",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POPA instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+      "insertText": "POPA D/# | D"
+    },
+    {
+      "label": "POPB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "POPB instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+      "insertText": "POPB D/# | D"
+    },
+    {
+      "label": "PUSH",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "PUSH instruction - Destination or immediate value 0-511",
+      "insertText": "PUSH D/#0..511"
+    },
+    {
+      "label": "PUSHA",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "PUSHA instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+      "insertText": "PUSHA D/# | D"
+    },
+    {
+      "label": "PUSHB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "PUSHB instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+      "insertText": "PUSHB D/# | D"
+    },
+    {
+      "label": "QDIV",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QDIV instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "QDIV D/#,S/#"
+    },
+    {
+      "label": "QEXP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QEXP instruction - Destination or immediate value 0-511",
+      "insertText": "QEXP D/#0..511"
+    },
+    {
+      "label": "QFRAC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QFRAC instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "QFRAC D/#,S/#"
+    },
+    {
+      "label": "QLOG",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QLOG instruction - Destination or immediate value 0-511",
+      "insertText": "QLOG D/#0..511"
+    },
+    {
+      "label": "QMUL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QMUL instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "QMUL D/#,S/#"
+    },
+    {
+      "label": "QROTATE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QROTATE instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "QROTATE D/#,S/#"
+    },
+    {
+      "label": "QSQRT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QSQRT instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "QSQRT D/#,S/#"
+    },
+    {
+      "label": "QVECTOR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "QVECTOR instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "QVECTOR D/#,S/#"
+    },
+    {
+      "label": "RCL",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "RCL instruction - Destination register, Source register or immediate value",
+      "insertText": "RCL D,S/#"
+    },
+    {
+      "label": "RCR",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "RCR instruction - Destination register, Source register or immediate value",
+      "insertText": "RCR D,S/#"
+    },
+    {
+      "label": "RCZL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RCZL instruction - Destination register only",
+      "insertText": "RCZL D"
+    },
+    {
+      "label": "RCZR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RCZR instruction - Destination register only",
+      "insertText": "RCZR D"
+    },
+    {
+      "label": "RDBYTE",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "RDBYTE instruction - Destination, source/immediate/pointer register",
+      "insertText": "RDBYTE D,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "RDFAST",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RDFAST instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "RDFAST D/#,S/#"
+    },
+    {
+      "label": "RDLONG",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "RDLONG instruction - Destination, source/immediate/pointer register",
+      "insertText": "RDLONG D,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "RDLUT",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "RDLUT instruction - Destination, source/immediate/pointer register",
+      "insertText": "RDLUT D,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "RDPIN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RDPIN instruction - Destination register, Source register or immediate value",
+      "insertText": "RDPIN D,S/#"
+    },
+    {
+      "label": "RDWORD",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "RDWORD instruction - Destination, source/immediate/pointer register",
+      "insertText": "RDWORD D,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "REP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "REP instruction - Repeat block: (@,count) for block end or (count,repetitions)",
+      "insertText": "REP @,S/# | D/#,S/#"
+    },
+    {
+      "label": "RESI0",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RESI0 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RESI0"
+    },
+    {
+      "label": "RESI1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RESI1 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RESI1"
+    },
+    {
+      "label": "RESI2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RESI2 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RESI2"
+    },
+    {
+      "label": "RESI3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RESI3 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RESI3"
+    },
+    {
+      "label": "RET",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "RET instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RET"
+    },
+    {
+      "label": "RETA",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RETA instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RETA"
+    },
+    {
+      "label": "RETB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RETB instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RETB"
+    },
+    {
+      "label": "RETI0",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RETI0 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RETI0"
+    },
+    {
+      "label": "RETI1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RETI1 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RETI1"
+    },
+    {
+      "label": "RETI2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RETI2 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RETI2"
+    },
+    {
+      "label": "RETI3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RETI3 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "RETI3"
+    },
+    {
+      "label": "REV",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "REV instruction - Destination register only",
+      "insertText": "REV D"
+    },
+    {
+      "label": "RFBYTE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RFBYTE instruction - Destination register only",
+      "insertText": "RFBYTE D"
+    },
+    {
+      "label": "RFLONG",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RFLONG instruction - Destination register only",
+      "insertText": "RFLONG D"
+    },
+    {
+      "label": "RFVAR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RFVAR instruction - Destination register only",
+      "insertText": "RFVAR D"
+    },
+    {
+      "label": "RFVARS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RFVARS instruction - Destination register only",
+      "insertText": "RFVARS D"
+    },
+    {
+      "label": "RFWORD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RFWORD instruction - Destination register only",
+      "insertText": "RFWORD D"
+    },
+    {
+      "label": "RGBEXP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RGBEXP instruction - Destination register only",
+      "insertText": "RGBEXP D"
+    },
+    {
+      "label": "RGBSQZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RGBSQZ instruction - Destination register only",
+      "insertText": "RGBSQZ D"
+    },
+    {
+      "label": "ROL",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "ROL instruction - Destination register, Source register or immediate value",
+      "insertText": "ROL D,S/#"
+    },
+    {
+      "label": "ROLBYTE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ROLBYTE instruction - Get byte: destination, optional source and byte index 0-3",
+      "insertText": "ROLBYTE D{,S/#,#0..3}"
+    },
+    {
+      "label": "ROLNIB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ROLNIB instruction - Get nibble: destination, optional source and nibble index 0-7",
+      "insertText": "ROLNIB D{,S/#,#0..7}"
+    },
+    {
+      "label": "ROLWORD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "ROLWORD instruction - Get word: destination, optional source and word index 0-1",
+      "insertText": "ROLWORD D{,S/#,#0..1}"
+    },
+    {
+      "label": "ROR",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "ROR instruction - Destination register, Source register or immediate value",
+      "insertText": "ROR D,S/#"
+    },
+    {
+      "label": "RQPIN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "RQPIN instruction - Destination register, Source register or immediate value",
+      "insertText": "RQPIN D,S/#"
+    },
+    {
+      "label": "SAL",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "SAL instruction - Destination register, Source register or immediate value",
+      "insertText": "SAL D,S/#"
+    },
+    {
+      "label": "SAR",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "SAR instruction - Destination register, Source register or immediate value",
+      "insertText": "SAR D,S/#"
+    },
+    {
+      "label": "SCA",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SCA instruction - Destination register, Source register or immediate value",
+      "insertText": "SCA D,S/#"
+    },
+    {
+      "label": "SCAS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SCAS instruction - Destination register, Source register or immediate value",
+      "insertText": "SCAS D,S/#"
+    },
+    {
+      "label": "SETBYTE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETBYTE instruction - Set byte: source/immediate, optional destination and byte index 0-3",
+      "insertText": "SETBYTE S/#{,D,#0..3}"
+    },
+    {
+      "label": "SETCFRQ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETCFRQ instruction - Destination or immediate value 0-511",
+      "insertText": "SETCFRQ D/#0..511"
+    },
+    {
+      "label": "SETCI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETCI instruction - Destination or immediate value 0-511",
+      "insertText": "SETCI D/#0..511"
+    },
+    {
+      "label": "SETCMOD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETCMOD instruction - Destination or immediate value 0-511",
+      "insertText": "SETCMOD D/#0..511"
+    },
+    {
+      "label": "SETCQ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETCQ instruction - Destination or immediate value 0-511",
+      "insertText": "SETCQ D/#0..511"
+    },
+    {
+      "label": "SETCY",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETCY instruction - Destination or immediate value 0-511",
+      "insertText": "SETCY D/#0..511"
+    },
+    {
+      "label": "SETD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETD instruction - Destination register, Source register or immediate value",
+      "insertText": "SETD D,S/#"
+    },
+    {
+      "label": "SETDACS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETDACS instruction - Destination or immediate value 0-511",
+      "insertText": "SETDACS D/#0..511"
+    },
+    {
+      "label": "SETINT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETINT1 instruction - Destination or immediate value 0-511",
+      "insertText": "SETINT1 D/#0..511"
+    },
+    {
+      "label": "SETINT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETINT2 instruction - Destination or immediate value 0-511",
+      "insertText": "SETINT2 D/#0..511"
+    },
+    {
+      "label": "SETINT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETINT3 instruction - Destination or immediate value 0-511",
+      "insertText": "SETINT3 D/#0..511"
+    },
+    {
+      "label": "SETLUTS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETLUTS instruction - Destination or immediate value 0-511",
+      "insertText": "SETLUTS D/#0..511"
+    },
+    {
+      "label": "SETNIB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETNIB instruction - Set nibble: source/immediate, optional destination and nibble index 0-7",
+      "insertText": "SETNIB S/#{,D,#0..7}"
+    },
+    {
+      "label": "SETPAT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETPAT instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "SETPAT D/#,S/#"
+    },
+    {
+      "label": "SETPIV",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETPIV instruction - Destination or immediate value 0-511",
+      "insertText": "SETPIV D/#0..511"
+    },
+    {
+      "label": "SETPIX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETPIX instruction - Destination or immediate value 0-511",
+      "insertText": "SETPIX D/#0..511"
+    },
+    {
+      "label": "SETQ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETQ instruction - Destination or immediate value 0-511",
+      "insertText": "SETQ D/#0..511"
+    },
+    {
+      "label": "SETQ2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETQ2 instruction - Destination or immediate value 0-511",
+      "insertText": "SETQ2 D/#0..511"
+    },
+    {
+      "label": "SETR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETR instruction - Destination register, Source register or immediate value",
+      "insertText": "SETR D,S/#"
+    },
+    {
+      "label": "SETS",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETS instruction - Destination register, Source register or immediate value",
+      "insertText": "SETS D,S/#"
+    },
+    {
+      "label": "SETSCP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETSCP instruction - Destination or immediate value 0-511",
+      "insertText": "SETSCP D/#0..511"
+    },
+    {
+      "label": "SETSE1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETSE1 instruction - Destination or immediate value 0-511",
+      "insertText": "SETSE1 D/#0..511"
+    },
+    {
+      "label": "SETSE2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETSE2 instruction - Destination or immediate value 0-511",
+      "insertText": "SETSE2 D/#0..511"
+    },
+    {
+      "label": "SETSE3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETSE3 instruction - Destination or immediate value 0-511",
+      "insertText": "SETSE3 D/#0..511"
+    },
+    {
+      "label": "SETSE4",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETSE4 instruction - Destination or immediate value 0-511",
+      "insertText": "SETSE4 D/#0..511"
+    },
+    {
+      "label": "SETWORD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETWORD instruction - Set word: source/immediate, optional destination and word index 0-1",
+      "insertText": "SETWORD S/#{,D,#0..1}"
+    },
+    {
+      "label": "SETXFRQ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SETXFRQ instruction - Destination or immediate value 0-511",
+      "insertText": "SETXFRQ D/#0..511"
+    },
+    {
+      "label": "SEUSSF",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SEUSSF instruction - Destination register only",
+      "insertText": "SEUSSF D"
+    },
+    {
+      "label": "SEUSSR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SEUSSR instruction - Destination register only",
+      "insertText": "SEUSSR D"
+    },
+    {
+      "label": "SHL",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "SHL instruction - Destination register, Source register or immediate value",
+      "insertText": "SHL D,S/#"
+    },
+    {
+      "label": "SHR",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "SHR instruction - Destination register, Source register or immediate value",
+      "insertText": "SHR D,S/#"
+    },
+    {
+      "label": "SIGNX",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "SIGNX instruction - Destination register, Source register or immediate value",
+      "insertText": "SIGNX D,S/#"
+    },
+    {
+      "label": "SKIP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SKIP instruction - Destination or immediate value 0-511",
+      "insertText": "SKIP D/#0..511"
+    },
+    {
+      "label": "SKIPF",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SKIPF instruction - Destination or immediate value 0-511",
+      "insertText": "SKIPF D/#0..511"
+    },
+    {
+      "label": "SPLITB",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SPLITB instruction - Destination register only",
+      "insertText": "SPLITB D"
+    },
+    {
+      "label": "SPLITW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SPLITW instruction - Destination register only",
+      "insertText": "SPLITW D"
+    },
+    {
+      "label": "STALLI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "STALLI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "STALLI"
+    },
+    {
+      "label": "SUB",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "SUB instruction - Destination register, Source register or immediate value",
+      "insertText": "SUB D,S/#"
+    },
+    {
+      "label": "SUBR",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SUBR instruction - Destination register, Source register or immediate value",
+      "insertText": "SUBR D,S/#"
+    },
+    {
+      "label": "SUBS",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "SUBS instruction - Destination register, Source register or immediate value",
+      "insertText": "SUBS D,S/#"
+    },
+    {
+      "label": "SUBSX",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "SUBSX instruction - Destination register, Source register or immediate value",
+      "insertText": "SUBSX D,S/#"
+    },
+    {
+      "label": "SUBX",
+      "kind": 3,
+      "detail": "Arithmetic instruction",
+      "documentation": "SUBX instruction - Destination register, Source register or immediate value",
+      "insertText": "SUBX D,S/#"
+    },
+    {
+      "label": "SUMC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SUMC instruction - Destination register, Source register or immediate value",
+      "insertText": "SUMC D,S/#"
+    },
+    {
+      "label": "SUMNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SUMNC instruction - Destination register, Source register or immediate value",
+      "insertText": "SUMNC D,S/#"
+    },
+    {
+      "label": "SUMNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SUMNZ instruction - Destination register, Source register or immediate value",
+      "insertText": "SUMNZ D,S/#"
+    },
+    {
+      "label": "SUMZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "SUMZ instruction - Destination register, Source register or immediate value",
+      "insertText": "SUMZ D,S/#"
+    },
+    {
+      "label": "TEST",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "TEST instruction - Destination register, optional Source register or immediate (unary/binary)",
+      "insertText": "TEST D{,S/#}"
+    },
+    {
+      "label": "TESTB",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "TESTB instruction - Test bit with logic function: Destination register, bit position",
+      "insertText": "TESTB D,S/#"
+    },
+    {
+      "label": "TESTBN",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "TESTBN instruction - Test bit with logic function: Destination register, bit position",
+      "insertText": "TESTBN D,S/#"
+    },
+    {
+      "label": "TESTN",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "TESTN instruction - Destination register, Source register or immediate value",
+      "insertText": "TESTN D,S/#"
+    },
+    {
+      "label": "TESTP",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "TESTP instruction - Test pin: destination/immediate pin number 0-511 with REQUIRED logic function",
+      "insertText": "TESTP D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ"
+    },
+    {
+      "label": "TESTPN",
+      "kind": 3,
+      "detail": "Comparison/Test instruction",
+      "documentation": "TESTPN instruction - Test pin: destination/immediate pin number 0-511 with REQUIRED logic function",
+      "insertText": "TESTPN D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ"
+    },
+    {
+      "label": "TJF",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJF instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJF D,S/@"
+    },
+    {
+      "label": "TJNF",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJNF instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJNF D,S/@"
+    },
+    {
+      "label": "TJNS",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJNS instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJNS D,S/@"
+    },
+    {
+      "label": "TJNZ",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJNZ instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJNZ D,S/@"
+    },
+    {
+      "label": "TJS",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJS instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJS D,S/@"
+    },
+    {
+      "label": "TJV",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJV instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJV D,S/@"
+    },
+    {
+      "label": "TJZ",
+      "kind": 3,
+      "detail": "Control Flow instruction",
+      "documentation": "TJZ instruction - Jump with destination and relative address: register, relative address",
+      "insertText": "TJZ D,S/@"
+    },
+    {
+      "label": "TRGINT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "TRGINT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "TRGINT1"
+    },
+    {
+      "label": "TRGINT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "TRGINT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "TRGINT2"
+    },
+    {
+      "label": "TRGINT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "TRGINT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "TRGINT3"
+    },
+    {
+      "label": "WAITATN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITATN instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITATN"
+    },
+    {
+      "label": "WAITCT1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITCT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITCT1"
+    },
+    {
+      "label": "WAITCT2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITCT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITCT2"
+    },
+    {
+      "label": "WAITCT3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITCT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITCT3"
+    },
+    {
+      "label": "WAITFBW",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITFBW instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITFBW"
+    },
+    {
+      "label": "WAITINT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITINT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITINT"
+    },
+    {
+      "label": "WAITPAT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITPAT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITPAT"
+    },
+    {
+      "label": "WAITSE1",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITSE1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITSE1"
+    },
+    {
+      "label": "WAITSE2",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITSE2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITSE2"
+    },
+    {
+      "label": "WAITSE3",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITSE3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITSE3"
+    },
+    {
+      "label": "WAITSE4",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITSE4 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITSE4"
+    },
+    {
+      "label": "WAITX",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITX instruction - Destination or immediate value 0-511",
+      "insertText": "WAITX D/#0..511"
+    },
+    {
+      "label": "WAITXFI",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITXFI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITXFI"
+    },
+    {
+      "label": "WAITXMT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITXMT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITXMT"
+    },
+    {
+      "label": "WAITXRL",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITXRL instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITXRL"
+    },
+    {
+      "label": "WAITXRO",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WAITXRO instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+      "insertText": "WAITXRO"
+    },
+    {
+      "label": "WFBYTE",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WFBYTE instruction - Destination or immediate value 0-511",
+      "insertText": "WFBYTE D/#0..511"
+    },
+    {
+      "label": "WFLONG",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WFLONG instruction - Destination or immediate value 0-511",
+      "insertText": "WFLONG D/#0..511"
+    },
+    {
+      "label": "WFWORD",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WFWORD instruction - Destination or immediate value 0-511",
+      "insertText": "WFWORD D/#0..511"
+    },
+    {
+      "label": "WMLONG_",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WMLONG_ instruction - Destination, source/immediate/pointer register",
+      "insertText": "WMLONG_ D,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "WRBYTE",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "WRBYTE instruction - Memory operation: destination/immediate, source/immediate/pointer",
+      "insertText": "WRBYTE D/#,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "WRC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WRC instruction - Destination register only",
+      "insertText": "WRC D"
+    },
+    {
+      "label": "WRFAST",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WRFAST instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "WRFAST D/#,S/#"
+    },
+    {
+      "label": "WRLONG",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "WRLONG instruction - Memory operation: destination/immediate, source/immediate/pointer",
+      "insertText": "WRLONG D/#,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "WRLUT",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "WRLUT instruction - Memory operation: destination/immediate, source/immediate/pointer",
+      "insertText": "WRLUT D/#,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "WRNC",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WRNC instruction - Destination register only",
+      "insertText": "WRNC D"
+    },
+    {
+      "label": "WRNZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WRNZ instruction - Destination register only",
+      "insertText": "WRNZ D"
+    },
+    {
+      "label": "WRPIN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WRPIN instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "WRPIN D/#,S/#"
+    },
+    {
+      "label": "WRWORD",
+      "kind": 3,
+      "detail": "Memory instruction",
+      "documentation": "WRWORD instruction - Memory operation: destination/immediate, source/immediate/pointer",
+      "insertText": "WRWORD D/#,S/#/PTRA/PTRB"
+    },
+    {
+      "label": "WRZ",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WRZ instruction - Destination register only",
+      "insertText": "WRZ D"
+    },
+    {
+      "label": "WXPIN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WXPIN instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "WXPIN D/#,S/#"
+    },
+    {
+      "label": "WYPIN",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "WYPIN instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "WYPIN D/#,S/#"
+    },
+    {
+      "label": "XCONT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "XCONT instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "XCONT D/#,S/#"
+    },
+    {
+      "label": "XINIT",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "XINIT instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "XINIT D/#,S/#"
+    },
+    {
+      "label": "XOR",
+      "kind": 3,
+      "detail": "Logical instruction",
+      "documentation": "XOR instruction - Destination register, Source register or immediate value",
+      "insertText": "XOR D,S/#"
+    },
+    {
+      "label": "XORO32",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "XORO32 instruction - Destination register only",
+      "insertText": "XORO32 D"
+    },
+    {
+      "label": "XSTOP",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "XSTOP instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+      "insertText": "XSTOP"
+    },
+    {
+      "label": "XZERO",
+      "kind": 3,
+      "detail": "Miscellaneous instruction",
+      "documentation": "XZERO instruction - Two operands: destination/immediate, source/immediate",
+      "insertText": "XZERO D/#,S/#"
+    },
+    {
+      "label": "ZEROX",
+      "kind": 3,
+      "detail": "Shift/Rotate instruction",
+      "documentation": "ZEROX instruction - Destination register, Source register or immediate value",
+      "insertText": "ZEROX D,S/#"
+    }
+  ]
+}

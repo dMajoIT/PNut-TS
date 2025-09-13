@@ -1,0 +1,5686 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generatedAt": "2025-09-13T08:20:44.550Z",
+    "description": "SPIN2/PASM2 code completion definitions for IDE integration"
+  },
+  "spin2": {
+    "keywords": [
+      {
+        "label": "ABORT",
+        "detail": "Abort method execution with optional error value",
+        "category": "Control Flow",
+        "insertText": "ABORT",
+        "examples": [
+          "ABORT",
+          "ABORT error_code"
+        ]
+      },
+      {
+        "label": "BYTE",
+        "detail": "8-bit unsigned integer type (0-255)",
+        "category": "Data Types",
+        "insertText": "BYTE",
+        "examples": [
+          "BYTE flag",
+          "BYTE buffer[128]"
+        ]
+      },
+      {
+        "label": "BYTEFIT",
+        "detail": "Expression that fits in a byte constant",
+        "category": "Data Types",
+        "insertText": "BYTEFIT",
+        "examples": [
+          "CON\\n  SMALL_VALUE = BYTEFIT(200)"
+        ]
+      },
+      {
+        "label": "CASE",
+        "detail": "Multi-way branch based on expression value",
+        "category": "Control Flow",
+        "insertText": "CASE",
+        "examples": [
+          "CASE day\\n  1: month_name := \"January\"\\n  2: month_name := \"February\""
+        ]
+      },
+      {
+        "label": "CASE_FAST",
+        "detail": "Optimized case statement for sequential values",
+        "category": "Control Flow",
+        "insertText": "CASE_FAST",
+        "examples": [
+          "CASE_FAST status\\n  0: handle_ok()\\n  1: handle_error()"
+        ]
+      },
+      {
+        "label": "CON",
+        "detail": "Constants section - defines named constant values",
+        "category": "Block Structure",
+        "insertText": "CON",
+        "examples": [
+          "CON\\n  LED_PIN = 56\\n  BAUD_RATE = 115200"
+        ]
+      },
+      {
+        "label": "DAT",
+        "detail": "Data section - contains data and inline assembly",
+        "category": "Block Structure",
+        "insertText": "DAT",
+        "examples": [
+          "DAT\\n  message BYTE \"Hello World\", 0"
+        ]
+      },
+      {
+        "label": "ELSE",
+        "detail": "Default case in IF statement",
+        "category": "Control Flow",
+        "insertText": "ELSE",
+        "examples": [
+          "ELSE\\n  result := 0"
+        ]
+      },
+      {
+        "label": "ELSEIF",
+        "detail": "Additional condition in IF statement chain",
+        "category": "Control Flow",
+        "insertText": "ELSEIF",
+        "examples": [
+          "ELSEIF x < 5\\n  result := x + 10"
+        ]
+      },
+      {
+        "label": "ELSEIFNOT",
+        "detail": "Additional negative condition in IF statement chain",
+        "category": "Control Flow",
+        "insertText": "ELSEIFNOT",
+        "examples": [
+          "ELSEIFNOT valid\\n  error := true"
+        ]
+      },
+      {
+        "label": "FILE",
+        "detail": "Include file contents as data",
+        "category": "Special",
+        "insertText": "FILE",
+        "examples": [
+          "DAT\\n  bitmap FILE \"image.bmp\""
+        ]
+      },
+      {
+        "label": "FROM",
+        "detail": "Starting value for counted loop",
+        "category": "Control Flow",
+        "insertText": "FROM",
+        "examples": [
+          "REPEAT i FROM 1 TO 10\\n  sum += i"
+        ]
+      },
+      {
+        "label": "IF",
+        "detail": "Conditional execution based on boolean expression",
+        "category": "Control Flow",
+        "insertText": "IF",
+        "examples": [
+          "IF x > 10\\n  result := x * 2"
+        ]
+      },
+      {
+        "label": "IFNOT",
+        "detail": "Conditional execution when condition is false",
+        "category": "Control Flow",
+        "insertText": "IFNOT",
+        "examples": [
+          "IFNOT ready\\n  initialize()"
+        ]
+      },
+      {
+        "label": "LONG",
+        "detail": "32-bit signed integer type (-2147483648 to 2147483647)",
+        "category": "Data Types",
+        "insertText": "LONG",
+        "examples": [
+          "LONG counter",
+          "LONG results[10]"
+        ]
+      },
+      {
+        "label": "LOOKDOWN",
+        "detail": "Find index of value in table (1-based result)",
+        "category": "Built-in Functions",
+        "insertText": "LOOKDOWN",
+        "examples": [
+          "index := LOOKDOWN(char : \"A\", \"B\", \"C\")"
+        ]
+      },
+      {
+        "label": "LOOKDOWNZ",
+        "detail": "Find index of value in table (0-based result)",
+        "category": "Built-in Functions",
+        "insertText": "LOOKDOWNZ",
+        "examples": [
+          "index := LOOKDOWNZ(day_name : \"Mon\", \"Tue\", \"Wed\")"
+        ]
+      },
+      {
+        "label": "LOOKUP",
+        "detail": "Look up value in table (1-based indexing)",
+        "category": "Built-in Functions",
+        "insertText": "LOOKUP",
+        "examples": [
+          "result := LOOKUP(day : \"Sun\", \"Mon\", \"Tue\", \"Wed\")"
+        ]
+      },
+      {
+        "label": "LOOKUPZ",
+        "detail": "Look up value in table (0-based indexing)",
+        "category": "Built-in Functions",
+        "insertText": "LOOKUPZ",
+        "examples": [
+          "result := LOOKUPZ(month : 31, 28, 31, 30)"
+        ]
+      },
+      {
+        "label": "NEXT",
+        "detail": "Continue to next loop iteration",
+        "category": "Control Flow",
+        "insertText": "NEXT",
+        "examples": [
+          "IF error\\n  NEXT"
+        ]
+      },
+      {
+        "label": "OBJ",
+        "detail": "Object section - declares child objects",
+        "category": "Block Structure",
+        "insertText": "OBJ",
+        "examples": [
+          "OBJ\\n  term : \"FullDuplexSerial\""
+        ]
+      },
+      {
+        "label": "OTHER",
+        "detail": "Default case in CASE statement",
+        "category": "Control Flow",
+        "insertText": "OTHER",
+        "examples": [
+          "OTHER\\n  unknown_command()"
+        ]
+      },
+      {
+        "label": "PRI",
+        "detail": "Private method declaration - internal to object only",
+        "category": "Block Structure",
+        "insertText": "PRI",
+        "examples": [
+          "PRI helper(value)",
+          "PRI process(data) : status | temp"
+        ]
+      },
+      {
+        "label": "PUB",
+        "detail": "Public method declaration - visible to parent objects",
+        "category": "Block Structure",
+        "insertText": "PUB",
+        "examples": [
+          "PUB start",
+          "PUB calculate(x, y) : result"
+        ]
+      },
+      {
+        "label": "QUIT",
+        "detail": "Exit current loop",
+        "category": "Control Flow",
+        "insertText": "QUIT",
+        "examples": [
+          "IF done\\n  QUIT"
+        ]
+      },
+      {
+        "label": "REPEAT",
+        "detail": "Loop construct with various forms",
+        "category": "Control Flow",
+        "insertText": "REPEAT",
+        "examples": [
+          "REPEAT 10\\n  toggle_led()",
+          "REPEAT WHILE running\\n  process_data()"
+        ]
+      },
+      {
+        "label": "RETURN",
+        "detail": "Return from method with optional value(s)",
+        "category": "Control Flow",
+        "insertText": "RETURN",
+        "examples": [
+          "RETURN",
+          "RETURN result",
+          "RETURN status, count"
+        ]
+      },
+      {
+        "label": "STEP",
+        "detail": "Increment value for counted loop",
+        "category": "Control Flow",
+        "insertText": "STEP",
+        "examples": [
+          "REPEAT i FROM 0 TO 100 STEP 5\\n  process(i)"
+        ]
+      },
+      {
+        "label": "STRING",
+        "detail": "String constant declaration",
+        "category": "Special",
+        "insertText": "STRING",
+        "examples": [
+          "message := STRING(\"Hello World\")"
+        ]
+      },
+      {
+        "label": "TO",
+        "detail": "Ending value for counted loop",
+        "category": "Control Flow",
+        "insertText": "TO",
+        "examples": [
+          "REPEAT i FROM 0 TO 255\\n  buffer[i] := 0"
+        ]
+      },
+      {
+        "label": "UNTIL",
+        "detail": "Continue loop until condition becomes true",
+        "category": "Control Flow",
+        "insertText": "UNTIL",
+        "examples": [
+          "REPEAT UNTIL ready\\n  wait_ms(10)"
+        ]
+      },
+      {
+        "label": "VAR",
+        "detail": "Variables section - declares variables for the object",
+        "category": "Block Structure",
+        "insertText": "VAR",
+        "examples": [
+          "VAR\\n  LONG counter\\n  BYTE buffer[256]"
+        ]
+      },
+      {
+        "label": "WHILE",
+        "detail": "Continue loop while condition is true",
+        "category": "Control Flow",
+        "insertText": "WHILE",
+        "examples": [
+          "REPEAT WHILE x < 100\\n  x += 1"
+        ]
+      },
+      {
+        "label": "WITH",
+        "detail": "Loop variable declaration in REPEAT",
+        "category": "Control Flow",
+        "insertText": "WITH",
+        "examples": [
+          "REPEAT 10 WITH i\\n  array[i] := i * 2"
+        ]
+      },
+      {
+        "label": "WORD",
+        "detail": "16-bit unsigned integer type (0-65535)",
+        "category": "Data Types",
+        "insertText": "WORD",
+        "examples": [
+          "WORD address",
+          "WORD values[32]"
+        ]
+      },
+      {
+        "label": "WORDFIT",
+        "detail": "Expression that fits in a word constant",
+        "category": "Data Types",
+        "insertText": "WORDFIT",
+        "examples": [
+          "CON\\n  MEDIUM_VALUE = WORDFIT(50000)"
+        ]
+      }
+    ],
+    "operators": [
+      {
+        "label": "-",
+        "detail": "Arithmetic negation",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "negative := -positive",
+          "offset := -10"
+        ]
+      },
+      {
+        "label": "--",
+        "detail": "Decrement by 1 (post-decrement)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "counter--",
+          "remaining--"
+        ]
+      },
+      {
+        "label": "!",
+        "detail": "Bitwise NOT - invert all bits",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "result := !value",
+          "mask := !0xFF"
+        ]
+      },
+      {
+        "label": "??",
+        "detail": "Random value operator",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "random_val := ??"
+        ]
+      },
+      {
+        "label": "++",
+        "detail": "Increment by 1 (post-increment)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "counter++",
+          "index++"
+        ]
+      },
+      {
+        "label": "ABS",
+        "detail": "Absolute value (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "distance := ABS(x2 - x1)"
+        ]
+      },
+      {
+        "label": "BMASK",
+        "detail": "Create bit mask from bit count (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "mask := BMASK(8)  // Returns $FF"
+        ]
+      },
+      {
+        "label": "DECOD",
+        "detail": "Decode bit position to mask (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "mask := DECOD(5)  // Returns $20"
+        ]
+      },
+      {
+        "label": "ENCOD",
+        "detail": "Encode highest bit position (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "bit_pos := ENCOD(mask)"
+        ]
+      },
+      {
+        "label": "FABS",
+        "detail": "Floating point absolute value",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "distance := FABS(float_difference)"
+        ]
+      },
+      {
+        "label": "FSQRT",
+        "detail": "Floating point square root",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "side := FSQRT(float_area)"
+        ]
+      },
+      {
+        "label": "ONES",
+        "detail": "Count number of 1 bits (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "count := ONES(%10110101)  // Returns 5"
+        ]
+      },
+      {
+        "label": "QEXP",
+        "detail": "Quick exponential (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "exp_val := QEXP(value)"
+        ]
+      },
+      {
+        "label": "QLOG",
+        "detail": "Quick logarithm (also PASM2 instruction)",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "log_val := QLOG(value)"
+        ]
+      },
+      {
+        "label": "SQRT",
+        "detail": "Integer square root",
+        "precedence": 0,
+        "type": "unary",
+        "examples": [
+          "side := SQRT(area)"
+        ]
+      },
+      {
+        "label": "<<",
+        "detail": "Logical left shift",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value << 3"
+        ]
+      },
+      {
+        "label": ">>",
+        "detail": "Logical right shift",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value >> 2"
+        ]
+      },
+      {
+        "label": "REV",
+        "detail": "Reverse bits in specified width (also PASM2 instruction)",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value REV 8"
+        ]
+      },
+      {
+        "label": "ROL",
+        "detail": "Rotate bits left (also PASM2 instruction)",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value ROL 1"
+        ]
+      },
+      {
+        "label": "ROR",
+        "detail": "Rotate bits right (also PASM2 instruction)",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value ROR 4"
+        ]
+      },
+      {
+        "label": "SAR",
+        "detail": "Arithmetic right shift - sign extending (also PASM2 instruction)",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value SAR 2"
+        ]
+      },
+      {
+        "label": "SIGNX",
+        "detail": "Sign extend to specified bit width (also PASM2 instruction)",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value SIGNX 15"
+        ]
+      },
+      {
+        "label": "ZEROX",
+        "detail": "Zero extend to specified bit width (also PASM2 instruction)",
+        "precedence": 1,
+        "type": "binary",
+        "examples": [
+          "result := value ZEROX 15"
+        ]
+      },
+      {
+        "label": "&",
+        "detail": "Bitwise AND",
+        "precedence": 2,
+        "type": "binary",
+        "examples": [
+          "masked := value & $FF"
+        ]
+      },
+      {
+        "label": "^",
+        "detail": "Bitwise XOR",
+        "precedence": 3,
+        "type": "binary",
+        "examples": [
+          "toggled := value ^ mask"
+        ]
+      },
+      {
+        "label": "|",
+        "detail": "Bitwise OR",
+        "precedence": 4,
+        "type": "binary",
+        "examples": [
+          "combined := flags | new_flag"
+        ]
+      },
+      {
+        "label": "*",
+        "detail": "Integer multiplication",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "area := width * height"
+        ]
+      },
+      {
+        "label": "*.",
+        "detail": "Floating point multiplication",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "area := width *. height"
+        ]
+      },
+      {
+        "label": "/",
+        "detail": "Signed integer division",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "quotient := dividend / divisor"
+        ]
+      },
+      {
+        "label": "/.",
+        "detail": "Floating point division",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "quotient := dividend /. divisor"
+        ]
+      },
+      {
+        "label": "//",
+        "detail": "Signed remainder (modulo)",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "remainder := dividend // divisor"
+        ]
+      },
+      {
+        "label": "+/",
+        "detail": "Unsigned integer division",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "quotient := dividend +/ divisor"
+        ]
+      },
+      {
+        "label": "+//",
+        "detail": "Unsigned remainder (modulo)",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "remainder := dividend +// divisor"
+        ]
+      },
+      {
+        "label": "FRAC",
+        "detail": "Calculate fraction",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "frac := dividend FRAC divisor"
+        ]
+      },
+      {
+        "label": "SCA",
+        "detail": "Scale value (also PASM2 instruction)",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "scaled := value SCA factor"
+        ]
+      },
+      {
+        "label": "SCAS",
+        "detail": "Scale value signed (also PASM2 instruction)",
+        "precedence": 5,
+        "type": "binary",
+        "examples": [
+          "scaled := value SCAS factor"
+        ]
+      },
+      {
+        "label": "-",
+        "detail": "Integer subtraction",
+        "precedence": 6,
+        "type": "binary",
+        "examples": [
+          "difference := a - b"
+        ]
+      },
+      {
+        "label": "-.",
+        "detail": "Floating point subtraction",
+        "precedence": 6,
+        "type": "binary",
+        "examples": [
+          "difference := a -. b"
+        ]
+      },
+      {
+        "label": "+",
+        "detail": "Integer addition",
+        "precedence": 6,
+        "type": "binary",
+        "examples": [
+          "sum := a + b"
+        ]
+      },
+      {
+        "label": "+.",
+        "detail": "Floating point addition",
+        "precedence": 6,
+        "type": "binary",
+        "examples": [
+          "sum := a +. b"
+        ]
+      },
+      {
+        "label": "#>",
+        "detail": "Force value to be at least minimum",
+        "precedence": 7,
+        "type": "binary",
+        "examples": [
+          "clamped := value #> min_value"
+        ]
+      },
+      {
+        "label": "<#",
+        "detail": "Force value to be at most maximum",
+        "precedence": 7,
+        "type": "binary",
+        "examples": [
+          "clamped := value <# max_value"
+        ]
+      },
+      {
+        "label": "ADDBITS",
+        "detail": "Add bit count to pin number",
+        "precedence": 8,
+        "type": "binary",
+        "examples": [
+          "pin_range := start_pin ADDBITS bit_count"
+        ]
+      },
+      {
+        "label": "ADDPINS",
+        "detail": "Add pin count to pin number",
+        "precedence": 8,
+        "type": "binary",
+        "examples": [
+          "pin_range := start_pin ADDPINS pin_count"
+        ]
+      },
+      {
+        "label": "+<",
+        "detail": "Unsigned less than comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF x +< y\\n  smaller := x"
+        ]
+      },
+      {
+        "label": "+<=",
+        "detail": "Unsigned less than or equal comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF count +<= limit\\n  continue()"
+        ]
+      },
+      {
+        "label": "+>",
+        "detail": "Unsigned greater than comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF speed +> max_speed\\n  slow_down()"
+        ]
+      },
+      {
+        "label": "+>=",
+        "detail": "Unsigned greater than or equal comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF temp +>= threshold\\n  activate()"
+        ]
+      },
+      {
+        "label": "<",
+        "detail": "Signed less than comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF x < y\\n  smaller := x"
+        ]
+      },
+      {
+        "label": "<.",
+        "detail": "Floating point less than comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF x <. y\\n  smaller := x"
+        ]
+      },
+      {
+        "label": "<=",
+        "detail": "Signed less than or equal comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF count <= limit\\n  continue()"
+        ]
+      },
+      {
+        "label": "<=.",
+        "detail": "Floating point less than or equal comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF count <=. limit\\n  continue()"
+        ]
+      },
+      {
+        "label": "<=>",
+        "detail": "Three-way comparison (returns -1, 0, or 1)",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "result := a <=> b"
+        ]
+      },
+      {
+        "label": "<>",
+        "detail": "Inequality comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF result <> 0\\n  handle_error()"
+        ]
+      },
+      {
+        "label": "<>.",
+        "detail": "Floating point inequality comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF result <>. 0.0\\n  handle_error()"
+        ]
+      },
+      {
+        "label": "==",
+        "detail": "Equality comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF status == READY\\n  start()"
+        ]
+      },
+      {
+        "label": "==.",
+        "detail": "Floating point equality comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF value ==. target\\n  found()"
+        ]
+      },
+      {
+        "label": ">",
+        "detail": "Signed greater than comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF speed > max_speed\\n  slow_down()"
+        ]
+      },
+      {
+        "label": ">.",
+        "detail": "Floating point greater than comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF speed >. max_speed\\n  slow_down()"
+        ]
+      },
+      {
+        "label": ">=",
+        "detail": "Signed greater than or equal comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF temp >= threshold\\n  activate()"
+        ]
+      },
+      {
+        "label": ">=.",
+        "detail": "Floating point greater than or equal comparison",
+        "precedence": 9,
+        "type": "binary",
+        "examples": [
+          "IF temp >=. threshold\\n  activate()"
+        ]
+      },
+      {
+        "label": "!!",
+        "detail": "Logical NOT operator",
+        "precedence": 10,
+        "type": "unary",
+        "examples": [
+          "IF !!value\\n  // if value is non-zero"
+        ]
+      },
+      {
+        "label": "NOT",
+        "detail": "Logical NOT (also PASM2 instruction)",
+        "precedence": 10,
+        "type": "unary",
+        "examples": [
+          "IF NOT ready\\n  wait()"
+        ]
+      },
+      {
+        "label": "&&",
+        "detail": "Logical AND operator",
+        "precedence": 11,
+        "type": "binary",
+        "examples": [
+          "IF ready && enabled\\n  start()"
+        ]
+      },
+      {
+        "label": "AND",
+        "detail": "Logical AND (also PASM2 instruction)",
+        "precedence": 11,
+        "type": "binary",
+        "examples": [
+          "IF ready AND enabled\\n  start()"
+        ]
+      },
+      {
+        "label": "^^",
+        "detail": "Logical XOR operator",
+        "precedence": 12,
+        "type": "binary",
+        "examples": [
+          "IF state1 ^^ state2\\n  toggle()"
+        ]
+      },
+      {
+        "label": "XOR",
+        "detail": "Logical XOR (also PASM2 instruction)",
+        "precedence": 12,
+        "type": "binary",
+        "examples": [
+          "IF state1 XOR state2\\n  toggle()"
+        ]
+      },
+      {
+        "label": "||",
+        "detail": "Logical OR operator",
+        "precedence": 13,
+        "type": "binary",
+        "examples": [
+          "IF error || timeout\\n  abort()"
+        ]
+      },
+      {
+        "label": "OR",
+        "detail": "Logical OR (also PASM2 instruction)",
+        "precedence": 13,
+        "type": "binary",
+        "examples": [
+          "IF error OR timeout\\n  abort()"
+        ]
+      },
+      {
+        "label": "? :",
+        "detail": "Ternary conditional operator",
+        "precedence": 14,
+        "type": "ternary",
+        "examples": [
+          "result := condition ? true_value : false_value"
+        ]
+      },
+      {
+        "label": ":=",
+        "detail": "Assignment operator",
+        "precedence": 15,
+        "type": "binary",
+        "examples": [
+          "variable := value",
+          "result := calculate(x, y)"
+        ]
+      },
+      {
+        "label": ":=:",
+        "detail": "Swap operator",
+        "precedence": 15,
+        "type": "binary",
+        "examples": [
+          "a :=: b  // swap values of a and b"
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "label": "ABS",
+        "detail": "Return absolute value of parameter",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Math",
+        "examples": [
+          "result := ABS(-42)  // returns 42"
+        ]
+      },
+      {
+        "label": "BYTECOMP",
+        "detail": "Complement bytes within a long value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Data Manipulation",
+        "examples": [
+          "result := BYTECOMP($12345678)"
+        ]
+      },
+      {
+        "label": "BYTEFILL",
+        "detail": "Fill memory with byte value",
+        "parameters": [
+          {
+            "name": "dest",
+            "type": "LONG"
+          },
+          {
+            "name": "value",
+            "type": "LONG"
+          },
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Memory",
+        "examples": [
+          "BYTEFILL(@buffer, 0, 256)"
+        ]
+      },
+      {
+        "label": "BYTEMOVE",
+        "detail": "Copy bytes from source to destination",
+        "parameters": [
+          {
+            "name": "dest",
+            "type": "LONG"
+          },
+          {
+            "name": "src",
+            "type": "LONG"
+          },
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Memory",
+        "examples": [
+          "BYTEMOVE(@dest_buffer, @src_buffer, 256)"
+        ]
+      },
+      {
+        "label": "BYTESWAP",
+        "detail": "Swap bytes within a long value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Data Manipulation",
+        "examples": [
+          "result := BYTESWAP($12345678)  // returns $78563412"
+        ]
+      },
+      {
+        "label": "COGID",
+        "detail": "Get current cog ID",
+        "parameters": [],
+        "returnType": "LONG",
+        "category": "COG Management",
+        "examples": [
+          "my_cog := COGID()"
+        ]
+      },
+      {
+        "label": "COGINIT",
+        "detail": "Start a cog with specified program and parameter",
+        "parameters": [
+          {
+            "name": "cog",
+            "type": "LONG"
+          },
+          {
+            "name": "program",
+            "type": "LONG"
+          },
+          {
+            "name": "param",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "COG Management",
+        "examples": [
+          "cog_id := COGINIT(0, @program, @param)"
+        ]
+      },
+      {
+        "label": "COGSTOP",
+        "detail": "Stop the specified cog",
+        "parameters": [
+          {
+            "name": "cog",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "COG Management",
+        "examples": [
+          "COGSTOP(cog_id)"
+        ]
+      },
+      {
+        "label": "DECOD",
+        "detail": "Decode bit position to bit mask",
+        "parameters": [
+          {
+            "name": "position",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Bit Manipulation",
+        "examples": [
+          "mask := DECOD(5)  // returns $20"
+        ]
+      },
+      {
+        "label": "ENCOD",
+        "detail": "Encode highest bit position (32 if zero)",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Bit Manipulation",
+        "examples": [
+          "pos := ENCOD(%1000)  // returns 3"
+        ]
+      },
+      {
+        "label": "EXP",
+        "detail": "e raised to the power of value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := EXP(1.0)  // returns ~2.718281828"
+        ]
+      },
+      {
+        "label": "EXP10",
+        "detail": "10 raised to the power of value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := EXP10(2.0)  // returns 100.0"
+        ]
+      },
+      {
+        "label": "EXP2",
+        "detail": "2 raised to the power of value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := EXP2(3.0)  // returns 8.0"
+        ]
+      },
+      {
+        "label": "FLOAT",
+        "detail": "Convert integer to floating point",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Type Conversion",
+        "examples": [
+          "float_val := FLOAT(integer_val)"
+        ]
+      },
+      {
+        "label": "GETCT",
+        "detail": "Get current system counter value",
+        "parameters": [],
+        "returnType": "LONG",
+        "category": "Timing",
+        "examples": [
+          "start_time := GETCT()"
+        ]
+      },
+      {
+        "label": "GETRND",
+        "detail": "Get random number from hardware generator",
+        "parameters": [],
+        "returnType": "LONG",
+        "category": "Math",
+        "examples": [
+          "random_val := GETRND()"
+        ]
+      },
+      {
+        "label": "HUBSET",
+        "detail": "Set hub configuration register",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "System",
+        "examples": [
+          "HUBSET(clkmode_value)"
+        ]
+      },
+      {
+        "label": "LOG",
+        "detail": "Natural logarithm (base e)",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := LOG(2.718281828)  // returns ~1.0"
+        ]
+      },
+      {
+        "label": "LOG10",
+        "detail": "Base-10 logarithm",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := LOG10(100.0)  // returns 2.0"
+        ]
+      },
+      {
+        "label": "LOG2",
+        "detail": "Base-2 logarithm",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := LOG2(8.0)  // returns 3.0"
+        ]
+      },
+      {
+        "label": "LONGCOMP",
+        "detail": "Complement long value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Data Manipulation",
+        "examples": [
+          "result := LONGCOMP($12345678)"
+        ]
+      },
+      {
+        "label": "LONGFILL",
+        "detail": "Fill memory with long value",
+        "parameters": [
+          {
+            "name": "dest",
+            "type": "LONG"
+          },
+          {
+            "name": "value",
+            "type": "LONG"
+          },
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Memory",
+        "examples": [
+          "LONGFILL(@array, 0, 100)"
+        ]
+      },
+      {
+        "label": "LONGMOVE",
+        "detail": "Copy longs from source to destination",
+        "parameters": [
+          {
+            "name": "dest",
+            "type": "LONG"
+          },
+          {
+            "name": "src",
+            "type": "LONG"
+          },
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Memory",
+        "examples": [
+          "LONGMOVE(@dest_longs, @src_longs, 25)"
+        ]
+      },
+      {
+        "label": "LONGSWAP",
+        "detail": "Swap long value byte order",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Data Manipulation",
+        "examples": [
+          "result := LONGSWAP($12345678)"
+        ]
+      },
+      {
+        "label": "LOOKUP",
+        "detail": "Look up value in table using 1-based indexing",
+        "parameters": [
+          {
+            "name": "index",
+            "type": "LONG"
+          },
+          {
+            "name": "values",
+            "type": "any...",
+            "optional": true
+          }
+        ],
+        "returnType": "any",
+        "category": "Lookup",
+        "examples": [
+          "day_name := LOOKUP(day : \"Sun\", \"Mon\", \"Tue\", \"Wed\")"
+        ]
+      },
+      {
+        "label": "LOOKUPZ",
+        "detail": "Look up value in table using 0-based indexing",
+        "parameters": [
+          {
+            "name": "index",
+            "type": "LONG"
+          },
+          {
+            "name": "values",
+            "type": "any...",
+            "optional": true
+          }
+        ],
+        "returnType": "any",
+        "category": "Lookup",
+        "examples": [
+          "days_in_month := LOOKUPZ(month : 31, 28, 31, 30, 31)"
+        ]
+      },
+      {
+        "label": "ONES",
+        "detail": "Count number of 1 bits in value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Bit Manipulation",
+        "examples": [
+          "count := ONES(%10110101)  // returns 5"
+        ]
+      },
+      {
+        "label": "PINCLEAR",
+        "detail": "Clear smart pin configuration",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Pin I/O",
+        "examples": [
+          "PINCLEAR(PWM_PIN)"
+        ]
+      },
+      {
+        "label": "PINHIGH",
+        "detail": "Set pin high (output 1)",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Pin I/O",
+        "examples": [
+          "PINHIGH(LED_PIN)"
+        ]
+      },
+      {
+        "label": "PINLOW",
+        "detail": "Set pin low (output 0)",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Pin I/O",
+        "examples": [
+          "PINLOW(LED_PIN)"
+        ]
+      },
+      {
+        "label": "PINREAD",
+        "detail": "Read value from pin",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Pin I/O",
+        "examples": [
+          "button_state := PINREAD(BUTTON_PIN)"
+        ]
+      },
+      {
+        "label": "PINSTART",
+        "detail": "Start smart pin with specified mode and parameters",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          },
+          {
+            "name": "mode",
+            "type": "LONG"
+          },
+          {
+            "name": "x_value",
+            "type": "LONG"
+          },
+          {
+            "name": "y_value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Pin I/O",
+        "examples": [
+          "PINSTART(PWM_PIN, P_PWM_SAWTOOTH, period, duty)"
+        ]
+      },
+      {
+        "label": "PINTOGGLE",
+        "detail": "Toggle pin state",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Pin I/O",
+        "examples": [
+          "PINTOGGLE(LED_PIN)"
+        ]
+      },
+      {
+        "label": "PINWRITE",
+        "detail": "Write value to pin",
+        "parameters": [
+          {
+            "name": "pin",
+            "type": "LONG"
+          },
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Pin I/O",
+        "examples": [
+          "PINWRITE(LED_PIN, 1)"
+        ]
+      },
+      {
+        "label": "POW",
+        "detail": "Raise base to the power of exponent",
+        "parameters": [
+          {
+            "name": "base",
+            "type": "FLOAT"
+          },
+          {
+            "name": "exponent",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "FLOAT",
+        "category": "Math",
+        "examples": [
+          "result := POW(2.0, 3.0)  // returns 8.0"
+        ]
+      },
+      {
+        "label": "QCOS",
+        "detail": "Quick cosine calculation",
+        "parameters": [
+          {
+            "name": "angle",
+            "type": "LONG"
+          },
+          {
+            "name": "radius",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Math",
+        "examples": [
+          "x := QCOS(angle, 1000)"
+        ]
+      },
+      {
+        "label": "QSIN",
+        "detail": "Quick sine calculation",
+        "parameters": [
+          {
+            "name": "angle",
+            "type": "LONG"
+          },
+          {
+            "name": "radius",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Math",
+        "examples": [
+          "y := QSIN(angle, 1000)"
+        ]
+      },
+      {
+        "label": "ROUND",
+        "detail": "Round floating point to nearest integer",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Type Conversion",
+        "examples": [
+          "rounded := ROUND(3.7)  // returns 4"
+        ]
+      },
+      {
+        "label": "SQRT",
+        "detail": "Return square root of parameter",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Math",
+        "examples": [
+          "side := SQRT(100)  // returns 10"
+        ]
+      },
+      {
+        "label": "STRCOMP",
+        "detail": "Compare two null-terminated strings",
+        "parameters": [
+          {
+            "name": "str1_ptr",
+            "type": "LONG"
+          },
+          {
+            "name": "str2_ptr",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "String",
+        "examples": [
+          "IF STRCOMP(@name1, @name2)\n  // strings are equal"
+        ]
+      },
+      {
+        "label": "STRSIZE",
+        "detail": "Get length of null-terminated string",
+        "parameters": [
+          {
+            "name": "string_ptr",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "String",
+        "examples": [
+          "length := STRSIZE(@text)"
+        ]
+      },
+      {
+        "label": "TASKCHK",
+        "detail": "Check task status",
+        "parameters": [
+          {
+            "name": "task_id",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Task Management",
+        "examples": [
+          "status := TASKCHK(task_id)"
+        ]
+      },
+      {
+        "label": "TASKCONT",
+        "detail": "Continue a halted task",
+        "parameters": [
+          {
+            "name": "task_id",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Task Management",
+        "examples": [
+          "TASKCONT(task_id)"
+        ]
+      },
+      {
+        "label": "TASKHALT",
+        "detail": "Halt a running task",
+        "parameters": [
+          {
+            "name": "task_id",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Task Management",
+        "examples": [
+          "TASKHALT(task_id)"
+        ]
+      },
+      {
+        "label": "TASKID",
+        "detail": "Get current task ID",
+        "parameters": [],
+        "returnType": "LONG",
+        "category": "Task Management",
+        "examples": [
+          "current_task := TASKID()"
+        ]
+      },
+      {
+        "label": "TASKNEXT",
+        "detail": "Get next available task ID",
+        "parameters": [],
+        "returnType": "LONG",
+        "category": "Task Management",
+        "examples": [
+          "task_id := TASKNEXT()"
+        ]
+      },
+      {
+        "label": "TASKSTOP",
+        "detail": "Stop a running task",
+        "parameters": [
+          {
+            "name": "task_id",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Task Management",
+        "examples": [
+          "TASKSTOP(task_id)"
+        ]
+      },
+      {
+        "label": "TRUNC",
+        "detail": "Truncate floating point to integer",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "FLOAT"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Type Conversion",
+        "examples": [
+          "truncated := TRUNC(3.9)  // returns 3"
+        ]
+      },
+      {
+        "label": "WAITCT",
+        "detail": "Wait until system counter reaches specified value",
+        "parameters": [
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Timing",
+        "examples": [
+          "WAITCT(CNT + clkfreq)  // wait 1 second"
+        ]
+      },
+      {
+        "label": "WAITMS",
+        "detail": "Wait for specified milliseconds",
+        "parameters": [
+          {
+            "name": "milliseconds",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Timing",
+        "examples": [
+          "WAITMS(100)  // wait 100ms"
+        ]
+      },
+      {
+        "label": "WAITUS",
+        "detail": "Wait for specified microseconds",
+        "parameters": [
+          {
+            "name": "microseconds",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Timing",
+        "examples": [
+          "WAITUS(50)   // wait 50μs"
+        ]
+      },
+      {
+        "label": "WORDCOMP",
+        "detail": "Complement words within a long value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Data Manipulation",
+        "examples": [
+          "result := WORDCOMP($12345678)"
+        ]
+      },
+      {
+        "label": "WORDFILL",
+        "detail": "Fill memory with word value",
+        "parameters": [
+          {
+            "name": "dest",
+            "type": "LONG"
+          },
+          {
+            "name": "value",
+            "type": "LONG"
+          },
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Memory",
+        "examples": [
+          "WORDFILL(@array, $FFFF, 50)"
+        ]
+      },
+      {
+        "label": "WORDMOVE",
+        "detail": "Copy words from source to destination",
+        "parameters": [
+          {
+            "name": "dest",
+            "type": "LONG"
+          },
+          {
+            "name": "src",
+            "type": "LONG"
+          },
+          {
+            "name": "count",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "VOID",
+        "category": "Memory",
+        "examples": [
+          "WORDMOVE(@dest_array, @src_array, 100)"
+        ]
+      },
+      {
+        "label": "WORDSWAP",
+        "detail": "Swap words within a long value",
+        "parameters": [
+          {
+            "name": "value",
+            "type": "LONG"
+          }
+        ],
+        "returnType": "LONG",
+        "category": "Data Manipulation",
+        "examples": [
+          "result := WORDSWAP($12345678)  // returns $56781234"
+        ]
+      }
+    ]
+  },
+  "pasm2": {
+    "instructions": [
+      {
+        "label": "ABS",
+        "detail": "ABS instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "ABS D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Arithmetic",
+        "examples": [
+          "ABS result",
+          "ABS result, source",
+          "ABS result, #42"
+        ]
+      },
+      {
+        "label": "ADD",
+        "detail": "ADD instruction - Destination register, Source register or immediate value",
+        "syntax": "ADD D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "ADD r0, r1",
+          "ADD result, #100"
+        ]
+      },
+      {
+        "label": "ADDCT1",
+        "detail": "ADDCT1 instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDCT1 D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "ADDCT1 r0, r1",
+          "ADDCT1 result, #100"
+        ]
+      },
+      {
+        "label": "ADDCT2",
+        "detail": "ADDCT2 instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDCT2 D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "ADDCT2 r0, r1",
+          "ADDCT2 result, #100"
+        ]
+      },
+      {
+        "label": "ADDCT3",
+        "detail": "ADDCT3 instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDCT3 D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "ADDCT3 r0, r1",
+          "ADDCT3 result, #100"
+        ]
+      },
+      {
+        "label": "ADDPIX",
+        "detail": "ADDPIX instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDPIX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "ADDPIX r0, r1",
+          "ADDPIX result, #100"
+        ]
+      },
+      {
+        "label": "ADDS",
+        "detail": "ADDS instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "ADDS r0, r1",
+          "ADDS result, #100"
+        ]
+      },
+      {
+        "label": "ADDSX",
+        "detail": "ADDSX instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDSX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "ADDSX r0, r1",
+          "ADDSX result, #100"
+        ]
+      },
+      {
+        "label": "ADDX",
+        "detail": "ADDX instruction - Destination register, Source register or immediate value",
+        "syntax": "ADDX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "ADDX r0, r1",
+          "ADDX result, #100"
+        ]
+      },
+      {
+        "label": "AKPIN",
+        "detail": "AKPIN instruction - Acknowledge pin: pin number/immediate",
+        "syntax": "AKPIN S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "AKPIN S/#"
+        ]
+      },
+      {
+        "label": "ALLOWI",
+        "detail": "ALLOWI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "ALLOWI ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALLOWI"
+        ]
+      },
+      {
+        "label": "ALTB",
+        "detail": "ALTB instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTB D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTB result",
+          "ALTB result, source",
+          "ALTB result, #42"
+        ]
+      },
+      {
+        "label": "ALTD",
+        "detail": "ALTD instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTD D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTD result",
+          "ALTD result, source",
+          "ALTD result, #42"
+        ]
+      },
+      {
+        "label": "ALTGB",
+        "detail": "ALTGB instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTGB D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTGB result",
+          "ALTGB result, source",
+          "ALTGB result, #42"
+        ]
+      },
+      {
+        "label": "ALTGN",
+        "detail": "ALTGN instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTGN D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTGN result",
+          "ALTGN result, source",
+          "ALTGN result, #42"
+        ]
+      },
+      {
+        "label": "ALTGW",
+        "detail": "ALTGW instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTGW D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTGW result",
+          "ALTGW result, source",
+          "ALTGW result, #42"
+        ]
+      },
+      {
+        "label": "ALTI",
+        "detail": "ALTI instruction - Destination, optional source (ALTI instruction modifier)",
+        "syntax": "ALTI D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTI result",
+          "ALTI result, source",
+          "ALTI result, #42"
+        ]
+      },
+      {
+        "label": "ALTR",
+        "detail": "ALTR instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTR D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTR result",
+          "ALTR result, source",
+          "ALTR result, #42"
+        ]
+      },
+      {
+        "label": "ALTS",
+        "detail": "ALTS instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTS D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTS result",
+          "ALTS result, source",
+          "ALTS result, #42"
+        ]
+      },
+      {
+        "label": "ALTSB",
+        "detail": "ALTSB instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTSB D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTSB result",
+          "ALTSB result, source",
+          "ALTSB result, #42"
+        ]
+      },
+      {
+        "label": "ALTSN",
+        "detail": "ALTSN instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTSN D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTSN result",
+          "ALTSN result, source",
+          "ALTSN result, #42"
+        ]
+      },
+      {
+        "label": "ALTSW",
+        "detail": "ALTSW instruction - Destination, optional source (immediate bit set if no source)",
+        "syntax": "ALTSW D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ALTSW result",
+          "ALTSW result, source",
+          "ALTSW result, #42"
+        ]
+      },
+      {
+        "label": "AND",
+        "detail": "AND instruction - Destination register, Source register or immediate value",
+        "syntax": "AND D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Logical",
+        "examples": [
+          "AND r0, r1",
+          "AND result, #100"
+        ]
+      },
+      {
+        "label": "ANDN",
+        "detail": "ANDN instruction - Destination register, Source register or immediate value",
+        "syntax": "ANDN D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Logical",
+        "examples": [
+          "ANDN r0, r1",
+          "ANDN result, #100"
+        ]
+      },
+      {
+        "label": "ASMCLK",
+        "detail": "ASMCLK instruction - Assembly clock instruction - no operands",
+        "syntax": "ASMCLK ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "ASMCLK"
+        ]
+      },
+      {
+        "label": "AUGD",
+        "detail": "AUGD instruction - Augment: immediate 23-bit value for AUGS/AUGD",
+        "syntax": "AUGD #S",
+        "operandFormat": "#S",
+        "category": "Miscellaneous",
+        "examples": [
+          "AUGD #S"
+        ]
+      },
+      {
+        "label": "AUGS",
+        "detail": "AUGS instruction - Augment: immediate 23-bit value for AUGS/AUGD",
+        "syntax": "AUGS #S",
+        "operandFormat": "#S",
+        "category": "Miscellaneous",
+        "examples": [
+          "AUGS #S"
+        ]
+      },
+      {
+        "label": "BITC",
+        "detail": "BITC instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITC D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITC r0, r1",
+          "BITC result, #100"
+        ]
+      },
+      {
+        "label": "BITH",
+        "detail": "BITH instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITH D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITH r0, r1",
+          "BITH result, #100"
+        ]
+      },
+      {
+        "label": "BITL",
+        "detail": "BITL instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITL D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITL r0, r1",
+          "BITL result, #100"
+        ]
+      },
+      {
+        "label": "BITNC",
+        "detail": "BITNC instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITNC D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITNC r0, r1",
+          "BITNC result, #100"
+        ]
+      },
+      {
+        "label": "BITNOT",
+        "detail": "BITNOT instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITNOT D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITNOT r0, r1",
+          "BITNOT result, #100"
+        ]
+      },
+      {
+        "label": "BITNZ",
+        "detail": "BITNZ instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITNZ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITNZ r0, r1",
+          "BITNZ result, #100"
+        ]
+      },
+      {
+        "label": "BITRND",
+        "detail": "BITRND instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITRND D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITRND r0, r1",
+          "BITRND result, #100"
+        ]
+      },
+      {
+        "label": "BITZ",
+        "detail": "BITZ instruction - Bit manipulation with optional effect flags: Destination register, bit position",
+        "syntax": "BITZ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BITZ r0, r1",
+          "BITZ result, #100"
+        ]
+      },
+      {
+        "label": "BLNPIX",
+        "detail": "BLNPIX instruction - Destination register, Source register or immediate value",
+        "syntax": "BLNPIX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "BLNPIX r0, r1",
+          "BLNPIX result, #100"
+        ]
+      },
+      {
+        "label": "BMASK",
+        "detail": "BMASK instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "BMASK D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Logical",
+        "examples": [
+          "BMASK result",
+          "BMASK result, source",
+          "BMASK result, #42"
+        ]
+      },
+      {
+        "label": "BRK",
+        "detail": "BRK instruction - Destination or immediate value 0-511",
+        "syntax": "BRK D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "BRK D/#0..511"
+        ]
+      },
+      {
+        "label": "CALL",
+        "detail": "CALL instruction - Call: immediate address or register",
+        "syntax": "CALL #S | D",
+        "operandFormat": "#S | D",
+        "category": "Control Flow",
+        "examples": [
+          "CALL #target_addr",
+          "CALL target_reg"
+        ]
+      },
+      {
+        "label": "CALLA",
+        "detail": "CALLA instruction - Call: immediate address or register",
+        "syntax": "CALLA #S | D",
+        "operandFormat": "#S | D",
+        "category": "Miscellaneous",
+        "examples": [
+          "CALLA #target_addr",
+          "CALLA target_reg"
+        ]
+      },
+      {
+        "label": "CALLB",
+        "detail": "CALLB instruction - Call: immediate address or register",
+        "syntax": "CALLB #S | D",
+        "operandFormat": "#S | D",
+        "category": "Miscellaneous",
+        "examples": [
+          "CALLB #target_addr",
+          "CALLB target_reg"
+        ]
+      },
+      {
+        "label": "CALLD",
+        "detail": "CALLD instruction - Call with return register: destination, address/relative/immediate",
+        "syntax": "CALLD D,#S/{@}S | D,S/#",
+        "operandFormat": "D,#S/{@}S | D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "CALLD D,#S/{@}S | D,S/#"
+        ]
+      },
+      {
+        "label": "CALLPA",
+        "detail": "CALLPA instruction - Jump/call with immediate destination and relative source: destination/immediate, relative address",
+        "syntax": "CALLPA D/#,S/@",
+        "operandFormat": "D/#,S/@",
+        "category": "Miscellaneous",
+        "examples": [
+          "CALLPA #5, @target",
+          "CALLPA counter, @loop_end"
+        ]
+      },
+      {
+        "label": "CALLPB",
+        "detail": "CALLPB instruction - Jump/call with immediate destination and relative source: destination/immediate, relative address",
+        "syntax": "CALLPB D/#,S/@",
+        "operandFormat": "D/#,S/@",
+        "category": "Miscellaneous",
+        "examples": [
+          "CALLPB #5, @target",
+          "CALLPB counter, @loop_end"
+        ]
+      },
+      {
+        "label": "CMP",
+        "detail": "CMP instruction - Destination register, Source register or immediate value",
+        "syntax": "CMP D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "CMP r0, r1",
+          "CMP result, #100"
+        ]
+      },
+      {
+        "label": "CMPM",
+        "detail": "CMPM instruction - Destination register, Source register or immediate value",
+        "syntax": "CMPM D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "CMPM r0, r1",
+          "CMPM result, #100"
+        ]
+      },
+      {
+        "label": "CMPR",
+        "detail": "CMPR instruction - Destination register, Source register or immediate value",
+        "syntax": "CMPR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "CMPR r0, r1",
+          "CMPR result, #100"
+        ]
+      },
+      {
+        "label": "CMPS",
+        "detail": "CMPS instruction - Destination register, Source register or immediate value",
+        "syntax": "CMPS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "CMPS r0, r1",
+          "CMPS result, #100"
+        ]
+      },
+      {
+        "label": "CMPSUB",
+        "detail": "CMPSUB instruction - Destination register, Source register or immediate value",
+        "syntax": "CMPSUB D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "CMPSUB r0, r1",
+          "CMPSUB result, #100"
+        ]
+      },
+      {
+        "label": "CMPSX",
+        "detail": "CMPSX instruction - Destination register, Source register or immediate value",
+        "syntax": "CMPSX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "CMPSX r0, r1",
+          "CMPSX result, #100"
+        ]
+      },
+      {
+        "label": "CMPX",
+        "detail": "CMPX instruction - Destination register, Source register or immediate value",
+        "syntax": "CMPX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "CMPX r0, r1",
+          "CMPX result, #100"
+        ]
+      },
+      {
+        "label": "COGATN",
+        "detail": "COGATN instruction - Destination or immediate value 0-511",
+        "syntax": "COGATN D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "COGATN D/#0..511"
+        ]
+      },
+      {
+        "label": "COGBRK",
+        "detail": "COGBRK instruction - Destination or immediate value 0-511",
+        "syntax": "COGBRK D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "COGBRK D/#0..511"
+        ]
+      },
+      {
+        "label": "COGID",
+        "detail": "COGID instruction - Destination or immediate value 0-511",
+        "syntax": "COGID D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Hub/Cog",
+        "examples": [
+          "COGID D/#0..511"
+        ]
+      },
+      {
+        "label": "COGINIT",
+        "detail": "COGINIT instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "COGINIT D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Hub/Cog",
+        "examples": [
+          "COGINIT #$100, #$200",
+          "COGINIT dest_reg, #value"
+        ]
+      },
+      {
+        "label": "COGSTOP",
+        "detail": "COGSTOP instruction - Destination or immediate value 0-511",
+        "syntax": "COGSTOP D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Hub/Cog",
+        "examples": [
+          "COGSTOP D/#0..511"
+        ]
+      },
+      {
+        "label": "CRCBIT",
+        "detail": "CRCBIT instruction - Destination register, Source register or immediate value",
+        "syntax": "CRCBIT D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "CRCBIT r0, r1",
+          "CRCBIT result, #100"
+        ]
+      },
+      {
+        "label": "CRCNIB",
+        "detail": "CRCNIB instruction - Destination register, Source register or immediate value",
+        "syntax": "CRCNIB D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "CRCNIB r0, r1",
+          "CRCNIB result, #100"
+        ]
+      },
+      {
+        "label": "DEBUG",
+        "detail": "DEBUG instruction - Debug instruction - no operands",
+        "syntax": "DEBUG ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "DEBUG"
+        ]
+      },
+      {
+        "label": "DECMOD",
+        "detail": "DECMOD instruction - Destination register, Source register or immediate value",
+        "syntax": "DECMOD D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "DECMOD r0, r1",
+          "DECMOD result, #100"
+        ]
+      },
+      {
+        "label": "DECOD",
+        "detail": "DECOD instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "DECOD D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DECOD result",
+          "DECOD result, source",
+          "DECOD result, #42"
+        ]
+      },
+      {
+        "label": "DIRC",
+        "detail": "DIRC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DIRC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRH",
+        "detail": "DIRH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRH D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DIRH D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRL",
+        "detail": "DIRL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRL D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DIRL D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRNC",
+        "detail": "DIRNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRNC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DIRNC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRNOT",
+        "detail": "DIRNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRNOT D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DIRNOT D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRNZ",
+        "detail": "DIRNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRNZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DIRNZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRRND",
+        "detail": "DIRRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRRND D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DIRRND D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DIRZ",
+        "detail": "DIRZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DIRZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DIRZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DJF",
+        "detail": "DJF instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "DJF D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Miscellaneous",
+        "examples": [
+          "DJF reg, @loop_start",
+          "DJF counter, @target"
+        ]
+      },
+      {
+        "label": "DJNF",
+        "detail": "DJNF instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "DJNF D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Miscellaneous",
+        "examples": [
+          "DJNF reg, @loop_start",
+          "DJNF counter, @target"
+        ]
+      },
+      {
+        "label": "DJNZ",
+        "detail": "DJNZ instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "DJNZ D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "DJNZ reg, @loop_start",
+          "DJNZ counter, @target"
+        ]
+      },
+      {
+        "label": "DJZ",
+        "detail": "DJZ instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "DJZ D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "DJZ reg, @loop_start",
+          "DJZ counter, @target"
+        ]
+      },
+      {
+        "label": "DRVC",
+        "detail": "DRVC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DRVC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVH",
+        "detail": "DRVH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVH D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DRVH D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVL",
+        "detail": "DRVL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVL D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DRVL D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVNC",
+        "detail": "DRVNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVNC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DRVNC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVNOT",
+        "detail": "DRVNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVNOT D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "DRVNOT D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVNZ",
+        "detail": "DRVNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVNZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DRVNZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVRND",
+        "detail": "DRVRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVRND D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DRVRND D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "DRVZ",
+        "detail": "DRVZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "DRVZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "DRVZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "ENCOD",
+        "detail": "ENCOD instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "ENCOD D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ENCOD result",
+          "ENCOD result, source",
+          "ENCOD result, #42"
+        ]
+      },
+      {
+        "label": "EXECF",
+        "detail": "EXECF instruction - Destination or immediate value 0-511",
+        "syntax": "EXECF D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "EXECF D/#0..511"
+        ]
+      },
+      {
+        "label": "FBLOCK",
+        "detail": "FBLOCK instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "FBLOCK D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "FBLOCK #$100, #$200",
+          "FBLOCK dest_reg, #value"
+        ]
+      },
+      {
+        "label": "FGE",
+        "detail": "FGE instruction - Destination register, Source register or immediate value",
+        "syntax": "FGE D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "FGE r0, r1",
+          "FGE result, #100"
+        ]
+      },
+      {
+        "label": "FGES",
+        "detail": "FGES instruction - Destination register, Source register or immediate value",
+        "syntax": "FGES D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "FGES r0, r1",
+          "FGES result, #100"
+        ]
+      },
+      {
+        "label": "FLE",
+        "detail": "FLE instruction - Destination register, Source register or immediate value",
+        "syntax": "FLE D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "FLE r0, r1",
+          "FLE result, #100"
+        ]
+      },
+      {
+        "label": "FLES",
+        "detail": "FLES instruction - Destination register, Source register or immediate value",
+        "syntax": "FLES D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "FLES r0, r1",
+          "FLES result, #100"
+        ]
+      },
+      {
+        "label": "FLTC",
+        "detail": "FLTC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "FLTC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTH",
+        "detail": "FLTH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTH D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "FLTH D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTL",
+        "detail": "FLTL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTL D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "FLTL D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTNC",
+        "detail": "FLTNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTNC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "FLTNC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTNOT",
+        "detail": "FLTNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTNOT D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "FLTNOT D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTNZ",
+        "detail": "FLTNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTNZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "FLTNZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTRND",
+        "detail": "FLTRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTRND D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "FLTRND D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "FLTZ",
+        "detail": "FLTZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "FLTZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "FLTZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "GETBRK",
+        "detail": "GETBRK instruction - Get break address: destination/immediate, REQUIRES effect flags",
+        "syntax": "GETBRK D/# WC/WZ/WCZ",
+        "operandFormat": "D/# WC/WZ/WCZ",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETBRK D/# WC/WZ/WCZ"
+        ]
+      },
+      {
+        "label": "GETBYTE",
+        "detail": "GETBYTE instruction - Get byte: destination, optional source and byte index 0-3",
+        "syntax": "GETBYTE D{,S/#,#0..3}",
+        "operandFormat": "D{,S/#,#0..3}",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETBYTE D{,S/#,#0..3}"
+        ]
+      },
+      {
+        "label": "GETCT",
+        "detail": "GETCT instruction - Destination register only",
+        "syntax": "GETCT D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETCT result"
+        ]
+      },
+      {
+        "label": "GETNIB",
+        "detail": "GETNIB instruction - Get nibble: destination, optional source and nibble index 0-7",
+        "syntax": "GETNIB D{,S/#,#0..7}",
+        "operandFormat": "D{,S/#,#0..7}",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETNIB D{,S/#,#0..7}"
+        ]
+      },
+      {
+        "label": "GETPTR",
+        "detail": "GETPTR instruction - Destination register only",
+        "syntax": "GETPTR D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETPTR result"
+        ]
+      },
+      {
+        "label": "GETQX",
+        "detail": "GETQX instruction - Destination register only",
+        "syntax": "GETQX D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETQX result"
+        ]
+      },
+      {
+        "label": "GETQY",
+        "detail": "GETQY instruction - Destination register only",
+        "syntax": "GETQY D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETQY result"
+        ]
+      },
+      {
+        "label": "GETRND",
+        "detail": "GETRND instruction - Destination register or effect flags only (GETRND)",
+        "syntax": "GETRND D | {WC/WZ/WCZ}",
+        "operandFormat": "D | {WC/WZ/WCZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETRND D | {WC/WZ/WCZ}"
+        ]
+      },
+      {
+        "label": "GETSCP",
+        "detail": "GETSCP instruction - Destination register only",
+        "syntax": "GETSCP D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETSCP result"
+        ]
+      },
+      {
+        "label": "GETWORD",
+        "detail": "GETWORD instruction - Get word: destination, optional source and word index 0-1",
+        "syntax": "GETWORD D{,S/#,#0..1}",
+        "operandFormat": "D{,S/#,#0..1}",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETWORD D{,S/#,#0..1}"
+        ]
+      },
+      {
+        "label": "GETXACC",
+        "detail": "GETXACC instruction - Destination register only",
+        "syntax": "GETXACC D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "GETXACC result"
+        ]
+      },
+      {
+        "label": "HUBSET",
+        "detail": "HUBSET instruction - Destination or immediate value 0-511",
+        "syntax": "HUBSET D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Hub/Cog",
+        "examples": [
+          "HUBSET D/#0..511"
+        ]
+      },
+      {
+        "label": "IJNZ",
+        "detail": "IJNZ instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "IJNZ D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Miscellaneous",
+        "examples": [
+          "IJNZ reg, @loop_start",
+          "IJNZ counter, @target"
+        ]
+      },
+      {
+        "label": "IJZ",
+        "detail": "IJZ instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "IJZ D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Miscellaneous",
+        "examples": [
+          "IJZ reg, @loop_start",
+          "IJZ counter, @target"
+        ]
+      },
+      {
+        "label": "INCMOD",
+        "detail": "INCMOD instruction - Destination register, Source register or immediate value",
+        "syntax": "INCMOD D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "INCMOD r0, r1",
+          "INCMOD result, #100"
+        ]
+      },
+      {
+        "label": "JATN",
+        "detail": "JATN instruction - Poll jump: target address/immediate",
+        "syntax": "JATN S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JATN S/#"
+        ]
+      },
+      {
+        "label": "JCT1",
+        "detail": "JCT1 instruction - Poll jump: target address/immediate",
+        "syntax": "JCT1 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JCT1 S/#"
+        ]
+      },
+      {
+        "label": "JCT2",
+        "detail": "JCT2 instruction - Poll jump: target address/immediate",
+        "syntax": "JCT2 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JCT2 S/#"
+        ]
+      },
+      {
+        "label": "JCT3",
+        "detail": "JCT3 instruction - Poll jump: target address/immediate",
+        "syntax": "JCT3 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JCT3 S/#"
+        ]
+      },
+      {
+        "label": "JFBW",
+        "detail": "JFBW instruction - Poll jump: target address/immediate",
+        "syntax": "JFBW S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JFBW S/#"
+        ]
+      },
+      {
+        "label": "JINT",
+        "detail": "JINT instruction - Poll jump: target address/immediate",
+        "syntax": "JINT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JINT S/#"
+        ]
+      },
+      {
+        "label": "JMP",
+        "detail": "JMP instruction - Jump: immediate address or register",
+        "syntax": "JMP #S | D",
+        "operandFormat": "#S | D",
+        "category": "Control Flow",
+        "examples": [
+          "JMP #target_addr",
+          "JMP target_reg"
+        ]
+      },
+      {
+        "label": "JMPREL",
+        "detail": "JMPREL instruction - Destination or immediate value 0-511",
+        "syntax": "JMPREL D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "JMPREL D/#0..511"
+        ]
+      },
+      {
+        "label": "JNATN",
+        "detail": "JNATN instruction - Poll jump: target address/immediate",
+        "syntax": "JNATN S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNATN S/#"
+        ]
+      },
+      {
+        "label": "JNCT1",
+        "detail": "JNCT1 instruction - Poll jump: target address/immediate",
+        "syntax": "JNCT1 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNCT1 S/#"
+        ]
+      },
+      {
+        "label": "JNCT2",
+        "detail": "JNCT2 instruction - Poll jump: target address/immediate",
+        "syntax": "JNCT2 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNCT2 S/#"
+        ]
+      },
+      {
+        "label": "JNCT3",
+        "detail": "JNCT3 instruction - Poll jump: target address/immediate",
+        "syntax": "JNCT3 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNCT3 S/#"
+        ]
+      },
+      {
+        "label": "JNFBW",
+        "detail": "JNFBW instruction - Poll jump: target address/immediate",
+        "syntax": "JNFBW S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNFBW S/#"
+        ]
+      },
+      {
+        "label": "JNINT",
+        "detail": "JNINT instruction - Poll jump: target address/immediate",
+        "syntax": "JNINT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNINT S/#"
+        ]
+      },
+      {
+        "label": "JNPAT",
+        "detail": "JNPAT instruction - Poll jump: target address/immediate",
+        "syntax": "JNPAT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNPAT S/#"
+        ]
+      },
+      {
+        "label": "JNQMT",
+        "detail": "JNQMT instruction - Poll jump: target address/immediate",
+        "syntax": "JNQMT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNQMT S/#"
+        ]
+      },
+      {
+        "label": "JNSE1",
+        "detail": "JNSE1 instruction - Poll jump: target address/immediate",
+        "syntax": "JNSE1 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNSE1 S/#"
+        ]
+      },
+      {
+        "label": "JNSE2",
+        "detail": "JNSE2 instruction - Poll jump: target address/immediate",
+        "syntax": "JNSE2 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNSE2 S/#"
+        ]
+      },
+      {
+        "label": "JNSE3",
+        "detail": "JNSE3 instruction - Poll jump: target address/immediate",
+        "syntax": "JNSE3 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNSE3 S/#"
+        ]
+      },
+      {
+        "label": "JNSE4",
+        "detail": "JNSE4 instruction - Poll jump: target address/immediate",
+        "syntax": "JNSE4 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNSE4 S/#"
+        ]
+      },
+      {
+        "label": "JNXFI",
+        "detail": "JNXFI instruction - Poll jump: target address/immediate",
+        "syntax": "JNXFI S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNXFI S/#"
+        ]
+      },
+      {
+        "label": "JNXMT",
+        "detail": "JNXMT instruction - Poll jump: target address/immediate",
+        "syntax": "JNXMT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNXMT S/#"
+        ]
+      },
+      {
+        "label": "JNXRL",
+        "detail": "JNXRL instruction - Poll jump: target address/immediate",
+        "syntax": "JNXRL S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNXRL S/#"
+        ]
+      },
+      {
+        "label": "JNXRO",
+        "detail": "JNXRO instruction - Poll jump: target address/immediate",
+        "syntax": "JNXRO S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JNXRO S/#"
+        ]
+      },
+      {
+        "label": "JPAT",
+        "detail": "JPAT instruction - Poll jump: target address/immediate",
+        "syntax": "JPAT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JPAT S/#"
+        ]
+      },
+      {
+        "label": "JQMT",
+        "detail": "JQMT instruction - Poll jump: target address/immediate",
+        "syntax": "JQMT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JQMT S/#"
+        ]
+      },
+      {
+        "label": "JSE1",
+        "detail": "JSE1 instruction - Poll jump: target address/immediate",
+        "syntax": "JSE1 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JSE1 S/#"
+        ]
+      },
+      {
+        "label": "JSE2",
+        "detail": "JSE2 instruction - Poll jump: target address/immediate",
+        "syntax": "JSE2 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JSE2 S/#"
+        ]
+      },
+      {
+        "label": "JSE3",
+        "detail": "JSE3 instruction - Poll jump: target address/immediate",
+        "syntax": "JSE3 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JSE3 S/#"
+        ]
+      },
+      {
+        "label": "JSE4",
+        "detail": "JSE4 instruction - Poll jump: target address/immediate",
+        "syntax": "JSE4 S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JSE4 S/#"
+        ]
+      },
+      {
+        "label": "JXFI",
+        "detail": "JXFI instruction - Poll jump: target address/immediate",
+        "syntax": "JXFI S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JXFI S/#"
+        ]
+      },
+      {
+        "label": "JXMT",
+        "detail": "JXMT instruction - Poll jump: target address/immediate",
+        "syntax": "JXMT S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JXMT S/#"
+        ]
+      },
+      {
+        "label": "JXRL",
+        "detail": "JXRL instruction - Poll jump: target address/immediate",
+        "syntax": "JXRL S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JXRL S/#"
+        ]
+      },
+      {
+        "label": "JXRO",
+        "detail": "JXRO instruction - Poll jump: target address/immediate",
+        "syntax": "JXRO S/#",
+        "operandFormat": "S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "JXRO S/#"
+        ]
+      },
+      {
+        "label": "LOC",
+        "detail": "LOC instruction - Load address: destination register, immediate address (optional \\ for absolute)",
+        "syntax": "LOC D,#S{\\}",
+        "operandFormat": "D,#S{\\}",
+        "category": "Miscellaneous",
+        "examples": [
+          "LOC D,#S{\\}"
+        ]
+      },
+      {
+        "label": "LOCKNEW",
+        "detail": "LOCKNEW instruction - Destination register only",
+        "syntax": "LOCKNEW D",
+        "operandFormat": "D",
+        "category": "Hub/Cog",
+        "examples": [
+          "LOCKNEW result"
+        ]
+      },
+      {
+        "label": "LOCKREL",
+        "detail": "LOCKREL instruction - Destination or immediate value 0-511",
+        "syntax": "LOCKREL D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Hub/Cog",
+        "examples": [
+          "LOCKREL D/#0..511"
+        ]
+      },
+      {
+        "label": "LOCKRET",
+        "detail": "LOCKRET instruction - Destination or immediate value 0-511",
+        "syntax": "LOCKRET D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Hub/Cog",
+        "examples": [
+          "LOCKRET D/#0..511"
+        ]
+      },
+      {
+        "label": "LOCKTRY",
+        "detail": "LOCKTRY instruction - Destination or immediate value 0-511",
+        "syntax": "LOCKTRY D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Hub/Cog",
+        "examples": [
+          "LOCKTRY D/#0..511"
+        ]
+      },
+      {
+        "label": "MERGEB",
+        "detail": "MERGEB instruction - Destination register only",
+        "syntax": "MERGEB D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "MERGEB result"
+        ]
+      },
+      {
+        "label": "MERGEW",
+        "detail": "MERGEW instruction - Destination register only",
+        "syntax": "MERGEW D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "MERGEW result"
+        ]
+      },
+      {
+        "label": "MIXPIX",
+        "detail": "MIXPIX instruction - Destination register, Source register or immediate value",
+        "syntax": "MIXPIX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MIXPIX r0, r1",
+          "MIXPIX result, #100"
+        ]
+      },
+      {
+        "label": "MODC",
+        "detail": "MODC instruction - Modify condition flags: C flag value (4-bit), optional Z flag value (4-bit)",
+        "syntax": "MODC #C{,#Z}",
+        "operandFormat": "#C{,#Z}",
+        "category": "Miscellaneous",
+        "examples": [
+          "MODC #C{,#Z}"
+        ]
+      },
+      {
+        "label": "MODCZ",
+        "detail": "MODCZ instruction - Modify condition flags: C flag value (4-bit), optional Z flag value (4-bit)",
+        "syntax": "MODCZ #C{,#Z}",
+        "operandFormat": "#C{,#Z}",
+        "category": "Miscellaneous",
+        "examples": [
+          "MODCZ #C{,#Z}"
+        ]
+      },
+      {
+        "label": "MODZ",
+        "detail": "MODZ instruction - Modify condition flags: C flag value (4-bit), optional Z flag value (4-bit)",
+        "syntax": "MODZ #C{,#Z}",
+        "operandFormat": "#C{,#Z}",
+        "category": "Miscellaneous",
+        "examples": [
+          "MODZ #C{,#Z}"
+        ]
+      },
+      {
+        "label": "MOV",
+        "detail": "MOV instruction - Destination register, Source register or immediate value",
+        "syntax": "MOV D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Memory",
+        "examples": [
+          "MOV r0, r1",
+          "MOV result, #100"
+        ]
+      },
+      {
+        "label": "MOVBYTS",
+        "detail": "MOVBYTS instruction - Destination register, Source register or immediate value",
+        "syntax": "MOVBYTS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MOVBYTS r0, r1",
+          "MOVBYTS result, #100"
+        ]
+      },
+      {
+        "label": "MUL",
+        "detail": "MUL instruction - Destination register, Source register or immediate value",
+        "syntax": "MUL D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "MUL r0, r1",
+          "MUL result, #100"
+        ]
+      },
+      {
+        "label": "MULPIX",
+        "detail": "MULPIX instruction - Destination register, Source register or immediate value",
+        "syntax": "MULPIX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MULPIX r0, r1",
+          "MULPIX result, #100"
+        ]
+      },
+      {
+        "label": "MULS",
+        "detail": "MULS instruction - Destination register, Source register or immediate value",
+        "syntax": "MULS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MULS r0, r1",
+          "MULS result, #100"
+        ]
+      },
+      {
+        "label": "MUXC",
+        "detail": "MUXC instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXC D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXC r0, r1",
+          "MUXC result, #100"
+        ]
+      },
+      {
+        "label": "MUXNC",
+        "detail": "MUXNC instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXNC D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXNC r0, r1",
+          "MUXNC result, #100"
+        ]
+      },
+      {
+        "label": "MUXNIBS",
+        "detail": "MUXNIBS instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXNIBS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXNIBS r0, r1",
+          "MUXNIBS result, #100"
+        ]
+      },
+      {
+        "label": "MUXNITS",
+        "detail": "MUXNITS instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXNITS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXNITS r0, r1",
+          "MUXNITS result, #100"
+        ]
+      },
+      {
+        "label": "MUXNZ",
+        "detail": "MUXNZ instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXNZ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXNZ r0, r1",
+          "MUXNZ result, #100"
+        ]
+      },
+      {
+        "label": "MUXQ",
+        "detail": "MUXQ instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXQ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXQ r0, r1",
+          "MUXQ result, #100"
+        ]
+      },
+      {
+        "label": "MUXZ",
+        "detail": "MUXZ instruction - Destination register, Source register or immediate value",
+        "syntax": "MUXZ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "MUXZ r0, r1",
+          "MUXZ result, #100"
+        ]
+      },
+      {
+        "label": "NEG",
+        "detail": "NEG instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "NEG D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Arithmetic",
+        "examples": [
+          "NEG result",
+          "NEG result, source",
+          "NEG result, #42"
+        ]
+      },
+      {
+        "label": "NEGC",
+        "detail": "NEGC instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "NEGC D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "NEGC result",
+          "NEGC result, source",
+          "NEGC result, #42"
+        ]
+      },
+      {
+        "label": "NEGNC",
+        "detail": "NEGNC instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "NEGNC D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "NEGNC result",
+          "NEGNC result, source",
+          "NEGNC result, #42"
+        ]
+      },
+      {
+        "label": "NEGNZ",
+        "detail": "NEGNZ instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "NEGNZ D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "NEGNZ result",
+          "NEGNZ result, source",
+          "NEGNZ result, #42"
+        ]
+      },
+      {
+        "label": "NEGZ",
+        "detail": "NEGZ instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "NEGZ D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Miscellaneous",
+        "examples": [
+          "NEGZ result",
+          "NEGZ result, source",
+          "NEGZ result, #42"
+        ]
+      },
+      {
+        "label": "NIXINT1",
+        "detail": "NIXINT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "NIXINT1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "NIXINT1"
+        ]
+      },
+      {
+        "label": "NIXINT2",
+        "detail": "NIXINT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "NIXINT2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "NIXINT2"
+        ]
+      },
+      {
+        "label": "NIXINT3",
+        "detail": "NIXINT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "NIXINT3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "NIXINT3"
+        ]
+      },
+      {
+        "label": "NOP",
+        "detail": "NOP instruction - No operation - no operands",
+        "syntax": "NOP ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "NOP"
+        ]
+      },
+      {
+        "label": "NOT",
+        "detail": "NOT instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "NOT D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Logical",
+        "examples": [
+          "NOT result",
+          "NOT result, source",
+          "NOT result, #42"
+        ]
+      },
+      {
+        "label": "ONES",
+        "detail": "ONES instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "ONES D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Logical",
+        "examples": [
+          "ONES result",
+          "ONES result, source",
+          "ONES result, #42"
+        ]
+      },
+      {
+        "label": "OR",
+        "detail": "OR instruction - Destination register, Source register or immediate value",
+        "syntax": "OR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Logical",
+        "examples": [
+          "OR r0, r1",
+          "OR result, #100"
+        ]
+      },
+      {
+        "label": "OUTC",
+        "detail": "OUTC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "OUTC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTH",
+        "detail": "OUTH instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTH D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "OUTH D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTL",
+        "detail": "OUTL instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTL D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "OUTL D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTNC",
+        "detail": "OUTNC instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTNC D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "OUTNC D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTNOT",
+        "detail": "OUTNOT instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTNOT D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Pin Control",
+        "examples": [
+          "OUTNOT D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTNZ",
+        "detail": "OUTNZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTNZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "OUTNZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTRND",
+        "detail": "OUTRND instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTRND D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "OUTRND D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "OUTZ",
+        "detail": "OUTZ instruction - Pin operation: destination/immediate pin number 0-511, optional effect flags",
+        "syntax": "OUTZ D/#0..511 {WC/WZ}",
+        "operandFormat": "D/#0..511 {WC/WZ}",
+        "category": "Miscellaneous",
+        "examples": [
+          "OUTZ D/#0..511 {WC/WZ}"
+        ]
+      },
+      {
+        "label": "POLLATN",
+        "detail": "POLLATN instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLATN ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLATN"
+        ]
+      },
+      {
+        "label": "POLLCT1",
+        "detail": "POLLCT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLCT1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLCT1"
+        ]
+      },
+      {
+        "label": "POLLCT2",
+        "detail": "POLLCT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLCT2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLCT2"
+        ]
+      },
+      {
+        "label": "POLLCT3",
+        "detail": "POLLCT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLCT3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLCT3"
+        ]
+      },
+      {
+        "label": "POLLFBW",
+        "detail": "POLLFBW instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLFBW ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLFBW"
+        ]
+      },
+      {
+        "label": "POLLINT",
+        "detail": "POLLINT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLINT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLINT"
+        ]
+      },
+      {
+        "label": "POLLPAT",
+        "detail": "POLLPAT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLPAT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLPAT"
+        ]
+      },
+      {
+        "label": "POLLQMT",
+        "detail": "POLLQMT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLQMT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLQMT"
+        ]
+      },
+      {
+        "label": "POLLSE1",
+        "detail": "POLLSE1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLSE1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLSE1"
+        ]
+      },
+      {
+        "label": "POLLSE2",
+        "detail": "POLLSE2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLSE2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLSE2"
+        ]
+      },
+      {
+        "label": "POLLSE3",
+        "detail": "POLLSE3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLSE3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLSE3"
+        ]
+      },
+      {
+        "label": "POLLSE4",
+        "detail": "POLLSE4 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLSE4 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLSE4"
+        ]
+      },
+      {
+        "label": "POLLXFI",
+        "detail": "POLLXFI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLXFI ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLXFI"
+        ]
+      },
+      {
+        "label": "POLLXMT",
+        "detail": "POLLXMT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLXMT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLXMT"
+        ]
+      },
+      {
+        "label": "POLLXRL",
+        "detail": "POLLXRL instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLXRL ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLXRL"
+        ]
+      },
+      {
+        "label": "POLLXRO",
+        "detail": "POLLXRO instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "POLLXRO ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "POLLXRO"
+        ]
+      },
+      {
+        "label": "POP",
+        "detail": "POP instruction - Destination register only",
+        "syntax": "POP D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "POP result"
+        ]
+      },
+      {
+        "label": "POPA",
+        "detail": "POPA instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+        "syntax": "POPA D/# | D",
+        "operandFormat": "D/# | D",
+        "category": "Miscellaneous",
+        "examples": [
+          "POPA D/# | D"
+        ]
+      },
+      {
+        "label": "POPB",
+        "detail": "POPB instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+        "syntax": "POPB D/# | D",
+        "operandFormat": "D/# | D",
+        "category": "Miscellaneous",
+        "examples": [
+          "POPB D/# | D"
+        ]
+      },
+      {
+        "label": "PUSH",
+        "detail": "PUSH instruction - Destination or immediate value 0-511",
+        "syntax": "PUSH D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "PUSH D/#0..511"
+        ]
+      },
+      {
+        "label": "PUSHA",
+        "detail": "PUSHA instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+        "syntax": "PUSHA D/# | D",
+        "operandFormat": "D/# | D",
+        "category": "Miscellaneous",
+        "examples": [
+          "PUSHA D/# | D"
+        ]
+      },
+      {
+        "label": "PUSHB",
+        "detail": "PUSHB instruction - Push immediate/register or Pop to register (PUSHA/PUSHB/POPA/POPB)",
+        "syntax": "PUSHB D/# | D",
+        "operandFormat": "D/# | D",
+        "category": "Miscellaneous",
+        "examples": [
+          "PUSHB D/# | D"
+        ]
+      },
+      {
+        "label": "QDIV",
+        "detail": "QDIV instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "QDIV D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "QDIV #$100, #$200",
+          "QDIV dest_reg, #value"
+        ]
+      },
+      {
+        "label": "QEXP",
+        "detail": "QEXP instruction - Destination or immediate value 0-511",
+        "syntax": "QEXP D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "QEXP D/#0..511"
+        ]
+      },
+      {
+        "label": "QFRAC",
+        "detail": "QFRAC instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "QFRAC D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "QFRAC #$100, #$200",
+          "QFRAC dest_reg, #value"
+        ]
+      },
+      {
+        "label": "QLOG",
+        "detail": "QLOG instruction - Destination or immediate value 0-511",
+        "syntax": "QLOG D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "QLOG D/#0..511"
+        ]
+      },
+      {
+        "label": "QMUL",
+        "detail": "QMUL instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "QMUL D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "QMUL #$100, #$200",
+          "QMUL dest_reg, #value"
+        ]
+      },
+      {
+        "label": "QROTATE",
+        "detail": "QROTATE instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "QROTATE D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "QROTATE #$100, #$200",
+          "QROTATE dest_reg, #value"
+        ]
+      },
+      {
+        "label": "QSQRT",
+        "detail": "QSQRT instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "QSQRT D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "QSQRT #$100, #$200",
+          "QSQRT dest_reg, #value"
+        ]
+      },
+      {
+        "label": "QVECTOR",
+        "detail": "QVECTOR instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "QVECTOR D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "QVECTOR #$100, #$200",
+          "QVECTOR dest_reg, #value"
+        ]
+      },
+      {
+        "label": "RCL",
+        "detail": "RCL instruction - Destination register, Source register or immediate value",
+        "syntax": "RCL D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "RCL r0, r1",
+          "RCL result, #100"
+        ]
+      },
+      {
+        "label": "RCR",
+        "detail": "RCR instruction - Destination register, Source register or immediate value",
+        "syntax": "RCR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "RCR r0, r1",
+          "RCR result, #100"
+        ]
+      },
+      {
+        "label": "RCZL",
+        "detail": "RCZL instruction - Destination register only",
+        "syntax": "RCZL D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RCZL result"
+        ]
+      },
+      {
+        "label": "RCZR",
+        "detail": "RCZR instruction - Destination register only",
+        "syntax": "RCZR D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RCZR result"
+        ]
+      },
+      {
+        "label": "RDBYTE",
+        "detail": "RDBYTE instruction - Destination, source/immediate/pointer register",
+        "syntax": "RDBYTE D,S/#/PTRA/PTRB",
+        "operandFormat": "D,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "RDBYTE result, source",
+          "RDBYTE result, #100",
+          "RDBYTE result, PTRA"
+        ]
+      },
+      {
+        "label": "RDFAST",
+        "detail": "RDFAST instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "RDFAST D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "RDFAST #$100, #$200",
+          "RDFAST dest_reg, #value"
+        ]
+      },
+      {
+        "label": "RDLONG",
+        "detail": "RDLONG instruction - Destination, source/immediate/pointer register",
+        "syntax": "RDLONG D,S/#/PTRA/PTRB",
+        "operandFormat": "D,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "RDLONG result, source",
+          "RDLONG result, #100",
+          "RDLONG result, PTRA"
+        ]
+      },
+      {
+        "label": "RDLUT",
+        "detail": "RDLUT instruction - Destination, source/immediate/pointer register",
+        "syntax": "RDLUT D,S/#/PTRA/PTRB",
+        "operandFormat": "D,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "RDLUT result, source",
+          "RDLUT result, #100",
+          "RDLUT result, PTRA"
+        ]
+      },
+      {
+        "label": "RDPIN",
+        "detail": "RDPIN instruction - Destination register, Source register or immediate value",
+        "syntax": "RDPIN D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "RDPIN r0, r1",
+          "RDPIN result, #100"
+        ]
+      },
+      {
+        "label": "RDWORD",
+        "detail": "RDWORD instruction - Destination, source/immediate/pointer register",
+        "syntax": "RDWORD D,S/#/PTRA/PTRB",
+        "operandFormat": "D,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "RDWORD result, source",
+          "RDWORD result, #100",
+          "RDWORD result, PTRA"
+        ]
+      },
+      {
+        "label": "REP",
+        "detail": "REP instruction - Repeat block: (@,count) for block end or (count,repetitions)",
+        "syntax": "REP @,S/# | D/#,S/#",
+        "operandFormat": "@,S/# | D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "REP @,S/# | D/#,S/#"
+        ]
+      },
+      {
+        "label": "RESI0",
+        "detail": "RESI0 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RESI0 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RESI0"
+        ]
+      },
+      {
+        "label": "RESI1",
+        "detail": "RESI1 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RESI1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RESI1"
+        ]
+      },
+      {
+        "label": "RESI2",
+        "detail": "RESI2 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RESI2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RESI2"
+        ]
+      },
+      {
+        "label": "RESI3",
+        "detail": "RESI3 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RESI3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RESI3"
+        ]
+      },
+      {
+        "label": "RET",
+        "detail": "RET instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RET ",
+        "operandFormat": "",
+        "category": "Control Flow",
+        "examples": [
+          "RET"
+        ]
+      },
+      {
+        "label": "RETA",
+        "detail": "RETA instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RETA ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RETA"
+        ]
+      },
+      {
+        "label": "RETB",
+        "detail": "RETB instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RETB ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RETB"
+        ]
+      },
+      {
+        "label": "RETI0",
+        "detail": "RETI0 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RETI0 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RETI0"
+        ]
+      },
+      {
+        "label": "RETI1",
+        "detail": "RETI1 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RETI1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RETI1"
+        ]
+      },
+      {
+        "label": "RETI2",
+        "detail": "RETI2 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RETI2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RETI2"
+        ]
+      },
+      {
+        "label": "RETI3",
+        "detail": "RETI3 instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "RETI3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "RETI3"
+        ]
+      },
+      {
+        "label": "REV",
+        "detail": "REV instruction - Destination register only",
+        "syntax": "REV D",
+        "operandFormat": "D",
+        "category": "Shift/Rotate",
+        "examples": [
+          "REV result"
+        ]
+      },
+      {
+        "label": "RFBYTE",
+        "detail": "RFBYTE instruction - Destination register only",
+        "syntax": "RFBYTE D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RFBYTE result"
+        ]
+      },
+      {
+        "label": "RFLONG",
+        "detail": "RFLONG instruction - Destination register only",
+        "syntax": "RFLONG D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RFLONG result"
+        ]
+      },
+      {
+        "label": "RFVAR",
+        "detail": "RFVAR instruction - Destination register only",
+        "syntax": "RFVAR D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RFVAR result"
+        ]
+      },
+      {
+        "label": "RFVARS",
+        "detail": "RFVARS instruction - Destination register only",
+        "syntax": "RFVARS D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RFVARS result"
+        ]
+      },
+      {
+        "label": "RFWORD",
+        "detail": "RFWORD instruction - Destination register only",
+        "syntax": "RFWORD D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RFWORD result"
+        ]
+      },
+      {
+        "label": "RGBEXP",
+        "detail": "RGBEXP instruction - Destination register only",
+        "syntax": "RGBEXP D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RGBEXP result"
+        ]
+      },
+      {
+        "label": "RGBSQZ",
+        "detail": "RGBSQZ instruction - Destination register only",
+        "syntax": "RGBSQZ D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "RGBSQZ result"
+        ]
+      },
+      {
+        "label": "ROL",
+        "detail": "ROL instruction - Destination register, Source register or immediate value",
+        "syntax": "ROL D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "ROL r0, r1",
+          "ROL result, #100"
+        ]
+      },
+      {
+        "label": "ROLBYTE",
+        "detail": "ROLBYTE instruction - Get byte: destination, optional source and byte index 0-3",
+        "syntax": "ROLBYTE D{,S/#,#0..3}",
+        "operandFormat": "D{,S/#,#0..3}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ROLBYTE D{,S/#,#0..3}"
+        ]
+      },
+      {
+        "label": "ROLNIB",
+        "detail": "ROLNIB instruction - Get nibble: destination, optional source and nibble index 0-7",
+        "syntax": "ROLNIB D{,S/#,#0..7}",
+        "operandFormat": "D{,S/#,#0..7}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ROLNIB D{,S/#,#0..7}"
+        ]
+      },
+      {
+        "label": "ROLWORD",
+        "detail": "ROLWORD instruction - Get word: destination, optional source and word index 0-1",
+        "syntax": "ROLWORD D{,S/#,#0..1}",
+        "operandFormat": "D{,S/#,#0..1}",
+        "category": "Miscellaneous",
+        "examples": [
+          "ROLWORD D{,S/#,#0..1}"
+        ]
+      },
+      {
+        "label": "ROR",
+        "detail": "ROR instruction - Destination register, Source register or immediate value",
+        "syntax": "ROR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "ROR r0, r1",
+          "ROR result, #100"
+        ]
+      },
+      {
+        "label": "RQPIN",
+        "detail": "RQPIN instruction - Destination register, Source register or immediate value",
+        "syntax": "RQPIN D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "RQPIN r0, r1",
+          "RQPIN result, #100"
+        ]
+      },
+      {
+        "label": "SAL",
+        "detail": "SAL instruction - Destination register, Source register or immediate value",
+        "syntax": "SAL D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "SAL r0, r1",
+          "SAL result, #100"
+        ]
+      },
+      {
+        "label": "SAR",
+        "detail": "SAR instruction - Destination register, Source register or immediate value",
+        "syntax": "SAR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "SAR r0, r1",
+          "SAR result, #100"
+        ]
+      },
+      {
+        "label": "SCA",
+        "detail": "SCA instruction - Destination register, Source register or immediate value",
+        "syntax": "SCA D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SCA r0, r1",
+          "SCA result, #100"
+        ]
+      },
+      {
+        "label": "SCAS",
+        "detail": "SCAS instruction - Destination register, Source register or immediate value",
+        "syntax": "SCAS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SCAS r0, r1",
+          "SCAS result, #100"
+        ]
+      },
+      {
+        "label": "SETBYTE",
+        "detail": "SETBYTE instruction - Set byte: source/immediate, optional destination and byte index 0-3",
+        "syntax": "SETBYTE S/#{,D,#0..3}",
+        "operandFormat": "S/#{,D,#0..3}",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETBYTE S/#{,D,#0..3}"
+        ]
+      },
+      {
+        "label": "SETCFRQ",
+        "detail": "SETCFRQ instruction - Destination or immediate value 0-511",
+        "syntax": "SETCFRQ D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETCFRQ D/#0..511"
+        ]
+      },
+      {
+        "label": "SETCI",
+        "detail": "SETCI instruction - Destination or immediate value 0-511",
+        "syntax": "SETCI D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETCI D/#0..511"
+        ]
+      },
+      {
+        "label": "SETCMOD",
+        "detail": "SETCMOD instruction - Destination or immediate value 0-511",
+        "syntax": "SETCMOD D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETCMOD D/#0..511"
+        ]
+      },
+      {
+        "label": "SETCQ",
+        "detail": "SETCQ instruction - Destination or immediate value 0-511",
+        "syntax": "SETCQ D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETCQ D/#0..511"
+        ]
+      },
+      {
+        "label": "SETCY",
+        "detail": "SETCY instruction - Destination or immediate value 0-511",
+        "syntax": "SETCY D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETCY D/#0..511"
+        ]
+      },
+      {
+        "label": "SETD",
+        "detail": "SETD instruction - Destination register, Source register or immediate value",
+        "syntax": "SETD D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETD r0, r1",
+          "SETD result, #100"
+        ]
+      },
+      {
+        "label": "SETDACS",
+        "detail": "SETDACS instruction - Destination or immediate value 0-511",
+        "syntax": "SETDACS D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETDACS D/#0..511"
+        ]
+      },
+      {
+        "label": "SETINT1",
+        "detail": "SETINT1 instruction - Destination or immediate value 0-511",
+        "syntax": "SETINT1 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETINT1 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETINT2",
+        "detail": "SETINT2 instruction - Destination or immediate value 0-511",
+        "syntax": "SETINT2 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETINT2 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETINT3",
+        "detail": "SETINT3 instruction - Destination or immediate value 0-511",
+        "syntax": "SETINT3 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETINT3 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETLUTS",
+        "detail": "SETLUTS instruction - Destination or immediate value 0-511",
+        "syntax": "SETLUTS D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETLUTS D/#0..511"
+        ]
+      },
+      {
+        "label": "SETNIB",
+        "detail": "SETNIB instruction - Set nibble: source/immediate, optional destination and nibble index 0-7",
+        "syntax": "SETNIB S/#{,D,#0..7}",
+        "operandFormat": "S/#{,D,#0..7}",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETNIB S/#{,D,#0..7}"
+        ]
+      },
+      {
+        "label": "SETPAT",
+        "detail": "SETPAT instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "SETPAT D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETPAT #$100, #$200",
+          "SETPAT dest_reg, #value"
+        ]
+      },
+      {
+        "label": "SETPIV",
+        "detail": "SETPIV instruction - Destination or immediate value 0-511",
+        "syntax": "SETPIV D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETPIV D/#0..511"
+        ]
+      },
+      {
+        "label": "SETPIX",
+        "detail": "SETPIX instruction - Destination or immediate value 0-511",
+        "syntax": "SETPIX D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETPIX D/#0..511"
+        ]
+      },
+      {
+        "label": "SETQ",
+        "detail": "SETQ instruction - Destination or immediate value 0-511",
+        "syntax": "SETQ D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETQ D/#0..511"
+        ]
+      },
+      {
+        "label": "SETQ2",
+        "detail": "SETQ2 instruction - Destination or immediate value 0-511",
+        "syntax": "SETQ2 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETQ2 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETR",
+        "detail": "SETR instruction - Destination register, Source register or immediate value",
+        "syntax": "SETR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETR r0, r1",
+          "SETR result, #100"
+        ]
+      },
+      {
+        "label": "SETS",
+        "detail": "SETS instruction - Destination register, Source register or immediate value",
+        "syntax": "SETS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETS r0, r1",
+          "SETS result, #100"
+        ]
+      },
+      {
+        "label": "SETSCP",
+        "detail": "SETSCP instruction - Destination or immediate value 0-511",
+        "syntax": "SETSCP D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETSCP D/#0..511"
+        ]
+      },
+      {
+        "label": "SETSE1",
+        "detail": "SETSE1 instruction - Destination or immediate value 0-511",
+        "syntax": "SETSE1 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETSE1 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETSE2",
+        "detail": "SETSE2 instruction - Destination or immediate value 0-511",
+        "syntax": "SETSE2 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETSE2 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETSE3",
+        "detail": "SETSE3 instruction - Destination or immediate value 0-511",
+        "syntax": "SETSE3 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETSE3 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETSE4",
+        "detail": "SETSE4 instruction - Destination or immediate value 0-511",
+        "syntax": "SETSE4 D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETSE4 D/#0..511"
+        ]
+      },
+      {
+        "label": "SETWORD",
+        "detail": "SETWORD instruction - Set word: source/immediate, optional destination and word index 0-1",
+        "syntax": "SETWORD S/#{,D,#0..1}",
+        "operandFormat": "S/#{,D,#0..1}",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETWORD S/#{,D,#0..1}"
+        ]
+      },
+      {
+        "label": "SETXFRQ",
+        "detail": "SETXFRQ instruction - Destination or immediate value 0-511",
+        "syntax": "SETXFRQ D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SETXFRQ D/#0..511"
+        ]
+      },
+      {
+        "label": "SEUSSF",
+        "detail": "SEUSSF instruction - Destination register only",
+        "syntax": "SEUSSF D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "SEUSSF result"
+        ]
+      },
+      {
+        "label": "SEUSSR",
+        "detail": "SEUSSR instruction - Destination register only",
+        "syntax": "SEUSSR D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "SEUSSR result"
+        ]
+      },
+      {
+        "label": "SHL",
+        "detail": "SHL instruction - Destination register, Source register or immediate value",
+        "syntax": "SHL D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "SHL r0, r1",
+          "SHL result, #100"
+        ]
+      },
+      {
+        "label": "SHR",
+        "detail": "SHR instruction - Destination register, Source register or immediate value",
+        "syntax": "SHR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "SHR r0, r1",
+          "SHR result, #100"
+        ]
+      },
+      {
+        "label": "SIGNX",
+        "detail": "SIGNX instruction - Destination register, Source register or immediate value",
+        "syntax": "SIGNX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "SIGNX r0, r1",
+          "SIGNX result, #100"
+        ]
+      },
+      {
+        "label": "SKIP",
+        "detail": "SKIP instruction - Destination or immediate value 0-511",
+        "syntax": "SKIP D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SKIP D/#0..511"
+        ]
+      },
+      {
+        "label": "SKIPF",
+        "detail": "SKIPF instruction - Destination or immediate value 0-511",
+        "syntax": "SKIPF D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "SKIPF D/#0..511"
+        ]
+      },
+      {
+        "label": "SPLITB",
+        "detail": "SPLITB instruction - Destination register only",
+        "syntax": "SPLITB D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "SPLITB result"
+        ]
+      },
+      {
+        "label": "SPLITW",
+        "detail": "SPLITW instruction - Destination register only",
+        "syntax": "SPLITW D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "SPLITW result"
+        ]
+      },
+      {
+        "label": "STALLI",
+        "detail": "STALLI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "STALLI ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "STALLI"
+        ]
+      },
+      {
+        "label": "SUB",
+        "detail": "SUB instruction - Destination register, Source register or immediate value",
+        "syntax": "SUB D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "SUB r0, r1",
+          "SUB result, #100"
+        ]
+      },
+      {
+        "label": "SUBR",
+        "detail": "SUBR instruction - Destination register, Source register or immediate value",
+        "syntax": "SUBR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SUBR r0, r1",
+          "SUBR result, #100"
+        ]
+      },
+      {
+        "label": "SUBS",
+        "detail": "SUBS instruction - Destination register, Source register or immediate value",
+        "syntax": "SUBS D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "SUBS r0, r1",
+          "SUBS result, #100"
+        ]
+      },
+      {
+        "label": "SUBSX",
+        "detail": "SUBSX instruction - Destination register, Source register or immediate value",
+        "syntax": "SUBSX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "SUBSX r0, r1",
+          "SUBSX result, #100"
+        ]
+      },
+      {
+        "label": "SUBX",
+        "detail": "SUBX instruction - Destination register, Source register or immediate value",
+        "syntax": "SUBX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Arithmetic",
+        "examples": [
+          "SUBX r0, r1",
+          "SUBX result, #100"
+        ]
+      },
+      {
+        "label": "SUMC",
+        "detail": "SUMC instruction - Destination register, Source register or immediate value",
+        "syntax": "SUMC D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SUMC r0, r1",
+          "SUMC result, #100"
+        ]
+      },
+      {
+        "label": "SUMNC",
+        "detail": "SUMNC instruction - Destination register, Source register or immediate value",
+        "syntax": "SUMNC D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SUMNC r0, r1",
+          "SUMNC result, #100"
+        ]
+      },
+      {
+        "label": "SUMNZ",
+        "detail": "SUMNZ instruction - Destination register, Source register or immediate value",
+        "syntax": "SUMNZ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SUMNZ r0, r1",
+          "SUMNZ result, #100"
+        ]
+      },
+      {
+        "label": "SUMZ",
+        "detail": "SUMZ instruction - Destination register, Source register or immediate value",
+        "syntax": "SUMZ D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "SUMZ r0, r1",
+          "SUMZ result, #100"
+        ]
+      },
+      {
+        "label": "TEST",
+        "detail": "TEST instruction - Destination register, optional Source register or immediate (unary/binary)",
+        "syntax": "TEST D{,S/#}",
+        "operandFormat": "D{,S/#}",
+        "category": "Comparison/Test",
+        "examples": [
+          "TEST result",
+          "TEST result, source",
+          "TEST result, #42"
+        ]
+      },
+      {
+        "label": "TESTB",
+        "detail": "TESTB instruction - Test bit with logic function: Destination register, bit position",
+        "syntax": "TESTB D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "TESTB r0, r1",
+          "TESTB result, #100"
+        ]
+      },
+      {
+        "label": "TESTBN",
+        "detail": "TESTBN instruction - Test bit with logic function: Destination register, bit position",
+        "syntax": "TESTBN D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "TESTBN r0, r1",
+          "TESTBN result, #100"
+        ]
+      },
+      {
+        "label": "TESTN",
+        "detail": "TESTN instruction - Destination register, Source register or immediate value",
+        "syntax": "TESTN D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Comparison/Test",
+        "examples": [
+          "TESTN r0, r1",
+          "TESTN result, #100"
+        ]
+      },
+      {
+        "label": "TESTP",
+        "detail": "TESTP instruction - Test pin: destination/immediate pin number 0-511 with REQUIRED logic function",
+        "syntax": "TESTP D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ",
+        "operandFormat": "D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ",
+        "category": "Comparison/Test",
+        "examples": [
+          "TESTP D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ"
+        ]
+      },
+      {
+        "label": "TESTPN",
+        "detail": "TESTPN instruction - Test pin: destination/immediate pin number 0-511 with REQUIRED logic function",
+        "syntax": "TESTPN D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ",
+        "operandFormat": "D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ",
+        "category": "Comparison/Test",
+        "examples": [
+          "TESTPN D/#0..511 WC/ANDC/ORC/XORC | WZ/ANDZ/ORZ/XORZ"
+        ]
+      },
+      {
+        "label": "TJF",
+        "detail": "TJF instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJF D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJF reg, @loop_start",
+          "TJF counter, @target"
+        ]
+      },
+      {
+        "label": "TJNF",
+        "detail": "TJNF instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJNF D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJNF reg, @loop_start",
+          "TJNF counter, @target"
+        ]
+      },
+      {
+        "label": "TJNS",
+        "detail": "TJNS instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJNS D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJNS reg, @loop_start",
+          "TJNS counter, @target"
+        ]
+      },
+      {
+        "label": "TJNZ",
+        "detail": "TJNZ instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJNZ D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJNZ reg, @loop_start",
+          "TJNZ counter, @target"
+        ]
+      },
+      {
+        "label": "TJS",
+        "detail": "TJS instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJS D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJS reg, @loop_start",
+          "TJS counter, @target"
+        ]
+      },
+      {
+        "label": "TJV",
+        "detail": "TJV instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJV D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJV reg, @loop_start",
+          "TJV counter, @target"
+        ]
+      },
+      {
+        "label": "TJZ",
+        "detail": "TJZ instruction - Jump with destination and relative address: register, relative address",
+        "syntax": "TJZ D,S/@",
+        "operandFormat": "D,S/@",
+        "category": "Control Flow",
+        "examples": [
+          "TJZ reg, @loop_start",
+          "TJZ counter, @target"
+        ]
+      },
+      {
+        "label": "TRGINT1",
+        "detail": "TRGINT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "TRGINT1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "TRGINT1"
+        ]
+      },
+      {
+        "label": "TRGINT2",
+        "detail": "TRGINT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "TRGINT2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "TRGINT2"
+        ]
+      },
+      {
+        "label": "TRGINT3",
+        "detail": "TRGINT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "TRGINT3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "TRGINT3"
+        ]
+      },
+      {
+        "label": "WAITATN",
+        "detail": "WAITATN instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITATN ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITATN"
+        ]
+      },
+      {
+        "label": "WAITCT1",
+        "detail": "WAITCT1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITCT1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITCT1"
+        ]
+      },
+      {
+        "label": "WAITCT2",
+        "detail": "WAITCT2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITCT2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITCT2"
+        ]
+      },
+      {
+        "label": "WAITCT3",
+        "detail": "WAITCT3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITCT3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITCT3"
+        ]
+      },
+      {
+        "label": "WAITFBW",
+        "detail": "WAITFBW instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITFBW ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITFBW"
+        ]
+      },
+      {
+        "label": "WAITINT",
+        "detail": "WAITINT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITINT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITINT"
+        ]
+      },
+      {
+        "label": "WAITPAT",
+        "detail": "WAITPAT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITPAT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITPAT"
+        ]
+      },
+      {
+        "label": "WAITSE1",
+        "detail": "WAITSE1 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITSE1 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITSE1"
+        ]
+      },
+      {
+        "label": "WAITSE2",
+        "detail": "WAITSE2 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITSE2 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITSE2"
+        ]
+      },
+      {
+        "label": "WAITSE3",
+        "detail": "WAITSE3 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITSE3 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITSE3"
+        ]
+      },
+      {
+        "label": "WAITSE4",
+        "detail": "WAITSE4 instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITSE4 ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITSE4"
+        ]
+      },
+      {
+        "label": "WAITX",
+        "detail": "WAITX instruction - Destination or immediate value 0-511",
+        "syntax": "WAITX D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITX D/#0..511"
+        ]
+      },
+      {
+        "label": "WAITXFI",
+        "detail": "WAITXFI instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITXFI ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITXFI"
+        ]
+      },
+      {
+        "label": "WAITXMT",
+        "detail": "WAITXMT instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITXMT ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITXMT"
+        ]
+      },
+      {
+        "label": "WAITXRL",
+        "detail": "WAITXRL instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITXRL ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITXRL"
+        ]
+      },
+      {
+        "label": "WAITXRO",
+        "detail": "WAITXRO instruction - No operands - poll/wait instruction (moves S to D, sets S to $024)",
+        "syntax": "WAITXRO ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "WAITXRO"
+        ]
+      },
+      {
+        "label": "WFBYTE",
+        "detail": "WFBYTE instruction - Destination or immediate value 0-511",
+        "syntax": "WFBYTE D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "WFBYTE D/#0..511"
+        ]
+      },
+      {
+        "label": "WFLONG",
+        "detail": "WFLONG instruction - Destination or immediate value 0-511",
+        "syntax": "WFLONG D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "WFLONG D/#0..511"
+        ]
+      },
+      {
+        "label": "WFWORD",
+        "detail": "WFWORD instruction - Destination or immediate value 0-511",
+        "syntax": "WFWORD D/#0..511",
+        "operandFormat": "D/#0..511",
+        "category": "Miscellaneous",
+        "examples": [
+          "WFWORD D/#0..511"
+        ]
+      },
+      {
+        "label": "WMLONG_",
+        "detail": "WMLONG_ instruction - Destination, source/immediate/pointer register",
+        "syntax": "WMLONG_ D,S/#/PTRA/PTRB",
+        "operandFormat": "D,S/#/PTRA/PTRB",
+        "category": "Miscellaneous",
+        "examples": [
+          "WMLONG_ result, source",
+          "WMLONG_ result, #100",
+          "WMLONG_ result, PTRA"
+        ]
+      },
+      {
+        "label": "WRBYTE",
+        "detail": "WRBYTE instruction - Memory operation: destination/immediate, source/immediate/pointer",
+        "syntax": "WRBYTE D/#,S/#/PTRA/PTRB",
+        "operandFormat": "D/#,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "WRBYTE D/#,S/#/PTRA/PTRB"
+        ]
+      },
+      {
+        "label": "WRC",
+        "detail": "WRC instruction - Destination register only",
+        "syntax": "WRC D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "WRC result"
+        ]
+      },
+      {
+        "label": "WRFAST",
+        "detail": "WRFAST instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "WRFAST D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "WRFAST #$100, #$200",
+          "WRFAST dest_reg, #value"
+        ]
+      },
+      {
+        "label": "WRLONG",
+        "detail": "WRLONG instruction - Memory operation: destination/immediate, source/immediate/pointer",
+        "syntax": "WRLONG D/#,S/#/PTRA/PTRB",
+        "operandFormat": "D/#,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "WRLONG D/#,S/#/PTRA/PTRB"
+        ]
+      },
+      {
+        "label": "WRLUT",
+        "detail": "WRLUT instruction - Memory operation: destination/immediate, source/immediate/pointer",
+        "syntax": "WRLUT D/#,S/#/PTRA/PTRB",
+        "operandFormat": "D/#,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "WRLUT D/#,S/#/PTRA/PTRB"
+        ]
+      },
+      {
+        "label": "WRNC",
+        "detail": "WRNC instruction - Destination register only",
+        "syntax": "WRNC D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "WRNC result"
+        ]
+      },
+      {
+        "label": "WRNZ",
+        "detail": "WRNZ instruction - Destination register only",
+        "syntax": "WRNZ D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "WRNZ result"
+        ]
+      },
+      {
+        "label": "WRPIN",
+        "detail": "WRPIN instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "WRPIN D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "WRPIN #$100, #$200",
+          "WRPIN dest_reg, #value"
+        ]
+      },
+      {
+        "label": "WRWORD",
+        "detail": "WRWORD instruction - Memory operation: destination/immediate, source/immediate/pointer",
+        "syntax": "WRWORD D/#,S/#/PTRA/PTRB",
+        "operandFormat": "D/#,S/#/PTRA/PTRB",
+        "category": "Memory",
+        "examples": [
+          "WRWORD D/#,S/#/PTRA/PTRB"
+        ]
+      },
+      {
+        "label": "WRZ",
+        "detail": "WRZ instruction - Destination register only",
+        "syntax": "WRZ D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "WRZ result"
+        ]
+      },
+      {
+        "label": "WXPIN",
+        "detail": "WXPIN instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "WXPIN D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "WXPIN #$100, #$200",
+          "WXPIN dest_reg, #value"
+        ]
+      },
+      {
+        "label": "WYPIN",
+        "detail": "WYPIN instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "WYPIN D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "WYPIN #$100, #$200",
+          "WYPIN dest_reg, #value"
+        ]
+      },
+      {
+        "label": "XCONT",
+        "detail": "XCONT instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "XCONT D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "XCONT #$100, #$200",
+          "XCONT dest_reg, #value"
+        ]
+      },
+      {
+        "label": "XINIT",
+        "detail": "XINIT instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "XINIT D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "XINIT #$100, #$200",
+          "XINIT dest_reg, #value"
+        ]
+      },
+      {
+        "label": "XOR",
+        "detail": "XOR instruction - Destination register, Source register or immediate value",
+        "syntax": "XOR D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Logical",
+        "examples": [
+          "XOR r0, r1",
+          "XOR result, #100"
+        ]
+      },
+      {
+        "label": "XORO32",
+        "detail": "XORO32 instruction - Destination register only",
+        "syntax": "XORO32 D",
+        "operandFormat": "D",
+        "category": "Miscellaneous",
+        "examples": [
+          "XORO32 result"
+        ]
+      },
+      {
+        "label": "XSTOP",
+        "detail": "XSTOP instruction - No operands - translated instruction (RET*/RESI*/XSTOP)",
+        "syntax": "XSTOP ",
+        "operandFormat": "",
+        "category": "Miscellaneous",
+        "examples": [
+          "XSTOP"
+        ]
+      },
+      {
+        "label": "XZERO",
+        "detail": "XZERO instruction - Two operands: destination/immediate, source/immediate",
+        "syntax": "XZERO D/#,S/#",
+        "operandFormat": "D/#,S/#",
+        "category": "Miscellaneous",
+        "examples": [
+          "XZERO #$100, #$200",
+          "XZERO dest_reg, #value"
+        ]
+      },
+      {
+        "label": "ZEROX",
+        "detail": "ZEROX instruction - Destination register, Source register or immediate value",
+        "syntax": "ZEROX D,S/#",
+        "operandFormat": "D,S/#",
+        "category": "Shift/Rotate",
+        "examples": [
+          "ZEROX r0, r1",
+          "ZEROX result, #100"
+        ]
+      }
+    ],
+    "conditionCodes": [],
+    "effectFlags": [
+      {
+        "label": "",
+        "detail": "No effect flags",
+        "value": 0
+      },
+      {
+        "label": "WC",
+        "detail": "Write Carry flag",
+        "value": 1
+      },
+      {
+        "label": "WZ",
+        "detail": "Write Zero flag",
+        "value": 2
+      },
+      {
+        "label": "WCZ",
+        "detail": "Write Carry and Zero flags",
+        "value": 3
+      }
+    ]
+  }
+}
