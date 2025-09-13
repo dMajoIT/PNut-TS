@@ -257,3 +257,7 @@ jest-config/jest-coverage-configBAD.json
 scripts-pkg/cs_fixUploadNames.sh
 /TEST/WUMMI-tests
 *.heapprofile
+
+# Claude Code documentation and Todo MCP data
+CLAUDE.md
+.todo-mcp/
